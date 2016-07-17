@@ -1,0 +1,81 @@
+<div id="definitions-page-{{uniqid}}">
+    <table class="generaltable">
+        <tr>
+            <th scope="col">Term</th>
+            <th scole="col">Definition</th>
+            <td style="width: 35px;"></td>
+        </tr>
+        {{#definitions}}
+            <tr data-termid="{{id}}" class="term {{#seen}}term-seen{{/seen}}">
+                <td>{{term}}</td>
+                <td>{{definition}}</td>
+                <td class="term-tick">
+                    <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
+                    <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}"/></div>
+                    <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
+                </td>
+            </tr>
+        {{/definitions}}
+    </table>
+
+    <div class="definitions-page-footer">
+        <p>
+            <button data-href="{{{nexturl}}}" class="continue-button">Continue</button>
+            <br/><small>{{mustseealltocontinue}}</small>
+            <br/><small>{{noteaboutseenforteachers}}</small>
+        </p>
+    </div>
+</div>
+
+<script>
+{{#js}}
+    require(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notification) {
+        var container = $('#definitions-page-{{uniqid}}'),
+            modid = {{modid}},
+            canmanage = {{canmanage}},
+            btn = container.find('.continue-button');
+
+        function seenAll() {
+            return container.find('.term').length === container.find('.term.term-seen').length
+        }
+
+        container.on('click', '.term-seen-action', function(e) {
+            e.preventDefault();
+
+            var termNode = $(this).parents('.term').first(),
+                termId = termNode.data('termid');
+
+            // TODO Ajax.
+            termNode.addClass('term-loading')
+            Ajax.call([{
+                'methodname': 'mod_flashcards_mark_as_seen',
+                'args': {
+                    'termid': termId
+                }
+            }])[0].then(function(result) {
+                if (!result) {                
+                    return $.Deferred().reject();
+                }
+                termNode.addClass('term-seen');
+            })
+            .fail(Notification.exception)
+            .always(function() {
+                termNode.removeClass('term-loading');
+                if (seenAll()) {
+                    btn.prop('disabled', false);
+                }
+            });
+        });
+
+        // Teachers can jump to the next steps.
+        if (!seenAll() && !canmanage) {
+            btn.prop('disabled', true);
+        }
+
+        btn.click(function(e) {
+            e.preventDefault();
+            location.href = $(this).data('href');
+        });
+    });
+{{/js}}
+</script>

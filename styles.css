@@ -1,0 +1,30 @@
+.path-mod-flashcards .term-seen-action {
+    display: block;
+}
+.path-mod-flashcards .term-seen-state {
+    display: none;
+}
+.path-mod-flashcards .term-seen .term-seen-action {
+    display: none;
+}
+.path-mod-flashcards .term-seen .term-seen-state {
+    display: block;
+}
+
+.path-mod-flashcards .term-seen-loading {
+    display: none;
+}
+.path-mod-flashcards .term-loading .term-tick > * {
+    /* Hide all the children. */
+    display: none;
+}
+.path-mod-flashcards .term-loading .term-seen-loading {
+    display: block;
+}
+
+.definitions-page-footer p {
+    text-align: right;
+}
+.dirt-rtl .definitions-page-footer p {
+    text-align: left;
+}
