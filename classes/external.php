@@ -27,18 +27,17 @@ class mod_flashcards_external extends external_api {
         extract($params);
 
         $term = $DB->get_record('flashcards_terms', ['id' => $termid], '*', MUST_EXIST);
-        $cm = get_coursemodule_from_instance('flashcards', $term->modid);
-        $context = context_module::instance($cm->id);
-        self::validate_context($context);
+        $mod = mod_flashcards_module::get_by_modid($term->modid);
+        self::validate_context($mod->get_context());
 
         // We do not log the completion for teachers.
-        if (mod_flashcards_helper::can_manage($context)) {
+        if ($mod->can_manage()) {
             return true;
         }
 
         // Require view and make sure the user did not previously mark as seen.
         $params = ['userid' => $USER->id, 'termid' => $termid];
-        mod_flashcards_helper::require_view($context);
+        $mod->require_view();
         if ($DB->record_exists('flashcards_seen', $params)) {
             return true;
         }

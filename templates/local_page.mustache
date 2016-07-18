@@ -1,0 +1,35 @@
+<div id="local-page-{{uniqid}}">
+
+    <div class="flashcards">
+    </div>
+    
+    <div class="page-footer">
+        <p>
+            <button data-href="{{{nexturl}}}" class="continue-button">Continue</button>
+        </p>
+    </div>
+
+</div>
+
+{{#js}}
+    require(['jquery', 'mod_flashcards/cards'], function($, Cards) {
+        var container = $('#local-page-{{uniqid}}'),
+            modid = {{modid}},
+            canmanage = {{canmanage}},
+            cards = container.find('.flashcards'),
+            btn = container.find('.continue-button');
+
+        btn.on('click', function() {
+            location.href = $(this).data('href');
+        });
+        if (!canmanage) {
+            btn.prop('disabled', true);
+        }
+
+        var inst = new Cards(cards, {{{definitionsjson}}});
+        inst.on('complete', function() {
+            btn.prop('disabled', false);
+        });
+        inst.init();
+    });
+{{/js}}

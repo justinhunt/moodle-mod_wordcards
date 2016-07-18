@@ -14,31 +14,33 @@
  */
 class mod_flashcards_renderer extends plugin_renderer_base {
 
-    public function definitions_page() {
-        global $PAGE;
+    public function definitions_page(mod_flashcards_module $mod) {
+        global $PAGE, $OUTPUT;
 
-        $cmid = $PAGE->cm->id;
-        $modid = $PAGE->cm->instance;
-        $definitions = mod_flashcards_helper::get_definitions($modid);
+        $definitions = $mod->get_terms();
         if (empty($definitions)) {
             return $OUTPUT->notification(get_string('nodefinitions', 'mod_flashcards'));
         }
 
         // Get whe the student has seen.
-        $seen = mod_flashcards_helper::get_definitions_seen($modid);
+        $seen = $mod->get_terms_seen();
         foreach ($seen as $s) {
+            if (!isset($definitions[$s->termid])) {
+                // Shouldn't happen.
+                continue;
+            }
             $definitions[$s->termid]->seen = true;
         }
 
         $data = [
-            'canmanage' => mod_flashcards_helper::can_manage($PAGE->context),
+            'canmanage' => $mod->can_manage(),
             'definitions' => array_values($definitions),
             'loading' => get_string('loading', 'mod_flashcards'),
             'loadingurl' => $this->pix_url('i/loading_small')->out(true),
             'markasseen' => get_string('markasseen', 'mod_flashcards'),
-            'modid' => $modid,
+            'modid' => $mod->get_id(),
             'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_flashcards'),
-            'nexturl' => (new moodle_url('/mod/flashcards/local.php', ['id' => $cmid]))->out(true),
+            'nexturl' => (new moodle_url('/mod/flashcards/local.php', ['id' => $mod->get_cmid()]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_flashcards'),
             'notseenurl' => $this->pix_url('not-seen', 'mod_flashcards')->out(true),
             'seenall' => count($definitions) == count($seen),
@@ -48,6 +50,19 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         ];
 
         return $this->render_from_template('mod_flashcards/definitions_page', $data);
+    }
+
+    public function local_page(mod_flashcards_module $mod) {
+        $definitions = $mod->get_local_terms();
+
+        $data = [
+            'canmanage' => $mod->can_manage(),
+            'definitionsjson' => json_encode(array_values($definitions)),
+            'modid' => $mod->get_id(),
+            'nexturl' => (new moodle_url('/mod/flashcards/global.php', ['id' => $mod->get_cmid()]))->out(true),
+        ];
+
+        return $this->render_from_template('mod_flashcards/local_page', $data);
     }
 
 }

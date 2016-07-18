@@ -54,12 +54,8 @@ function flashcards_update_instance(stdClass $module, mod_flashcards_mod_form $m
 function flashcards_delete_instance($modid) {
     global $DB;
 
-    if (!$DB->record_exists('flashcards', array('id' => $modid))) {
-        return false;
-    }
-
-    $DB->delete_records('flashcards', array('id' => $modid));
-    $DB->delete_records('flashcards_terms', array('modid' => $modid));
+    $mod = mod_flashcards_module::get_by_modid($modid);
+    $mod->delete();
 
     return true;
 }

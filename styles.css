@@ -22,9 +22,37 @@
     display: block;
 }
 
-.definitions-page-footer p {
+.path-mod-flashcards .page-footer p {
     text-align: right;
 }
-.dirt-rtl .definitions-page-footer p {
+.dirt-rtl.path-mod-flashcards .page-footer p {
     text-align: left;
+}
+
+.path-mod-flashcards .flashcards {
+    position: relative;
+}
+.path-mod-flashcards .flashcards .flashcard {
+    position: absolute;
+    display: table;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.path-mod-flashcards .flashcards .flashcard > div {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.path-mod-flashcards .flashcards .flashcard.selected,
+.path-mod-flashcards .flashcards .flashcard.found {
+    background-color: green;
+    color: white;
+    cursor: initial;
+}
+.path-mod-flashcards .flashcards .flashcard.mismatch {
+    background-color: red;
+    color: white;
 }

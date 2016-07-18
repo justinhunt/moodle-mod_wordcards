@@ -17,6 +17,7 @@ $string['flashcards:view'] = 'View the module';
 $string['globaltermcount'] = 'Global terms shown as cards';
 $string['localtermcount'] = 'Local terms shown as cards';
 $string['loading'] = 'Loading';
+$string['localscatter'] = 'Local scatter';
 $string['markasseen'] = 'Mark as seen';
 $string['modulename'] = 'Flashcards';
 $string['modulenameplural'] = 'Flashcards';

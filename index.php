@@ -25,7 +25,7 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($strplugin));
 
-require_capability('mod/flashcards:view', $PAGE->context);
+mod_flashcards_module::require_view_in_context($PAGE->context);
 
 if (!($mods = get_all_instances_in_course('flashcards', $course))) {
     notice(get_string('thereareno', 'moodle', $strplugin), '../../course/view.php?id=$course->id');

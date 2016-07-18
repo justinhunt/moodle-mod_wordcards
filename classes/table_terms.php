@@ -21,11 +21,11 @@ class mod_flashcards_table_terms extends table_sql {
      * Constructor.
      *
      * @param string $uniqueid Unique ID.
-     * @param int $modif The module ID.
+     * @param object $mod The module.
      */
-    public function __construct($uniqueid, $modid) {
+    public function __construct($uniqueid, $mod) {
         parent::__construct($uniqueid);
-        $this->modid = $modid;
+        $this->mod = $mod;
 
         // Define columns.
         $this->define_columns(array(
@@ -47,7 +47,7 @@ class mod_flashcards_table_terms extends table_sql {
         $this->sql->fields = $sqlfields;
         $this->sql->from = $sqlfrom;
         $this->sql->where = 't.modid = :modid AND deleted = 0';
-        $this->sql->params = ['modid' => $modid];
+        $this->sql->params = ['modid' => $mod->get_id()];
 
         // Define various table settings.
         $this->sortable(true, 'term', SORT_ASC);

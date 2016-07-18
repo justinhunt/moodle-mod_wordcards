@@ -1,6 +1,6 @@
 <?php
 /**
- * Displays the definitions.
+ * Displays the local scatter.
  *
  * @package mod_flashcards
  * @author  Frédéric Massart - FMCorz.net
@@ -13,13 +13,13 @@ $cmid = required_param('id', PARAM_INT);
 $mod = mod_flashcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
-$currentstate = mod_flashcards_module::STATE_TERMS;
+$currentstate = mod_flashcards_module::STATE_LOCAL;
 
 require_login($course, true, $cm);
 $mod->require_view();
 $mod->resume_progress($currentstate);
 
-$pagetitle = get_string('definitions', 'mod_flashcards');
+$pagetitle = get_string('localscatter', 'mod_flashcards');
 
 $PAGE->set_url('/mod/flashcards/view.php', ['id' => $cmid]);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
@@ -33,6 +33,6 @@ $tabs = mod_flashcards_helper::get_tabs($mod, $currentstate);
 echo $OUTPUT->render($tabs);
 
 $renderer = $PAGE->get_renderer('mod_flashcards');
-echo $renderer->definitions_page($mod);
+echo $renderer->local_page($mod);
 
 echo $OUTPUT->footer();

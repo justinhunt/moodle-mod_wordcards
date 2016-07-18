@@ -12,11 +12,14 @@ $cmid = required_param('id', PARAM_INT);
 $termid = optional_param('termid', null, PARAM_INT);
 $action = optional_param('action', null, PARAM_ALPHA);
 
-list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'flashcards');
-require_login($course, true, $cm);
-mod_flashcards_helper::require_manage($PAGE->context);
+$mod = mod_flashcards_module::get_by_cmid($cmid);
+$course = $mod->get_course();
+$cm = $mod->get_cm();
 
-$modid = $cm->instance;
+require_login($course, true, $cm);
+$mod->require_manage();
+
+$modid = $mod->get_id();
 $pagetitle = get_string('setup', 'mod_flashcards');
 $baseurl = new moodle_url('/mod/flashcards/setup.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
@@ -29,7 +32,7 @@ $PAGE->set_title($pagetitle);
 
 if ($action == 'delete') {
     confirm_sesskey();
-    $DB->set_field('flashcards_terms', 'deleted', 1, ['modid' => $modid, 'id' => $termid]);
+    $mod->delete_term($termid);
     redirect($PAGE->url, get_string('termdeleted', 'mod_flashcards'));
 
 } else if ($action == 'edit') {
@@ -60,12 +63,12 @@ if ($data = $form->get_data()) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading($pagetitle);
 
-$tabs = mod_flashcards_helper::get_tabs($PAGE->context, 'setup');
+$tabs = mod_flashcards_helper::get_tabs($mod, 'setup');
 echo $OUTPUT->render($tabs);
 
 $form->display();
 
-$table = new mod_flashcards_table_terms('tblterms', $modid);
+$table = new mod_flashcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);
 $table->out(25, false);
 
