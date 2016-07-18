@@ -40,15 +40,15 @@ define([
         var pool = [],
             width = this.container.width(),
             height = $(window).height(),
-            perRow = 2,
+            perRow = 3,
             cardCount = this.terms.length * 2;
 
-        if (cardCount % 2 > cardCount % 3) {
-            perRow = 3;
+        if (cardCount % 2 < cardCount % 3) {
+            perRow = 2;
         }
         var cardWidth = Math.floor(width / perRow);
         var cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), 60);
-        
+
         this.terms.forEach(function(item) {
             pool.push(this._makeCard(item.id, item.term));
             pool.push(this._makeCard(item.id, item.definition));
@@ -101,7 +101,7 @@ define([
         }
 
         // We've clicked the selected card.
-        if (this.selected == card) {
+        if (this.selected.is(card)) {
             return;
         }
 
