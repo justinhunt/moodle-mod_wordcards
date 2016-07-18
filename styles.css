@@ -38,6 +38,10 @@
     border: 1px solid #eee;
     border-radius: 3px;
     cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 .path-mod-flashcards .flashcards .flashcard > div {
     display: table-cell;
