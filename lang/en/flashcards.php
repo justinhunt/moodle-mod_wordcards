@@ -14,6 +14,7 @@ $string['deleteterm'] = 'Delete term \'{$a}\'';
 $string['description'] = 'Description';
 $string['editterm'] = 'Edit term \'{$a}\'';
 $string['flashcards:view'] = 'View the module';
+$string['globalscatter'] = 'Global scatter';
 $string['globaltermcount'] = 'Global terms shown as cards';
 $string['localtermcount'] = 'Local terms shown as cards';
 $string['loading'] = 'Loading';

@@ -6,6 +6,7 @@
  * @author  Frédéric Massart - FMCorz.net
  */
 
+// TODO Support activity completion.
 defined('MOODLE_INTERNAL') || die();
 
 /**

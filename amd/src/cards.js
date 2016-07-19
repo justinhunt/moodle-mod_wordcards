@@ -7,7 +7,6 @@
 
 // TODO Handle window resizing/rotating?
 // TODO Test Edge
-// TODO Report success/errors via Ajax
 
 define([
     'jquery',

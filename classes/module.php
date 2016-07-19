@@ -48,7 +48,8 @@ class mod_flashcards_module {
                   JOIN {flashcards} f
                     ON t.modid = f.id
                  WHERE t.id = ?
-                   AND f.course = ?";
+                   AND f.course = ?
+                   AND t.deleted = 0";
         return $DB->record_exists_sql($sql, [$termid, $this->get_course()->id]);
     }
 
@@ -104,13 +105,60 @@ class mod_flashcards_module {
     }
 
     public function get_local_terms() {
-        list($state, $statedata) = $this->get_state();
-
         $records = $this->get_terms();
+        if (!$records) {
+            return [];
+        }
         shuffle($records);
-        $statedata = array_slice($records, 0, $this->mod->localtermcount);
+        return array_slice($records, 0, $this->mod->localtermcount);
+    }
 
-        return $statedata;
+    public function get_global_terms() {
+        global $DB, $USER;
+
+        $maxterms = $this->mod->localtermcount;
+
+        // Figure out what modules are visible to the user.
+        $modinfo = get_fast_modinfo($this->get_course());
+        $cms = $modinfo->get_instances_of('flashcards');
+        $allowedmodids = [];
+        foreach ($cms as $cm) {
+            if ($cm->uservisible) {
+                $allowedmodids[] = $cm->instance;
+            }
+        }
+        if (empty($allowedmodids)) {
+            return [];
+        }
+        list($insql, $inparams) = $DB->get_in_or_equal($allowedmodids, SQL_PARAMS_NAMED, 'param', true);
+
+        // TODO Order by relevance.
+        $sql = "SELECT t.*
+                  FROM {flashcards_terms} t
+                  JOIN {flashcards} f
+                    ON f.id = t.modid
+                  JOIN {flashcards_seen} s
+                    ON s.termid = t.id
+                   AND s.userid = :userid1
+                  JOIN {flashcards_associations} a
+                    ON a.termid = t.id
+                   AND a.userid = :userid2
+                 WHERE t.deleted = 0        -- The term was not deleted.
+                   AND s.id IS NOT NULL     -- The user has seen it the term.
+                   AND f.id $insql          -- The user has access to the module in which the term is.";
+        $params = [
+            'userid1' => $USER->id,
+            'userid2' => $USER->id,
+        ];
+        $params += $inparams;
+
+        // Select a few more records to make it a bit more random.
+        $records = $DB->get_records_sql($sql, $params, 0, $maxterms + 5);
+        if (!$records) {
+            return [];
+        }
+        shuffle($records);
+        return array_slice($records, 0, $maxterms);
     }
 
     public function get_state() {
@@ -149,6 +197,22 @@ class mod_flashcards_module {
                    AND s.userid = ?';
 
         return $DB->get_records_sql($sql, [$this->mod->id, $USER->id]);
+    }
+
+    public function has_completed_local() {
+        global $DB, $USER;
+
+        $sql = "SELECT COUNT('x')
+                  FROM {flashcards_terms} t
+                  JOIN {flashcards_associations} a
+                    ON a.termid = t.id
+                 WHERE a.userid = ?
+                   AND t.modid = ?
+                   AND t.deleted = 0
+                   AND a.successcount > 0";
+
+        // Completed when there is enough successful associations.
+        return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $this->mod->localtermcount;
     }
 
     public function has_seen_all_terms() {
@@ -292,7 +356,10 @@ class mod_flashcards_module {
             }
 
         } else if ($state == self::STATE_LOCAL) {
-
+            if ($this->has_completed_local()) {
+                $this->set_state(self::STATE_GLOBAL);
+                return;
+            }
 
         } else if ($state == self::STATE_GLOBAL) {
 

@@ -65,4 +65,18 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_flashcards/cards_page', $data);
     }
 
+    public function global_page(mod_flashcards_module $mod) {
+        $definitions = $mod->get_global_terms();
+
+        $data = [
+            'canmanage' => $mod->can_manage(),
+            'definitionsjson' => json_encode(array_values($definitions)),
+            'modid' => $mod->get_id(),
+            'nexturl' => (new moodle_url('/mod/flashcards/finish.php',
+                ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
+        ];
+
+        return $this->render_from_template('mod_flashcards/cards_page', $data);
+    }
+
 }
