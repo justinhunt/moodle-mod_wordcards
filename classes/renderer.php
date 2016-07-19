@@ -62,7 +62,7 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'nexturl' => (new moodle_url('/mod/flashcards/global.php', ['id' => $mod->get_cmid()]))->out(true),
         ];
 
-        return $this->render_from_template('mod_flashcards/local_page', $data);
+        return $this->render_from_template('mod_flashcards/cards_page', $data);
     }
 
 }

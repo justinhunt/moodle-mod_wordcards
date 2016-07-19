@@ -41,6 +41,17 @@ class mod_flashcards_module {
         $this->context = context_module::instance($cm->id);
     }
 
+    protected function course_has_term($termid) {
+        global $DB;
+        $sql = "SELECT 'x'
+                  FROM {flashcards_terms} t
+                  JOIN {flashcards} f
+                    ON t.modid = f.id
+                 WHERE t.id = ?
+                   AND f.course = ?";
+        return $DB->record_exists_sql($sql, [$termid, $this->get_course()->id]);
+    }
+
     public function delete() {
         global $DB;
         $modid = $this->get_id();
@@ -162,6 +173,63 @@ class mod_flashcards_module {
     public function has_terms() {
         global $DB;
         return $DB->record_exists('flashcards_terms', ['modid' => $this->get_id()]);
+    }
+
+    public function record_failed_association($term, $term2id) {
+        global $DB, $USER;
+
+        if ($term->modid != $this->get_id()) {
+            throw new coding_exception('Invalid argument received, first term must belong to this module.');
+        } else if (!$this->course_has_term($term2id)) {
+            throw new coding_exception('Unexpected association');
+        }
+
+        $params = ['userid' => $USER->id, 'termid' => $term->id];
+        if (!($record1 = $DB->get_record('flashcards_associations', $params))) {
+            $record1 = (object) $params;
+            $record1->failcount = 0;
+        }
+
+        $params = ['userid' => $USER->id, 'termid' => $term2id];
+        if (!($record2 = $DB->get_record('flashcards_associations', $params))) {
+            $record2 = (object) $params;
+            $record2->failcount = 0;
+        }
+
+        $record1->failcount += 1;
+        $record2->failcount += 1;
+        $record1->lastfail = time();
+        $record2->lastfail = time();
+
+        if (empty($record1->id)) {
+            $DB->insert_record('flashcards_associations', $record1);
+        } else {
+            $DB->update_record('flashcards_associations', $record1);
+        }
+        if (empty($record2->id)) {
+            $DB->insert_record('flashcards_associations', $record2);
+        } else {
+            $DB->update_record('flashcards_associations', $record2);
+        }
+    }
+
+    public function record_successful_association($term) {
+        global $DB, $USER;
+
+        $params = ['userid' => $USER->id, 'termid' => $term->id];
+        if (!($record = $DB->get_record('flashcards_associations', $params))) {
+            $record = (object) $params;
+            $record->successcount = 0;
+        }
+
+        $record->successcount += 1;
+        $record->lastsuccess = time();
+
+        if (empty($record->id)) {
+            $DB->insert_record('flashcards_associations', $record);
+        } else {
+            $DB->update_record('flashcards_associations', $record);
+        }
     }
 
     public function resume_progress($currentstate) {

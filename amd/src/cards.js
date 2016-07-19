@@ -31,17 +31,21 @@ define([
     }
 
     var Cards = function(selector, terms) {
-        this.container = $(selector);
-        this.terms = terms;
-        this.selected = null;
+        this._container = $(selector);
+        this._terms = terms;
+        this._selected = null;
     };
+    Cards.prototype._container = null;
+    Cards.prototype._dryRun = false;
+    Cards.prototype._selected = null;
+    Cards.prototype._terms = null;
 
     Cards.prototype.init = function() {
         var pool = [],
-            width = this.container.width(),
+            width = this._container.width(),
             height = $(window).height(),
             perRow = 3,
-            cardCount = this.terms.length * 2;
+            cardCount = this._terms.length * 2;
 
         if (cardCount % 2 < cardCount % 3) {
             perRow = 2;
@@ -49,7 +53,7 @@ define([
         var cardWidth = Math.floor(width / perRow);
         var cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), 60);
 
-        this.terms.forEach(function(item) {
+        this._terms.forEach(function(item) {
             pool.push(this._makeCard(item.id, item.term));
             pool.push(this._makeCard(item.id, item.definition));
         }.bind(this));
@@ -64,7 +68,7 @@ define([
                 width: col == perRow  - 1 ? cardWidth : cardWidth - 4,
                 height: cardHeight - 4
             })
-            this.container.append(item);
+            this._container.append(item);
 
             col++;
             if (col >= perRow) {
@@ -73,13 +77,13 @@ define([
             }
         }.bind(this));
 
-        this.container.css({height: row * cardHeight});
+        this._container.css({height: row * cardHeight});
 
-        this.container.on('click', '.flashcard', this._handlePick.bind(this));
+        this._container.on('click', '.flashcard', this._handlePick.bind(this));
     };
 
     Cards.prototype._checkComplete = function() {
-        if (this.container.find('.flashcard.found').length == this.terms.length * 2) {
+        if (this._container.find('.flashcard.found').length == this._terms.length * 2) {
             this._trigger('complete');
         }
     }
@@ -94,32 +98,36 @@ define([
         }
 
         // It's the first out of the two picks.
-        if (!this.selected) {
-            this.selected = card;
+        if (!this._selected) {
+            this._selected = card;
             card.addClass('selected');
             return;
         }
 
         // We've clicked the selected card.
-        if (this.selected.is(card)) {
+        if (this._selected.is(card)) {
             return;
         }
 
         // It's a match!
-        if (card.data('id') == this.selected.data('id')) {
-            this.selected
+        if (card.data('id') == this._selected.data('id')) {
+            this._selected
                 .addClass('found')
                 .animate({'opacity': 0});
             card.addClass('found')
                 .animate({'opacity': 0});
 
+            this._reportSuccess(this._selected.data('id'));
             this._checkComplete();
 
         // It's not a match...
         } else {
-            var original = this.selected;
+            var original = this._selected;
             original.addClass('mismatch');
             card.addClass('mismatch');
+
+            this._reportFailure(this._selected.data('id'), card.data('id'));
+
             setTimeout(function() {
                 original.removeClass('mismatch');
                 card.removeClass('mismatch');
@@ -127,8 +135,8 @@ define([
         }
 
         // Reset the selection.
-        this.selected.removeClass('selected');
-        this.selected = null;
+        this._selected.removeClass('selected');
+        this._selected = null;
     }
 
     Cards.prototype._makeCard = function(id, text) {
@@ -140,11 +148,42 @@ define([
     };
 
     Cards.prototype.on = function(action, cb) {
-        this.container.on(action, cb);
+        this._container.on(action, cb);
+    }
+
+    Cards.prototype._reportFailure = function(term1id, term2id) {
+        if (this._dryRun) {
+            return;
+        }
+
+        Ajax.call([{
+            methodname: 'mod_flashcards_report_failed_association',
+            args: {
+                term1id: term1id,
+                term2id: term2id
+            }
+        }]);
+    }
+
+    Cards.prototype._reportSuccess = function(termid) {
+        if (this._dryRun) {
+            return;
+        }
+
+        Ajax.call([{
+            methodname: 'mod_flashcards_report_successful_association',
+            args: {
+                termid: termid
+            }
+        }])
+    }
+
+    Cards.prototype.setDryRun = function(value) {
+        this._dryRun = value;
     }
 
     Cards.prototype._trigger = function(action) {
-        this.container.trigger(action);
+        this._container.trigger(action);
     }
 
     return Cards;

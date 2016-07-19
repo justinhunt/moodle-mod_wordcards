@@ -1,8 +1,8 @@
-<div id="local-page-{{uniqid}}">
+<div id="cards-page-{{uniqid}}">
 
     <div class="flashcards">
     </div>
-    
+
     <div class="page-footer">
         <p>
             <button data-href="{{{nexturl}}}" class="continue-button">Continue</button>
@@ -13,7 +13,7 @@
 
 {{#js}}
     require(['jquery', 'mod_flashcards/cards'], function($, Cards) {
-        var container = $('#local-page-{{uniqid}}'),
+        var container = $('#cards-page-{{uniqid}}'),
             modid = {{modid}},
             canmanage = {{canmanage}},
             cards = container.find('.flashcards'),
@@ -27,6 +27,9 @@
         }
 
         var inst = new Cards(cards, {{{definitionsjson}}});
+        if (canmanage) {
+            inst.setDryRun(true);
+        }
         inst.on('complete', function() {
             btn.prop('disabled', false);
         });
