@@ -117,6 +117,8 @@ class mod_flashcards_module {
         global $DB, $USER;
 
         $maxterms = $this->mod->localtermcount;
+        $from = 0;
+        $limit = $maxterms + 5;
 
         // Figure out what modules are visible to the user.
         $modinfo = get_fast_modinfo($this->get_course());
@@ -131,29 +133,59 @@ class mod_flashcards_module {
             return [];
         }
         list($insql, $inparams) = $DB->get_in_or_equal($allowedmodids, SQL_PARAMS_NAMED, 'param', true);
+        $params = $inparams;
 
-        // TODO Order by relevance.
-        $sql = "SELECT t.*
-                  FROM {flashcards_terms} t
-                  JOIN {flashcards} f
-                    ON f.id = t.modid
-                  JOIN {flashcards_seen} s
-                    ON s.termid = t.id
-                   AND s.userid = :userid1
-                  JOIN {flashcards_associations} a
-                    ON a.termid = t.id
-                   AND a.userid = :userid2
-                 WHERE t.deleted = 0        -- The term was not deleted.
-                   AND s.id IS NOT NULL     -- The user has seen it the term.
-                   AND f.id $insql          -- The user has access to the module in which the term is.";
-        $params = [
-            'userid1' => $USER->id,
-            'userid2' => $USER->id,
-        ];
-        $params += $inparams;
+        if ($this->can_manage()) {
+            // Teachers see any record randomly ordered.
+            $sql = "SELECT t.*
+                      FROM {flashcards_terms} t
+                      JOIN {flashcards} f
+                        ON f.id = t.modid
+                     WHERE t.deleted = 0        -- The term was not deleted.
+                       AND f.id $insql          -- The user has access to the module in which the term is.
+                   ";
+            // This is the way to make it simili random, we extract a random subset.
+            $from = randint(0, $DB->count_records_sql($sql, $params) - $maxterms - 1);
 
-        // Select a few more records to make it a bit more random.
-        $records = $DB->get_records_sql($sql, $params, 0, $maxterms + 5);
+        } else {
+            $sql = "SELECT t.*
+                      FROM {flashcards_terms} t
+                      JOIN {flashcards} f
+                        ON f.id = t.modid
+                      JOIN {flashcards_seen} s          -- Join on what the student has marked as seen.
+                        ON s.termid = t.id
+                       AND s.userid = :userid1
+                 LEFT JOIN {flashcards_associations} a  -- Link the associations, if any.
+                        ON a.termid = t.id
+                       AND a.userid = :userid2
+                     WHERE t.deleted = 0        -- The term was not deleted.
+                       AND s.id IS NOT NULL     -- The user has marked the term as seen.
+                       AND f.id $insql          -- The user has access to the module in which the term is.
+                  ORDER BY
+                           -- Prioritise the terms which have never been associated, associated once or associated twice.
+                           CASE WHEN a.id IS NULL THEN '1'
+                                WHEN (COALESCE(a.successcount) + COALESCE(a.failcount)) = 1 THEN '2'
+                                WHEN (COALESCE(a.successcount) + COALESCE(a.failcount)) = 2 THEN '3'
+                                ELSE '4'
+                                END ASC,
+                           -- Prioritise the terms with the highest failure ratio. We multiply by 1.0 to make it a float.
+                           CASE WHEN (COALESCE(a.successcount) + COALESCE(a.failcount)) = 0 THEN '0'
+                                ELSE 1.0 * COALESCE(a.failcount) / (COALESCE(a.successcount) + COALESCE(a.failcount))
+                                END DESC,
+                           -- Prioritise by the least attempted.
+                           (COALESCE(a.successcount) + COALESCE(a.failcount)) ASC,
+                           -- Prioritise by the oldest attempts.
+                           CASE WHEN COALESCE(a.lastsuccess) < COALESCE(a.lastfail) THEN COALESCE(a.lastsuccess)
+                                ELSE COALESCE(a.lastfail)
+                                END ASC";
+            $params += [
+                'userid1' => $USER->id,
+                'userid2' => $USER->id,
+            ];
+        }
+
+        // Select a few more records to make it a bit more random, and more fun.
+        $records = $DB->get_records_sql($sql, $params, $from, $limit);
         if (!$records) {
             return [];
         }
