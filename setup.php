@@ -33,7 +33,9 @@ $PAGE->set_title($pagetitle);
 if ($action == 'delete') {
     confirm_sesskey();
     $mod->delete_term($termid);
-    redirect($PAGE->url, get_string('termdeleted', 'mod_flashcards'));
+    // Uncomment when migrating to 3.1.
+    // redirect($PAGE->url, get_string('termdeleted', 'mod_flashcards'));
+    redirect($PAGE->url);
 
 } else if ($action == 'edit') {
     // Adding those parameters ensures that we confirm that the term belongs to the right module after submission.
@@ -51,12 +53,16 @@ if ($data = $form->get_data()) {
     if (empty($data->termid)) {
         $data->modid = $modid;
         $DB->insert_record('flashcards_terms', $data);
-        redirect($PAGE->url, get_string('termadded', 'mod_flashcards', $data->term));
+        // Uncomment when migrating to 3.1.
+        // redirect($PAGE->url, get_string('termadded', 'mod_flashcards', $data->term));
+        redirect($PAGE->url);
 
     } else {
         $data->id = $data->termid;
         $DB->update_record('flashcards_terms', $data);
-        redirect($PAGE->url, get_string('termsaved', 'mod_flashcards', $data->term));
+        // Uncomment when migrating to 3.1.
+        // redirect($PAGE->url, get_string('termsaved', 'mod_flashcards', $data->term));
+        redirect($PAGE->url);
     }
 }
 
