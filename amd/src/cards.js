@@ -11,8 +11,7 @@
 define([
     'jquery',
     'core/ajax',
-    'core/notification'
-], function($, Ajax, Notification) {
+], function($, Ajax) {
 
     /**
      * Randomize array element order in-place.
@@ -66,12 +65,12 @@ define([
                 left: col * cardWidth,
                 width: col == perRow  - 1 ? cardWidth : cardWidth - 4,
                 height: cardHeight - 4
-            })
+            });
             this._container.append(item);
 
             col++;
             if (col >= perRow) {
-                col = 0
+                col = 0;
                 row++;
             }
         }.bind(this));
@@ -85,7 +84,7 @@ define([
         if (this._container.find('.flashcard.found').length == this._terms.length * 2) {
             this._trigger('complete');
         }
-    }
+    };
 
     Cards.prototype._handlePick = function(e) {
         e.preventDefault();
@@ -136,19 +135,19 @@ define([
         // Reset the selection.
         this._selected.removeClass('selected');
         this._selected = null;
-    }
+    };
 
     Cards.prototype._makeCard = function(id, text) {
         var container = $('<div class="flashcard">')
             .data('id', id);
 
         container.append($('<div>').text(text));
-        return container
+        return container;
     };
 
     Cards.prototype.on = function(action, cb) {
         this._container.on(action, cb);
-    }
+    };
 
     Cards.prototype._reportFailure = function(term1id, term2id) {
         if (this._dryRun) {
@@ -162,7 +161,7 @@ define([
                 term2id: term2id
             }
         }]);
-    }
+    };
 
     Cards.prototype._reportSuccess = function(termid) {
         if (this._dryRun) {
@@ -174,16 +173,16 @@ define([
             args: {
                 termid: termid
             }
-        }])
-    }
+        }]);
+    };
 
     Cards.prototype.setDryRun = function(value) {
         this._dryRun = value;
-    }
+    };
 
     Cards.prototype._trigger = function(action) {
         this._container.trigger(action);
-    }
+    };
 
     return Cards;
 
