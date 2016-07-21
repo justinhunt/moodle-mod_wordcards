@@ -8,11 +8,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['activitycompleted'] = 'Activity completed';
+$string['congratsitsover'] = 'Congratulations, you have completed this activity. Feel free to come back to the previous screens to practice more!';
 $string['definition'] = 'Definition';
 $string['definitions'] = 'Definitions';
 $string['deleteterm'] = 'Delete term \'{$a}\'';
 $string['description'] = 'Description';
 $string['editterm'] = 'Edit term \'{$a}\'';
+$string['flashcards:addinstance'] = 'Add an instance';
 $string['flashcards:view'] = 'View the module';
 $string['globalscatter'] = 'Global scatter';
 $string['globaltermcount'] = 'Global terms shown as cards';

@@ -52,13 +52,24 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_flashcards/definitions_page', $data);
     }
 
+    public function finish_page(mod_flashcards_module $mod) {
+        $data = [
+            'canmanage' => $mod->can_manage(),
+            'finishtext' => get_string('congratsitsover', 'mod_flashcards'),
+            'modid' => $mod->get_id(),
+        ];
+        return $this->render_from_template('mod_flashcards/finish_page', $data);
+    }
+
     public function local_page(mod_flashcards_module $mod) {
         $definitions = $mod->get_local_terms();
 
         $data = [
             'canmanage' => $mod->can_manage(),
+            'continue' => get_string('continue'),
             'definitionsjson' => json_encode(array_values($definitions)),
             'modid' => $mod->get_id(),
+            'hascontinue' => true,
             'nexturl' => (new moodle_url('/mod/flashcards/global.php', ['id' => $mod->get_cmid()]))->out(true),
         ];
 
@@ -66,12 +77,15 @@ class mod_flashcards_renderer extends plugin_renderer_base {
     }
 
     public function global_page(mod_flashcards_module $mod) {
+        list($state) = $mod->get_state();
         $definitions = $mod->get_global_terms();
 
         $data = [
             'canmanage' => $mod->can_manage(),
+            'continue' => get_string('continue'),
             'definitionsjson' => json_encode(array_values($definitions)),
             'modid' => $mod->get_id(),
+            'hascontinue' => $state != mod_flashcards_module::STATE_END,
             'nexturl' => (new moodle_url('/mod/flashcards/finish.php',
                 ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
         ];

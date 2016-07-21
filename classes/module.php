@@ -231,7 +231,7 @@ class mod_flashcards_module {
         return $DB->get_records_sql($sql, [$this->mod->id, $USER->id]);
     }
 
-    public function has_completed_local() {
+    protected function has_completed_local() {
         global $DB, $USER;
 
         $sql = "SELECT COUNT('x')
@@ -247,7 +247,7 @@ class mod_flashcards_module {
         return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $this->mod->localtermcount;
     }
 
-    public function has_seen_all_terms() {
+    protected function has_seen_all_terms() {
         global $DB, $USER;
 
         if (!$this->has_terms()) {
@@ -260,10 +260,11 @@ class mod_flashcards_module {
                     ON t.id = s.termid
                    AND s.userid = ?
                  WHERE t.deleted = 0
+                   AND t.modid = ?
                    AND s.id IS NULL";
 
         // We've seen it all when there is no null entries.
-        return !$DB->record_exists_sql($sql, [$USER->id]);
+        return !$DB->record_exists_sql($sql, [$USER->id, $this->get_id()]);
     }
 
     public function has_terms() {
@@ -329,7 +330,7 @@ class mod_flashcards_module {
     }
 
     public function resume_progress($currentstate) {
-        $this->update_state();
+        $this->update_state($currentstate);
         list($state, $statedata) = $this->get_state();
 
         if ($state == self::STATE_END) {
@@ -374,7 +375,16 @@ class mod_flashcards_module {
         }
     }
 
-    protected function update_state() {
+    /**
+     * Updates the states.
+     *
+     * This checks whether the user should be jumping to the next state
+     * because they have completed what they had to.
+     *
+     * @param string $requestedstate The state which the user is trying to move to.
+     * @return void
+     */
+    protected function update_state($requestedstate) {
         list($state) = $this->get_state();
 
         if ($state == self::STATE_END) {
@@ -394,7 +404,11 @@ class mod_flashcards_module {
             }
 
         } else if ($state == self::STATE_GLOBAL) {
-
+            // Unfortunately we do not have any other checks to perform but this one.
+            if ($requestedstate == self::STATE_END) {
+                $this->set_state(self::STATE_END);
+                return;
+            }
         }
     }
 

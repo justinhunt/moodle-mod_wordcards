@@ -5,7 +5,9 @@
 
     <div class="page-footer">
         <p>
-            <button data-href="{{{nexturl}}}" class="continue-button">Continue</button>
+            {{#hascontinue}}
+                <button data-href="{{{nexturl}}}" class="continue-button">{{continue}}</button>
+            {{/hascontinue}}
         </p>
     </div>
 
@@ -19,20 +21,22 @@
             cards = container.find('.flashcards'),
             btn = container.find('.continue-button');
 
-        btn.on('click', function() {
-            location.href = $(this).data('href');
-        });
-        if (!canmanage) {
-            btn.prop('disabled', true);
-        }
-
         var inst = new Cards(cards, {{{definitionsjson}}});
         if (canmanage) {
             inst.setDryRun(true);
         }
-        inst.on('complete', function() {
-            btn.prop('disabled', false);
-        });
         inst.init();
+
+        {{#hascontinue}}
+            btn.on('click', function() {
+                location.href = $(this).data('href');
+            });
+            if (!canmanage) {
+                btn.prop('disabled', true);
+            }
+            inst.on('complete', function() {
+                btn.prop('disabled', false);
+            });
+        {{/hascontinue}}
     });
 {{/js}}
