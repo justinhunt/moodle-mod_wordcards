@@ -39,15 +39,14 @@ class mod_flashcards_mod_form extends moodleform_mod {
         $this->add_action_buttons();
     }
 
-    // public function add_completion_rules() {
-        // $mform =& $this->_form;
+    public function add_completion_rules() {
+        $mform =& $this->_form;
+        $mform->addElement('advcheckbox', 'completionwhenfinish', '', get_string('completionwhenfinish', 'mod_flashcards'));
+        return array('completionwhenfinish');
+    }
 
-        // $mform->addElement('checkbox', 'completionsubmit', '', get_string('completionsubmit', 'feedback'));
-        // return array('completionsubmit');
-    // }
-
-    // public function completion_rule_enabled($data) {
-        // return !empty($data['completionsubmit']);
-    // }
+    public function completion_rule_enabled($data) {
+        return !empty($data['completionwhenfinish']);
+    }
 
 }

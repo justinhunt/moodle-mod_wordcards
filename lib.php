@@ -60,3 +60,24 @@ function flashcards_delete_instance($modid) {
 
     return true;
 }
+
+/**
+ * Obtains the completion state.
+ *
+ * @param object $course The course.
+ * @param object $cm The course module.
+ * @param int $userid The user ID.
+ * @param bool $type Type of comparison (or/and).
+ * @return bool True if completed, false if not, else $type.
+ */
+function flashcards_get_completion_state($course, $cm, $userid, $type) {
+    global $CFG;
+
+    $mod = mod_flashcards_module::get_by_cmid($cm->id);
+    if ($mod->is_completion_enabled()) {
+        return $mod->has_user_completed_activity($userid);
+    }
+
+    // Completion option is not enabled, we must return $type.
+    return $type;
+}

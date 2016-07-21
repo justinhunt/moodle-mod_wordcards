@@ -272,6 +272,16 @@ class mod_flashcards_module {
         return $DB->record_exists('flashcards_terms', ['modid' => $this->get_id()]);
     }
 
+    public function has_user_completed_activity($userid) {
+        global $DB;
+        $record = $DB->get_record('flashcards_progress', ['modid' => $this->get_id(), 'userid' => $userid]);
+        return $record && $record->state == self::STATE_END;
+    }
+
+    public function is_completion_enabled() {
+        return !empty($this->mod->completionwhenfinish);
+    }
+
     public function record_failed_association($term, $term2id) {
         global $DB, $USER;
 
@@ -372,6 +382,14 @@ class mod_flashcards_module {
             $DB->update_record('flashcards_progress', $record);
         } else {
             $DB->insert_record('flashcards_progress', $record);
+        }
+
+        // The user finished the activity, notify the completion API.
+        if ($state == self::STATE_END && $this->is_completion_enabled()) {
+            $completion = new completion_info($this->get_course());
+            if ($completion->is_enabled($this->get_cm())) {
+                $completion->update_state($this->get_cm(), COMPLETION_COMPLETE);
+            }
         }
     }
 

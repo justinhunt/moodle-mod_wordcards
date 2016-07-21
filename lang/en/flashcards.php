@@ -9,6 +9,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['activitycompleted'] = 'Activity completed';
+$string['completionwhenfinish'] = 'The student has finished the activity.';
 $string['congratsitsover'] = 'Congratulations, you have completed this activity. Feel free to come back to the previous screens to practice more!';
 $string['definition'] = 'Definition';
 $string['definitions'] = 'Definitions';
