@@ -35,6 +35,7 @@ define([
     };
     Cards.prototype._container = null;
     Cards.prototype._dryRun = false;
+    Cards.prototype._resizeTimeout = null;
     Cards.prototype._selected = null;
     Cards.prototype._terms = null;
 
@@ -48,7 +49,7 @@ define([
 
         shuffleArray(pool);
         pool.forEach(function(item) {
-            item.hide();
+            // item.hide();
             this._container.append(item);
         }.bind(this));
         this._arrangePlayground();
@@ -59,7 +60,10 @@ define([
         // Event listeners.
         this._container.on('click', '.flashcard', this._handlePick.bind(this));
         $(window).on('resize', function() {
-            this._arrangePlayground();
+            if (this._resizeTimeout) {
+                clearTimeout(this._resizeTimeout);
+            }
+            this._resizeTimeout = setTimeout(this._arrangePlayground.bind(this), 200);
         }.bind(this));
     };
 
@@ -71,13 +75,25 @@ define([
             cardWidth = null,
             cardHeight = null,
             row = 0,
-            col = 0;
+            col = 0,
+            lineHeight,
+            lineHeightValue,
+            lineHeightUnit,
+            suggestedHeight;
 
         if (cardCount % 2 < cardCount % 3) {
             perRow = 2;
         }
+        lineHeight = this._container.find('.flashcard').first().css('lineHeight');
+        lineHeightValue = parseInt(lineHeight.replace(/([^0-9]+)/, ''));
+        lineHeightUnit = lineHeight.replace(/([0-9]+)/, '');
+        suggestedHeight = 60;
+        if (lineHeightUnit === 'px') {
+            suggestedHeight = !lineHeightValue ? suggestedHeight : ((lineHeightValue + 1) * 3);
+        }
+
         cardWidth = Math.floor(width / perRow);
-        cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), 60);
+        cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), suggestedHeight);
 
         this._container.find('.flashcard').each(function(index, item) {
             $(item).css({
@@ -92,7 +108,33 @@ define([
                 row++;
             }
         });
+
+        this._container.find('.flashcard-content').css('maxHeight', cardHeight - 4);
         this._container.css({height: row * cardHeight});
+        this._adjustCardContent();
+    };
+
+    Cards.prototype._adjustCardContent = function() {
+        this._container.find('.flashcard-content').each(function(index, el) {
+            var node = $(el),
+                over,
+                txt,
+                loops = 0;
+
+            node.text(node.data('text'));
+            while (el.scrollHeight > el.offsetHeight && el.scrollHeight > 0) {
+                txt = node.text();
+                over = Math.max(0.1, (el.offsetHeight / el.scrollHeight) - 0.05);
+                txt = txt.substr(0, Math.round(txt.length * over)).trim();
+                txt += '…';
+                node.text(txt);
+
+                // Fail safe, because sometimes it loops forever...
+                if (loops++ > 4) {
+                    break;
+                }
+            }
+        });
     };
 
     Cards.prototype._checkComplete = function() {
@@ -153,10 +195,16 @@ define([
     };
 
     Cards.prototype._makeCard = function(id, text) {
-        var container = $('<div class="flashcard">')
-            .data('id', id);
+        var container = $('<div class="flashcard">'),
+            wrapper = $('<div class="flashcard-wrapper">'),
+            content = $('<div class="flashcard-content">');
 
-        container.append($('<div>').text(text));
+        content.text(text);
+        content.data('text', text);
+        wrapper.append(content);
+        container.append(wrapper);
+        container.data('id', id);
+
         return container;
     };
 

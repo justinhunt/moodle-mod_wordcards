@@ -46,12 +46,13 @@
         -ms-user-select: none;
             user-select: none;
 }
-.path-mod-flashcards .flashcards .flashcard > div {
+.path-mod-flashcards .flashcards .flashcard .flashcard-wrapper {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
+}
+.path-mod-flashcards .flashcards .flashcard .flashcard-content {
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 .path-mod-flashcards .flashcards .flashcard.selected,
 .path-mod-flashcards .flashcards .flashcard.found {
