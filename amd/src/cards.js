@@ -39,45 +39,60 @@ define([
     Cards.prototype._terms = null;
 
     Cards.prototype.init = function() {
-        var pool = [],
-            width = this._container.width(),
-            height = $(window).height(),
-            perRow = 3,
-            cardCount = this._terms.length * 2;
-
-        if (cardCount % 2 < cardCount % 3) {
-            perRow = 2;
-        }
-        var cardWidth = Math.floor(width / perRow);
-        var cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), 60);
+        var pool = [];
 
         this._terms.forEach(function(item) {
             pool.push(this._makeCard(item.id, item.term));
             pool.push(this._makeCard(item.id, item.definition));
         }.bind(this));
 
-        var row = 0,
-            col = 0;
         shuffleArray(pool);
         pool.forEach(function(item) {
-            item.css({
+            item.hide();
+            this._container.append(item);
+        }.bind(this));
+        this._arrangePlayground();
+        pool.forEach(function(item) {
+            item.show();
+        });
+
+        // Event listeners.
+        this._container.on('click', '.flashcard', this._handlePick.bind(this));
+        $(window).on('resize', function() {
+            this._arrangePlayground();
+        }.bind(this));
+    };
+
+    Cards.prototype._arrangePlayground = function() {
+        var width = this._container.width(),
+            height = $(window).height(),
+            perRow = 3,
+            cardCount = this._terms.length * 2,
+            cardWidth = null,
+            cardHeight = null,
+            row = 0,
+            col = 0;
+
+        if (cardCount % 2 < cardCount % 3) {
+            perRow = 2;
+        }
+        cardWidth = Math.floor(width / perRow);
+        cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), 60);
+
+        this._container.find('.flashcard').each(function(index, item) {
+            $(item).css({
                 top: row * cardHeight,
                 left: col * cardWidth,
                 width: col == perRow  - 1 ? cardWidth : cardWidth - 4,
                 height: cardHeight - 4
             });
-            this._container.append(item);
-
             col++;
             if (col >= perRow) {
                 col = 0;
                 row++;
             }
-        }.bind(this));
-
+        });
         this._container.css({height: row * cardHeight});
-
-        this._container.on('click', '.flashcard', this._handlePick.bind(this));
     };
 
     Cards.prototype._checkComplete = function() {
