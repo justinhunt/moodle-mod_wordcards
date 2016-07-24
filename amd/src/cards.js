@@ -13,6 +13,9 @@ define([
     'core/ajax',
 ], function($, Ajax) {
 
+    var PAGEOFFSET = 60;
+    var CARDMARGIN = 4;
+
     /**
      * Randomize array element order in-place.
      * Using Durstenfeld shuffle algorithm.
@@ -91,16 +94,17 @@ define([
         if (lineHeightUnit === 'px') {
             suggestedHeight = !lineHeightValue ? suggestedHeight : ((lineHeightValue + 1) * 3);
         }
+        suggestedHeight = 999;
 
         cardWidth = Math.floor(width / perRow);
-        cardHeight = Math.min(Math.round((height - 50) / Math.ceil(cardCount / perRow)), suggestedHeight);
+        cardHeight = Math.min(Math.round((height - PAGEOFFSET) / Math.ceil(cardCount / perRow)), suggestedHeight);
 
         this._container.find('.flashcard').each(function(index, item) {
             $(item).css({
                 top: row * cardHeight,
                 left: col * cardWidth,
-                width: col == perRow  - 1 ? cardWidth : cardWidth - 4,
-                height: cardHeight - 4
+                width: (col == perRow - 1) ? cardWidth : cardWidth - CARDMARGIN,
+                height: cardHeight - CARDMARGIN
             });
             col++;
             if (col >= perRow) {
@@ -109,7 +113,7 @@ define([
             }
         });
 
-        this._container.find('.flashcard-content').css('maxHeight', cardHeight - 4);
+        this._container.find('.flashcard-content').css('maxHeight', cardHeight - CARDMARGIN);
         this._container.css({height: row * cardHeight});
         this._adjustCardContent();
     };

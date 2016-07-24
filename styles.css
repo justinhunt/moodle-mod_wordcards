@@ -38,6 +38,8 @@
 .path-mod-flashcards .flashcards .flashcard {
     position: absolute;
     display: table;
+    box-sizing: border-box;
+    background-color: #fff;
     border: 1px solid #eee;
     border-radius: 3px;
     cursor: pointer;
@@ -53,6 +55,8 @@
 }
 .path-mod-flashcards .flashcards .flashcard .flashcard-content {
     overflow: hidden;
+    box-sizing: border-box;
+    padding: 5px;
 }
 .path-mod-flashcards .flashcards .flashcard.selected,
 .path-mod-flashcards .flashcards .flashcard.found {
