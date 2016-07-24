@@ -145,7 +145,7 @@ class mod_flashcards_module {
                        AND f.id $insql          -- The user has access to the module in which the term is.
                    ";
             // This is the way to make it simili random, we extract a random subset.
-            $from = randint(0, $DB->count_records_sql($sql, $params) - $maxterms - 1);
+            $from = rand(0, $DB->count_records_sql($sql, $params) - $maxterms - 1);
 
         } else {
             $sql = "SELECT t.*
