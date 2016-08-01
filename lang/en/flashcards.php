@@ -25,6 +25,7 @@ $string['loading'] = 'Loading';
 $string['localscatter'] = 'Local scatter';
 $string['markasseen'] = 'Mark as seen';
 $string['modulename'] = 'Flashcards';
+$string['modulename_help'] = 'The flashcards activity module enables a teacher to create custom flashcards games for encouraging students learning new terms/definitions.';
 $string['modulenameplural'] = 'Flashcards';
 $string['mustseealltocontinue'] = 'All the terms must be marked as seen to continue.';
 $string['name'] = 'Name';
