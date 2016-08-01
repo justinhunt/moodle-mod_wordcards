@@ -1,25 +1,26 @@
 <div id="cards-page-{{uniqid}}">
-
+    <div class="flashcards_timer">00:00:00</div>
     <div id="flashcards" class="flashcards">
-    </div>
-
-    <div class="page-footer">
-        <p>
-            {{#hascontinue}}
-                <button data-href="{{{nexturl}}}" class="continue-button">{{continue}}</button>
-            {{/hascontinue}}
-        </p>
+        <div class="congrats">
+          <div>Congratulation!</div>
+          <div>You finished the scatter in <span class="flashcards_timer_time">00:00:00</span></div>
+          {{#hascontinue}}
+              <button data-href="{{{nexturl}}}" class="continue-button">{{continue}}</button>
+          {{/hascontinue}}
+        </div>
     </div>
 
 </div>
 
 {{#js}}
-    require(['jquery', 'mod_flashcards/cards'], function($, Cards) {
+    require(['jquery', 'mod_flashcards/cards', './amd/src/easytimer.js'], function($, Cards, Timer) {
         var container = $('#cards-page-{{uniqid}}'),
             modid = {{modid}},
             canmanage = {{canmanage}},
             cards = container.find('.flashcards'),
-            btn = container.find('.continue-button');
+            btn = container.find('.continue-button'),
+            congrats = container.find('.congrats'),
+            timer = new Timer();
 
         var inst = new Cards(cards, {{{definitionsjson}}});
         if (canmanage) {
@@ -36,10 +37,24 @@
             }
             inst.on('complete', function() {
                 btn.prop('disabled', false);
+                $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+                timer.stop();
+                $('.flashcards_timer').css('display', 'none');
+                congrats.css('display', 'block');
             });
         {{/hascontinue}}
 
         // Move the flashcards on top of screen.
         $(window).scrollTop($('#flashcards').offset().top - 45);
+
+        // Set timer.
+        $('.flashcards_timer').css('display', 'block');
+        timer.start({precision: 'secondTenths', callback: function (values) {
+            $('.flashcards_timer').html(values.toString(['minutes', 'seconds', 'secondTenths']));
+        }});
+        timer.addEventListener('secondsUpdated', function (e) {
+            $('.flashcards_timer .values').html(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+        });
     });
+
 {{/js}}

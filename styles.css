@@ -68,3 +68,28 @@
     background-color: red;
     color: white;
 }
+.path-mod-flashcards .flashcards .congrats {
+    width: 300px;
+    height: 100px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -70px 0 0 -170px;
+    display: none;
+    text-align: center;
+    z-index:1;
+}
+.path-mod-flashcards .flashcards .congrats div {
+        padding-bottom: 10px;
+}
+
+.path-mod-flashcards .flashcards_timer {
+    position: absolute;
+    z-index: 1;
+    background-color: #ececec;
+    display: none;
+}
+.path-mod-flashcards  .flashcards_timer_time {
+
+}
