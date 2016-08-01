@@ -52,10 +52,11 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_flashcards/definitions_page', $data);
     }
 
-    public function finish_page(mod_flashcards_module $mod) {
+    public function finish_page(mod_flashcards_module $mod, $globalscattertime) {
         $data = [
             'canmanage' => $mod->can_manage(),
-            'finishtext' => get_string('congratsitsover', 'mod_flashcards'),
+            'finishtext' => "Congratulation! You finished the global scatter in " . $globalscattertime . " seconds. "
+                . get_string('congratsitsover', 'mod_flashcards'),
             'modid' => $mod->get_id(),
         ];
         return $this->render_from_template('mod_flashcards/finish_page', $data);
@@ -88,6 +89,7 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'hascontinue' => $state != mod_flashcards_module::STATE_END,
             'nexturl' => (new moodle_url('/mod/flashcards/finish.php',
                 ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
+            'isglobalscatter' => true
         ];
 
         return $this->render_from_template('mod_flashcards/cards_page', $data);

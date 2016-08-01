@@ -9,6 +9,7 @@
 require_once(__DIR__ . '/../../config.php');
 
 $cmid = required_param('id', PARAM_INT);
+$globalscattertime = required_param('globalscattertime', PARAM_INT);
 
 $mod = mod_flashcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
@@ -34,6 +35,6 @@ $tabs = mod_flashcards_helper::get_tabs($mod, $currentstate);
 echo $OUTPUT->render($tabs);
 
 $renderer = $PAGE->get_renderer('mod_flashcards');
-echo $renderer->finish_page($mod);
+echo $renderer->finish_page($mod, $globalscattertime);
 
 echo $OUTPUT->footer();

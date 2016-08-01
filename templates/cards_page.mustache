@@ -38,9 +38,16 @@
             inst.on('complete', function() {
                 btn.prop('disabled', false);
                 $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
-                timer.stop();
                 $('.flashcards_timer').css('display', 'none');
                 congrats.css('display', 'block');
+
+                {{#isglobalscatter}}
+                    var redirecturl = "{{{nexturl}}}";
+                    window.location.replace(redirecturl.replace('&amp;','&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);
+                {{/isglobalscatter}}
+
+                timer.stop();
+
             });
         {{/hascontinue}}
 
