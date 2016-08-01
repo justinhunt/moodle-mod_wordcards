@@ -1,6 +1,6 @@
 <div id="cards-page-{{uniqid}}">
 
-    <div class="flashcards">
+    <div id="flashcards" class="flashcards">
     </div>
 
     <div class="page-footer">
@@ -38,5 +38,8 @@
                 btn.prop('disabled', false);
             });
         {{/hascontinue}}
+
+        // Move the flashcards on top of screen.
+        $(window).scrollTop($('#flashcards').offset().top - 45);
     });
 {{/js}}
