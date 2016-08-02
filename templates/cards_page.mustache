@@ -2,8 +2,8 @@
     <div class="flashcards_timer">00:00:00</div>
     <div id="flashcards" class="flashcards">
         <div class="congrats">
-          <div>Congratulation!</div>
-          <div>You finished the scatter in <span class="flashcards_timer_time">00:00:00</span></div>
+          <div>{{congrats}}</div>
+          <div>{{finishscatterin}}<span class="flashcards_timer_time">00:00:00</span></div>
           {{#hascontinue}}
               <button data-href="{{{nexturl}}}" class="continue-button">{{continue}}</button>
           {{/hascontinue}}
@@ -43,7 +43,7 @@
 
                 {{#completeafterlocal}}
                     var redirecturl = "{{{nexturl}}}";
-                    window.location.replace(redirecturl.replace('&amp;','&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);
+                    window.location.replace(redirecturl.replace('&amp;','&') + "&localscattertime=" + timer.getTotalTimeValues().seconds);
                 {{/completeafterlocal}}
 
                 {{#isglobalscatter}}
