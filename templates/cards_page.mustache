@@ -51,6 +51,17 @@
             });
         {{/hascontinue}}
 
+        {{#isglobalcompleted}}
+            inst.on('complete', function() {
+                $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+                $('.flashcards_timer').css('display', 'none');
+                congrats.css('display', 'block');
+                timer.stop();
+            });
+        {{/isglobalcompleted}}
+
+
+
         // Move the flashcards on top of screen.
         $(window).scrollTop($('#flashcards').offset().top - 45);
 

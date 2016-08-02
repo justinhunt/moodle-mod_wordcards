@@ -86,6 +86,7 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'continue' => get_string('continue'),
             'definitionsjson' => json_encode(array_values($definitions)),
             'modid' => $mod->get_id(),
+            'isglobalcompleted' => $state == mod_flashcards_module::STATE_END,
             'hascontinue' => $state != mod_flashcards_module::STATE_END,
             'nexturl' => (new moodle_url('/mod/flashcards/finish.php',
                 ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
