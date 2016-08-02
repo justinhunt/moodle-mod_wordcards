@@ -417,6 +417,10 @@ class mod_flashcards_module {
 
         } else if ($state == self::STATE_LOCAL) {
             if ($this->has_completed_local()) {
+                if ($requestedstate == self::STATE_END && $this->completeafterlocal()) {
+                    $this->set_state(self::STATE_END);
+                    return;
+                }
                 $this->set_state(self::STATE_GLOBAL);
                 return;
             }
@@ -460,6 +464,49 @@ class mod_flashcards_module {
 
     public static function require_view_in_context(context $context) {
         require_capability('mod/flashcards:view', $context);
+    }
+
+    /**
+     * Should we complete the flashcard when local scatter is finished.
+     *
+     * It is the case for a student who didn't complete any flashcard and if the
+     * flashcard is set to skip the global scatter as first fashcard instance.
+     *
+     * @return bool true if we should complete the activity after the local scatter..
+     */
+    public function completeafterlocal($userid = null){
+        global $USER, $DB;
+
+        if (empty($userid)) {
+            $userid = $USER->id;
+        }
+
+        // if the user has setup permission then he can never complete the flashcard.
+        if ($this->can_manage()) {
+            return false;
+        }
+
+        // if the activity does not support "skip global scatter on first instance" then return false.
+        if (empty($this->mod->skipglobal)) {
+            return false;
+        }
+
+        // Retrieve the list of flashcard modids of the course.
+        $modids = array();
+
+        foreach(get_fast_modinfo($this->course)->get_instances_of('flashcards') as $flashcard) {
+            $modids[] = $flashcard->instance;
+        }
+
+        $params = array('state' => self::STATE_END, 'userid' => $userid);
+        list($sqlmodidtest, $modidparams) = $DB->get_in_or_equal($modids, SQL_PARAMS_NAMED);
+        $params = array_merge($params, $modidparams);
+        $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
+
+        $completedflashcardtotal = $DB->count_records_select('flashcards_progress',
+            'state = :state AND userid = :userid ' . $sqlmodidtest, $params);
+
+        return (empty($completedflashcardtotal));
     }
 
 }

@@ -34,9 +34,9 @@ class mod_flashcards_mod_form extends moodleform_mod {
         $mform->addElement('select', 'localtermcount', get_string('localtermcount', 'mod_flashcards'), $options, 4);
         $mform->addElement('select', 'globaltermcount', get_string('globaltermcount', 'mod_flashcards'), $options, 4);
 
-        $mform->addElement('checkbox', 'hideglobaliffirstactivity', get_string('hideglobaliffirstactivity', 'mod_flashcards'));
-        $mform->setDefault('hideglobaliffirstactivity', 1);
-        $mform->addHelpButton('hideglobaliffirstactivity', 'hideglobaliffirstactivity', 'mod_flashcards');
+        $mform->addElement('checkbox', 'skipglobal', get_string('skipglobal', 'mod_flashcards'));
+        $mform->setDefault('skipglobal', 1);
+        $mform->addHelpButton('skipglobal', 'skipglobal', 'mod_flashcards');
 
         $this->standard_coursemodule_elements();
 

@@ -41,6 +41,11 @@
                 $('.flashcards_timer').css('display', 'none');
                 congrats.css('display', 'block');
 
+                {{#completeafterlocal}}
+                    var redirecturl = "{{{nexturl}}}";
+                    window.location.replace(redirecturl.replace('&amp;','&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);
+                {{/completeafterlocal}}
+
                 {{#isglobalscatter}}
                     var redirecturl = "{{{nexturl}}}";
                     window.location.replace(redirecturl.replace('&amp;','&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);

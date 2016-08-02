@@ -65,13 +65,17 @@ class mod_flashcards_renderer extends plugin_renderer_base {
     public function local_page(mod_flashcards_module $mod) {
         $definitions = $mod->get_local_terms();
 
+        $completeafterlocal = $mod->completeafterlocal();
+
         $data = [
             'canmanage' => $mod->can_manage(),
             'continue' => get_string('continue'),
             'definitionsjson' => json_encode(array_values($definitions)),
             'modid' => $mod->get_id(),
             'hascontinue' => true,
-            'nexturl' => (new moodle_url('/mod/flashcards/global.php', ['id' => $mod->get_cmid()]))->out(true),
+            'completeafterlocal' => $completeafterlocal,
+            'nexturl' => empty($completeafterlocal) ? (new moodle_url('/mod/flashcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
+                : (new moodle_url('/mod/flashcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
         ];
 
         return $this->render_from_template('mod_flashcards/cards_page', $data);
