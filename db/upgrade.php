@@ -56,5 +56,29 @@ function xmldb_flashcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2016080200, 'flashcards');
     }
 
+    if ($oldversion < 2016080500) {
+
+        // Define field finishedscattermsg to be added to flashcards.
+        $table = new xmldb_table('flashcards');
+        $field = new xmldb_field('finishedscattermsg', XMLDB_TYPE_TEXT, null, null, null, null, null, 'skipglobal');
+
+        // Conditionally launch add field finishedscattermsg.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+         // Define field completedmsg to be added to flashcards.
+        $table = new xmldb_table('flashcards');
+        $field = new xmldb_field('completedmsg', XMLDB_TYPE_TEXT, null, null, null, null, null, 'finishedscattermsg');
+
+        // Conditionally launch add field completedmsg.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Flashcards savepoint reached.
+        upgrade_mod_savepoint(true, 2016080500, 'flashcards');
+    }
+
     return true;
 }

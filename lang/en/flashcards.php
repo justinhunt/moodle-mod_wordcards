@@ -9,21 +9,25 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['activitycompleted'] = 'Activity completed';
+$string['completedmsg'] = 'Completed message';
+$string['completedmsg_help'] = 'This is the message displayed on the final screen of the activity when the student complete the last scatter.';
 $string['completionwhenfinish'] = 'The student has finished the activity.';
 $string['congrats'] = 'Congratulation!';
-$string['congratsitsover'] = 'You have completed this activity. Feel free to go back to the local and global scatters to practice more!';
+$string['congratsitsover'] = '<div  style="text-align: center;">You have completed this activity. Feel free to go back to the local and global scatters to practice more!</div>';
 $string['definition'] = 'Definition';
 $string['definitions'] = 'Definitions';
 $string['deleteterm'] = 'Delete term \'{$a}\'';
 $string['description'] = 'Description';
 $string['editterm'] = 'Edit term \'{$a}\'';
-$string['finishscatterin'] = 'You finished the scatter in ';
+$string['finishscatterin'] = '<div style="text-align: center;">Congratulation! <br/> You finished the scatter in {{time}}</div>';
 $string['flashcards:addinstance'] = 'Add an instance';
 $string['flashcards:view'] = 'View the module';
 $string['globalscatter'] = 'Global scatter';
 $string['globalscatterfinished'] = 'You finished the global scatter in {$a->seconds} seconds.';
 $string['globaltermcount'] = 'Global terms shown as cards';
 $string['localscatterfinished'] = 'You finished the local scatter in {$a->seconds} seconds.';
+$string['finishedscattermsg'] = 'Finished scatter message';
+$string['finishedscattermsg_help'] = 'This is the message displayed when you end a scatter. use {{time}} to display the final time.';
 $string['localtermcount'] = 'Local terms shown as cards';
 $string['loading'] = 'Loading';
 $string['localscatter'] = 'Local scatter';

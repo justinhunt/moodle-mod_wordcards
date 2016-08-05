@@ -38,6 +38,14 @@ class mod_flashcards_mod_form extends moodleform_mod {
         $mform->setDefault('skipglobal', 1);
         $mform->addHelpButton('skipglobal', 'skipglobal', 'mod_flashcards');
 
+        $mform->addElement('editor', 'finishedscattermsg', get_string('finishedscattermsg', 'mod_flashcards'));
+        $mform->setDefault('finishedscattermsg', array('text' => get_string('finishscatterin', 'mod_flashcards')));
+        $mform->addHelpButton('finishedscattermsg', 'finishedscattermsg', 'mod_flashcards');
+
+        $mform->addElement('editor', 'completedmsg', get_string('completedmsg', 'mod_flashcards'));
+        $mform->setDefault('completedmsg', array('text' => get_string('congratsitsover', 'mod_flashcards')));
+        $mform->addHelpButton('completedmsg', 'completedmsg', 'mod_flashcards');
+
         $this->standard_coursemodule_elements();
 
         $this->add_action_buttons();
