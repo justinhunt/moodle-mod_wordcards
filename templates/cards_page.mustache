@@ -18,10 +18,20 @@
             canmanage = {{canmanage}},
             cards = container.find('.flashcards'),
             btn = container.find('.continue-button'),
-            congrats = container.find('.congrats'),
             timer = new Timer();
 
         var inst = new Cards(cards, {{{definitionsjson}}});
+
+        function displayfinishmessage() {
+            // replace [[time]] by <span class="flashcards_timer_time">00:00:00</span>
+            var convertedfinishedscattermsg = $('.flashcards_congrats').text().replace("[[time]]", "<span class=\"flashcards_timer_time\">00:00:00</span>");
+            $('.flashcards_congrats').html(convertedfinishedscattermsg);
+
+            $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+            $('.flashcards_timer').css('display', 'none');
+            container.find('.congrats').css('display', 'block');
+        }
+
         if (canmanage) {
             inst.setDryRun(true);
         }
@@ -37,13 +47,7 @@
             inst.on('complete', function() {
                 btn.prop('disabled', false);
 
-                // replace [[time]] by <span class="flashcards_timer_time">00:00:00</span>
-                var convertedfinishedscattermsg = $('.flashcards_congrats').text().replace("[[time]]", "<span class=\"flashcards_timer_time\">00:00:00</span>");
-                $('.flashcards_congrats').html(convertedfinishedscattermsg);
-
-                $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
-                $('.flashcards_timer').css('display', 'none');
-                congrats.css('display', 'block');
+                displayfinishmessage();
 
                 {{#completeafterlocal}}
                     var redirecturl = "{{{nexturl}}}";
@@ -62,18 +66,10 @@
 
         {{#isglobalcompleted}}
             inst.on('complete', function() {
-                // replace [[time]] by <span class="flashcards_timer_time">00:00:00</span>
-                var convertedfinishedscattermsg = $('.flashcards_congrats').text().replace("[[time]]", "<span class=\"flashcards_timer_time\">00:00:00</span>");
-                $('.flashcards_congrats').html(convertedfinishedscattermsg);
-
-                $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
-                $('.flashcards_timer').css('display', 'none');
-                congrats.css('display', 'block');
+                displayfinishmessage();
                 timer.stop();
             });
         {{/isglobalcompleted}}
-
-
 
         // Move the flashcards on top of screen.
         $(window).scrollTop($('#flashcards').offset().top - 45);
