@@ -38,13 +38,13 @@ class mod_flashcards_mod_form extends moodleform_mod {
         $mform->setDefault('skipglobal', 1);
         $mform->addHelpButton('skipglobal', 'skipglobal', 'mod_flashcards');
 
-        $mform->addElement('editor', 'finishedscattermsg', get_string('finishedscattermsg', 'mod_flashcards'));
-        $mform->setDefault('finishedscattermsg', array('text' => get_string('finishscatterin', 'mod_flashcards')));
-        $mform->addHelpButton('finishedscattermsg', 'finishedscattermsg', 'mod_flashcards');
+        $mform->addElement('editor', 'finishedscattermsg_editor', get_string('finishedscattermsg', 'mod_flashcards'));
+        $mform->setDefault('finishedscattermsg_editor', array('text' => get_string('finishscatterin', 'mod_flashcards')));
+        $mform->addHelpButton('finishedscattermsg_editor', 'finishedscattermsg', 'mod_flashcards');
 
-        $mform->addElement('editor', 'completedmsg', get_string('completedmsg', 'mod_flashcards'));
-        $mform->setDefault('completedmsg', array('text' => get_string('congratsitsover', 'mod_flashcards')));
-        $mform->addHelpButton('completedmsg', 'completedmsg', 'mod_flashcards');
+        $mform->addElement('editor', 'completedmsg_editor', get_string('completedmsg', 'mod_flashcards'));
+        $mform->setDefault('completedmsg_editor', array('text' => get_string('congratsitsover', 'mod_flashcards')));
+        $mform->addHelpButton('completedmsg_editor', 'completedmsg', 'mod_flashcards');
 
         $this->standard_coursemodule_elements();
 
@@ -59,6 +59,23 @@ class mod_flashcards_mod_form extends moodleform_mod {
 
     public function completion_rule_enabled($data) {
         return !empty($data['completionwhenfinish']);
+    }
+
+    public function get_data() {
+        $data = parent::get_data();
+        if ($data) {
+            $data->finishedscattermsg = $data->finishedscattermsg_editor['text'];
+            $data->completedmsg = $data->completedmsg_editor['text'];
+        }
+
+        return $data;
+    }
+
+     public function data_preprocessing(&$data) {
+        if ($this->current->instance) {
+            $data['finishedscattermsg_editor']['text'] = $data['finishedscattermsg'];
+            $data['completedmsg_editor']['text'] = $data['completedmsg'];
+        }
     }
 
 }

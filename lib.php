@@ -38,6 +38,9 @@ function flashcards_add_instance(stdClass $module, mod_flashcards_mod_form $mfor
         $module->skipglobal = 0;
     }
 
+    $module->finishedscattermsg = $module->finishedscattermsg_editor['text'];
+    $module->completedmsg = $module->completedmsg_editor['text'];
+
     $module->id = $DB->insert_record('flashcards', $module);
 
     return $module->id;
@@ -56,6 +59,9 @@ function flashcards_update_instance(stdClass $module, mod_flashcards_mod_form $m
     if (empty($module->skipglobal)) {
         $module->skipglobal = 0;
     }
+
+    $module->finishedscattermsg = $module->finishedscattermsg_editor['text'];
+    $module->completedmsg = $module->completedmsg_editor['text'];
 
     return $DB->update_record('flashcards', $module);
 }
