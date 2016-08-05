@@ -19,7 +19,7 @@ $string['definitions'] = 'Definitions';
 $string['deleteterm'] = 'Delete term \'{$a}\'';
 $string['description'] = 'Description';
 $string['editterm'] = 'Edit term \'{$a}\'';
-$string['finishscatterin'] = '<div style="text-align: center;">Congratulations! <br/> You finished the scatter in {{time}}</div>';
+$string['finishscatterin'] = '<div style="text-align: center;">Congratulations! <br/> You finished the scatter in [[time]]</div>';
 $string['flashcards:addinstance'] = 'Add an instance';
 $string['flashcards:view'] = 'View the module';
 $string['globalscatter'] = 'Global scatter';
