@@ -53,20 +53,17 @@ class mod_flashcards_renderer extends plugin_renderer_base {
     }
 
     public function finish_page(mod_flashcards_module $mod, $globalscattertime = 0, $localscattertime = 0) {
-
         if (!empty($globalscattertime)) {
-            $a = new stdClass();
-            $a->seconds = $globalscattertime;
-            $scattertimemsg = get_string('globalscatterfinished', 'mod_flashcards', $a);
+            $scattertime = $globalscattertime;
         } else {
-            $a = new stdClass();
-            $a->seconds = $localscattertime;
-            $scattertimemsg = get_string('localscatterfinished', 'mod_flashcards', $a);
+            $scattertime = $localscattertime;
         }
+        $scattertimemsg = $mod->get_finishedscattermsg();
+        $scattertimemsg = str_replace('[[time]]', gmdate("i:s:00", $scattertime), $scattertimemsg);
 
         $data = [
             'canmanage' => $mod->can_manage(),
-            'finishtext' => get_string('congrats', 'mod_flashcards') . " " . $scattertimemsg . get_string('congratsitsover', 'mod_flashcards'),
+            'finishtext' => $scattertimemsg .  ' <br/> ' . $mod->get_completedmsg(),
             'modid' => $mod->get_id(),
         ];
         return $this->render_from_template('mod_flashcards/finish_page', $data);
@@ -83,6 +80,7 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'congrats' => get_string('congrats', 'mod_flashcards'),
             'definitionsjson' => json_encode(array_values($definitions)),
             'finishscatterin' => get_string('finishscatterin', 'mod_flashcards'),
+            'finishedscattermsg' => $mod->get_finishedscattermsg(),
             'modid' => $mod->get_id(),
             'hascontinue' => true,
             'completeafterlocal' => $completeafterlocal,
@@ -103,6 +101,7 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'congrats' => get_string('congrats', 'mod_flashcards'),
             'definitionsjson' => json_encode(array_values($definitions)),
             'finishscatterin' => get_string('finishscatterin', 'mod_flashcards'),
+            'finishedscattermsg' => $mod->get_finishedscattermsg(),
             'modid' => $mod->get_id(),
             'isglobalcompleted' => $state == mod_flashcards_module::STATE_END,
             'hascontinue' => $state != mod_flashcards_module::STATE_END,

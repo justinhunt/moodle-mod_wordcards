@@ -84,6 +84,14 @@ class mod_flashcards_module {
         return [$state];
     }
 
+    public function get_finishedscattermsg() {
+        return $this->mod->finishedscattermsg;
+    }
+
+    public function get_completedmsg() {
+        return $this->mod->completedmsg;
+    }
+
     public function get_cm() {
         return $this->cm;
     }

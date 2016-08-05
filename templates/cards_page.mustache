@@ -2,8 +2,7 @@
     <div class="flashcards_timer">00:00:00</div>
     <div id="flashcards" class="flashcards">
         <div class="congrats">
-          <div>{{congrats}}</div>
-          <div>{{finishscatterin}}<span class="flashcards_timer_time">00:00:00</span></div>
+          <div class="flashcards_congrats">{{{finishedscattermsg}}}</div>
           {{#hascontinue}}
               <button data-href="{{{nexturl}}}" class="continue-button">{{continue}}</button>
           {{/hascontinue}}
@@ -37,6 +36,11 @@
             }
             inst.on('complete', function() {
                 btn.prop('disabled', false);
+
+                // replace [[time]] by <span class="flashcards_timer_time">00:00:00</span>
+                var convertedfinishedscattermsg = $('.flashcards_congrats').text().replace("[[time]]", "<span class=\"flashcards_timer_time\">00:00:00</span>");
+                $('.flashcards_congrats').html(convertedfinishedscattermsg);
+
                 $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
                 $('.flashcards_timer').css('display', 'none');
                 congrats.css('display', 'block');
@@ -58,6 +62,10 @@
 
         {{#isglobalcompleted}}
             inst.on('complete', function() {
+                // replace [[time]] by <span class="flashcards_timer_time">00:00:00</span>
+                var convertedfinishedscattermsg = $('.flashcards_congrats').text().replace("[[time]]", "<span class=\"flashcards_timer_time\">00:00:00</span>");
+                $('.flashcards_congrats').html(convertedfinishedscattermsg);
+
                 $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
                 $('.flashcards_timer').css('display', 'none');
                 congrats.css('display', 'block');
