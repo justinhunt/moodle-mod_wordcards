@@ -53,7 +53,7 @@ if ($data = $form->get_data()) {
     	$failed = array();
     	
     	foreach($rows as $row){
-    		$cols = explode($delimiter,$row);
+    		$cols = explode($delimiter,$row,2);
     		if(count($cols)==2 && !empty($cols[0]) && !empty($cols[1])){ 
 				$insertdata = new stdClass();
 				$insertdata->modid = $modid;
