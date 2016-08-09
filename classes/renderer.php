@@ -34,7 +34,9 @@ class mod_flashcards_renderer extends plugin_renderer_base {
 
         $data = [
             'canmanage' => $mod->can_manage(),
+            'str_definition' => get_string('definition', 'mod_flashcards'),
             'definitions' => array_values($definitions),
+            'gotit' => get_string('gotit', 'mod_flashcards'),
             'loading' => get_string('loading', 'mod_flashcards'),
             'loadingurl' => $this->pix_url('i/loading_small')->out(true),
             'markasseen' => get_string('markasseen', 'mod_flashcards'),
@@ -45,6 +47,7 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'notseenurl' => $this->pix_url('not-seen', 'mod_flashcards')->out(true),
             'seenall' => count($definitions) == count($seen),
             'seenurl' => $this->pix_url('seen', 'mod_flashcards')->out(true),
+            'str_term' => get_string('term', 'mod_flashcards'),
             'termnotseen' => get_string('termnotseen', 'mod_flashcards'),
             'termseen' => get_string('termseen', 'mod_flashcards'),
         ];

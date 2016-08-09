@@ -14,6 +14,9 @@
 .path-mod-flashcards .term-seen-loading {
     display: none;
 }
+.path-mod-flashcards .generaltable .term-tick {
+    text-align: center;
+}
 .path-mod-flashcards .term-loading .term-tick > * {
     /* Hide all the children. */
     display: none;
