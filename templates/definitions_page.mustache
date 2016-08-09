@@ -1,9 +1,9 @@
 <div id="definitions-page-{{uniqid}}">
     <table class="generaltable">
         <tr>
-            <th scope="col">Term</th>
-            <th scole="col">Definition</th>
-            <td style="width: 35px;"></td>
+            <th scope="col">{{str_term}}</th>
+            <th scole="col">{{str_definition}}</th>
+            <th scole="col" style="width: 60px; text-align:center">{{gotit}}</th>
         </tr>
         {{#definitions}}
             <tr data-termid="{{id}}" class="term {{#seen}}term-seen{{/seen}}">
@@ -52,7 +52,7 @@
                     'termid': termId
                 }
             }])[0].then(function(result) {
-                if (!result) {                
+                if (!result) {
                     return $.Deferred().reject();
                 }
                 termNode.addClass('term-seen');

@@ -29,6 +29,7 @@ $string['flashcards:view'] = 'View the module';
 $string['globalscatter'] = 'Global scatter';
 $string['globalscatterfinished'] = 'You finished the global scatter in {$a->seconds} seconds.';
 $string['globaltermcount'] = 'Global terms shown as cards';
+$string['gotit'] = 'Got it';
 $string['import'] = 'Import';
 $string['importdata'] = 'Import Data';
 $string['importresults'] = 'Successfully imported {$a->imported} rows. {$a->failed} rows failed.';
