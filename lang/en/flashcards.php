@@ -33,6 +33,7 @@ $string['gotit'] = 'Got it';
 $string['import'] = 'Import';
 $string['importdata'] = 'Import Data';
 $string['importresults'] = 'Successfully imported {$a->imported} rows. {$a->failed} rows failed.';
+$string['introduction'] = 'Introduction';
 $string['localscatterfinished'] = 'You finished the local scatter in {$a->seconds} seconds.';
 $string['finishedscattermsg'] = 'Finished scatter message';
 $string['finishedscattermsg_help'] = 'This is the message displayed when you end a scatter. use [[time]] to display the final time.';

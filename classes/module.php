@@ -96,6 +96,10 @@ class mod_flashcards_module {
         return $this->cm;
     }
 
+    public function get_mod() {
+        return $this->mod;
+    }
+
     public function get_cmid() {
         return $this->cm->id;
     }

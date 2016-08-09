@@ -27,6 +27,8 @@ class mod_flashcards_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
+        $this->standard_intro_elements(get_string('introduction', 'mod_flashcards'));
+
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');
 

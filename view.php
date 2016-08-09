@@ -29,6 +29,10 @@ $PAGE->set_title($pagetitle);
 echo $OUTPUT->header();
 echo $OUTPUT->heading($pagetitle);
 
+if (!empty($mod->get_mod()->intro)) {
+    echo $OUTPUT->box(format_module_intro('flashcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
+}
+
 $tabs = mod_flashcards_helper::get_tabs($mod, $currentstate);
 echo $OUTPUT->render($tabs);
 

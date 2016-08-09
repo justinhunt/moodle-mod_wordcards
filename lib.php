@@ -17,6 +17,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 function flashcards_supports($feature) {
     switch ($feature) {
+        case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_SHOW_DESCRIPTION:
+            return true;
         case FEATURE_COMPLETION_HAS_RULES:
             return true;
         default:
@@ -26,10 +30,6 @@ function flashcards_supports($feature) {
 
 function flashcards_add_instance(stdClass $module, mod_flashcards_mod_form $mform = null) {
     global $DB;
-
-    // No support for intro for now.
-    $module->intro = '';
-    $module->introformat = FORMAT_HTML;
 
     $module->timecreated = time();
     $module->timemodified = time();
@@ -48,10 +48,6 @@ function flashcards_add_instance(stdClass $module, mod_flashcards_mod_form $mfor
 
 function flashcards_update_instance(stdClass $module, mod_flashcards_mod_form $mform = null) {
     global $DB;
-
-    // No support for intro for now.
-    $module->intro = '';
-    $module->introformat = FORMAT_HTML;
 
     $module->timemodified = time();
     $module->id = $module->instance;
