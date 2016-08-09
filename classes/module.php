@@ -145,16 +145,17 @@ class mod_flashcards_module {
 
         if ($this->can_manage()) {
             // Teachers see any record randomly ordered.
-            $sql = "SELECT t.*
-                      FROM {flashcards_terms} t
+            $selectsql = "SELECT t.* ";
+            $countsql = "SELECT COUNT(t.id) ";
+            $sql = " FROM {flashcards_terms} t
                       JOIN {flashcards} f
                         ON f.id = t.modid
                      WHERE t.deleted = 0        -- The term was not deleted.
                        AND f.id $insql          -- The user has access to the module in which the term is.
                    ";
             // This is the way to make it simili random, we extract a random subset.
-            $countsql = str_replace('SELECT t.*', 'SELECT COUNT(t.id)', $sql);
-            $from = rand(0, $DB->count_records_sql($countsql, $params) - $maxterms - 1);
+            $from = rand(0, $DB->count_records_sql($countsql . $sql, $params) - $maxterms - 1);
+            $sql = $selectsql . $sql;
         } else {
             $sql = "SELECT t.*
                       FROM {flashcards_terms} t
