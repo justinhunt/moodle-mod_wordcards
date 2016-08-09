@@ -56,8 +56,8 @@ class mod_flashcards_module {
     public function delete() {
         global $DB;
         $modid = $this->get_id();
-        $DB->execute('DELETE FROM {flashcards_seen} s
-                       WHERE s.termid IN (
+        $DB->execute('DELETE FROM {flashcards_seen}
+                       WHERE termid IN (
                             SELECT t.id
                               FROM {flashcards_terms} t
                              WHERE t.modid = ?
