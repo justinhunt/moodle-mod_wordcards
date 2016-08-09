@@ -45,19 +45,22 @@
                 btn.prop('disabled', true);
             }
             inst.on('complete', function() {
-                btn.prop('disabled', false);
-
-                displayfinishmessage();
 
                 {{#completeafterlocal}}
                     var redirecturl = "{{{nexturl}}}";
                     window.location.replace(redirecturl.replace('&amp;','&') + "&localscattertime=" + timer.getTotalTimeValues().seconds);
+                    return;
                 {{/completeafterlocal}}
 
                 {{#isglobalscatter}}
                     var redirecturl = "{{{nexturl}}}";
                     window.location.replace(redirecturl.replace('&amp;','&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);
+                    return;
                 {{/isglobalscatter}}
+
+                btn.prop('disabled', false);
+
+                displayfinishmessage();
 
                 timer.stop();
 
