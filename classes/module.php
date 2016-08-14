@@ -62,6 +62,12 @@ class mod_flashcards_module {
                               FROM {flashcards_terms} t
                              WHERE t.modid = ?
                             )', [$modid]);
+        $DB->execute('DELETE FROM {flashcards_associations}
+                       WHERE termid IN (
+                            SELECT t.id
+                              FROM {flashcards_terms} t
+                             WHERE t.modid = ?
+                            )', [$modid]);
         $DB->delete_records('flashcards_terms', array('modid' => $modid));
         $DB->delete_records('flashcards_progress', array('modid' => $modid));
         $DB->delete_records('flashcards', array('id' => $modid));
