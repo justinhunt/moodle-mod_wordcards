@@ -23,6 +23,8 @@ function flashcards_supports($feature) {
             return true;
         case FEATURE_COMPLETION_HAS_RULES:
             return true;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
         default:
             return false;
     }
