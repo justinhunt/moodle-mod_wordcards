@@ -64,10 +64,10 @@ class backup_flashcards_activity_structure_step extends backup_activity_structur
         $flashcards->add_child($terms);
         $terms->add_child($term);
 
-        $terms->add_child($seens);
+        $term->add_child($seens);
         $seens->add_child($seen);
 
-        $terms->add_child($associations);
+        $term->add_child($associations);
         $associations->add_child($association);
 
         $flashcards->add_child($progresses);
@@ -84,17 +84,9 @@ class backup_flashcards_activity_structure_step extends backup_activity_structur
 
         // All the rest of elements only happen if we are including user info
         if ($userinfo) {
-            $seen->set_source_sql('
-            SELECT *
-              FROM {flashcards_seen}
-             WHERE termid = ?',
-            array(backup::VAR_PARENTID));
+            $seen->set_source_table('flashcards_seen', array('termid' => '../../id'));
 
-            $association->set_source_sql('
-            SELECT *
-              FROM {flashcards_associations}
-             WHERE termid = ?',
-            array(backup::VAR_PARENTID));
+            $association->set_source_table('flashcards_associations', array('termid' => '../../id'));
 
             $progress->set_source_sql('
             SELECT *

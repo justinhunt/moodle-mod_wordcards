@@ -62,8 +62,8 @@ class restore_flashcards_activity_task extends restore_activity_task {
      */
     static public function define_decode_rules() {
         $rules = array();
-        $rules[] = new restore_decode_rule('NEWMODULEVIEWBYID', '/mod/flashcards/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('NEWMODULEINDEX', '/mod/flashcards/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('FLASHCARDSVIEWBYID', '/mod/flashcards/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('FLASHCARDSINDEX', '/mod/flashcards/index.php?id=$1', 'course');
         return $rules;
     }
     /**

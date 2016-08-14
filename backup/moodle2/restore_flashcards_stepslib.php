@@ -37,10 +37,20 @@ class restore_flashcards_activity_structure_step extends restore_activity_struct
      */
     protected function define_structure() {
         $paths = array();
+        $userinfo = $this->get_setting_value('userinfo');
+
         $paths[] = new restore_path_element('flashcards', '/activity/flashcards');
+        $paths[] = new restore_path_element('flashcards_term', '/activity/flashcards/terms/term');
+        if ($userinfo) {
+            $paths[] = new restore_path_element('flashcards_seen', '/activity/flashcards/terms/term/seens/seen');
+            $paths[] = new restore_path_element('flashcards_association', '/activity/flashcards/terms/term/associations/association');
+            $paths[] = new restore_path_element('flashcards_progress', '/activity/flashcards/progresses/progress');
+        }
+
         // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
     }
+
     /**
      * Process the given restore path element data
      *
@@ -48,23 +58,75 @@ class restore_flashcards_activity_structure_step extends restore_activity_struct
      */
     protected function process_flashcards($data) {
         global $DB;
+
         $data = (object)$data;
         $oldid = $data->id;
         $data->course = $this->get_courseid();
+
         if (empty($data->timecreated)) {
             $data->timecreated = time();
         }
         if (empty($data->timemodified)) {
             $data->timemodified = time();
         }
-        if ($data->grade < 0) {
-            // Scale found, get mapping.
-            $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
-        }
+
         // Create the flashcards instance.
         $newitemid = $DB->insert_record('flashcards', $data);
         $this->apply_activity_instance($newitemid);
     }
+
+    protected function process_flashcards_term($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+
+        $data->modid = $this->get_new_parentid('flashcards');
+
+        $newitemid = $DB->insert_record('flashcards_terms', $data);
+        $this->set_mapping('flashcards_term', $oldid, $newitemid);
+    }
+
+    protected function process_flashcards_seen($data) {
+        global $DB;
+
+        $data = (object)$data;
+
+        $data->termid = $this->get_new_parentid('flashcards_term');
+        $data->userid = $this->get_mappingid('user', $data->userid);
+        $data->timecreated = $this->apply_date_offset($data->timecreated);
+
+        $newitemid = $DB->insert_record('flashcards_seen', $data);
+        // No need to save this mapping as far as nothing depend on it
+        // (child paths, file areas nor links decoder)
+    }
+
+    protected function process_flashcards_association($data) {
+        global $DB;
+
+        $data = (object)$data;
+
+        $data->termid = $this->get_new_parentid('flashcards_term');
+        $data->userid = $this->get_mappingid('user', $data->userid);
+
+        $newitemid = $DB->insert_record('flashcards_associations', $data);
+        // No need to save this mapping as far as nothing depend on it
+        // (child paths, file areas nor links decoder)
+    }
+
+    protected function process_flashcards_progress($data) {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+
+        $data->modid = $this->get_new_parentid('flashcards');
+        $data->userid = $this->get_mappingid('user', $data->userid);
+
+        $newitemid = $DB->insert_record('flashcards_progress', $data);
+        $this->set_mapping('flashcards_progress', $oldid, $newitemid);
+    }
+
     /**
      * Post-execution actions
      */
