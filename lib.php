@@ -132,19 +132,11 @@ function flashcards_reset_userdata($data) {
 
         // Find all flashcards of the course.
         $flashcards = $DB->get_fieldset_select('flashcards', 'id', 'course = :course', array('course' => $data->courseid));
-        error_log(print_r('FLASHCARD IDS TO DELETE USER DATA', true));
-        error_log(print_r($flashcards, true));
         list($termssql, $termsparams) = $DB->get_in_or_equal($flashcards, SQL_PARAMS_NAMED);
-        error_log(print_r($termssql, true));
-        error_log(print_r($termsparams, true));
 
         // Retrieve the terms.
         $terms = $DB->get_fieldset_select('flashcards_terms', 'id', 'modid ' . $termssql, $termsparams);
-        error_log(print_r('TERM IDS TO DELETE USER DATA', true));
-        error_log(print_r($terms, true));
         list($sql, $params) = $DB->get_in_or_equal($terms, SQL_PARAMS_NAMED);
-        error_log(print_r($sql, true));
-        error_log(print_r($params, true));
 
         $DB->delete_records_select('flashcards_associations', 'termid ' . $sql, $params);
         $DB->delete_records_list('flashcards_progress', 'modid', $flashcards);
