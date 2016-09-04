@@ -16,6 +16,7 @@ $string['congrats'] = 'Congratulations!';
 $string['congratsitsover'] = '<div  style="text-align: center;">You have completed this activity. Feel free to go back to the local and global scatters to practice more!</div>';
 $string['definition'] = 'Definition';
 $string['definitions'] = 'Definitions';
+$string['deleteallentries'] = 'Delete all user attempts and stats (keep the terms/definitions)';
 $string['deleteterm'] = 'Delete term \'{$a}\'';
 $string['delimiter'] = 'Delimiter Character';
 $string['delim_tab'] = 'Tab';
@@ -51,6 +52,7 @@ $string['noteaboutseenforteachers'] = 'Note: Teachers\' seen status are not save
 $string['pluginadministration'] = 'Flashcards administration';
 $string['pluginname'] = 'Flashcards';
 $string['reallydeleteterm'] = 'Are you sure you want to delete the term \'{$a}\'?';
+$string['removeuserdata'] = 'Remove Flashcards user data';
 $string['setup'] = 'Set-up';
 $string['skipglobal'] = 'Hide first global scatter';
 $string['skipglobal_help'] = 'Hide the global scatter of this specific activity if no flashcards activities have been completed in this course.';
