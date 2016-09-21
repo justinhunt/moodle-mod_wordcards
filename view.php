@@ -19,7 +19,7 @@ require_login($course, true, $cm);
 $mod->require_view();
 $mod->resume_progress($currentstate);
 
-$pagetitle = get_string('definitions', 'mod_flashcards');
+$pagetitle = get_string('tabdefinitions', 'mod_flashcards');
 
 $PAGE->set_url('/mod/flashcards/view.php', ['id' => $cmid]);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
