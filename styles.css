@@ -1,7 +1,9 @@
+/* Global div encapsulating all the terms. */
 .path-mod-flashcards .terms {
     display: flex;
     flex-wrap: wrap;
 }
+/* Each term is defined by a .term-wrapper. */
 .path-mod-flashcards .term-wrapper {
     width: 32%;
     display: inline-block;
@@ -11,6 +13,7 @@
     margin-bottom: 10px;
     float: left;
 }
+/* Remove the margin at the end of each 'row'. */
 .path-mod-flashcards .term-wrapper:nth-of-type(3n) {
     margin-right: 0;
 }
@@ -18,20 +21,20 @@
     margin-left: 1%;
     margin-right: 0;
 }
-.path-mod-flashcards .term-wrapper:nth-of-type(3n) {
-    margin-left: 0;
-}
+/* Another term div, in case the wrapper wasn't enough. */
 .path-mod-flashcards .term {
     display: block;
     padding: 5px;
 }
+/* The term header, where the title and tick will be. */
 .path-mod-flashcards .term-header {
     position: relative;
 }
+/* Term title. Where a right padding is kept to leave room for the tick. */
 .path-mod-flashcards .term-header .term-title {
     font-weight: bold;
     padding-right: 25px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;  /* Separator between title and body. */
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
@@ -39,6 +42,7 @@
     padding-right: 0;
     padding-left: 25px;
 }
+/* The term tick, absolutely positioned to the right. */
 .path-mod-flashcards .term-header .term-tick {
     position: absolute;
     right: 0;
@@ -48,9 +52,11 @@
     left: 0;
     right: auto;
 }
+/* The term body, where the definition will be displayed. */
 .path-mod-flashcards .term-body {
-    padding-top
 }
+
+/* Various classes for the appearance of the tick. */
 .path-mod-flashcards .term-seen-action {
     display: block;
 }
@@ -63,12 +69,8 @@
 .path-mod-flashcards .term-seen .term-seen-state {
     display: block;
 }
-
 .path-mod-flashcards .term-seen-loading {
     display: none;
-}
-.path-mod-flashcards .generaltable .term-tick {
-    text-align: center;
 }
 .path-mod-flashcards .term-loading .term-tick > * {
     /* Hide all the children. */
@@ -150,12 +152,17 @@
 
 }
 
+/**
+ * Students navigate through tabs which look like arrows.
+ *
+ * Arrows need some ::before and ::after to work. A common CSS trick with borders.
+ */
 .path-mod-flashcards .student-navigation .student-tab {
     text-decoration: none;
     display: block;
     float: left;
     height: 40px;
-    background: #ccc;
+    background: #ccc;       /* Color for disabled tab. */
     text-align: center;
     padding: 10px 4px 0 20px;
     position: relative;
@@ -174,7 +181,7 @@
     content: "";
     border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
-    border-left: 12px solid #ccc;
+    border-left: 12px solid #ccc;   /* Color for disabled tab. */
     position: absolute;
     right: -12px;
     top: 0;
@@ -182,7 +189,7 @@
 }
 .dir-rtl.path-mod-flashcards .student-navigation .student-tab::after {
     border-left: 0;
-    border-right: 12px solid #ccc;
+    border-right: 12px solid #ccc;  /* Color for disabled tab. */
     left: -12px;
     right: auto;
 }
@@ -203,48 +210,50 @@
 }
 
 .path-mod-flashcards .student-navigation .student-tab.active {
-    background: #3498db;
+    background: #3498db;            /* The arrow colour for clickable tab. */
 }
 .path-mod-flashcards .student-navigation .student-tab.active::after {
-    border-left-color: #3498db;
+    border-left-color: #3498db;     /* The arrow colour for clickable tab. */
 }
 .dir-rtl.path-mod-flashcards .student-navigation .student-tab.active::after {
-    border-right-color: #3498db;
+    border-right-color: #3498db;    /* The arrow colour for clickable tab. */
 }
 
 .path-mod-flashcards .student-navigation a.student-tab.current,
 .path-mod-flashcards .student-navigation a.student-tab:hover {
-    background: #0070a8;
+    background: #0070a8;            /* The arrow colour for current tab and on hover effect. */
 }
 .path-mod-flashcards .student-navigation a.student-tab.current::after,
 .path-mod-flashcards .student-navigation a.student-tab:hover::after {
-    border-left-color: #0070a8;
+    border-left-color: #0070a8;     /* The arrow colour for current tab and on hover effect. */
 }
 .dir-rtl.path-mod-flashcards .student-navigation a.student-tab.current::after,
 .dir-rtl.path-mod-flashcards .student-navigation a.student-tab:hover::after {
-    border-right-color: #0070a8;
+    border-right-color: #0070a8;    /* The arrow colour for current tab and on hover effect. */
 }
+/* The step is the number within the arrows. */
 .path-mod-flashcards .student-navigation .student-tab .step {
     border-radius: 50%;
     background: #fff;
-    color: #ccc;
+    color: #ccc;        /* Color for disabled tab. */
     width: 20px;
     display: inline-block;
     height: 20px;
     font-size: 14px;
 }
 .path-mod-flashcards .student-navigation .student-tab.active .step {
-    color: #3498db;
+    color: #3498db;     /* The arrow colour for clickable tab. */
 }
 .path-mod-flashcards .student-navigation a.student-tab.current .step,
 .path-mod-flashcards .student-navigation a.student-tab:hover .step {
-    color: #0070a8;
+    color: #0070a8;     /* The arrow colour for current tab and on hover effect. */
 }
 
 .path-mod-flashcards .student-navigation .student-tab .text {
     display: inline-block;
 }
 
+/* Simple media query to reduce the number of terms to two on the width. */
 @media  (max-width:767px) {
     .path-mod-flashcards .term-wrapper {
         width: 49%;
@@ -264,6 +273,7 @@
     }
 }
 
+/* Simple media query for terms to go full width. */
 @media  (max-width:500px) {
     .path-mod-flashcards .term-wrapper {
         width: 100%;
