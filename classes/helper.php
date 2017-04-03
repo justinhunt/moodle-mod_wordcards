@@ -37,7 +37,7 @@ class mod_flashcards_helper {
             $tabs[] = new tabobject('setup',
                 new moodle_url('/mod/flashcards/setup.php', ['id' => $cmid]),
                 get_string('tabsetup', 'mod_flashcards'), '', true);
-                
+
             $tabs[] = new tabobject('import',
                 new moodle_url('/mod/flashcards/import.php', ['id' => $cmid]),
                 get_string('tabimport', 'mod_flashcards'), '', true);

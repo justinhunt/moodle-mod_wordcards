@@ -94,6 +94,36 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_flashcards/cards_page', $data);
     }
 
+    public function navigation(mod_flashcards_module $mod, $currentstate) {
+        $tabtree = mod_flashcards_helper::get_tabs($mod, $currentstate);
+        if ($mod->can_manage()) {
+            // Teachers see the tabs, as normal tabs.
+            return $this->render($tabtree);
+        }
+
+        $seencurrent = false;
+        $step = 1;
+        $tabs = array_map(function($tab) use ($seencurrent, $currentstate, &$step, $tabtree) {
+            $current = $tab->id == $currentstate;
+            $seencurrent = $current || $seencurrent;
+            return [
+                'id' => $tab->id,
+                'url' => $tab->link,
+                'text' => $tab->text,
+                'title' => $tab->title,
+                'current' => $tab->selected,
+                'inactive' => $tab->inactive,
+                'last' => $step == count($tabtree->subtree),
+                'step' => $step++,
+            ];
+        }, $tabtree->subtree);
+
+        $data = [
+            'tabs' => $tabs
+        ];
+        return $this->render_from_template('mod_flashcards/student_navigation', $data);
+    }
+
     public function global_page(mod_flashcards_module $mod) {
         list($state) = $mod->get_state();
         $definitions = $mod->get_global_terms();

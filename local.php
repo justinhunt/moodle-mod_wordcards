@@ -26,17 +26,18 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading($pagetitle);
+$output = $PAGE->get_renderer('mod_flashcards');
+
+echo $output->header();
+echo $output->heading($pagetitle);
 
 if (!empty($mod->get_mod()->intro)) {
-    echo $OUTPUT->box(format_module_intro('flashcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
+    echo $output->box(format_module_intro('flashcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
 }
 
-$tabs = mod_flashcards_helper::get_tabs($mod, $currentstate);
-echo $OUTPUT->render($tabs);
+echo $output->navigation($mod, $currentstate);
 
 $renderer = $PAGE->get_renderer('mod_flashcards');
 echo $renderer->local_page($mod);
 
-echo $OUTPUT->footer();
+echo $output->footer();

@@ -96,3 +96,77 @@
 .path-mod-flashcards  .flashcards_timer_time {
 
 }
+
+.path-mod-flashcards .student-navigation .student-tab {
+    text-decoration: none;
+    display: block;
+    float: left;
+    height: 40px;
+    background: #ccc;
+    text-align: center;
+    padding: 10px 4px 0 20px;
+    position: relative;
+    margin: 0 10px 10px 0;
+    text-decoration: none;
+    color: #fff;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.path-mod-flashcards .student-navigation .student-tab::after {
+    content: "";
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 12px solid #ccc;
+    position: absolute;
+    right: -12px;
+    top: 0;
+    z-index: 1;
+}
+.path-mod-flashcards .student-navigation .student-tab::before {
+    content: "";
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 12px solid white;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.path-mod-flashcards .student-navigation .student-tab.active {
+    background: #3498db;
+}
+.path-mod-flashcards .student-navigation .student-tab.active::after {
+    border-left-color: #3498db;
+}
+
+.path-mod-flashcards .student-navigation a.student-tab.current,
+.path-mod-flashcards .student-navigation a.student-tab:hover {
+    background: #0070a8;
+}
+.path-mod-flashcards .student-navigation a.student-tab.current::after,
+.path-mod-flashcards .student-navigation a.student-tab:hover::after {
+    border-left-color: #0070a8;
+}
+
+.path-mod-flashcards .student-navigation .student-tab .step {
+    border-radius: 50%;
+    background: #fff;
+    color: #ccc;
+    width: 20px;
+    display: inline-block;
+    height: 20px;
+    font-size: 14px;
+}
+.path-mod-flashcards .student-navigation .student-tab.active .step {
+    color: #3498db;
+}
+.path-mod-flashcards .student-navigation a.student-tab.current .step,
+.path-mod-flashcards .student-navigation a.student-tab:hover .step {
+    color: #0070a8;
+}
+
+.path-mod-flashcards .student-navigation .student-tab .text {
+    display: inline-block;
+}
+

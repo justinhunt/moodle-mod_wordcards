@@ -30,6 +30,8 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 
+$output = $PAGE->get_renderer('mod_flashcards');
+
 if ($action == 'delete') {
     confirm_sesskey();
     $mod->delete_term($termid);
@@ -66,11 +68,10 @@ if ($data = $form->get_data()) {
     }
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading($pagetitle);
+echo $output->header();
+echo $output->heading($pagetitle);
 
-$tabs = mod_flashcards_helper::get_tabs($mod, 'setup');
-echo $OUTPUT->render($tabs);
+echo $output->navigation($mod, 'setup');
 
 $form->display();
 
@@ -78,4 +79,4 @@ $table = new mod_flashcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);
 $table->out(25, false);
 
-echo $OUTPUT->footer();
+echo $output->footer();

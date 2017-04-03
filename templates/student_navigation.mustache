@@ -1,0 +1,18 @@
+<div class="student-navigation clearfix">
+    {{#tabs}}
+        {{^inactive}}
+            <a href="{{url}}" class="student-tab active {{#current}}current{{/current}}">
+        {{/inactive}}
+        {{#inactive}}
+            <div class="student-tab">
+        {{/inactive}}
+            <div class="step">{{step}}</div>
+            <div class="text">{{text}}</div>
+        {{^inactive}}
+            </a>
+        {{/inactive}}
+        {{#inactive}}
+            </div>
+        {{/inactive}}
+    {{/tabs}}
+</div>
