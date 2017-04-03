@@ -1,23 +1,23 @@
 <div id="definitions-page-{{uniqid}}">
-    <table class="generaltable">
-        <tr>
-            <th scope="col">{{str_term}}</th>
-            <th scole="col">{{str_definition}}</th>
-            <th scole="col" style="width: 60px; text-align:center">{{gotit}}</th>
-        </tr>
-        {{#definitions}}
-            <tr data-termid="{{id}}" class="term {{#seen}}term-seen{{/seen}}">
-                <td>{{term}}</td>
-                <td>{{definition}}</td>
-                <td class="term-tick">
-                    <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
-                    <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}"/></div>
-                    <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
-                </td>
-            </tr>
-        {{/definitions}}
-    </table>
-
+    <div class="terms clearfix">
+        {{#definitions}}<!--
+            --><div class="term-wrapper">
+                <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
+                    <div class="term-header">
+                        <div class="term-title">{{term}}</div>
+                        <div class="term-tick">
+                            <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
+                            <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}"/></div>
+                            <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
+                        </div>
+                    </div>
+                    <div class="term-body">
+                        {{definition}}
+                    </div>
+                </div>
+            </div><!--
+        -->{{/definitions}}
+    </div>
     <div class="page-footer">
         <p>
             <button data-href="{{{nexturl}}}" class="continue-button">Continue</button>

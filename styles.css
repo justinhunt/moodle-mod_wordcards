@@ -1,3 +1,41 @@
+.path-mod-flashcards .terms {
+    display: flex;
+    flex-wrap: wrap;
+}
+.path-mod-flashcards .term-wrapper {
+    width: 32%;
+    display: inline-block;
+    border: 1px solid #eee;
+    margin-right: 1%;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    float: left;
+}
+.path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+    margin-right: 0;
+}
+.path-mod-flashcards .term {
+    display: block;
+    padding: 5px;
+}
+.path-mod-flashcards .term-header {
+    position: relative;
+}
+.path-mod-flashcards .term-header .term-title {
+    font-weight: bold;
+    padding-right: 25px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.path-mod-flashcards .term-header .term-tick {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.path-mod-flashcards .term-body {
+    padding-top
+}
 .path-mod-flashcards .term-seen-action {
     display: block;
 }
@@ -170,3 +208,21 @@
     display: inline-block;
 }
 
+@media  (max-width:767px) {
+    .path-mod-flashcards .term-wrapper {
+        width: 49%;
+    }
+    .path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+        margin-right: 1%;
+    }
+    .path-mod-flashcards .term-wrapper:nth-of-type(2n) {
+        margin-right: 0;
+    }
+}
+
+@media  (max-width:500px) {
+    .path-mod-flashcards .term-wrapper {
+        width: 100%;
+        margin-right: 0;
+    }
+}
