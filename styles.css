@@ -14,6 +14,13 @@
 .path-mod-flashcards .term-wrapper:nth-of-type(3n) {
     margin-right: 0;
 }
+.dir-rtl.path-mod-flashcards .term-wrapper {
+    margin-left: 1%;
+    margin-right: 0;
+}
+.path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+    margin-left: 0;
+}
 .path-mod-flashcards .term {
     display: block;
     padding: 5px;
@@ -28,10 +35,18 @@
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
+.dir-rtl.path-mod-flashcards .term-header .term-title {
+    padding-right: 0;
+    padding-left: 25px;
+}
 .path-mod-flashcards .term-header .term-tick {
     position: absolute;
     right: 0;
     top: 0;
+}
+.dir-rtl.path-mod-flashcards .term-header .term-tick {
+    left: 0;
+    right: auto;
 }
 .path-mod-flashcards .term-body {
     padding-top
@@ -150,7 +165,11 @@
     box-sizing: border-box;
     font-size: 14px;
 }
-
+.dir-rtl.path-mod-flashcards .student-navigation .student-tab {
+    float: right;
+    padding: 10px 20px 0 4px;
+    margin: 0 0 10px 10px;
+}
 .path-mod-flashcards .student-navigation .student-tab::after {
     content: "";
     border-top: 20px solid transparent;
@@ -161,6 +180,12 @@
     top: 0;
     z-index: 1;
 }
+.dir-rtl.path-mod-flashcards .student-navigation .student-tab::after {
+    border-left: 0;
+    border-right: 12px solid #ccc;
+    left: -12px;
+    right: auto;
+}
 .path-mod-flashcards .student-navigation .student-tab::before {
     content: "";
     border-top: 20px solid transparent;
@@ -170,12 +195,21 @@
     left: 0;
     top: 0;
 }
+.dir-rtl.path-mod-flashcards .student-navigation .student-tab::before {
+    border-left: 0;
+    border-right: 12px solid white;
+    right: 0;
+    left: auto;
+}
 
 .path-mod-flashcards .student-navigation .student-tab.active {
     background: #3498db;
 }
 .path-mod-flashcards .student-navigation .student-tab.active::after {
     border-left-color: #3498db;
+}
+.dir-rtl.path-mod-flashcards .student-navigation .student-tab.active::after {
+    border-right-color: #3498db;
 }
 
 .path-mod-flashcards .student-navigation a.student-tab.current,
@@ -186,7 +220,10 @@
 .path-mod-flashcards .student-navigation a.student-tab:hover::after {
     border-left-color: #0070a8;
 }
-
+.dir-rtl.path-mod-flashcards .student-navigation a.student-tab.current::after,
+.dir-rtl.path-mod-flashcards .student-navigation a.student-tab:hover::after {
+    border-right-color: #0070a8;
+}
 .path-mod-flashcards .student-navigation .student-tab .step {
     border-radius: 50%;
     background: #fff;
@@ -218,11 +255,19 @@
     .path-mod-flashcards .term-wrapper:nth-of-type(2n) {
         margin-right: 0;
     }
+    .dir-rtl.path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+        margin-right: 0;
+        margin-left: 1%;
+    }
+    .dir-rtl.path-mod-flashcards .term-wrapper:nth-of-type(2n) {
+        margin-left: 0;
+    }
 }
 
 @media  (max-width:500px) {
     .path-mod-flashcards .term-wrapper {
         width: 100%;
         margin-right: 0;
+        margin-left: 0;
     }
 }
