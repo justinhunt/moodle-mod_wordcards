@@ -2,7 +2,7 @@
 /**
  * Displays the set-up phase.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Justin Hunt - ishinekk.co.jp
  */
 
@@ -12,7 +12,7 @@ $cmid = required_param('id', PARAM_INT);
 $leftover_rows = optional_param('leftover_rows', '', PARAM_TEXT);
 $action = optional_param('action', null, PARAM_ALPHA);
 
-$mod = mod_flashcards_module::get_by_cmid($cmid);
+$mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
 
@@ -20,8 +20,8 @@ require_login($course, true, $cm);
 $mod->require_manage();
 
 $modid = $mod->get_id();
-$pagetitle = get_string('import', 'mod_flashcards');
-$baseurl = new moodle_url('/mod/flashcards/import.php', ['id' => $cmid]);
+$pagetitle = get_string('import', 'mod_wordcards');
+$baseurl = new moodle_url('/mod/wordcards/import.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
 $term = null;
 
@@ -30,9 +30,9 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 
-$output = $PAGE->get_renderer('mod_flashcards');
+$output = $PAGE->get_renderer('mod_wordcards');
 
-$form = new mod_flashcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);
+$form = new mod_wordcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);
 
 if ($data = $form->get_data()) {
     if (!empty($data->importdata)) {
@@ -61,18 +61,18 @@ if ($data = $form->get_data()) {
 				$insertdata->modid = $modid;
 				$insertdata->term = $cols[0];
 				$insertdata->definition = $cols[1];
-				$DB->insert_record('flashcards_terms', $insertdata);
+				$DB->insert_record('wordcards_terms', $insertdata);
 				$imported++;
         	}else{
         		$failed[]=$row;
         	}//end of if cols ok 
         }//end of for each
         // Uncomment when migrating to 3.1.
-        // redirect($PAGE->url, get_string('termadded', 'mod_flashcards', $data->term));
+        // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
         $result=new stdClass();
         $result->imported=$imported;
         $result->failed=count($failed);
-        $message=get_string('importresults','mod_flashcards',$result);
+        $message=get_string('importresults','mod_wordcards',$result);
         
         if(count($failed)>0){
         	$leftover_rows = implode(PHP_EOL,$failed);
@@ -90,7 +90,7 @@ echo $output->navigation($mod, 'import');
 
 $form->display();
 /*
-$table = new mod_flashcards_table_terms('tblterms', $mod);
+$table = new mod_wordcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);
 $table->out(25, false);
 */

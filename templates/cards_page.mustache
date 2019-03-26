@@ -1,8 +1,8 @@
 <div id="cards-page-{{uniqid}}">
-    <div class="flashcards_timer">00:00:00</div>
-    <div id="flashcards" class="flashcards">
+    <div class="wordcards_timer">00:00:00</div>
+    <div id="wordcards" class="wordcards">
         <div class="congrats">
-          <div class="flashcards_congrats">{{{finishedscattermsg}}}</div>
+          <div class="wordcards_congrats">{{{finishedscattermsg}}}</div>
           {{#hascontinue}}
               <button data-href="{{{nexturl}}}" class="btn btn-primary continue-button">{{continue}}</button>
           {{/hascontinue}}
@@ -12,23 +12,23 @@
 </div>
 
 {{#js}}
-    require(['jquery', 'mod_flashcards/cards', './amd/src/easytimer.js'], function($, Cards, Timer) {
+    require(['jquery', 'mod_wordcards/cards', './amd/src/easytimer.js'], function($, Cards, Timer) {
         var container = $('#cards-page-{{uniqid}}'),
             modid = {{modid}},
             canmanage = {{canmanage}},
-            cards = container.find('.flashcards'),
+            cards = container.find('.wordcards'),
             btn = container.find('.continue-button'),
             timer = new Timer();
 
         var inst = new Cards(cards, {{{definitionsjson}}});
 
         function displayfinishmessage() {
-            // replace [[time]] by <span class="flashcards_timer_time">00:00:00</span>
-            var convertedfinishedscattermsg = $('.flashcards_congrats').text().replace("[[time]]", "<span class=\"flashcards_timer_time\">00:00:00</span>");
-            $('.flashcards_congrats').html(convertedfinishedscattermsg);
+            // replace [[time]] by <span class="wordcards_timer_time">00:00:00</span>
+            var convertedfinishedscattermsg = $('.wordcards_congrats').text().replace("[[time]]", "<span class=\"wordcards_timer_time\">00:00:00</span>");
+            $('.wordcards_congrats').html(convertedfinishedscattermsg);
 
-            $('.flashcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
-            $('.flashcards_timer').css('display', 'none');
+            $('.wordcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+            $('.wordcards_timer').css('display', 'none');
             container.find('.congrats').css('display', 'block');
         }
 
@@ -74,16 +74,16 @@
             });
         {{/isglobalcompleted}}
 
-        // Move the flashcards on top of screen.
-        $(window).scrollTop($('#flashcards').offset().top - 45);
+        // Move the wordcards on top of screen.
+        $(window).scrollTop($('#wordcards').offset().top - 45);
 
         // Set timer.
-        $('.flashcards_timer').css('display', 'block');
+        $('.wordcards_timer').css('display', 'block');
         timer.start({precision: 'secondTenths', callback: function (values) {
-            $('.flashcards_timer').html(values.toString(['minutes', 'seconds', 'secondTenths']));
+            $('.wordcards_timer').html(values.toString(['minutes', 'seconds', 'secondTenths']));
         }});
         timer.addEventListener('secondsUpdated', function (e) {
-            $('.flashcards_timer .values').html(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+            $('.wordcards_timer .values').html(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
         });
     });
 

@@ -2,7 +2,7 @@
 /**
  * Term form.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -13,10 +13,10 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Term form class.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_flashcards_form_term extends moodleform {
+class mod_wordcards_form_term extends moodleform {
 
     public function definition() {
         $mform = $this->_form;
@@ -26,12 +26,12 @@ class mod_flashcards_form_term extends moodleform {
         $mform->setType('termid', PARAM_INT);
         $mform->setConstant('termid', $termid);
 
-        $mform->addElement('text', 'term', get_string('term', 'mod_flashcards'));
+        $mform->addElement('text', 'term', get_string('term', 'mod_wordcards'));
         $mform->setType('term', PARAM_NOTAGS);
         $mform->addRule('term', null, 'required', null, 'client');
         $mform->addRule('term', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        $mform->addElement('textarea', 'definition', get_string('definition', 'mod_flashcards'));
+        $mform->addElement('textarea', 'definition', get_string('definition', 'mod_wordcards'));
         $mform->setType('definition', PARAM_NOTAGS);
         $mform->addRule('definition', null, 'required', null, 'client');
 

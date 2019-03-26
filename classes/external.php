@@ -2,17 +2,17 @@
 /**
  * External.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
 /**
  * External class.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_flashcards_external extends external_api {
+class mod_wordcards_external extends external_api {
 
     public static function mark_as_seen_parameters() {
         return new external_function_parameters([
@@ -26,8 +26,8 @@ class mod_flashcards_external extends external_api {
         $params = self::validate_parameters(self::mark_as_seen_parameters(), compact('termid'));
         extract($params);
 
-        $term = $DB->get_record('flashcards_terms', ['id' => $termid], '*', MUST_EXIST);
-        $mod = mod_flashcards_module::get_by_modid($term->modid);
+        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
         // We do not log the completion for teachers.
@@ -38,13 +38,13 @@ class mod_flashcards_external extends external_api {
         // Require view and make sure the user did not previously mark as seen.
         $params = ['userid' => $USER->id, 'termid' => $termid];
         $mod->require_view();
-        if ($DB->record_exists('flashcards_seen', $params)) {
+        if ($DB->record_exists('wordcards_seen', $params)) {
             return true;
         }
 
         $record = (object) $params;
         $record->timecreated = time();
-        $DB->insert_record('flashcards_seen', $record);
+        $DB->insert_record('wordcards_seen', $record);
 
         return true;
     }
@@ -65,8 +65,8 @@ class mod_flashcards_external extends external_api {
         $params = self::validate_parameters(self::report_successful_association_parameters(), compact('termid'));
         extract($params);
 
-        $term = $DB->get_record('flashcards_terms', ['id' => $termid], '*', MUST_EXIST);
-        $mod = mod_flashcards_module::get_by_modid($term->modid);
+        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
         // We do not log associations for teachers.
@@ -98,8 +98,8 @@ class mod_flashcards_external extends external_api {
         $params = self::validate_parameters(self::report_failed_association_parameters(), compact('term1id', 'term2id'));
         extract($params);
 
-        $term = $DB->get_record('flashcards_terms', ['id' => $term1id], '*', MUST_EXIST);
-        $mod = mod_flashcards_module::get_by_modid($term->modid);
+        $term = $DB->get_record('wordcards_terms', ['id' => $term1id], '*', MUST_EXIST);
+        $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
         // We do not log associations for teachers.

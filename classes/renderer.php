@@ -2,24 +2,24 @@
 /**
  * Renderer.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
 /**
  * Renderer class.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_flashcards_renderer extends plugin_renderer_base {
+class mod_wordcards_renderer extends plugin_renderer_base {
 
-    public function definitions_page(mod_flashcards_module $mod) {
+    public function definitions_page(mod_wordcards_module $mod) {
         global $PAGE, $OUTPUT;
 
         $definitions = $mod->get_terms();
         if (empty($definitions)) {
-            return $OUTPUT->notification(get_string('nodefinitions', 'mod_flashcards'));
+            return $OUTPUT->notification(get_string('nodefinitions', 'mod_wordcards'));
         }
 
         // Get whe the student has seen.
@@ -34,28 +34,28 @@ class mod_flashcards_renderer extends plugin_renderer_base {
 
         $data = [
             'canmanage' => $mod->can_manage(),
-            'str_definition' => get_string('definition', 'mod_flashcards'),
+            'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
-            'gotit' => get_string('gotit', 'mod_flashcards'),
-            'loading' => get_string('loading', 'mod_flashcards'),
+            'gotit' => get_string('gotit', 'mod_wordcards'),
+            'loading' => get_string('loading', 'mod_wordcards'),
             'loadingurl' => $this->pix_url('i/loading_small')->out(true),
-            'markasseen' => get_string('markasseen', 'mod_flashcards'),
+            'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
-            'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_flashcards'),
-            'nexturl' => (new moodle_url('/mod/flashcards/local.php', ['id' => $mod->get_cmid()]))->out(true),
-            'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_flashcards'),
-            'notseenurl' => $this->pix_url('not-seen', 'mod_flashcards')->out(true),
+            'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_wordcards'),
+            'nexturl' => (new moodle_url('/mod/wordcards/local.php', ['id' => $mod->get_cmid()]))->out(true),
+            'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
+            'notseenurl' => $this->pix_url('not-seen', 'mod_wordcards')->out(true),
             'seenall' => count($definitions) == count($seen),
-            'seenurl' => $this->pix_url('seen', 'mod_flashcards')->out(true),
-            'str_term' => get_string('term', 'mod_flashcards'),
-            'termnotseen' => get_string('termnotseen', 'mod_flashcards'),
-            'termseen' => get_string('termseen', 'mod_flashcards'),
+            'seenurl' => $this->pix_url('seen', 'mod_wordcards')->out(true),
+            'str_term' => get_string('term', 'mod_wordcards'),
+            'termnotseen' => get_string('termnotseen', 'mod_wordcards'),
+            'termseen' => get_string('termseen', 'mod_wordcards'),
         ];
 
-        return $this->render_from_template('mod_flashcards/definitions_page', $data);
+        return $this->render_from_template('mod_wordcards/definitions_page', $data);
     }
 
-    public function finish_page(mod_flashcards_module $mod, $globalscattertime = 0, $localscattertime = 0) {
+    public function finish_page(mod_wordcards_module $mod, $globalscattertime = 0, $localscattertime = 0) {
         if (!empty($globalscattertime)) {
             $scattertime = $globalscattertime;
         } else {
@@ -69,10 +69,10 @@ class mod_flashcards_renderer extends plugin_renderer_base {
             'finishtext' => $scattertimemsg .  ' <br/> ' . $mod->get_completedmsg(),
             'modid' => $mod->get_id(),
         ];
-        return $this->render_from_template('mod_flashcards/finish_page', $data);
+        return $this->render_from_template('mod_wordcards/finish_page', $data);
     }
 
-    public function local_page(mod_flashcards_module $mod) {
+    public function local_page(mod_wordcards_module $mod) {
         $definitions = $mod->get_local_terms();
 
         $completeafterlocal = $mod->completeafterlocal();
@@ -80,22 +80,22 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         $data = [
             'canmanage' => $mod->can_manage(),
             'continue' => get_string('continue'),
-            'congrats' => get_string('congrats', 'mod_flashcards'),
+            'congrats' => get_string('congrats', 'mod_wordcards'),
             'definitionsjson' => json_encode(array_values($definitions)),
-            'finishscatterin' => get_string('finishscatterin', 'mod_flashcards'),
+            'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
             'finishedscattermsg' => $mod->get_finishedscattermsg(),
             'modid' => $mod->get_id(),
             'hascontinue' => true,
             'completeafterlocal' => $completeafterlocal,
-            'nexturl' => empty($completeafterlocal) ? (new moodle_url('/mod/flashcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
-                : (new moodle_url('/mod/flashcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
+            'nexturl' => empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
+                : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
         ];
 
-        return $this->render_from_template('mod_flashcards/cards_page', $data);
+        return $this->render_from_template('mod_wordcards/cards_page', $data);
     }
 
-    public function navigation(mod_flashcards_module $mod, $currentstate) {
-        $tabtree = mod_flashcards_helper::get_tabs($mod, $currentstate);
+    public function navigation(mod_wordcards_module $mod, $currentstate) {
+        $tabtree = mod_wordcards_helper::get_tabs($mod, $currentstate);
         if ($mod->can_manage()) {
             // Teachers see the tabs, as normal tabs.
             return $this->render($tabtree);
@@ -121,29 +121,29 @@ class mod_flashcards_renderer extends plugin_renderer_base {
         $data = [
             'tabs' => $tabs
         ];
-        return $this->render_from_template('mod_flashcards/student_navigation', $data);
+        return $this->render_from_template('mod_wordcards/student_navigation', $data);
     }
 
-    public function global_page(mod_flashcards_module $mod) {
+    public function global_page(mod_wordcards_module $mod) {
         list($state) = $mod->get_state();
         $definitions = $mod->get_global_terms();
 
         $data = [
             'canmanage' => $mod->can_manage(),
             'continue' => get_string('continue'),
-            'congrats' => get_string('congrats', 'mod_flashcards'),
+            'congrats' => get_string('congrats', 'mod_wordcards'),
             'definitionsjson' => json_encode(array_values($definitions)),
-            'finishscatterin' => get_string('finishscatterin', 'mod_flashcards'),
+            'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
             'finishedscattermsg' => $mod->get_finishedscattermsg(),
             'modid' => $mod->get_id(),
-            'isglobalcompleted' => $state == mod_flashcards_module::STATE_END,
-            'hascontinue' => $state != mod_flashcards_module::STATE_END,
-            'nexturl' => (new moodle_url('/mod/flashcards/finish.php',
+            'isglobalcompleted' => $state == mod_wordcards_module::STATE_END,
+            'hascontinue' => $state != mod_wordcards_module::STATE_END,
+            'nexturl' => (new moodle_url('/mod/wordcards/finish.php',
                 ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
             'isglobalscatter' => true
         ];
 
-        return $this->render_from_template('mod_flashcards/cards_page', $data);
+        return $this->render_from_template('mod_wordcards/cards_page', $data);
     }
 
 }

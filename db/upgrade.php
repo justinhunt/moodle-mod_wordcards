@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // This file keeps track of upgrades to
-// the flashcards module
+// the wordcards module
 //
 // Sometimes, changes between versions involve
 // alterations to database structures and other
@@ -36,15 +36,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-function xmldb_flashcards_upgrade($oldversion) {
+function xmldb_wordcards_upgrade($oldversion) {
     global $CFG, $DB;
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     if ($oldversion < 2016080200) {
 
-        // Define field skipglobal to be added to flashcards.
-        $table = new xmldb_table('flashcards');
+        // Define field skipglobal to be added to wordcards.
+        $table = new xmldb_table('wordcards');
         $field = new xmldb_field('skipglobal', XMLDB_TYPE_INTEGER, '1', null, null, null, '1', 'timemodified');
 
         // Conditionally launch add field skipglobal.
@@ -52,14 +52,14 @@ function xmldb_flashcards_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Flashcards savepoint reached.
-        upgrade_mod_savepoint(true, 2016080200, 'flashcards');
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2016080200, 'wordcards');
     }
 
     if ($oldversion < 2016080500) {
 
-        // Define field finishedscattermsg to be added to flashcards.
-        $table = new xmldb_table('flashcards');
+        // Define field finishedscattermsg to be added to wordcards.
+        $table = new xmldb_table('wordcards');
         $field = new xmldb_field('finishedscattermsg', XMLDB_TYPE_TEXT, null, null, null, null, null, 'skipglobal');
 
         // Conditionally launch add field finishedscattermsg.
@@ -67,8 +67,8 @@ function xmldb_flashcards_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-         // Define field completedmsg to be added to flashcards.
-        $table = new xmldb_table('flashcards');
+         // Define field completedmsg to be added to wordcards.
+        $table = new xmldb_table('wordcards');
         $field = new xmldb_field('completedmsg', XMLDB_TYPE_TEXT, null, null, null, null, null, 'finishedscattermsg');
 
         // Conditionally launch add field completedmsg.
@@ -76,8 +76,8 @@ function xmldb_flashcards_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Flashcards savepoint reached.
-        upgrade_mod_savepoint(true, 2016080500, 'flashcards');
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2016080500, 'wordcards');
     }
 
     return true;

@@ -1,8 +1,8 @@
 <?php
 /**
- * Displays information about the flashcards in the course.
+ * Displays information about the wordcards in the course.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -24,8 +24,8 @@ $string['delim_pipe'] = 'パイプ';
 $string['description'] = '説明';
 $string['editterm'] = '新出用語の編集 \'{$a}\'';
 $string['finishscatterin'] = '<div style="text-align: center;">おめでとうございます! <br/> 完成時間は [[time]]</div>';
-$string['flashcards:addinstance'] = 'インスタンスの追加';
-$string['flashcards:view'] = 'モジュールの表示';
+$string['wordcards:addinstance'] = 'インスタンスの追加';
+$string['wordcards:view'] = 'モジュールの表示';
 $string['globalscatter'] = '復習';
 $string['globalscatterfinished'] = '復習は {$a->seconds} 秒で完成しました。';
 $string['globaltermcount'] = '復習用語の数';
@@ -40,15 +40,15 @@ $string['localtermcount'] = '新出用語の数';
 $string['loading'] = 'ロード中';
 $string['localscatter'] = '新出用語の練習';
 $string['markasseen'] = '「チェック」をする';
-$string['modulename'] = 'Flashcards';
-$string['modulename_help'] = 'Flashcardsは単語・用語を暗記するアクティビティです。すでに習った単語の復習活動がふくめています。';
-$string['modulenameplural'] = 'Flashcards';
+$string['modulename'] = 'Wordcards';
+$string['modulename_help'] = 'Wordcardsは単語・用語を暗記するアクティビティです。すでに習った単語の復習活動がふくめています。';
+$string['modulenameplural'] = 'Wordcards';
 $string['mustseealltocontinue'] = '全ての用語を「チェック」して進みましょう。';
 $string['name'] = 'Name';
 $string['nodefinitions'] = '用語はまだ入れていません。';
 $string['noteaboutseenforteachers'] = //'注意: 生徒の進捗のみは記録されます.';
-$string['pluginadministration'] = 'Flashcards 管理';
-$string['pluginname'] = 'Flashcards';
+$string['pluginadministration'] = 'Wordcards 管理';
+$string['pluginname'] = 'Wordcards';
 $string['reallydeleteterm'] = '本当のこの用語を削除しますか？： \'{$a}\'?';
 $string['setup'] = '用語の追加・編集';
 $string['skipglobal'] = '最初のコース練習を隠す';

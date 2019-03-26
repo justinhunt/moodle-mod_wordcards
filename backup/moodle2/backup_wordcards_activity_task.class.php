@@ -14,34 +14,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Defines backup_flashcards_activity_task class
+ * Defines backup_wordcards_activity_task class
  *
- * @package   mod_flashcards
+ * @package   mod_wordcards
  * @category  backup
  * @copyright 2016 Jerome Mouneyrac <jerome@mouneyrac.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/mod/flashcards/backup/moodle2/backup_flashcards_stepslib.php');
+require_once($CFG->dirroot . '/mod/wordcards/backup/moodle2/backup_wordcards_stepslib.php');
 /**
- * Provides the steps to perform one complete backup of the flashcards instance
+ * Provides the steps to perform one complete backup of the wordcards instance
  *
- * @package   mod_flashcards
+ * @package   mod_wordcards
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_flashcards_activity_task extends backup_activity_task {
+class backup_wordcards_activity_task extends backup_activity_task {
     /**
      * No specific settings for this activity
      */
     protected function define_my_settings() {
     }
     /**
-     * Defines a backup step to store the instance data in the flashcards.xml file
+     * Defines a backup step to store the instance data in the wordcards.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_flashcards_activity_structure_step('flashcards_structure', 'flashcards.xml'));
+        $this->add_step(new backup_wordcards_activity_structure_step('wordcards_structure', 'wordcards.xml'));
     }
     /**
      * Encodes URLs to the index.php and view.php scripts
@@ -52,11 +52,11 @@ class backup_flashcards_activity_task extends backup_activity_task {
     static public function encode_content_links($content) {
         global $CFG;
         $base = preg_quote($CFG->wwwroot, '/');
-        // Link to the list of flashcards.
-        $search = '/('.$base.'\/mod\/flashcards\/index.php\?id\=)([0-9]+)/';
+        // Link to the list of wordcards.
+        $search = '/('.$base.'\/mod\/wordcards\/index.php\?id\=)([0-9]+)/';
         $content = preg_replace($search, '$@FLASHCARDSINDEX*$2@$', $content);
-        // Link to flashcards view by moduleid.
-        $search = '/('.$base.'\/mod\/flashcards\/view.php\?id\=)([0-9]+)/';
+        // Link to wordcards view by moduleid.
+        $search = '/('.$base.'\/mod\/wordcards\/view.php\?id\=)([0-9]+)/';
         $content = preg_replace($search, '$@FLASHCARDSVIEWBYID*$2@$', $content);
         return $content;
     }

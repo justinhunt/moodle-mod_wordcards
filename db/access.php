@@ -2,7 +2,7 @@
 /**
  * Capability definitions for this module.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -10,7 +10,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
 
-    'mod/flashcards:view' => [
+    'mod/wordcards:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -21,7 +21,7 @@ $capabilities = [
         ]
     ],
 
-    'mod/flashcards:addinstance' => [
+    'mod/wordcards:addinstance' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,

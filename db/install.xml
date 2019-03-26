@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/flashcards/db" VERSION="20160805" COMMENT="XMLDB file for Moodle mod/flashcards"
+<XMLDB PATH="mod/wordcards/db" VERSION="20160805" COMMENT="XMLDB file for Moodle mod/wordcards"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="flashcards" COMMENT="Module info">
+    <TABLE NAME="wordcards" COMMENT="Module info">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -16,7 +16,7 @@
         <FIELD NAME="completionwhenfinish" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="skipglobal" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Hide the global scatter of this specific activity if no flashcards activities have been completed in this course."/>
+        <FIELD NAME="skipglobal" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Hide the global scatter of this specific activity if no wordcards activities have been completed in this course."/>
         <FIELD NAME="finishedscattermsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user finish a scatter."/>
         <FIELD NAME="completedmsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user complete the entire activity"/>
       </FIELDS>
@@ -27,10 +27,10 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="flashcards_terms" COMMENT="Terms">
+    <TABLE NAME="wordcards_terms" COMMENT="Terms">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The ID from the flashcards table"/>
+        <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The ID from the wordcards table"/>
         <FIELD NAME="term" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="definition" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="deleted" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -42,7 +42,7 @@
         <INDEX NAME="modid" UNIQUE="false" FIELDS="modid"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="flashcards_seen" COMMENT="The terms seen by the students">
+    <TABLE NAME="wordcards_seen" COMMENT="The terms seen by the students">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="termid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -56,7 +56,7 @@
         <INDEX NAME="termuser" UNIQUE="true" FIELDS="termid, userid"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="flashcards_progress" COMMENT="User progression">
+    <TABLE NAME="wordcards_progress" COMMENT="User progression">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -71,7 +71,7 @@
         <INDEX NAME="moduser" UNIQUE="true" FIELDS="modid, userid"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="flashcards_associations" COMMENT="Record of the associations made by users">
+    <TABLE NAME="wordcards_associations" COMMENT="Record of the associations made by users">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="termid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

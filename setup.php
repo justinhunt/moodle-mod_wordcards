@@ -2,7 +2,7 @@
 /**
  * Displays the set-up phase.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -12,7 +12,7 @@ $cmid = required_param('id', PARAM_INT);
 $termid = optional_param('termid', null, PARAM_INT);
 $action = optional_param('action', null, PARAM_ALPHA);
 
-$mod = mod_flashcards_module::get_by_cmid($cmid);
+$mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
 
@@ -20,8 +20,8 @@ require_login($course, true, $cm);
 $mod->require_manage();
 
 $modid = $mod->get_id();
-$pagetitle = get_string('setup', 'mod_flashcards');
-$baseurl = new moodle_url('/mod/flashcards/setup.php', ['id' => $cmid]);
+$pagetitle = get_string('setup', 'mod_wordcards');
+$baseurl = new moodle_url('/mod/wordcards/setup.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
 $term = null;
 
@@ -30,23 +30,23 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 
-$output = $PAGE->get_renderer('mod_flashcards');
+$output = $PAGE->get_renderer('mod_wordcards');
 
 if ($action == 'delete') {
     confirm_sesskey();
     $mod->delete_term($termid);
     // Uncomment when migrating to 3.1.
-    // redirect($PAGE->url, get_string('termdeleted', 'mod_flashcards'));
+    // redirect($PAGE->url, get_string('termdeleted', 'mod_wordcards'));
     redirect($PAGE->url);
 
 } else if ($action == 'edit') {
     // Adding those parameters ensures that we confirm that the term belongs to the right module after submission.
     $formurl->param('action', 'edit');
     $formurl->param('termid', 'termid');
-    $term = $DB->get_record('flashcards_terms', ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
+    $term = $DB->get_record('wordcards_terms', ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
 }
 
-$form = new mod_flashcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0]);
+$form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0]);
 if ($term) {
     $form->set_data($term);
 }
@@ -54,16 +54,16 @@ if ($term) {
 if ($data = $form->get_data()) {
     if (empty($data->termid)) {
         $data->modid = $modid;
-        $DB->insert_record('flashcards_terms', $data);
+        $DB->insert_record('wordcards_terms', $data);
         // Uncomment when migrating to 3.1.
-        // redirect($PAGE->url, get_string('termadded', 'mod_flashcards', $data->term));
+        // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
         redirect($PAGE->url);
 
     } else {
         $data->id = $data->termid;
-        $DB->update_record('flashcards_terms', $data);
+        $DB->update_record('wordcards_terms', $data);
         // Uncomment when migrating to 3.1.
-        // redirect($PAGE->url, get_string('termsaved', 'mod_flashcards', $data->term));
+        // redirect($PAGE->url, get_string('termsaved', 'mod_wordcards', $data->term));
         redirect($PAGE->url);
     }
 }
@@ -75,7 +75,7 @@ echo $output->navigation($mod, 'setup');
 
 $form->display();
 
-$table = new mod_flashcards_table_terms('tblterms', $mod);
+$table = new mod_wordcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);
 $table->out(25, false);
 

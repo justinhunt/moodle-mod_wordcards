@@ -2,7 +2,7 @@
 /**
  * Module.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -11,10 +11,10 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Module class.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_flashcards_module {
+class mod_wordcards_module {
 
     const STATE_TERMS = 'terms';
     const STATE_LOCAL = 'local';
@@ -37,15 +37,15 @@ class mod_flashcards_module {
         global $DB;
         $this->course = $course;
         $this->cm = $cm;
-        $this->mod = $DB->get_record('flashcards', ['id' => $cm->instance], '*', MUST_EXIST);
+        $this->mod = $DB->get_record('wordcards', ['id' => $cm->instance], '*', MUST_EXIST);
         $this->context = context_module::instance($cm->id);
     }
 
     protected function course_has_term($termid) {
         global $DB;
         $sql = "SELECT 'x'
-                  FROM {flashcards_terms} t
-                  JOIN {flashcards} f
+                  FROM {wordcards_terms} t
+                  JOIN {wordcards} f
                     ON t.modid = f.id
                  WHERE t.id = ?
                    AND f.course = ?
@@ -56,26 +56,26 @@ class mod_flashcards_module {
     public function delete() {
         global $DB;
         $modid = $this->get_id();
-        $DB->execute('DELETE FROM {flashcards_seen}
+        $DB->execute('DELETE FROM {wordcards_seen}
                        WHERE termid IN (
                             SELECT t.id
-                              FROM {flashcards_terms} t
+                              FROM {wordcards_terms} t
                              WHERE t.modid = ?
                             )', [$modid]);
-        $DB->execute('DELETE FROM {flashcards_associations}
+        $DB->execute('DELETE FROM {wordcards_associations}
                        WHERE termid IN (
                             SELECT t.id
-                              FROM {flashcards_terms} t
+                              FROM {wordcards_terms} t
                              WHERE t.modid = ?
                             )', [$modid]);
-        $DB->delete_records('flashcards_terms', array('modid' => $modid));
-        $DB->delete_records('flashcards_progress', array('modid' => $modid));
-        $DB->delete_records('flashcards', array('id' => $modid));
+        $DB->delete_records('wordcards_terms', array('modid' => $modid));
+        $DB->delete_records('wordcards_progress', array('modid' => $modid));
+        $DB->delete_records('wordcards', array('id' => $modid));
     }
 
     public function delete_term($termid) {
         global $DB;
-        $DB->set_field('flashcards_terms', 'deleted', 1, ['modid' => $this->get_id(), 'id' => $termid]);
+        $DB->set_field('wordcards_terms', 'deleted', 1, ['modid' => $this->get_id(), 'id' => $termid]);
     }
 
     public static function get_all_states() {
@@ -140,7 +140,7 @@ class mod_flashcards_module {
 
         // Figure out what modules are visible to the user.
         $modinfo = get_fast_modinfo($this->get_course());
-        $cms = $modinfo->get_instances_of('flashcards');
+        $cms = $modinfo->get_instances_of('wordcards');
         $allowedmodids = [];
         foreach ($cms as $cm) {
             if ($cm->uservisible) {
@@ -157,8 +157,8 @@ class mod_flashcards_module {
             // Teachers see any record randomly ordered.
             $selectsql = "SELECT t.* ";
             $countsql = "SELECT COUNT(t.id) ";
-            $sql = " FROM {flashcards_terms} t
-                      JOIN {flashcards} f
+            $sql = " FROM {wordcards_terms} t
+                      JOIN {wordcards} f
                         ON f.id = t.modid
                      WHERE t.deleted = 0        -- The term was not deleted.
                        AND f.id $insql          -- The user has access to the module in which the term is.
@@ -168,13 +168,13 @@ class mod_flashcards_module {
             $sql = $selectsql . $sql;
         } else {
             $sql = "SELECT t.*
-                      FROM {flashcards_terms} t
-                      JOIN {flashcards} f
+                      FROM {wordcards_terms} t
+                      JOIN {wordcards} f
                         ON f.id = t.modid
-                      JOIN {flashcards_seen} s          -- Join on what the student has marked as seen.
+                      JOIN {wordcards_seen} s          -- Join on what the student has marked as seen.
                         ON s.termid = t.id
                        AND s.userid = :userid1
-                 LEFT JOIN {flashcards_associations} a  -- Link the associations, if any.
+                 LEFT JOIN {wordcards_associations} a  -- Link the associations, if any.
                         ON a.termid = t.id
                        AND a.userid = :userid2
                      WHERE t.deleted = 0        -- The term was not deleted.
@@ -220,7 +220,7 @@ class mod_flashcards_module {
             return [self::STATE_END, null];
         }
 
-        $record = $DB->get_record('flashcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id]);
+        $record = $DB->get_record('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id]);
         if (!$record) {
             return [self::STATE_TERMS, null];
         }
@@ -233,15 +233,15 @@ class mod_flashcards_module {
         if (!$includedeleted) {
             $params['deleted'] = 0;
         }
-        return $DB->get_records('flashcards_terms', $params, 'id ASC');
+        return $DB->get_records('wordcards_terms', $params, 'id ASC');
     }
 
     public function get_terms_seen() {
         global $DB, $USER;
 
         $sql = 'SELECT s.*
-                  FROM {flashcards_seen} s
-                  JOIN {flashcards_terms} t
+                  FROM {wordcards_seen} s
+                  JOIN {wordcards_terms} t
                     ON s.termid = t.id
                    AND t.deleted = 0
                  WHERE t.modid = ?
@@ -254,8 +254,8 @@ class mod_flashcards_module {
         global $DB, $USER;
 
         $sql = "SELECT COUNT('x')
-                  FROM {flashcards_terms} t
-                  JOIN {flashcards_associations} a
+                  FROM {wordcards_terms} t
+                  JOIN {wordcards_associations} a
                     ON a.termid = t.id
                  WHERE a.userid = ?
                    AND t.modid = ?
@@ -274,8 +274,8 @@ class mod_flashcards_module {
         }
 
         $sql = "SELECT 'x'
-                  FROM {flashcards_terms} t
-             LEFT JOIN {flashcards_seen} s
+                  FROM {wordcards_terms} t
+             LEFT JOIN {wordcards_seen} s
                     ON t.id = s.termid
                    AND s.userid = ?
                  WHERE t.deleted = 0
@@ -288,12 +288,12 @@ class mod_flashcards_module {
 
     public function has_terms() {
         global $DB;
-        return $DB->record_exists('flashcards_terms', ['modid' => $this->get_id()]);
+        return $DB->record_exists('wordcards_terms', ['modid' => $this->get_id()]);
     }
 
     public function has_user_completed_activity($userid) {
         global $DB;
-        $record = $DB->get_record('flashcards_progress', ['modid' => $this->get_id(), 'userid' => $userid]);
+        $record = $DB->get_record('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $userid]);
         return $record && $record->state == self::STATE_END;
     }
 
@@ -311,13 +311,13 @@ class mod_flashcards_module {
         }
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
-        if (!($record1 = $DB->get_record('flashcards_associations', $params))) {
+        if (!($record1 = $DB->get_record('wordcards_associations', $params))) {
             $record1 = (object) $params;
             $record1->failcount = 0;
         }
 
         $params = ['userid' => $USER->id, 'termid' => $term2id];
-        if (!($record2 = $DB->get_record('flashcards_associations', $params))) {
+        if (!($record2 = $DB->get_record('wordcards_associations', $params))) {
             $record2 = (object) $params;
             $record2->failcount = 0;
         }
@@ -328,14 +328,14 @@ class mod_flashcards_module {
         $record2->lastfail = time();
 
         if (empty($record1->id)) {
-            $DB->insert_record('flashcards_associations', $record1);
+            $DB->insert_record('wordcards_associations', $record1);
         } else {
-            $DB->update_record('flashcards_associations', $record1);
+            $DB->update_record('wordcards_associations', $record1);
         }
         if (empty($record2->id)) {
-            $DB->insert_record('flashcards_associations', $record2);
+            $DB->insert_record('wordcards_associations', $record2);
         } else {
-            $DB->update_record('flashcards_associations', $record2);
+            $DB->update_record('wordcards_associations', $record2);
         }
     }
 
@@ -343,7 +343,7 @@ class mod_flashcards_module {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
-        if (!($record = $DB->get_record('flashcards_associations', $params))) {
+        if (!($record = $DB->get_record('wordcards_associations', $params))) {
             $record = (object) $params;
             $record->successcount = 0;
         }
@@ -352,9 +352,9 @@ class mod_flashcards_module {
         $record->lastsuccess = time();
 
         if (empty($record->id)) {
-            $DB->insert_record('flashcards_associations', $record);
+            $DB->insert_record('wordcards_associations', $record);
         } else {
-            $DB->update_record('flashcards_associations', $record);
+            $DB->update_record('wordcards_associations', $record);
         }
     }
 
@@ -373,15 +373,15 @@ class mod_flashcards_module {
 
         switch ($state) {
             case self::STATE_TERMS:
-                redirect(new moodle_url('/mod/flashcards/view.php', ['id' => $this->get_cmid()]));
+                redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $this->get_cmid()]));
                 break;
 
             case self::STATE_LOCAL:
-                redirect(new moodle_url('/mod/flashcards/local.php', ['id' => $this->get_cmid()]));
+                redirect(new moodle_url('/mod/wordcards/local.php', ['id' => $this->get_cmid()]));
                 break;
 
             case self::STATE_GLOBAL:
-                redirect(new moodle_url('/mod/flashcards/global.php', ['id' => $this->get_cmid()]));
+                redirect(new moodle_url('/mod/wordcards/global.php', ['id' => $this->get_cmid()]));
                 break;
         }
     }
@@ -390,7 +390,7 @@ class mod_flashcards_module {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'modid' => $this->get_id()];
-        if ($record = $DB->get_record('flashcards_progress', $params)) {
+        if ($record = $DB->get_record('wordcards_progress', $params)) {
         } else {
             $record = (object) $params;
         }
@@ -398,9 +398,9 @@ class mod_flashcards_module {
         $record->state = $state;
         $record->statedata = json_encode($statedata);
         if (!empty($record->id)) {
-            $DB->update_record('flashcards_progress', $record);
+            $DB->update_record('wordcards_progress', $record);
         } else {
-            $DB->insert_record('flashcards_progress', $record);
+            $DB->insert_record('wordcards_progress', $record);
         }
 
         // The user finished the activity, notify the completion API.
@@ -455,26 +455,26 @@ class mod_flashcards_module {
 
     // Factories.
     public static function get_by_cmid($cmid) {
-        list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'flashcards');
+        list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'wordcards');
         return new static($course, $cm);
     }
 
     public static function get_by_modid($modid) {
-        list($course, $cm) = get_course_and_cm_from_instance($modid, 'flashcards');
+        list($course, $cm) = get_course_and_cm_from_instance($modid, 'wordcards');
         return new static($course, $cm);
     }
 
     // Capabilities.
     public function can_manage() {
-        return  has_capability('mod/flashcards:addinstance', $this->context);
+        return  has_capability('mod/wordcards:addinstance', $this->context);
     }
 
     public function require_manage() {
-        require_capability('mod/flashcards:addinstance', $this->context);
+        require_capability('mod/wordcards:addinstance', $this->context);
     }
 
     public function can_view() {
-        return  has_capability('mod/flashcards:view', $this->context);
+        return  has_capability('mod/wordcards:view', $this->context);
     }
 
     public function require_view() {
@@ -482,14 +482,14 @@ class mod_flashcards_module {
     }
 
     public static function require_view_in_context(context $context) {
-        require_capability('mod/flashcards:view', $context);
+        require_capability('mod/wordcards:view', $context);
     }
 
     /**
-     * Should we complete the flashcard when local scatter is finished.
+     * Should we complete the wordcard when local scatter is finished.
      *
-     * It is the case for a student who didn't complete any flashcard and if the
-     * flashcard is set to skip the global scatter as first fashcard instance.
+     * It is the case for a student who didn't complete any wordcard and if the
+     * wordcard is set to skip the global scatter as first fashcard instance.
      *
      * @return bool true if we should complete the activity after the local scatter..
      */
@@ -500,7 +500,7 @@ class mod_flashcards_module {
             $userid = $USER->id;
         }
 
-        // if the user has setup permission then he can never complete the flashcard.
+        // if the user has setup permission then he can never complete the wordcard.
         if ($this->can_manage()) {
             return false;
         }
@@ -510,11 +510,11 @@ class mod_flashcards_module {
             return false;
         }
 
-        // Retrieve the list of flashcard modids of the course.
+        // Retrieve the list of wordcard modids of the course.
         $modids = array();
 
-        foreach(get_fast_modinfo($this->course)->get_instances_of('flashcards') as $flashcard) {
-            $modids[] = $flashcard->instance;
+        foreach(get_fast_modinfo($this->course)->get_instances_of('wordcards') as $wordcard) {
+            $modids[] = $wordcard->instance;
         }
 
         $params = array('state' => self::STATE_END, 'userid' => $userid);
@@ -522,10 +522,10 @@ class mod_flashcards_module {
         $params = array_merge($params, $modidparams);
         $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
 
-        $completedflashcardtotal = $DB->count_records_select('flashcards_progress',
+        $completedwordcardtotal = $DB->count_records_select('wordcards_progress',
             'state = :state AND userid = :userid ' . $sqlmodidtest, $params);
 
-        return (empty($completedflashcardtotal));
+        return (empty($completedwordcardtotal));
     }
 
 }

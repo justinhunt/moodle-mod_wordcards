@@ -2,7 +2,7 @@
 /**
  * Lib.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -15,7 +15,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param string $feature FEATURE_xx constant for requested feature.
  * @return mixed True if module supports feature, null if doesn't know.
  */
-function flashcards_supports($feature) {
+function wordcards_supports($feature) {
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -30,7 +30,7 @@ function flashcards_supports($feature) {
     }
 }
 
-function flashcards_add_instance(stdClass $module, mod_flashcards_mod_form $mform = null) {
+function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform = null) {
     global $DB;
 
     $module->timecreated = time();
@@ -43,12 +43,12 @@ function flashcards_add_instance(stdClass $module, mod_flashcards_mod_form $mfor
     $module->finishedscattermsg = $module->finishedscattermsg_editor['text'];
     $module->completedmsg = $module->completedmsg_editor['text'];
 
-    $module->id = $DB->insert_record('flashcards', $module);
+    $module->id = $DB->insert_record('wordcards', $module);
 
     return $module->id;
 }
 
-function flashcards_update_instance(stdClass $module, mod_flashcards_mod_form $mform = null) {
+function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mform = null) {
     global $DB;
 
     $module->timemodified = time();
@@ -61,13 +61,13 @@ function flashcards_update_instance(stdClass $module, mod_flashcards_mod_form $m
     $module->finishedscattermsg = $module->finishedscattermsg_editor['text'];
     $module->completedmsg = $module->completedmsg_editor['text'];
 
-    return $DB->update_record('flashcards', $module);
+    return $DB->update_record('wordcards', $module);
 }
 
-function flashcards_delete_instance($modid) {
+function wordcards_delete_instance($modid) {
     global $DB;
 
-    $mod = mod_flashcards_module::get_by_modid($modid);
+    $mod = mod_wordcards_module::get_by_modid($modid);
     $mod->delete();
 
     return true;
@@ -82,10 +82,10 @@ function flashcards_delete_instance($modid) {
  * @param bool $type Type of comparison (or/and).
  * @return bool True if completed, false if not, else $type.
  */
-function flashcards_get_completion_state($course, $cm, $userid, $type) {
+function wordcards_get_completion_state($course, $cm, $userid, $type) {
     global $CFG;
 
-    $mod = mod_flashcards_module::get_by_cmid($cm->id);
+    $mod = mod_wordcards_module::get_by_cmid($cm->id);
     if ($mod->is_completion_enabled()) {
         return $mod->has_user_completed_activity($userid);
     }
@@ -100,52 +100,52 @@ function flashcards_get_completion_state($course, $cm, $userid, $type) {
  *
  * @param $mform form passed by reference
  */
-function flashcards_reset_course_form_definition(&$mform) {
-    $mform->addElement('header', 'flashcardsheader', get_string('modulenameplural', 'flashcards'));
-    $mform->addElement('checkbox', 'reset_flashcard', get_string('deleteallentries','flashcards'));
+function wordcards_reset_course_form_definition(&$mform) {
+    $mform->addElement('header', 'wordcardsheader', get_string('modulenameplural', 'wordcards'));
+    $mform->addElement('checkbox', 'reset_wordcard', get_string('deleteallentries','wordcards'));
 }
 
 /**
  * Course reset form defaults.
  * @return array
  */
-function flashcards_reset_course_form_defaults($course) {
-    return array('reset_flashcard'=>0);
+function wordcards_reset_course_form_defaults($course) {
+    return array('reset_wordcard'=>0);
 }
 
 /**
  * Actual implementation of the reset course functionality, delete all the
- * flashcards user data for course $data->courseid.
+ * wordcards user data for course $data->courseid.
  *
  * @global object
  * @global object
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function flashcards_reset_userdata($data) {
+function wordcards_reset_userdata($data) {
     global $CFG, $DB;
 
-    $componentstr = get_string('modulenameplural', 'flashcards');
+    $componentstr = get_string('modulenameplural', 'wordcards');
     $status = array();
 
-    if (!empty($data->reset_flashcard)) {
+    if (!empty($data->reset_wordcard)) {
 
-        // Find all flashcards of the course.
-        $flashcards = $DB->get_fieldset_select('flashcards', 'id', 'course = :course', array('course' => $data->courseid));
-        list($termssql, $termsparams) = $DB->get_in_or_equal($flashcards, SQL_PARAMS_NAMED);
+        // Find all wordcards of the course.
+        $wordcards = $DB->get_fieldset_select('wordcards', 'id', 'course = :course', array('course' => $data->courseid));
+        list($termssql, $termsparams) = $DB->get_in_or_equal($wordcards, SQL_PARAMS_NAMED);
 
         // Retrieve the terms.
-        $terms = $DB->get_fieldset_select('flashcards_terms', 'id', 'modid ' . $termssql, $termsparams);
+        $terms = $DB->get_fieldset_select('wordcards_terms', 'id', 'modid ' . $termssql, $termsparams);
         list($sql, $params) = $DB->get_in_or_equal($terms, SQL_PARAMS_NAMED);
 
-        $DB->delete_records_select('flashcards_associations', 'termid ' . $sql, $params);
-        $DB->delete_records_list('flashcards_progress', 'modid', $flashcards);
-        $DB->delete_records_select('flashcards_seen', 'termid ' . $sql, $params);
+        $DB->delete_records_select('wordcards_associations', 'termid ' . $sql, $params);
+        $DB->delete_records_list('wordcards_progress', 'modid', $wordcards);
+        $DB->delete_records_select('wordcards_seen', 'termid ' . $sql, $params);
 
-        $status[] = array('component' => $componentstr, 'item' => get_string('removeuserdata', 'flashcards'), 'error' => false);
+        $status[] = array('component' => $componentstr, 'item' => get_string('removeuserdata', 'wordcards'), 'error' => false);
     }
 
-    // PS: No flashcards date fields need to be shifted (i.e. need to be modified because the course start/end date changed)
+    // PS: No wordcards date fields need to be shifted (i.e. need to be modified because the course start/end date changed)
 
     return $status;
 }

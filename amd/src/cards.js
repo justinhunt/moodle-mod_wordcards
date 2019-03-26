@@ -1,7 +1,7 @@
 /**
  * Cards module.
  *
- * @package mod_flashcards
+ * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
 
@@ -61,7 +61,7 @@ define([
         });
 
         // Event listeners.
-        this._container.on('click', '.flashcard', this._handlePick.bind(this));
+        this._container.on('click', '.wordcard', this._handlePick.bind(this));
         $(window).on('resize', function() {
             if (this._resizeTimeout) {
                 clearTimeout(this._resizeTimeout);
@@ -87,7 +87,7 @@ define([
         if (cardCount % 2 < cardCount % 3) {
             perRow = 2;
         }
-        lineHeight = this._container.find('.flashcard').first().css('lineHeight');
+        lineHeight = this._container.find('.wordcard').first().css('lineHeight');
         lineHeightValue = parseInt(lineHeight.replace(/([^0-9]+)/, ''));
         lineHeightUnit = lineHeight.replace(/([0-9]+)/, '');
         suggestedHeight = 60;
@@ -99,7 +99,7 @@ define([
         cardWidth = Math.floor(width / perRow);
         cardHeight = Math.min(Math.round((height - PAGEOFFSET) / Math.ceil(cardCount / perRow)), suggestedHeight);
 
-        this._container.find('.flashcard').each(function(index, item) {
+        this._container.find('.wordcard').each(function(index, item) {
             $(item).css({
                 top: row * cardHeight,
                 left: col * cardWidth,
@@ -113,13 +113,13 @@ define([
             }
         });
 
-        this._container.find('.flashcard-content').css('maxHeight', cardHeight - CARDMARGIN);
+        this._container.find('.wordcard-content').css('maxHeight', cardHeight - CARDMARGIN);
         this._container.css({height: row * cardHeight});
         this._adjustCardContent();
     };
 
     Cards.prototype._adjustCardContent = function() {
-        this._container.find('.flashcard-content').each(function(index, el) {
+        this._container.find('.wordcard-content').each(function(index, el) {
             var node = $(el),
                 over,
                 txt,
@@ -142,7 +142,7 @@ define([
     };
 
     Cards.prototype._checkComplete = function() {
-        if (this._container.find('.flashcard.found').length == this._terms.length * 2) {
+        if (this._container.find('.wordcard.found').length == this._terms.length * 2) {
             this._trigger('complete');
         }
     };
@@ -199,9 +199,9 @@ define([
     };
 
     Cards.prototype._makeCard = function(id, text) {
-        var container = $('<div class="flashcard">'),
-            wrapper = $('<div class="flashcard-wrapper">'),
-            content = $('<div class="flashcard-content">');
+        var container = $('<div class="wordcard">'),
+            wrapper = $('<div class="wordcard-wrapper">'),
+            content = $('<div class="wordcard-content">');
 
         content.text(text);
         content.data('text', text);
@@ -222,7 +222,7 @@ define([
         }
 
         Ajax.call([{
-            methodname: 'mod_flashcards_report_failed_association',
+            methodname: 'mod_wordcards_report_failed_association',
             args: {
                 term1id: term1id,
                 term2id: term2id
@@ -236,7 +236,7 @@ define([
         }
 
         Ajax.call([{
-            methodname: 'mod_flashcards_report_successful_association',
+            methodname: 'mod_wordcards_report_successful_association',
             args: {
                 termid: termid
             }

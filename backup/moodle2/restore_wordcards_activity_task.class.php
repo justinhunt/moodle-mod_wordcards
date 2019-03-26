@@ -16,24 +16,24 @@
 /**
  * Provides the restore activity task class
  *
- * @package   mod_flashcards
+ * @package   mod_wordcards
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot . '/mod/flashcards/backup/moodle2/restore_flashcards_stepslib.php');
+require_once($CFG->dirroot . '/mod/wordcards/backup/moodle2/restore_wordcards_stepslib.php');
 /**
- * Restore task for the flashcards activity module
+ * Restore task for the wordcards activity module
  *
  * Provides all the settings and steps to perform complete restore of the activity.
  *
- * @package   mod_flashcards
+ * @package   mod_wordcards
  * @category  backup
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_flashcards_activity_task extends restore_activity_task {
+class restore_wordcards_activity_task extends restore_activity_task {
     /**
      * Define (add) particular settings this activity can have
      */
@@ -45,7 +45,7 @@ class restore_flashcards_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // We have just one structure step here.
-        $this->add_step(new restore_flashcards_activity_structure_step('flashcards_structure', 'flashcards.xml'));
+        $this->add_step(new restore_wordcards_activity_structure_step('wordcards_structure', 'wordcards.xml'));
     }
     /**
      * Define the contents in the activity that must be
@@ -53,7 +53,7 @@ class restore_flashcards_activity_task extends restore_activity_task {
      */
     static public function define_decode_contents() {
         $contents = array();
-        $contents[] = new restore_decode_content('flashcards', array('intro'), 'flashcards');
+        $contents[] = new restore_decode_content('wordcards', array('intro'), 'wordcards');
         return $contents;
     }
     /**
@@ -62,21 +62,21 @@ class restore_flashcards_activity_task extends restore_activity_task {
      */
     static public function define_decode_rules() {
         $rules = array();
-        $rules[] = new restore_decode_rule('FLASHCARDSVIEWBYID', '/mod/flashcards/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('FLASHCARDSINDEX', '/mod/flashcards/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('FLASHCARDSVIEWBYID', '/mod/wordcards/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('FLASHCARDSINDEX', '/mod/wordcards/index.php?id=$1', 'course');
         return $rules;
     }
     /**
      * Define the restore log rules that will be applied
      * by the {@link restore_logs_processor} when restoring
-     * flashcards logs. It must return one array
+     * wordcards logs. It must return one array
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
         $rules = array();
-        $rules[] = new restore_log_rule('flashcards', 'add', 'view.php?id={course_module}', '{flashcards}');
-        $rules[] = new restore_log_rule('flashcards', 'update', 'view.php?id={course_module}', '{flashcards}');
-        $rules[] = new restore_log_rule('flashcards', 'view', 'view.php?id={course_module}', '{flashcards}');
+        $rules[] = new restore_log_rule('wordcards', 'add', 'view.php?id={course_module}', '{wordcards}');
+        $rules[] = new restore_log_rule('wordcards', 'update', 'view.php?id={course_module}', '{wordcards}');
+        $rules[] = new restore_log_rule('wordcards', 'view', 'view.php?id={course_module}', '{wordcards}');
         return $rules;
     }
     /**
@@ -91,7 +91,7 @@ class restore_flashcards_activity_task extends restore_activity_task {
      */
     static public function define_restore_log_rules_for_course() {
         $rules = array();
-        $rules[] = new restore_log_rule('flashcards', 'view all', 'index.php?id={course}', null);
+        $rules[] = new restore_log_rule('wordcards', 'view all', 'index.php?id={course}', null);
         return $rules;
     }
 }

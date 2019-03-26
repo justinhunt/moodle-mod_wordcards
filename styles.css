@@ -1,10 +1,10 @@
 /* Global div encapsulating all the terms. */
-.path-mod-flashcards .terms {
+.path-mod-wordcards .terms {
     display: flex;
     flex-wrap: wrap;
 }
 /* Each term is defined by a .term-wrapper. */
-.path-mod-flashcards .term-wrapper {
+.path-mod-wordcards .term-wrapper {
     width: 32%;
     display: inline-block;
     border: 1px solid #eee;
@@ -14,86 +14,86 @@
     float: left;
 }
 /* Remove the margin at the end of each 'row'. */
-.path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+.path-mod-wordcards .term-wrapper:nth-of-type(3n) {
     margin-right: 0;
 }
-.dir-rtl.path-mod-flashcards .term-wrapper {
+.dir-rtl.path-mod-wordcards .term-wrapper {
     margin-left: 1%;
     margin-right: 0;
 }
 /* Another term div, in case the wrapper wasn't enough. */
-.path-mod-flashcards .term {
+.path-mod-wordcards .term {
     display: block;
     padding: 5px;
 }
 /* The term header, where the title and tick will be. */
-.path-mod-flashcards .term-header {
+.path-mod-wordcards .term-header {
     position: relative;
 }
 /* Term title. Where a right padding is kept to leave room for the tick. */
-.path-mod-flashcards .term-header .term-title {
+.path-mod-wordcards .term-header .term-title {
     font-weight: bold;
     padding-right: 25px;
     border-bottom: 1px solid #ccc;  /* Separator between title and body. */
     padding-bottom: 10px;
     margin-bottom: 10px;
 }
-.dir-rtl.path-mod-flashcards .term-header .term-title {
+.dir-rtl.path-mod-wordcards .term-header .term-title {
     padding-right: 0;
     padding-left: 25px;
 }
 /* The term tick, absolutely positioned to the right. */
-.path-mod-flashcards .term-header .term-tick {
+.path-mod-wordcards .term-header .term-tick {
     position: absolute;
     right: 0;
     top: 0;
 }
-.dir-rtl.path-mod-flashcards .term-header .term-tick {
+.dir-rtl.path-mod-wordcards .term-header .term-tick {
     left: 0;
     right: auto;
 }
 /* The term body, where the definition will be displayed. */
-.path-mod-flashcards .term-body {
+.path-mod-wordcards .term-body {
 }
 
 /* Various classes for the appearance of the tick. */
-.path-mod-flashcards .term-seen-action {
+.path-mod-wordcards .term-seen-action {
     display: block;
 }
-.path-mod-flashcards .term-seen-state {
+.path-mod-wordcards .term-seen-state {
     display: none;
 }
-.path-mod-flashcards .term-seen .term-seen-action {
+.path-mod-wordcards .term-seen .term-seen-action {
     display: none;
 }
-.path-mod-flashcards .term-seen .term-seen-state {
+.path-mod-wordcards .term-seen .term-seen-state {
     display: block;
 }
-.path-mod-flashcards .term-seen-loading {
+.path-mod-wordcards .term-seen-loading {
     display: none;
 }
-.path-mod-flashcards .term-loading .term-tick > * {
+.path-mod-wordcards .term-loading .term-tick > * {
     /* Hide all the children. */
     display: none;
 }
-.path-mod-flashcards .term-loading .term-seen-loading {
+.path-mod-wordcards .term-loading .term-seen-loading {
     display: block;
 }
 
-.path-mod-flashcards .page-footer {
+.path-mod-wordcards .page-footer {
     margin-top: 20px;
 }
-.path-mod-flashcards .page-footer p {
+.path-mod-wordcards .page-footer p {
     text-align: right;
 }
-.dirt-rtl.path-mod-flashcards .page-footer p {
+.dirt-rtl.path-mod-wordcards .page-footer p {
     text-align: left;
 }
 
-.path-mod-flashcards .flashcards {
+.path-mod-wordcards .wordcards {
     position: relative;
 }
-.path-mod-flashcards .flashcards .flashcard {
+.path-mod-wordcards .wordcards .wordcard {
     position: absolute;
     display: table;
     box-sizing: border-box;
@@ -106,27 +106,27 @@
         -ms-user-select: none;
             user-select: none;
 }
-.path-mod-flashcards .flashcards .flashcard .flashcard-wrapper {
+.path-mod-wordcards .wordcards .wordcard .wordcard-wrapper {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
 }
-.path-mod-flashcards .flashcards .flashcard .flashcard-content {
+.path-mod-wordcards .wordcards .wordcard .wordcard-content {
     overflow: hidden;
     box-sizing: border-box;
     padding: 5px;
 }
-.path-mod-flashcards .flashcards .flashcard.selected,
-.path-mod-flashcards .flashcards .flashcard.found {
+.path-mod-wordcards .wordcards .wordcard.selected,
+.path-mod-wordcards .wordcards .wordcard.found {
     background-color: green;
     color: white;
     cursor: initial;
 }
-.path-mod-flashcards .flashcards .flashcard.mismatch {
+.path-mod-wordcards .wordcards .wordcard.mismatch {
     background-color: red;
     color: white;
 }
-.path-mod-flashcards .flashcards .congrats {
+.path-mod-wordcards .wordcards .congrats {
     width: 300px;
     height: 100px;
     padding: 20px;
@@ -138,17 +138,17 @@
     text-align: center;
     z-index:1;
 }
-.path-mod-flashcards .flashcards .congrats div {
+.path-mod-wordcards .wordcards .congrats div {
         padding-bottom: 10px;
 }
 
-.path-mod-flashcards .flashcards_timer {
+.path-mod-wordcards .wordcards_timer {
     position: absolute;
     z-index: 1;
     background-color: #ececec;
     display: none;
 }
-.path-mod-flashcards  .flashcards_timer_time {
+.path-mod-wordcards  .wordcards_timer_time {
 
 }
 
@@ -157,7 +157,7 @@
  *
  * Arrows need some ::before and ::after to work. A common CSS trick with borders.
  */
-.path-mod-flashcards .student-navigation .student-tab {
+.path-mod-wordcards .student-navigation .student-tab {
     text-decoration: none;
     display: block;
     float: left;
@@ -172,12 +172,12 @@
     box-sizing: border-box;
     font-size: 14px;
 }
-.dir-rtl.path-mod-flashcards .student-navigation .student-tab {
+.dir-rtl.path-mod-wordcards .student-navigation .student-tab {
     float: right;
     padding: 10px 20px 0 4px;
     margin: 0 0 10px 10px;
 }
-.path-mod-flashcards .student-navigation .student-tab::after {
+.path-mod-wordcards .student-navigation .student-tab::after {
     content: "";
     border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
@@ -187,13 +187,13 @@
     top: 0;
     z-index: 1;
 }
-.dir-rtl.path-mod-flashcards .student-navigation .student-tab::after {
+.dir-rtl.path-mod-wordcards .student-navigation .student-tab::after {
     border-left: 0;
     border-right: 12px solid #ccc;  /* Color for disabled tab. */
     left: -12px;
     right: auto;
 }
-.path-mod-flashcards .student-navigation .student-tab::before {
+.path-mod-wordcards .student-navigation .student-tab::before {
     content: "";
     border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
@@ -202,37 +202,37 @@
     left: 0;
     top: 0;
 }
-.dir-rtl.path-mod-flashcards .student-navigation .student-tab::before {
+.dir-rtl.path-mod-wordcards .student-navigation .student-tab::before {
     border-left: 0;
     border-right: 12px solid white;
     right: 0;
     left: auto;
 }
 
-.path-mod-flashcards .student-navigation .student-tab.active {
+.path-mod-wordcards .student-navigation .student-tab.active {
     background: #3498db;            /* The arrow colour for clickable tab. */
 }
-.path-mod-flashcards .student-navigation .student-tab.active::after {
+.path-mod-wordcards .student-navigation .student-tab.active::after {
     border-left-color: #3498db;     /* The arrow colour for clickable tab. */
 }
-.dir-rtl.path-mod-flashcards .student-navigation .student-tab.active::after {
+.dir-rtl.path-mod-wordcards .student-navigation .student-tab.active::after {
     border-right-color: #3498db;    /* The arrow colour for clickable tab. */
 }
 
-.path-mod-flashcards .student-navigation a.student-tab.current,
-.path-mod-flashcards .student-navigation a.student-tab:hover {
+.path-mod-wordcards .student-navigation a.student-tab.current,
+.path-mod-wordcards .student-navigation a.student-tab:hover {
     background: #0070a8;            /* The arrow colour for current tab and on hover effect. */
 }
-.path-mod-flashcards .student-navigation a.student-tab.current::after,
-.path-mod-flashcards .student-navigation a.student-tab:hover::after {
+.path-mod-wordcards .student-navigation a.student-tab.current::after,
+.path-mod-wordcards .student-navigation a.student-tab:hover::after {
     border-left-color: #0070a8;     /* The arrow colour for current tab and on hover effect. */
 }
-.dir-rtl.path-mod-flashcards .student-navigation a.student-tab.current::after,
-.dir-rtl.path-mod-flashcards .student-navigation a.student-tab:hover::after {
+.dir-rtl.path-mod-wordcards .student-navigation a.student-tab.current::after,
+.dir-rtl.path-mod-wordcards .student-navigation a.student-tab:hover::after {
     border-right-color: #0070a8;    /* The arrow colour for current tab and on hover effect. */
 }
 /* The step is the number within the arrows. */
-.path-mod-flashcards .student-navigation .student-tab .step {
+.path-mod-wordcards .student-navigation .student-tab .step {
     border-radius: 50%;
     background: #fff;
     color: #ccc;        /* Color for disabled tab. */
@@ -241,41 +241,41 @@
     height: 20px;
     font-size: 14px;
 }
-.path-mod-flashcards .student-navigation .student-tab.active .step {
+.path-mod-wordcards .student-navigation .student-tab.active .step {
     color: #3498db;     /* The arrow colour for clickable tab. */
 }
-.path-mod-flashcards .student-navigation a.student-tab.current .step,
-.path-mod-flashcards .student-navigation a.student-tab:hover .step {
+.path-mod-wordcards .student-navigation a.student-tab.current .step,
+.path-mod-wordcards .student-navigation a.student-tab:hover .step {
     color: #0070a8;     /* The arrow colour for current tab and on hover effect. */
 }
 
-.path-mod-flashcards .student-navigation .student-tab .text {
+.path-mod-wordcards .student-navigation .student-tab .text {
     display: inline-block;
 }
 
 /* Simple media query to reduce the number of terms to two on the width. */
 @media  (max-width:767px) {
-    .path-mod-flashcards .term-wrapper {
+    .path-mod-wordcards .term-wrapper {
         width: 49%;
     }
-    .path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+    .path-mod-wordcards .term-wrapper:nth-of-type(3n) {
         margin-right: 1%;
     }
-    .path-mod-flashcards .term-wrapper:nth-of-type(2n) {
+    .path-mod-wordcards .term-wrapper:nth-of-type(2n) {
         margin-right: 0;
     }
-    .dir-rtl.path-mod-flashcards .term-wrapper:nth-of-type(3n) {
+    .dir-rtl.path-mod-wordcards .term-wrapper:nth-of-type(3n) {
         margin-right: 0;
         margin-left: 1%;
     }
-    .dir-rtl.path-mod-flashcards .term-wrapper:nth-of-type(2n) {
+    .dir-rtl.path-mod-wordcards .term-wrapper:nth-of-type(2n) {
         margin-left: 0;
     }
 }
 
 /* Simple media query for terms to go full width. */
 @media  (max-width:500px) {
-    .path-mod-flashcards .term-wrapper {
+    .path-mod-wordcards .term-wrapper {
         width: 100%;
         margin-right: 0;
         margin-left: 0;
