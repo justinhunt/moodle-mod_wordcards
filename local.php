@@ -38,6 +38,20 @@ if (!empty($mod->get_mod()->intro)) {
 echo $output->navigation($mod, $currentstate);
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
-echo $renderer->local_page($mod);
+
+$localpracticetype = $mod->get_localpracticetype();
+switch ($localpracticetype){
+
+    case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+    case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+    case mod_wordcards_module::PRACTICETYPE_DICTATION:
+        echo $renderer->local_a4e_page($mod);
+        break;
+
+    case mod_wordcards_module::PRACTICETYPE_SCATTER:
+    default:
+        echo $renderer->local_page($mod);
+}
+
 
 echo $output->footer();

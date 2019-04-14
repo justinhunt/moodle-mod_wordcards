@@ -21,6 +21,11 @@ class mod_wordcards_module {
     const STATE_GLOBAL = 'global';
     const STATE_END = 'end';
 
+    const PRACTICETYPE_SCATTER = 0;
+    const PRACTICETYPE_MATCHSELECT = 1;
+    const PRACTICETYPE_MATCHTYPE = 2;
+    const PRACTICETYPE_DICTATION = 3;
+
     protected static $states = [
         self::STATE_TERMS,
         self::STATE_LOCAL,
@@ -120,6 +125,14 @@ class mod_wordcards_module {
 
     public function get_id() {
         return $this->mod->id;
+    }
+
+    public function get_localpracticetype() {
+        return $this->mod->localpracticetype;
+    }
+
+    public function get_globalpracticetype() {
+        return $this->mod->globalpracticetype;
     }
 
     public function get_local_terms() {
@@ -301,12 +314,12 @@ class mod_wordcards_module {
         return !empty($this->mod->completionwhenfinish);
     }
 
-    public function record_failed_association($term, $term2id) {
+    public function record_failed_association($term, $term2id=0) {
         global $DB, $USER;
 
         if ($term->modid != $this->get_id()) {
             throw new coding_exception('Invalid argument received, first term must belong to this module.');
-        } else if (!$this->course_has_term($term2id)) {
+        } else if ($term2id > 0 && !$this->course_has_term($term2id)) {
             throw new coding_exception('Unexpected association');
         }
 
@@ -316,26 +329,27 @@ class mod_wordcards_module {
             $record1->failcount = 0;
         }
 
-        $params = ['userid' => $USER->id, 'termid' => $term2id];
-        if (!($record2 = $DB->get_record('wordcards_associations', $params))) {
-            $record2 = (object) $params;
-            $record2->failcount = 0;
-        }
-
         $record1->failcount += 1;
-        $record2->failcount += 1;
         $record1->lastfail = time();
-        $record2->lastfail = time();
-
         if (empty($record1->id)) {
             $DB->insert_record('wordcards_associations', $record1);
         } else {
             $DB->update_record('wordcards_associations', $record1);
         }
-        if (empty($record2->id)) {
-            $DB->insert_record('wordcards_associations', $record2);
-        } else {
-            $DB->update_record('wordcards_associations', $record2);
+
+        if($term2id>0) {
+            $params = ['userid' => $USER->id, 'termid' => $term2id];
+            if (!($record2 = $DB->get_record('wordcards_associations', $params))) {
+                $record2 = (object)$params;
+                $record2->failcount = 0;
+            }
+            $record2->failcount += 1;
+            $record2->lastfail = time();
+            if (empty($record2->id)) {
+                $DB->insert_record('wordcards_associations', $record2);
+            } else {
+                $DB->update_record('wordcards_associations', $record2);
+            }
         }
     }
 

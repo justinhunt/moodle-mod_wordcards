@@ -80,5 +80,28 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2016080500, 'wordcards');
     }
 
+    if ($oldversion < 2019041200) {
+
+        // Define field skipglobal to be added to wordcards.
+        $table = new xmldb_table('wordcards');
+        $field = new xmldb_field('localpracticetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'timemodified');
+
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+        $field = new xmldb_field('globalpracticetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'timemodified');
+
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2019041200, 'wordcards');
+    }
+
     return true;
 }

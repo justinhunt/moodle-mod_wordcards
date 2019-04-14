@@ -38,21 +38,216 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             'definitions' => array_values($definitions),
             'gotit' => get_string('gotit', 'mod_wordcards'),
             'loading' => get_string('loading', 'mod_wordcards'),
-            'loadingurl' => $this->pix_url('i/loading_small')->out(true),
+            'loadingurl' => $this->image_url('i/loading_small')->out(true),
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
             'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_wordcards'),
             'nexturl' => (new moodle_url('/mod/wordcards/local.php', ['id' => $mod->get_cmid()]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
-            'notseenurl' => $this->pix_url('not-seen', 'mod_wordcards')->out(true),
+            'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'seenall' => count($definitions) == count($seen),
-            'seenurl' => $this->pix_url('seen', 'mod_wordcards')->out(true),
+            'seenurl' => $this->image_url('seen', 'mod_wordcards')->out(true),
             'str_term' => get_string('term', 'mod_wordcards'),
             'termnotseen' => get_string('termnotseen', 'mod_wordcards'),
             'termseen' => get_string('termseen', 'mod_wordcards'),
         ];
 
         return $this->render_from_template('mod_wordcards/definitions_page', $data);
+    }
+
+    private function fetch_data_json_feelings(){
+        return   '{
+            "id": 167438802,
+    "url": "https://quizlet.com/167438802/animals-flash-cards/",
+    "title": "Animals",
+    "created_by": "praine",
+    "term_count": 38,
+    "created_date": 1478830914,
+    "modified_date": 1527157617,
+    "published_date": 1478830993,
+    "has_images": false,
+    "subjects": [],
+    "visibility": "public",
+    "editable": "only_me",
+    "has_access": true,
+    "can_edit": false,
+    "description": "",
+    "lang_terms": "en",
+    "lang_definitions": "photo",
+    "password_use": 0,
+    "password_edit": 0,
+    "access_type": 2,
+    "creator_id": 6927709,
+    "creator": {
+            "username": "praine",
+        "account_type": "teacher",
+        "profile_image": "https://up.quizlet.com/44hgd-YM4VX-256s.jpg",
+        "id": 6927709
+    },
+    "class_ids": [
+            5712221
+        ],
+    "terms": [
+        {
+            "id": 5412283994,
+            "term": "happy",
+            "definition": "幸せ",
+            "image": null,
+            "rank": 0
+        },
+        {
+            "id": 5412284059,
+            "term": "sad",
+            "definition": "悲しい",
+            "image": null,
+            "rank": 37
+        },
+            {
+            "id": 5412283994,
+            "term": "jealous",
+            "definition": "羨ましい",
+            "image": null,
+            "rank": 0
+        },
+        {
+            "id": 5412284059,
+            "term": "joyful",
+            "definition": "すごい幸せ",
+            "image": null,
+            "rank": 37
+        }
+   
+    ]
+}';
+    }
+
+    private function fetch_data_json_animals() {
+      return   '{
+            "id": 167438802,
+    "url": "https://quizlet.com/167438802/animals-flash-cards/",
+    "title": "Animals",
+    "created_by": "praine",
+    "term_count": 38,
+    "created_date": 1478830914,
+    "modified_date": 1527157617,
+    "published_date": 1478830993,
+    "has_images": true,
+    "subjects": [],
+    "visibility": "public",
+    "editable": "only_me",
+    "has_access": true,
+    "can_edit": false,
+    "description": "",
+    "lang_terms": "en",
+    "lang_definitions": "photo",
+    "password_use": 0,
+    "password_edit": 0,
+    "access_type": 2,
+    "creator_id": 6927709,
+    "creator": {
+            "username": "praine",
+        "account_type": "teacher",
+        "profile_image": "https://up.quizlet.com/44hgd-YM4VX-256s.jpg",
+        "id": 6927709
+    },
+    "class_ids": [
+            5712221
+        ],
+    "terms": [
+        {
+            "id": 5412283994,
+            "term": "camel",
+            "definition": "",
+            "image": {
+            "url": "https://o.quizlet.com/M4R8lUv7vCFwXvYJ5w.j3g_m.jpg",
+                "width": 240,
+                "height": 160
+            },
+            "rank": 0
+        },
+        {
+            "id": 5412283996,
+            "term": "hedgehog",
+            "definition": "",
+            "image": {
+            "url": "https://o.quizlet.com/-xvgA4dGE1qFOumpXNMyKg_m.jpg",
+                "width": 240,
+                "height": 160
+            },
+            "rank": 1
+        }
+    ]
+}';
+
+    }
+
+    private function make_json_string($definitions){
+
+        $defs = array();
+        foreach ($definitions as $definition){
+            $def = new stdClass();
+            $def->image=null;
+            $def->id=$definition->id;
+            $def->term =$definition->term;
+            $def->definition =$definition->definition;
+            $defs[]=$def;
+        }
+        $defs_object = new stdClass();
+        $defs_object->terms = $defs;
+        return json_encode($defs_object);
+    }
+
+
+    public function local_a4e_page(mod_wordcards_module $mod) {
+        global $PAGE, $OUTPUT;
+
+
+        $widgetid = \html_writer::random_id();
+        $definitions = $mod->get_local_terms();
+        $jsonstring=$this->make_json_string($definitions);
+        //$jsonstring = $this->fetch_data_json_feelings();
+        $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
+
+        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage());
+        switch($mod->get_localpracticetype()){
+            case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+                $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
+                break;
+            case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case mod_wordcards_module::PRACTICETYPE_DICTATION:
+            default:
+                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
+        }
+
+        $data = [];
+        $matching = $this->render_from_template('mod_wordcards/matching_page', $data);
+        return $opts_html . $matching;
+    }
+
+    public function global_a4e_page(mod_wordcards_module $mod) {
+        global $PAGE, $OUTPUT;
+
+
+        $widgetid = \html_writer::random_id();
+        $definitions = $mod->get_global_terms();
+        $jsonstring=$this->make_json_string($definitions);
+        //$jsonstring = $this->fetch_data_json_feelings();
+        $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
+
+        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage());
+        switch($mod->get_globalpracticetype()){
+            case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+                $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
+                break;
+            case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case mod_wordcards_module::PRACTICETYPE_DICTATION:
+            default:
+                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
+        }
+
+        $data = [];
+        $matching = $this->render_from_template('mod_wordcards/matching_page', $data);
+        return $opts_html . $matching;
     }
 
     public function finish_page(mod_wordcards_module $mod, $globalscattertime = 0, $localscattertime = 0) {
