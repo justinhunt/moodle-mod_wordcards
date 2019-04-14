@@ -147,7 +147,7 @@ class mod_wordcards_module {
     public function get_global_terms() {
         global $DB, $USER;
 
-        $maxterms = $this->mod->localtermcount;
+        $maxterms = $this->mod->globaltermcount;
         $from = 0;
         $limit = $maxterms + 5;
 
