@@ -208,7 +208,13 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         //$jsonstring = $this->fetch_data_json_feelings();
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
-        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage());
+        //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
+        ///$hascontinue = true;
+
+        $completeafterlocal = $mod->completeafterlocal();
+        $nexturl = empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
+            : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
+        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         switch($mod->get_localpracticetype()){
             case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
@@ -234,7 +240,14 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         //$jsonstring = $this->fetch_data_json_feelings();
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
-        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage());
+        //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
+        //list($state) = $mod->get_state();
+       // $hascontinue = $state != mod_wordcards_module::STATE_END;
+
+        $nexturl = (new moodle_url('/mod/wordcards/finish.php',
+            ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
+
+        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         switch($mod->get_globalpracticetype()){
             case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));

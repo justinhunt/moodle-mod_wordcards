@@ -20,6 +20,7 @@ define([
             //pick up opts from html
             var theid = '#' + props.widgetid;
             this.dryRun=props.dryRun;
+            this.nexturl=props.nexturl;
             var configcontrol = $(theid).get(0);
             if(configcontrol){
                 var matchingdata = JSON.parse(configcontrol.value);
@@ -94,6 +95,20 @@ define([
             $("#vocab-list, #start-button").show();
         },
         end:function(){
+            keyboard.clear();
+            clearInterval(app.timer.interval);
+            $("#gameboard, #quit-button, #start-button").hide();
+
+            var total_time=0;
+            $.each(app.results,function(i,o){
+                if(o.time!=null){
+                    total_time+=o.time;
+                }
+            });
+            window.location.replace(this.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
+        },
+
+        OLDend:function(){
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button, #start-button").hide();
             $("#results").show();
