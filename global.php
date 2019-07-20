@@ -47,6 +47,10 @@ switch ($globalpracticetype){
         echo $renderer->global_a4e_page($mod);
         break;
 
+    case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+        echo $renderer->global_speechcards($mod);
+        break;
+
     case mod_wordcards_module::PRACTICETYPE_SCATTER:
     default:
         echo $renderer->global_page($mod);

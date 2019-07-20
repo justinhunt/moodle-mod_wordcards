@@ -40,6 +40,7 @@ class mod_wordcards_mod_form extends moodleform_mod {
             mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('matchselect', 'mod_wordcards'),
             mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('matchtype', 'mod_wordcards'),
             mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('dictation', 'mod_wordcards'),
+            mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('speechcards', 'mod_wordcards')
             ];
         $mform->addElement('select', 'localpracticetype', get_string('localpracticetype', 'mod_wordcards'),
             $options, mod_wordcards_module::PRACTICETYPE_SCATTER);

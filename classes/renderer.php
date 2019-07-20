@@ -280,6 +280,28 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/finish_page', $data);
     }
 
+    public function local_speechcards(mod_wordcards_module $mod){
+        $widgetid = \html_writer::random_id();
+        $definitions = $mod->get_local_terms();
+        $jsonstring=$this->make_json_string($definitions);
+        //$jsonstring = $this->fetch_data_json_feelings();
+        $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
+
+        //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
+        ///$hascontinue = true;
+
+        $completeafterlocal = $mod->completeafterlocal();
+        $nexturl = empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
+            : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
+        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
+        $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
+
+        $data = [];
+        $matching = $this->render_from_template('mod_wordcards/speechcards', $data);
+        return $opts_html . $matching;
+
+    }
+
     public function local_page(mod_wordcards_module $mod) {
         $definitions = $mod->get_local_terms();
 

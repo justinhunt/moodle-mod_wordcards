@@ -1,0 +1,34 @@
+
+<div class='container'>
+    <!-- Page contents -->
+
+    <div class="panel panel-default" id='activity'>
+        <div class="panel-body">
+
+            <button id='start-button' class='btn btn-success btn-lg center-block btn-block'><i class='fa fa-play'></i> Start Test</button>
+            <button id='quit-button' class='btn btn-danger btn-lg center-block btn-block'><i class='fa fa-power-off'></i> Quit</button>
+
+            <div id='vocab-list'></div>
+
+            <div id='gameboard'>
+                <div id='counter'>
+                    <div id='time-counter'></div>
+                    <div id='question-counter'></div>
+                    <div id='progress-bar' class="progress a4e-progress">
+                        <div id='progress-correct' class="progress progress-bar bg-success" value="0" role="progressbar" style="width:0%"></div>
+                        <div id='progress-incorrect' class="progress progress-bar bg-danger" value="0" role="progressbar" style="width:0%"></div>
+                    </div>
+                </div>
+                <div id='question'></div>
+                <div id="submitted"></div>
+                <button style="margin-bottom:5px;" id="next-button" class="btn btn-success btn-block btn-lg">Next <i class="fa fa-arrow-right"></i></button>
+                <div id='input'></div>
+            </div>
+
+            <div id='results'><div id='results-inner'></div><button id='close-results' class='btn btn-success btn-lg center-block btn-block'><i class='fa fa-check'></i> OK</button></div>
+
+        </div>
+    </div>
+
+    <!-- End page contents -->
+</div>

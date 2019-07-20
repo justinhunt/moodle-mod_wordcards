@@ -48,6 +48,10 @@ switch ($localpracticetype){
         echo $renderer->local_a4e_page($mod);
         break;
 
+    case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+        echo $renderer->local_speechcards($mod);
+        break;
+
     case mod_wordcards_module::PRACTICETYPE_SCATTER:
     default:
         echo $renderer->local_page($mod);

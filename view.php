@@ -25,6 +25,7 @@ $PAGE->set_url('/mod/wordcards/view.php', ['id' => $cmid]);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
+$PAGE->force_settings_menu(true);
 
 $output = $PAGE->get_renderer('mod_wordcards');
 

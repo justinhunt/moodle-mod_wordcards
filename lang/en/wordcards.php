@@ -74,3 +74,4 @@ $string['matchselect'] = 'Choose match';
 $string['matchtype'] = 'Type match';
 $string['dictation'] = 'Dictation';
 $string['scatter'] = 'Scatter';
+$string['speechcards'] = 'Speech Cards';

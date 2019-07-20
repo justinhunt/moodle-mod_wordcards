@@ -25,6 +25,7 @@ class mod_wordcards_module {
     const PRACTICETYPE_MATCHSELECT = 1;
     const PRACTICETYPE_MATCHTYPE = 2;
     const PRACTICETYPE_DICTATION = 3;
+    const PRACTICETYPE_SPEECHCARDS = 4;
 
     protected static $states = [
         self::STATE_TERMS,
