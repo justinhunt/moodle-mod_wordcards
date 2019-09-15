@@ -1,0 +1,53 @@
+
+<div class='container'>
+    <!-- Page contents -->
+
+    <div class="panel panel-default" id='activity'>
+        <div class="panel-body">
+
+            <div id='vocab-list'>{{> mod_wordcards/vocablist_header}}<div id="vocab-list-inner">{{> mod_wordcards/loading}}</div></div>
+
+            <div id='gameboard'>
+                <div class="mod_wordcards_activity_header">
+                    <h3>{{#str}}title_speechcards, mod_wordcards{{/str}}</h3>
+                    <div class="mod_wordcards_instructions">{{#str}}instructions_speechcards, mod_wordcards{{/str}}</div>
+                </div>
+                <button id='quit-button' class='btn btn-danger btn-lg center-block btn-block'><i class='fa fa-refresh'></i> {{#str}}backtostart, mod_wordcards{{/str}}</button>
+                <div id='counter'>
+                    <div id='time-counter'></div>
+                    <div id='question-counter'></div>
+                    <div id='progress-bar' class="progress a4e-progress">
+                        <div id='progress-correct' class="progress progress-bar bg-success" value="0" role="progressbar" style="width:0%"></div>
+                        <div id='progress-incorrect' class="progress progress-bar bg-danger" value="0" role="progressbar" style="width:0%"></div>
+                    </div>
+                </div>
+                <div id='question'>
+
+                    <div id="speechcards_glide" class="glide">
+                        <div id="submitted"></div>
+                        <div class="glide__wrapper"><ul id="speechcards_thelist" class="glide__track"></ul></div>
+                        <div class="glide__arrows wordcards-speechcards_toprow">
+                            <!-- button class="btn btn-success wordcards-speechcards_button wordcards-speechcards_prevbutton" data-glide-dir="<">{{#str}}previous, mod_wordcards{{/str}}</button -->
+                            <div id="speechcards_pushrecorder" class="wordcards-poodllrecorder" data-parent="{{wwwroot}}"
+                                 data-type="push" data-width="240" data-height="80" data-id="speechcards_widget"
+                                 data-media="audio" data-speechevents="1" data-language="{{language}}"
+                                 data-token="{{cloudpoodlltoken}}" >
+                            </div>
+
+                            <!-- span id='speechcards_whatheard' class='wordcards-speechcards_whatheard'>........</span -->
+                            <button class="btn btn-success wordcards-speechcards_button wordcards-speechcards_nextbutton " data-glide-dir=">">{{#str}}next, mod_wordcards{{/str}}</button>
+                        </div>
+
+                    </div>
+                    <div id="speechcards_bullets" class="poodllspeechcards__bullets" style="display: none">
+                </div>
+                <div id='input'></div>
+            </div>
+
+            <div id='results'><div id='results-inner'>{{> mod_wordcards/loading}}</div></div>
+
+        </div>
+    </div>
+
+    <!-- End page contents -->
+</div>

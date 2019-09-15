@@ -554,3 +554,63 @@
     opacity:0.3;
 }
 
+/* speechcards */
+.wordcards-poodllspeechcards_box {
+    text-align: center;
+    color: #fff;
+    width: 50%;
+    background: #868686;
+    padding: 54px 18px;
+    font-size: 2em;
+    margin: auto;
+    border-radius: 6px;
+}
+.wordcards-speechcards_toprow{
+    margin: 15px auto;
+    display: flex;
+    justify-content: center;
+}
+/*
+.wordcards-poodllrecorder{
+    margin-left: 15px;
+}
+*/
+.wordcards-speechcards_whatheard{
+    width: 400px;
+    border: dotted 1px;
+    border-color: green;
+    text-align: center;
+    margin: 1px;
+}
+.wordcards-speechcards_gotit{
+    color: white;
+    background-color: green;
+}
+.wordcards-speechcards_button {
+    height: 60px;
+    margin-top: 7px;
+}
+.wordcards_loading {
+    text-align: center;
+    margin: 20px;
+    padding: 10px;
+}
+.wordcards_loadingtext {
+    margin: 10px;
+}
+.mod_wordcards_instructions {
+    text-align: center;
+    margin: auto;
+    font-style: italic;
+    padding: 5px;
+    max-width: 650px;
+}
+
+.mod_wordcards_activity_header {
+    text-align: center;
+    margin: auto;
+    padding: 5px;
+}
+.mod_wordcards_activity_header h3 {
+    text-align: center;
+}

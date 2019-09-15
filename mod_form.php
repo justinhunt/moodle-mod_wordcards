@@ -32,20 +32,20 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');
 
-        $options = [4 => 4, 5 => 5, 6 => 6];
+        $options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10];
         $mform->addElement('select', 'localtermcount', get_string('localtermcount', 'mod_wordcards'), $options, 4);
         $mform->addElement('select', 'globaltermcount', get_string('globaltermcount', 'mod_wordcards'), $options, 4);
 
-        $options = [mod_wordcards_module::PRACTICETYPE_SCATTER => get_string('scatter', 'mod_wordcards'),
+        $options = [
             mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('matchselect', 'mod_wordcards'),
             mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('matchtype', 'mod_wordcards'),
             mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('dictation', 'mod_wordcards'),
             mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('speechcards', 'mod_wordcards')
             ];
         $mform->addElement('select', 'localpracticetype', get_string('localpracticetype', 'mod_wordcards'),
-            $options, mod_wordcards_module::PRACTICETYPE_SCATTER);
+            $options, mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
         $mform->addElement('select', 'globalpracticetype', get_string('globalpracticetype', 'mod_wordcards'),
-            $options, mod_wordcards_module::PRACTICETYPE_SCATTER );
+            $options,mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
 
 
         $mform->addElement('checkbox', 'skipglobal', get_string('skipglobal', 'mod_wordcards'));

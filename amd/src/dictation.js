@@ -11,8 +11,10 @@ define([
     'core/ajax',
     'core/log',
     'mod_wordcards/a4e',
+    'mod_wordcards/keyboard',
+    'mod_wordcards/polly',
     'core/templates'
-], function($, Ajax, log, a4e, templates) {
+], function($, Ajax, log, a4e, keyboard, polly, templates) {
 
     var app = {
         dryRun: false,
@@ -32,6 +34,8 @@ define([
                 return;
             }
 
+            polly.init($("#dictation_player"));
+
             app.process(matchingdata);
 
             a4e.register_events();
@@ -46,20 +50,18 @@ define([
                 app.next();
             });
 
-            //finish with this one
             $('body').on('click',"#close-results",function(){
                 //"try again" with this one
-               // $("#results").hide();
-               // $("#start-button, #vocab-list").show();
+                //$("#results").hide();
+                //$("#start-button, #vocab-list").show();
 
                 //"finish" with this one
                 var total_time=a4e.calc_total_time(app.results);
                 window.location.replace(app.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
-
             });
 
-            $("body").on('click','.a4e-distractor',function(e){
-                app.check($(this).data('correct'),this);
+            $("#listen-button").click(function(){
+                polly.play_text(app.tts);
             });
 
             $('body').on('click','#start-button',function(){
@@ -69,6 +71,8 @@ define([
             $('body').on('click','#quit-button',function(){
                 app.quit();
             });
+
+
         },
 
         process:function(json){
@@ -88,23 +92,25 @@ define([
             $("#progress-correct").css('width','0%');
             $("#progress-incorrect").css('width','0%');
             app.timer={
-                interval:setInterval(function(){ app.timer.update(); }, 1000),
+                interval:setInterval(function(){app.timer.update();}, 1000),
                 count:0,
                 update:function(){
                     app.timer.count++;
                     $("#time-counter").text(a4e.pretty_print_secs(app.timer.count));
                 }
-            }
+            };
             app.next();
         },
         quit:function(){
+            keyboard.clear();
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button").hide();
             $("#vocab-list, #start-button").show();
         },
 
         //no longer used
-        end_page_jump:function(){
+        end_do_jump:function(){
+            keyboard.clear();
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button, #start-button").hide();
 
@@ -113,6 +119,7 @@ define([
         },
 
         end:function(){
+            keyboard.clear();
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button, #start-button").hide();
             $("#results").show();
@@ -136,15 +143,23 @@ define([
 
             var data={
                 results:app.results,
-                activity:"match_select"
+                activity:"dictation"
             };
-
             console.log(data);
 
         },
+
+
         next:function(){
 
             $("#next-button").hide();
+            $("#submitted").html("").removeClass("a4e-correct a4e-incorrect");
+
+            keyboard.create("input",app.terms[app.pointer]['term'],app.pointer,true,function(value){
+                $("#submitted").html(app.terms[app.pointer]['term']);
+                keyboard.disable();
+                app.check(value);
+            });
 
             $("#question-counter").text((app.pointer+1)+"/"+app.terms.length);
 
@@ -155,44 +170,35 @@ define([
 
             $("#progress-correct").css('width',progress.correct+'%');
             $("#progress-incorrect").css('width',progress.incorrect+'%');
-            $("#question").html("");
 
-            if(app.terms[app.pointer]['definition']!=="" && app.terms[app.pointer]['term']!==""){
-                if(app.terms[app.pointer].image!==null){
-                    $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image.url+"'><br/>");
-                }
-                else if(app.has_images && app.terms[app.pointer].image==null){
-                    $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='/images/no-image.png'><br/>");
-                }
-                $("#question").append("<strong>"+app.terms[app.pointer]['definition']+"</strong>");
-            }
-
-            else if(app.terms[app.pointer].image!==null){
-                $("#question").html("<img class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image.url+"'>");
-            }
-
-            else{
-                a4e.alert("Could not generate a test with these settings!","error");
-                app.end();
-            }
-
-            $("#input").html(app.get_distractors());
+            app.tts = app.terms[app.pointer]['term'];
+            $("#listen-button").trigger("click");
 
         },
 
-        check:function(correct,clicked){
+        check:function(selected){
+            var correct=selected.toLowerCase().trim()==app.terms[app.pointer]['term'].toLowerCase().trim();
             var points=0;
             if(correct==true){
                 //createjs.Sound.play('correct');
+                $("#submitted").addClass("a4e-correct");
                 points=1;
             }
             else{
+                $("#submitted").addClass("a4e-incorrect");
                 //createjs.Sound.play('incorrect');
             }
-            $(".a4e-distractor").css('pointer-events','none');
+
+            //post results to server
+            if(correct){
+                this.reportSuccess(app.terms[app.pointer]['id']);
+            }else{
+                this.reportFailure(app.terms[app.pointer]['id'],0);
+            }
+
             var result={
                 question:app.terms[app.pointer]['definition'],
-                selected:$(clicked).text(),
+                selected:selected,
                 correct:app.terms[app.pointer]['term'],
                 points: points,
                 time: app.timer.count
@@ -200,57 +206,24 @@ define([
             app.timer.count=0;
             app.results.push(result);
 
-            var background=correct==true?'a4e-correct':'a4e-incorrect';
-            $(clicked).addClass(background).append("<i style='color:"+(correct?'green':'red')+";margin-left:5px;' class='fa fa-"+(correct?'check':'times')+"'></i>").parent().addClass('a4e-click-disabled');
-
-            if(!correct){
-                $(".a4e-distractor[data-correct='true']").addClass('a4e-correct').append("<i style='color:green;margin-left:5px;' class='fa fa-check'></i>");
-            }
-
-            //post results to server
-            if(correct){
-                this.reportSuccess(app.terms[app.pointer]['id']);
-            }else{
-                this.reportFailure(app.terms[app.pointer]['id'],$(clicked).data('id'));
-            }
-
-            app.pointer++;
-            if(!correct){
-                setTimeout(function(){
-                    if(app.pointer<app.terms.length) {
+            if(app.pointer<app.terms.length-1){
+                app.pointer++;
+                if(!correct){
+                    $("#next-button").show();
+                }
+                else{
+                    setTimeout(function(){
                         $("#next-button").trigger('click');
-                    }else{
-                        app.end();
-                    }
-                },1500)
+                    },1000)
+                }
             }
+
             else{
-                setTimeout(function(){
-                    if(app.pointer<app.terms.length) {
-                        $("#next-button").trigger('click');
-                    }else{
-                        app.end();
-                    }
-                },1000)
+                app.end();
             }
-        },
 
-        get_distractors:function(){
-            var distractors=app.terms.slice(0);
-            var answer=app.terms[app.pointer]['term'];
-            distractors.splice(app.pointer,1);
-            a4e.shuffle(distractors);
-            distractors=distractors.slice(0,4);
-            distractors.push(app.terms[app.pointer]);
-            a4e.shuffle(distractors);
-            var options=[];
-            $.each(distractors,function(i,o){
-                var is_correct=o['term']==answer;
-                var term_id = o['id'];
-                options.push('<li data-id="' + term_id +'" data-correct="'+is_correct.toString()+'" class="list-group-item a4e-distractor a4e-noselect">'+o['term']+'</li>');
-            });
-            var code='<ul class="list-group a4e-distractors">'+options.join('')+'</ul>';
-            return code;
+
+
         },
 
         reportFailure: function(term1id, term2id) {

@@ -11,8 +11,9 @@ define([
     'core/ajax',
     'core/log',
     'mod_wordcards/a4e',
-    'mod_wordcards/keyboard'
-], function($, Ajax, log, a4e, keyboard) {
+    'mod_wordcards/keyboard',
+    'core/templates'
+], function($, Ajax, log, a4e, keyboard, templates) {
 
     var app = {
         dryRun: false,
@@ -46,17 +47,22 @@ define([
                 app.next();
             });
 
-            $("#close-results").click(function(){
-                $("#results").hide();
-                $("#start-button, #vocab-list").show();
+            $('body').on('click',"#close-results",function(){
+
+                //"try again" with this one
+              //  $("#results").hide();
+               // $("#start-button, #vocab-list").show();
+
+                //"finish" with this one
+                var total_time=a4e.calc_total_time(app.results);
+                window.location.replace(app.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
             });
 
-
-            $("#start-button").click(function(){
+            $('body').on('click','#start-button',function(){
                 app.start();
             });
 
-            $("#quit-button").click(function(){
+            $('body').on('click','#quit-button',function(){
                 app.quit();
             });
         },
@@ -65,7 +71,7 @@ define([
 
             app.terms=json.terms;
             app.has_images=json.has_images;
-            a4e.list_quizlet_vocab("#vocab-list",app.terms);
+            a4e.list_vocab("#vocab-list-inner",app.terms);
 
         },
         start:function(){
@@ -94,29 +100,38 @@ define([
             $("#vocab-list, #start-button").show();
         },
 
+        //no longer used
+        end_do_jump:function(){
+            keyboard.clear();
+            clearInterval(app.timer.interval);
+            $("#gameboard, #quit-button, #start-button").hide();
+
+            var total_time=a4e.calc_total_time(app.results);
+            window.location.replace(this.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
+        },
+
         end:function(){
             keyboard.clear();
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button, #start-button").hide();
-
-            var total_time=0;
-            $.each(app.results,function(i,o){
-                if(o.time!=null){
-                    total_time+=o.time;
-                }
-            });
-            window.location.replace(this.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
-        },
-
-        OLDend:function(){
-            keyboard.clear();
-            clearInterval(app.timer.interval);
-            $("#gameboard, #quit-button, #start-button").hide();
             $("#results").show();
-            var code=a4e.basic_feedback(app.results);
-            code+=a4e.detailed_feedback(app.results);
-            $("#results-inner").html(code);
 
+            //template data
+            var tdata=[];
+            tdata['results']=app.results;
+            tdata['total']=app.terms.length;
+            tdata['totalcorrect']=a4e.calc_total_points(app.results);
+            var total_time=a4e.calc_total_time(app.results);
+            if(total_time==0){
+                tdata['prettytime']='00:00';
+            }else{
+                tdata['prettytime']=a4e.pretty_print_secs(total_time);
+            }
+            templates.render('mod_wordcards/feedback',tdata).then(
+                function(html,js){
+                    $("#results-inner").html(html);
+                }
+            );
 
             var data={
                 results:app.results,

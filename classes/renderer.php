@@ -12,6 +12,11 @@
  * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
+
+
+use mod_wordcards\utils;
+use mod_wordcards\constants;
+
 class mod_wordcards_renderer extends plugin_renderer_base {
 
     public function definitions_page(mod_wordcards_module $mod) {
@@ -212,22 +217,29 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         ///$hascontinue = true;
 
         $completeafterlocal = $mod->completeafterlocal();
+        $data = [];
         $nexturl = empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
             : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
         $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         switch($mod->get_localpracticetype()){
             case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/matchselect_page', $data);
                 break;
             case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/matchtype_page', $data);
+                break;
+            case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+                $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/speechcards_page', $data);
+                break;
             case mod_wordcards_module::PRACTICETYPE_DICTATION:
             default:
-                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
+                $this->page->requires->js_call_amd("mod_wordcards/dictation", 'init', array($opts));
+            $activity_html = $this->render_from_template('mod_wordcards/dictation_page', $data);
         }
-
-        $data = [];
-        $matching = $this->render_from_template('mod_wordcards/matching_page', $data);
-        return $opts_html . $matching;
+        return $opts_html . $activity_html;
     }
 
     public function global_a4e_page(mod_wordcards_module $mod) {
@@ -248,19 +260,29 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
 
         $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
+        $data = [];
         switch($mod->get_globalpracticetype()){
             case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/matchselect_page', $data);
                 break;
             case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/matchtype_page', $data);
+                break;
+            case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+                $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/speechcards_page', $data);
+                break;
             case mod_wordcards_module::PRACTICETYPE_DICTATION:
             default:
-                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
+                $this->page->requires->js_call_amd("mod_wordcards/dictation", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/dictation_page', $data);
         }
 
-        $data = [];
-        $matching = $this->render_from_template('mod_wordcards/matching_page', $data);
-        return $opts_html . $matching;
+
+
+        return $opts_html . $activity_html;
     }
 
     public function finish_page(mod_wordcards_module $mod, $globalscattertime = 0, $localscattertime = 0) {
@@ -281,6 +303,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
     }
 
     public function local_speechcards(mod_wordcards_module $mod){
+        global $CFG;
+
         $widgetid = \html_writer::random_id();
         $definitions = $mod->get_local_terms();
         $jsonstring=$this->make_json_string($definitions);
@@ -297,7 +321,11 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
 
         $data = [];
-        $matching = $this->render_from_template('mod_wordcards/speechcards', $data);
+        $data['cloudpoodlltoken']=utils::fetch_token(get_config(constants::M_COMPONENT,'apiuser'),
+                get_config(constants::M_COMPONENT,'apisecret') );
+        $data['language']='en-US';
+        $data['wwwroot']=$CFG->wwwroot;
+        $matching = $this->render_from_template('mod_wordcards/speechcards_page', $data);
         return $opts_html . $matching;
 
     }

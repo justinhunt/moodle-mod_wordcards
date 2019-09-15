@@ -11,18 +11,14 @@ define([
     'jquery',
     'core/ajax',
     'mod_wordcards/flip',
-    'mod_wordcards/textfit'
-], function($, Ajax,flip,textFit) {
+    'mod_wordcards/textfit',
+    'core/templates'
+], function($, Ajax,flip,textFit, templates) {
 
     var a4e = {
 
         register_events: function(){
-          $('.mod_wordcards_matching_reversebtn').on('click',function(){
-              $(".a4e-flashcards-container .a4e-card").flip(true);
-          });
-         $('.mod_wordcards_matching_frontbtn').on('click',function(){
-            $(".a4e-flashcards-container .a4e-card").flip(false);
-         });
+         //nothing to do here currently
         },
 
         shuffle:function(a) {
@@ -39,7 +35,34 @@ define([
             var seconds = time - minutes * 60;
             return a4e.str_pad_left(minutes,'0',2)+':'+a4e.str_pad_left(seconds,'0',2);
         },
-        list_quizlet_vocab:function(target,terms){
+
+        list_vocab:function(target, terms){
+
+            //template data
+            var tdata=[];
+            tdata['terms']=terms;
+            templates.render('mod_wordcards/vocablist',tdata).then(
+                function(html,js){
+                    $(target).html(html);
+
+                    var cards =  $(".a4e-flashcards-container .a4e-card");
+                    var faces = $(".front-label,.front-label-no-img,.back");
+                    setTimeout(function(){
+                        cards.flip();
+                        textFit(faces,{multiLine: true, maxFontSize: 50, alignHoriz: true, alignVert: true});
+                    },100);
+
+                    $('.a4e-flashcards-container .mod_wordcards_matching_reversebtn').on('click',function(){
+                        $(".a4e-flashcards-container .a4e-card").flip(true);
+                    });
+                    $('.a4e-flashcards-container .mod_wordcards_matching_frontbtn').on('click',function(){
+                        $(".a4e-flashcards-container .a4e-card").flip(false);
+                    });
+
+                }
+            );
+
+/*
 
             var code='<div class="a4e-flashcards-container">';
             code+="<button style='margin:5px;width:40%;display:inline-block;' class='btn btn-block btn-lg btn-danger mod_wordcards_matching_reversebtn'>&#8634; Reverse</button>";
@@ -60,6 +83,9 @@ define([
             code+="</div>";
 
             $(target).html(code);
+            */
+
+/*
 
             var cards =  $(".a4e-flashcards-container .a4e-card");
             var faces = $(".front-label,.front-label-no-img,.back");
@@ -67,6 +93,26 @@ define([
                 cards.flip();
                 textFit(faces,{multiLine: true, maxFontSize: 50, alignHoriz: true, alignVert: true});
             },100);
+            */
+
+        },
+        calc_total_points:function(results){
+            var total=0;
+            $.each(results,function(i,o){
+                if(o.points!=undefined){
+                    total+=o.points;
+                }
+            });
+            return total;
+        },
+        calc_total_time:function(results){
+            var total_time=0;
+            $.each(results,function(i,o){
+                if(o.time!=null){
+                    total_time+=o.time;
+                }
+            });
+            return total_time;
 
         },
         basic_feedback:function(results){

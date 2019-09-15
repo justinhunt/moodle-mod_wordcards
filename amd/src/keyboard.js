@@ -6,9 +6,7 @@
  * * (based on Paul Raine's APPs 4 EFL)
  */
 
-define([
-    'jquery'
-], function($) {
+define(['jquery','core/templates'], function($,templates) {
 
     var keyboard={
         string:"",
@@ -69,6 +67,26 @@ define([
                 keyboard.letters=keyboard.letters.concat(distractors.slice(0,3));
             }
             keyboard.letters.sort();
+            var letters=[];
+            $.each(keyboard.letters,function(i,letter){
+                var item ={};
+                item.charcode = letter.charCodeAt(0);
+                if(letter==' '){
+                    item.letter='&nbsp;';
+                }else{
+                    item.letter=letter;
+                }
+                letters.push(item);
+            });
+            var tdata=[];
+            tdata['letters'] = letters;
+            templates.render('mod_wordcards/keyboard',tdata).then(
+                function(html,js){
+                    $("#"+target).html(html);
+                }
+            );
+
+/*
             var code="<div id='chunk-input' data-id='"+id+"' class='noselect'>";
             code+="<div id='chunk-typed'><div id='chunk-typed-inner'></div></div>";
             $.each(keyboard.letters,function(i,letter){
@@ -80,7 +98,8 @@ define([
             code+="</div>";
 
             code+="</div>";
-            $("#"+target).html(code);
+            */
+
             $("body").on(keyboard.mobile_user()?'touchstart':'click',".chunk-key",function(){
                 var text=$("#chunk-typed-inner").text();
                 if(text.length<string.length){
