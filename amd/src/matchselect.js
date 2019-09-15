@@ -159,7 +159,7 @@ define([
 
             if(app.terms[app.pointer]['definition']!=="" && app.terms[app.pointer]['term']!==""){
                 if(app.terms[app.pointer].image!==null){
-                    $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image.url+"'><br/>");
+                    $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image+"'><br/>");
                 }
                 else if(app.has_images && app.terms[app.pointer].image==null){
                     $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='/images/no-image.png'><br/>");
@@ -168,7 +168,7 @@ define([
             }
 
             else if(app.terms[app.pointer].image!==null){
-                $("#question").html("<img class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image.url+"'>");
+                $("#question").html("<img class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image+"'>");
             }
 
             else{

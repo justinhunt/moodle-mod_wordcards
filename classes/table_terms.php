@@ -9,6 +9,9 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/tablelib.php');
 
+use \mod_wordcards\utils;
+use \mod_wordcards\constants;
+
 /**
  * Terms table class.
  *
@@ -31,16 +34,21 @@ class mod_wordcards_table_terms extends table_sql {
         $this->define_columns(array(
             'term',
             'definition',
+            'audio',
+            'image',
             'actions'
         ));
         $this->define_headers(array(
-            get_string('term', 'mod_wordcards'),
-            get_string('definition', 'mod_wordcards'),
+            get_string('term', constants::M_COMPONENT),
+            get_string('definition', constants::M_COMPONENT),
+                get_string('audiofile', constants::M_COMPONENT),
+                get_string('imagefile', constants::M_COMPONENT),
             get_string('actions')
         ));
 
         // Define SQL.
-        $sqlfields = 't.id, t.term, t.definition';
+        $sqlfields = 't.id, t.term, t.definition, if(t.audio,"yes","no") as "audio", if(t.image,"yes","no") as "image"';
+        //$sqlfields = 't.id, t.term, t.definition, t.audio, t.image';
         $sqlfrom = '{wordcards_terms} t';
 
         $this->sql = new stdClass();

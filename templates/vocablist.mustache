@@ -7,12 +7,12 @@
     {{#terms}}
         {{#image}}
         {{#definition}}
-        <div class="a4e-card a4e-noselect"><div style="background-image: url('{{image.url}}')" class="front a4e-img-def"><div class="front-label">{{definition}}</div></div><div class="back">{{term}}</div></div>
+        <div class="a4e-card a4e-noselect"><div style="background-image: url('{{image}}')" class="front a4e-img-def"><div class="front-label">{{definition}}</div></div><div class="back">{{term}}</div></div>
         {{/definition}}
         {{/image}}
         {{#image}}
             {{^definition}}
-                <div class="a4e-card a4e-noselect"><div style="background-image: url('{{image.url}}')" class="front a4e-no-def"></div><div class="back">{{definition}}</div></div>
+                <div class="a4e-card a4e-noselect"><div style="background-image: url('{{image}}')" class="front a4e-no-def"></div><div class="back">{{definition}}</div></div>
             {{/definition}}
         {{/image}}
         {{^image}}

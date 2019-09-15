@@ -27,6 +27,10 @@ define(['jquery','core/log'], function($,log){
             var theurl = voiceurl+encodeURIComponent(datastring);
             this.theplayer.attr('src',theurl);
             this.theplayer[0].play();
-        }
+        },
+        play_audio: function(audiourl){
+            this.theplayer.attr('src',audiourl);
+            this.theplayer[0].play();
+        },
 }
 });

@@ -136,13 +136,36 @@ class mod_wordcards_module {
         return $this->mod->globalpracticetype;
     }
 
+    public function insert_media_urls($terms) {
+        global $CFG;
+        foreach($terms as $term){
+            $contextid = false;
+            if($term->image){
+                if(!$contextid){
+                    $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
+                    $contextid = context_module::instance($thecm->id)->id;
+                }
+                $term->image="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/image/$term->id";
+            }
+            if($term->audio){
+                if(!$contextid){
+                    $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
+                    $contextid = context_module::instance($thecm->id)->id;
+                }
+                $term->audio="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id";
+            }
+        }
+        return $terms;
+    }
+
     public function get_local_terms() {
         $records = $this->get_terms();
         if (!$records) {
             return [];
         }
         shuffle($records);
-        return array_slice($records, 0, $this->mod->localtermcount);
+        $selected_records = array_slice($records, 0, $this->mod->localtermcount);
+        return $this->insert_media_urls($selected_records);
     }
 
     public function get_global_terms() {
@@ -223,7 +246,9 @@ class mod_wordcards_module {
             return [];
         }
         shuffle($records);
-        return array_slice($records, 0, $maxterms);
+        $selected_records = array_slice($records, 0, $maxterms);
+
+        return $this->insert_media_urls($selected_records);
     }
 
     public function get_state() {

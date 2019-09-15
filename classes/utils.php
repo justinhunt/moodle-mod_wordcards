@@ -259,6 +259,14 @@ class utils{
         return $options;
     }
 
+    public static function fetch_filemanager_opts($mediatype){
+      global $CFG;
+        $file_external = 1;
+        $file_internal = 2;
+        return array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'areamaxbytes' => 10485760, 'maxfiles' => 1,
+                'accepted_types' => array($mediatype), 'return_types'=> $file_internal | $file_external);
+    }
+
    public static function get_lang_options(){
        return array(
            constants::M_LANG_ENUS=>get_string('en-us',constants::M_COMPONENT),

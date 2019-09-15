@@ -150,6 +150,58 @@ function wordcards_reset_userdata($data) {
     return $status;
 }
 
+/**
+ * Serves the files from the  file areas
+ *
+ * @package mod_tquiz
+ * @category files
+ *
+ * @param stdClass $course the course object
+ * @param stdClass $cm the course module object
+ * @param stdClass $context the tquiz's context
+ * @param string $filearea the name of the file area
+ * @param array $args extra arguments (itemid, path)
+ * @param bool $forcedownload whether or not force download
+ * @param array $options additional options affecting the file serving
+ */
+function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
+    global $DB, $CFG;
+
+    if ($context->contextlevel != CONTEXT_MODULE) {
+        send_file_not_found();
+    }
+
+    require_login($course, true, $cm);
+
+    if ($filearea === 'audio' or $filearea === 'image') {
+
+        $itemid = (int) array_shift($args);
+
+        require_course_login($course, true, $cm);
+
+        if (!has_capability('mod/wordcards:view', $context)) {
+            return false;
+        }
+
+        $fs = get_file_storage();
+        $areafiles = $fs->get_area_files($context->id,'mod_wordcards',$filearea,$itemid);
+        if($areafiles){
+            $file = array_pop($areafiles);
+            if($file->is_directory()){
+                if($areafiles) {
+                    $file = array_pop($areafiles);
+                }
+            }
+            // finally send the file
+            if($file && !$file->is_directory()) {
+                send_stored_file($file, null, 0, $forcedownload, $options);
+            }
+        }
+    }
+    return false;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Navigation API                                                             //
 ////////////////////////////////////////////////////////////////////////////////

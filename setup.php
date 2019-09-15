@@ -8,6 +8,9 @@
 
 require_once(__DIR__ . '/../../config.php');
 
+use \mod_wordcards\utils;
+use \mod_wordcards\constants;
+
 $cmid = required_param('id', PARAM_INT);
 $termid = optional_param('termid', null, PARAM_INT);
 $action = optional_param('action', null, PARAM_ALPHA);
@@ -15,6 +18,7 @@ $action = optional_param('action', null, PARAM_ALPHA);
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
+$modulecontext = context_module::instance($cm->id);
 
 require_login($course, true, $cm);
 $mod->require_manage();
@@ -47,25 +51,61 @@ if ($action == 'delete') {
 }
 
 $form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0]);
-if ($term) {
-    $form->set_data($term);
+
+if (!$term) {
+    $term = new stdClass();
+    $term->id=null;
 }
 
+//prepare filemanager
+$audiooptions= utils::fetch_filemanager_opts('audio');
+$imageoptions= utils::fetch_filemanager_opts('image');
+file_prepare_standard_filemanager($term, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio', $term->id);
+file_prepare_standard_filemanager($term, 'image', $audiooptions, $modulecontext, constants::M_COMPONENT, 'image', $term->id);
+//set data to form
+$form->set_data($term);
+
 if ($data = $form->get_data()) {
+
+    //if this new add and collect data->id
+    $needsupdating = false;
     if (empty($data->termid)) {
         $data->modid = $modid;
-        $DB->insert_record('wordcards_terms', $data);
-        // Uncomment when migrating to 3.1.
-        // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
-        redirect($PAGE->url);
-
-    } else {
+        $data->id  = $DB->insert_record('wordcards_terms', $data);
+    //else set id to termid
+    }else{
         $data->id = $data->termid;
-        $DB->update_record('wordcards_terms', $data);
-        // Uncomment when migrating to 3.1.
-        // redirect($PAGE->url, get_string('termsaved', 'mod_wordcards', $data->term));
-        redirect($PAGE->url);
+        $needsupdating = true;
     }
+
+    //audio data
+    if(!empty( $data->audio_filemanager)){
+        $audiooptions = utils::fetch_filemanager_opts('audio');
+        //$data->audio_filemanager = $audioitemid;
+        $data = file_postupdate_standard_filemanager($data, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio',
+                $data->id);
+        $needsupdating = true;
+    }
+
+    //image data
+    if(!empty($data->image_filemanager)){
+        $imageoptions = utils::fetch_filemanager_opts('image');
+       // $data->image_filemanager = $imageitemid;
+        $data = file_postupdate_standard_filemanager($data, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image',
+                $data->id);
+        $needsupdating = true;
+    }
+
+    if ($needsupdating) {
+
+        $DB->update_record('wordcards_terms', $data);
+    }
+
+    //finally redirect
+    // Uncomment when migrating to 3.1.
+    // redirect($PAGE->url, get_string('termsaved', 'mod_wordcards', $data->term));
+    redirect($PAGE->url);
+
 }
 
 echo $output->header();

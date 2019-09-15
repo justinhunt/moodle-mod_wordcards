@@ -124,6 +124,8 @@ $string['transcriber_googlecloud'] = 'Fast Transcription (< 60s only)';
 $string['enabletts_details'] = 'TTS is currently not implemented';
 $string['ttslanguage'] = 'Passage Language';
 
+$string['audiofile'] = 'Audio file';
+$string['imagefile'] = 'Image file';
 $string['starttest'] = 'Begin';
 $string['quit'] = 'Quit';
 $string['next'] = 'Next';
@@ -143,7 +145,7 @@ $string['title_matchtype'] = 'Type the Answer';
 $string['title_dictation'] = 'Listen and Type the Answer';
 $string['title_scatter'] = 'Match the Words';
 $string['title_speechcards'] = 'Say the Words';
-$string['title_vocablist'] = 'Check the Vocab';
+$string['title_vocablist'] = 'Get Ready';
 $string['instructions_matchselect'] = 'Choose the word from the list below which best matches the highlighted word.';
 $string['instructions_matchtype'] = 'Type the word that you learnt, which best matches the highlighted word.';
 $string['instructions_dictation'] = 'Listen and type the word(s) that you hear. Tap the blue button to hear the word(s).';

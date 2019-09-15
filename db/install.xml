@@ -35,6 +35,8 @@
         <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The ID from the wordcards table"/>
         <FIELD NAME="term" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="definition" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="image" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="audio" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="deleted" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

@@ -191,7 +191,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $defs = array();
         foreach ($definitions as $definition){
             $def = new stdClass();
-            $def->image=null;
+            $def->image=$definition->image;
+            $def->audio=$definition->audio;
             $def->id=$definition->id;
             $def->term =$definition->term;
             $def->definition =$definition->definition;

@@ -102,6 +102,27 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2019041200, 'wordcards');
     }
+    if ($oldversion < 2019091401) {
+
+        // Define field image to be added to wordcard terms.
+        $table = new xmldb_table('wordcards_terms');
+        $field = new xmldb_field('image', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        //define audio to be added to wordcard terms
+        $field = new xmldb_field('audio', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2019091401, 'wordcards');
+    }
 
     return true;
 }

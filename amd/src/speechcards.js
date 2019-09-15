@@ -146,6 +146,7 @@ define([
                     autoplay: false,
                     afterTransition: function (data) {
                         setPointer(data.index);
+                        app.update_header();
                     },
                     afterInit: function (data) {
                         setPointer(data.index);
@@ -294,10 +295,7 @@ define([
             app.controls.progress_correct.css('width',progress.correct+'%');
             app.controls.progress_incorrect.css('width',progress.incorrect+'%');
 
-            app.controls.question_counter.text((app.pointer)+"/"+app.terms.length);
-
-          //this will display distractors which we do not need
-            //  $("#input").html(app.get_distractors());
+            app.controls.question_counter.text((app.pointer) + "/"+app.terms.length);
 
         },
 
@@ -338,23 +336,6 @@ define([
 
         },
 
-        get_distractors:function(){
-            var distractors=app.terms.slice(0);
-            var answer=app.terms[app.pointer-1]['term'];
-            distractors.splice(app.pointer-1,1);
-            a4e.shuffle(distractors);
-            distractors=distractors.slice(0,4);
-            distractors.push(app.terms[app.pointer-1]);
-            a4e.shuffle(distractors);
-            var options=[];
-            $.each(distractors,function(i,o){
-                var is_correct=o['term']==answer;
-                var term_id = o['id'];
-                options.push('<li data-id="' + term_id +'" data-correct="'+is_correct.toString()+'" class="list-group-item a4e-distractor a4e-noselect">'+o['term']+'</li>');
-            });
-            var code='<ul class="list-group a4e-distractors">'+options.join('')+'</ul>';
-            return code;
-        },
 
         reportFailure: function(term1id, term2id) {
             if (this.dryRun) {

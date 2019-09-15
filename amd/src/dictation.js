@@ -18,6 +18,7 @@ define([
 
     var app = {
         dryRun: false,
+        audio: false,
         init: function(props){
 
             //pick up opts from html
@@ -61,7 +62,12 @@ define([
             });
 
             $("#listen-button").click(function(){
-                polly.play_text(app.tts);
+                if(app.audio){
+                    polly.play_audio(app.audio);
+                }else{
+                    polly.play_text(app.tts);
+                }
+
             });
 
             $('body').on('click','#start-button',function(){
@@ -172,6 +178,11 @@ define([
             $("#progress-incorrect").css('width',progress.incorrect+'%');
 
             app.tts = app.terms[app.pointer]['term'];
+            if(app.terms[app.pointer]['audio']){
+                app.audio = app.terms[app.pointer]['audio'];
+            }else{
+                app.audio=false;
+            }
             $("#listen-button").trigger("click");
 
         },

@@ -32,7 +32,7 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');
 
-        $options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10];
+        $options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
         $mform->addElement('select', 'localtermcount', get_string('localtermcount', 'mod_wordcards'), $options, 4);
         $mform->addElement('select', 'globaltermcount', get_string('globaltermcount', 'mod_wordcards'), $options, 4);
 
