@@ -24,7 +24,7 @@ $string['delim_comma'] = 'Comma';
 $string['delim_pipe'] = 'Pipe';
 $string['description'] = 'Description';
 $string['editterm'] = 'Edit term \'{$a}\'';
-$string['finishscatterin'] = '<h3 style="text-align: center;">Congratulations! <br/> You finished  in [[time]]</h3>';
+$string['finishscatterin'] = '<h4 style="text-align: center;">Congratulations! <br/> You finished  in [[time]]</h4>';
 $string['wordcards:addinstance'] = 'Add an instance';
 $string['wordcards:view'] = 'View the module';
 $string['globalscatter'] = 'Review';
