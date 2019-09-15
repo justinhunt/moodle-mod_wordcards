@@ -325,8 +325,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
                 get_config(constants::M_COMPONENT,'apisecret') );
         $data['language']='en-US';
         $data['wwwroot']=$CFG->wwwroot;
-        $matching = $this->render_from_template('mod_wordcards/speechcards_page', $data);
-        return $opts_html . $matching;
+        $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
+        return $opts_html . $speechcards;
 
     }
 
@@ -353,8 +353,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
                 get_config(constants::M_COMPONENT,'apisecret') );
         $data['language']='en-US';
         $data['wwwroot']=$CFG->wwwroot;
-        $matching = $this->render_from_template('mod_wordcards/speechcards_page', $data);
-        return $opts_html . $matching;
+        $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
+        return $opts_html . $speechcards;
 
     }
 

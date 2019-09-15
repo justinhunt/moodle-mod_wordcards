@@ -37,10 +37,10 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addElement('select', 'globaltermcount', get_string('globaltermcount', 'mod_wordcards'), $options, 4);
 
         $options = [
-            mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('matchselect', 'mod_wordcards'),
-            mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('matchtype', 'mod_wordcards'),
-            mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('dictation', 'mod_wordcards'),
-            mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('speechcards', 'mod_wordcards')
+            mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('title_matchselect', 'mod_wordcards'),
+            mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('title_matchtype', 'mod_wordcards'),
+            mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('title_dictation', 'mod_wordcards'),
+            mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', 'mod_wordcards')
             ];
         $mform->addElement('select', 'localpracticetype', get_string('localpracticetype', 'mod_wordcards'),
             $options, mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
