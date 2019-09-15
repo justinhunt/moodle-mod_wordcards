@@ -1,0 +1,2 @@
+1.1.0 (Build 2019091400)
+-First release of Wordcards with Apps 4 EFL integrated
