@@ -84,7 +84,7 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
         $data->modid = $this->get_new_parentid('wordcards');
 
         $newitemid = $DB->insert_record('wordcards_terms', $data);
-        $this->set_mapping('wordcards_term', $oldid, $newitemid);
+        $this->set_mapping('wordcards_term', $oldid, $newitemid,true);
     }
 
     protected function process_wordcards_seen($data) {
@@ -133,5 +133,8 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
     protected function after_execute() {
         // Add wordcards related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_wordcards', 'intro', null);
+        $this->add_related_files('mod_wordcards', 'image', 'wordcards_term');
+        $this->add_related_files('mod_wordcards', 'audio', 'wordcards_term');
+
     }
 }

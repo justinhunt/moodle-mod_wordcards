@@ -46,7 +46,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
         $terms = new backup_nested_element('terms');
         $term = new backup_nested_element('term', array('id'), array(
-            'term', 'definition', 'deleted'));
+            'term', 'definition','image','audio', 'deleted'));
 
         $seens = new backup_nested_element('seens');
         $seen = new backup_nested_element('seen', array('id'), array(
@@ -103,6 +103,8 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
         // Define file annotations (we do not use itemid in this example).
         $wordcards->annotate_files('mod_wordcards', 'intro', null);
+        $term->annotate_files('mod_wordcards', 'image', 'id');
+        $term->annotate_files('mod_wordcards', 'audio', 'id');
 
         // Return the root element (wordcards), wrapped into standard activity structure.
         return $this->prepare_activity_structure($wordcards);
