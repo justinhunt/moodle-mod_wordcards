@@ -97,8 +97,8 @@ define([
 
             $('body').on('click',"#close-results",function(){
                 //try again with this one
-                app.controls.results.hide();
-                app.controls.vocab_list.show();
+               // app.controls.results.hide();
+               // app.controls.vocab_list.show();
 
                 //"finish" with this one
                 var total_time=a4e.calc_total_time(app.results);
