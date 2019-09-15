@@ -13,7 +13,8 @@ define([
     'mod_wordcards/a4e',
     'mod_wordcards/glidecards',
     'mod_wordcards/cloudpoodllloader',
-], function($, Ajax, log, a4e,glidecards,cloudpoodll) {
+    'core/templates'
+], function($, Ajax, log, a4e,glidecards,cloudpoodll, templates) {
 
     var app = {
         pointer: 1,
