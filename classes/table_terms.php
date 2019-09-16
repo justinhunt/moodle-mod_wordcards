@@ -36,6 +36,7 @@ class mod_wordcards_table_terms extends table_sql {
             'definition',
             'audio',
             'image',
+            'ttsvoice',
             'actions'
         ));
         $this->define_headers(array(
@@ -43,11 +44,12 @@ class mod_wordcards_table_terms extends table_sql {
             get_string('definition', constants::M_COMPONENT),
                 get_string('audiofile', constants::M_COMPONENT),
                 get_string('imagefile', constants::M_COMPONENT),
+                get_string('ttsvoice', constants::M_COMPONENT),
             get_string('actions')
         ));
 
         // Define SQL.
-        $sqlfields = 't.id, t.term, t.definition, if(t.audio,"yes","no") as "audio", if(t.image,"yes","no") as "image"';
+        $sqlfields = 't.id, t.term, t.definition, if(t.audio,"yes","no") as "audio", if(t.image,"yes","no") as "image",t.ttsvoice';
         //$sqlfields = 't.id, t.term, t.definition, t.audio, t.image';
         $sqlfrom = '{wordcards_terms} t';
 

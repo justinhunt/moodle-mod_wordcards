@@ -12,17 +12,17 @@ define(['jquery','core/log'], function($,log){
         init: function(theplayer){
             this.theplayer = theplayer;
         },
-        play_text: function(text){
+        play_text: function(text,voice){
+            if(!voice){voice = 'Kendra'}
             var pollyformat = 'text';
-            var voice = 'Kendra';
             var datastring= pollyformat + '|' + voice + '|' + text;
             var theurl = voiceurl+encodeURIComponent(datastring);
             this.theplayer.attr('src',theurl);
             this.theplayer[0].play();
         },
-        play_ssml: function(ssml){
+        play_ssml: function(ssml,voice){
+            if(!voice){voice = 'Kendra'}
             var pollyformat = 'ssml';
-            var voice = 'Kendra';
             var datastring= pollyformat + '|' + voice + '|' + ssml;
             var theurl = voiceurl+encodeURIComponent(datastring);
             this.theplayer.attr('src',theurl);

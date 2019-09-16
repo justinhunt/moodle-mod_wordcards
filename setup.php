@@ -50,7 +50,7 @@ if ($action == 'delete') {
     $term = $DB->get_record('wordcards_terms', ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
 }
 
-$form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0]);
+$form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0,'ttslanguage'=>$mod->get_mod()->ttslanguage]);
 
 if (!$term) {
     $term = new stdClass();

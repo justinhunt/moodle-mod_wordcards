@@ -10,6 +10,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
+use mod_wordcards\utils;
+
 /**
  * Module form class.
  *
@@ -20,6 +22,7 @@ class mod_wordcards_mod_form extends moodleform_mod {
 
     public function definition() {
         $mform = $this->_form;
+        $config = get_config('mod_wordcards');
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('name', 'mod_wordcards'));
@@ -28,6 +31,10 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
         $this->standard_intro_elements(get_string('introduction', 'mod_wordcards'));
+
+        $options = utils::get_lang_options();
+        $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', 'mod_wordcards'),
+                $options, $config->ttslanguage);
 
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');

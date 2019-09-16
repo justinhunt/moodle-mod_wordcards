@@ -65,7 +65,7 @@ define([
                 if(app.audio){
                     polly.play_audio(app.audio);
                 }else{
-                    polly.play_text(app.tts);
+                    polly.play_text(app.tts, app.ttsvoice);
                 }
 
             });
@@ -178,6 +178,7 @@ define([
             $("#progress-incorrect").css('width',progress.incorrect+'%');
 
             app.tts = app.terms[app.pointer]['term'];
+            app.ttsvoice = app.terms[app.pointer]['ttsvoice'];
             if(app.terms[app.pointer]['audio']){
                 app.audio = app.terms[app.pointer]['audio'];
             }else{

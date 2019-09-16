@@ -123,6 +123,8 @@ $string['transcriber_amazontranscribe'] = 'Regular Transcription';
 $string['transcriber_googlecloud'] = 'Fast Transcription (< 60s only)';
 $string['enabletts_details'] = 'TTS is currently not implemented';
 $string['ttslanguage'] = 'Target Language';
+$string['ttsvoice'] = 'TTS Voice';
+$string['alternates'] = 'Acceptable mistranscribes';
 
 $string['audiofile'] = 'Audio file';
 $string['imagefile'] = 'Image file';

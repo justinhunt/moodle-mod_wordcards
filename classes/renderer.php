@@ -60,131 +60,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/definitions_page', $data);
     }
 
-    private function fetch_data_json_feelings(){
-        return   '{
-            "id": 167438802,
-    "url": "https://quizlet.com/167438802/animals-flash-cards/",
-    "title": "Animals",
-    "created_by": "praine",
-    "term_count": 38,
-    "created_date": 1478830914,
-    "modified_date": 1527157617,
-    "published_date": 1478830993,
-    "has_images": false,
-    "subjects": [],
-    "visibility": "public",
-    "editable": "only_me",
-    "has_access": true,
-    "can_edit": false,
-    "description": "",
-    "lang_terms": "en",
-    "lang_definitions": "photo",
-    "password_use": 0,
-    "password_edit": 0,
-    "access_type": 2,
-    "creator_id": 6927709,
-    "creator": {
-            "username": "praine",
-        "account_type": "teacher",
-        "profile_image": "https://up.quizlet.com/44hgd-YM4VX-256s.jpg",
-        "id": 6927709
-    },
-    "class_ids": [
-            5712221
-        ],
-    "terms": [
-        {
-            "id": 5412283994,
-            "term": "happy",
-            "definition": "幸せ",
-            "image": null,
-            "rank": 0
-        },
-        {
-            "id": 5412284059,
-            "term": "sad",
-            "definition": "悲しい",
-            "image": null,
-            "rank": 37
-        },
-            {
-            "id": 5412283994,
-            "term": "jealous",
-            "definition": "羨ましい",
-            "image": null,
-            "rank": 0
-        },
-        {
-            "id": 5412284059,
-            "term": "joyful",
-            "definition": "すごい幸せ",
-            "image": null,
-            "rank": 37
-        }
-   
-    ]
-}';
-    }
-
-    private function fetch_data_json_animals() {
-      return   '{
-            "id": 167438802,
-    "url": "https://quizlet.com/167438802/animals-flash-cards/",
-    "title": "Animals",
-    "created_by": "praine",
-    "term_count": 38,
-    "created_date": 1478830914,
-    "modified_date": 1527157617,
-    "published_date": 1478830993,
-    "has_images": true,
-    "subjects": [],
-    "visibility": "public",
-    "editable": "only_me",
-    "has_access": true,
-    "can_edit": false,
-    "description": "",
-    "lang_terms": "en",
-    "lang_definitions": "photo",
-    "password_use": 0,
-    "password_edit": 0,
-    "access_type": 2,
-    "creator_id": 6927709,
-    "creator": {
-            "username": "praine",
-        "account_type": "teacher",
-        "profile_image": "https://up.quizlet.com/44hgd-YM4VX-256s.jpg",
-        "id": 6927709
-    },
-    "class_ids": [
-            5712221
-        ],
-    "terms": [
-        {
-            "id": 5412283994,
-            "term": "camel",
-            "definition": "",
-            "image": {
-            "url": "https://o.quizlet.com/M4R8lUv7vCFwXvYJ5w.j3g_m.jpg",
-                "width": 240,
-                "height": 160
-            },
-            "rank": 0
-        },
-        {
-            "id": 5412283996,
-            "term": "hedgehog",
-            "definition": "",
-            "image": {
-            "url": "https://o.quizlet.com/-xvgA4dGE1qFOumpXNMyKg_m.jpg",
-                "width": 240,
-                "height": 160
-            },
-            "rank": 1
-        }
-    ]
-}';
-
-    }
 
     private function make_json_string($definitions){
 
@@ -193,6 +68,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             $def = new stdClass();
             $def->image=$definition->image;
             $def->audio=$definition->audio;
+            $def->alternates=$definition->alternates;
+            $def->ttsvoice=$definition->ttsvoice;
             $def->id=$definition->id;
             $def->term =$definition->term;
             $def->definition =$definition->definition;
@@ -211,7 +88,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $widgetid = \html_writer::random_id();
         $definitions = $mod->get_local_terms();
         $jsonstring=$this->make_json_string($definitions);
-        //$jsonstring = $this->fetch_data_json_feelings();
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
         //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
@@ -250,7 +126,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $widgetid = \html_writer::random_id();
         $definitions = $mod->get_global_terms();
         $jsonstring=$this->make_json_string($definitions);
-        //$jsonstring = $this->fetch_data_json_feelings();
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
         //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
@@ -309,7 +184,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $widgetid = \html_writer::random_id();
         $definitions = $mod->get_local_terms();
         $jsonstring=$this->make_json_string($definitions);
-        //$jsonstring = $this->fetch_data_json_feelings();
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
         //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
@@ -337,7 +211,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $widgetid = \html_writer::random_id();
         $definitions = $mod->get_global_terms();
         $jsonstring=$this->make_json_string($definitions);
-        //$jsonstring = $this->fetch_data_json_feelings();
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
         $nexturl = (new moodle_url('/mod/wordcards/finish.php',

@@ -123,6 +123,41 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2019091401, 'wordcards');
     }
+    if($oldversion<2019091402) {
+
+        // Define field ttslanguage to be added to wordcard terms.
+        $table = new xmldb_table('wordcards');
+        $field = new xmldb_field('ttslanguage', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'en-US');
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field ttslanguage to be added to wordcard terms.
+        $table = new xmldb_table('wordcards_terms');
+        $field = new xmldb_field('ttsvoice', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'Kendra');
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2019091402, 'wordcards');
+    }
+    if($oldversion<2019091403) {
+
+
+        // Define field alternates to be added to wordcard terms.
+        $table = new xmldb_table('wordcards_terms');
+        $field = new xmldb_field('alternates', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        // Conditionally launch add field skipglobal.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2019091403, 'wordcards');
+    }
 
     return true;
 }

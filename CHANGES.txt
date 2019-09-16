@@ -1,2 +1,5 @@
+1.1.1 (Build 2019091402)
+-TTS improvements
+
 1.1.0 (Build 2019091400)
 -First release of Wordcards with Apps 4 EFL integrated

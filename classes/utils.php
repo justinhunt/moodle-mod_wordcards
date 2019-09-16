@@ -267,6 +267,57 @@ class utils{
                 'accepted_types' => array($mediatype), 'return_types'=> $file_internal | $file_external);
     }
 
+
+  public static function get_tts_voices($langcode){
+      $alllang= array(
+              constants::M_LANG_ENUS=>['Joey'=>'Joey','Justin'=>'Justin','Matthew'=>'Matthew','Ivy'=>'Ivy',
+                      'Joanna'=>'Joanna','Kendra'=>'Kendra','Kimberly'=>'Kimberly','Salli'=>'Salli'],
+              constants::M_LANG_ENUK=> ['Brian'=>'Brian','Amy'=>'Amy', 'Emma'=>'Emma'],
+              constants::M_LANG_ENAU=>['Russell'=>'Russell','Nicole'=>'Nicole'],
+              constants::M_LANG_ENIN=>['Aditi'=>'Aditi', 'Raveena'=>'Raveena'],
+              constants::M_LANG_ESUS=>['Miguel'=>'Miguel','Penelope'=>'Penelope'],
+              constants::M_LANG_ESES=> [ 'Enrique'=>'Enrique', 'Conchita'=>'Conchita', 'Lucia'=>'Lucia'],
+              constants::M_LANG_FRCA=>['Chantal'=>'Chantal'],
+              constants::M_LANG_FRFR => ['Mathieu'=>'Mathieu','Celine'=>'Celine', 'Léa'=>'Léa'],
+              constants::M_LANG_DEDE => [ 'Hans'=>'Hans','Marlene'=>'Marlene', 'Vicki'=>'Vicki'],
+              constants::M_LANG_ITIT => ['Carla'=>'Carla',  'Bianca'=>'Bianca', 'Giorgio'=>'Giorgio'],
+              constants::M_LANG_PTBR => ['Ricardo'=>'Ricardo', 'Vitoria'=>'Vitoria']
+      );
+      if(array_key_exists($langcode,$alllang)) {
+          return $alllang[$langcode];
+      }else{
+          return $alllang[constants::M_LANG_ENUS];
+      }
+    /*
+      {"lang": "English(US)", "voices":  [{name: 'Joey', mf: 'm'},{name: 'Justin', mf: 'm'},{name: 'Matthew', mf: 'm'},{name: 'Ivy', mf: 'f'},{name: 'Joanna', mf: 'f'},{name: 'Kendra', mf: 'f'},{name: 'Kimberly', mf: 'f'},{name: 'Salli', mf: 'f'}]},
+      {"lang": "English(GB)", "voices":  [{name: 'Brian', mf: 'm'},{name: 'Amy', mf: 'f'},{name: 'Emma', mf: 'f'}]},
+      {"lang": "English(AU)", "voices": [{name: 'Russell', mf: 'm'},{name: 'Nicole', mf: 'f'}]},
+      {"lang": "English(IN)", "voices":  [{name: 'Aditi', mf: 'm'},{name: 'Raveena', mf: 'f'}]},
+      {"lang": "English(WELSH)", "voices":  [{name: 'Geraint', mf: 'm'}]},
+      {"lang": "Danish", "voices":  [{name: 'Mads', mf: 'm'},{name: 'Naja', mf: 'f'}]},
+      {"lang": "Dutch", "voices":  [{name: 'Ruben', mf: 'm'},{name: 'Lotte', mf: 'f'}]},
+      {"lang": "French(FR)", "voices":  [{name: 'Mathieu', mf: 'm'},{name: 'Celine', mf: 'f'},{name: 'Léa', mf: 'f'}]},
+      {"lang": "French(CA)", "voices":  [{name: 'Chantal', mf: 'm'}]},
+      {"lang": "German", "voices":  [{name: 'Hans', mf: 'm'},{name: 'Marlene', mf: 'f'},{name: 'Vicki', mf: 'f'}]},
+      {"lang": "Icelandic", "voices":  [{name: 'Karl', mf: 'm'},{name: 'Dora', mf: 'f'}]},
+      {"lang": "Italian", "voices":  [{name: 'Carla', mf: 'f'},{name: 'Bianca', mf: 'f'},{name: 'Giorgio', mf: 'm'}]},
+      {"lang": "Japanese", "voices":  [{name: 'Takumi', mf: 'm'},{name: 'Mizuki', mf: 'f'}]},
+      {"lang": "Korean", "voices":  [{name: 'Seoyan', mf: 'f'}]},
+      {"lang": "Norwegian", "voices":  [{name: 'Liv', mf: 'f'}]},
+      {"lang": "Polish", "voices":  [{name: 'Jacek', mf: 'm'},{name: 'Jan', mf: 'm'},{name: 'Maja', mf: 'f'},{name: 'Ewa', mf: 'f'}]},
+      {"lang": "Portugese(BR)", "voices":  [{name: 'Ricardo', mf: 'm'},{name: 'Vitoria', mf: 'f'}]},
+      {"lang": "Portugese(PT)", "voices":  [{name: 'Cristiano', mf: 'm'},{name: 'Ines', mf: 'f'}]},
+      {"lang": "Romanian", "voices":  [{name: 'Carmen', mf: 'f'}]},
+      {"lang": "Russian", "voices":  [{name: 'Maxim', mf: 'm'},{name: 'Tatyana', mf: 'f'}]},
+      {"lang": "Spanish(ES)", "voices":  [{name: 'Enrique', mf: 'm'},{name: 'Conchita', mf: 'f'},{name: 'Lucia', mf: 'f'}]},
+      {"lang": "Spanish(US)", "voices":  [{name: 'Miguel', mf: 'm'},{name: 'Penelope', mf: 'f'}]},
+      {"lang": "Swedish", "voices":  [{name: 'Astrid', mf: 'f'}]},
+      {"lang": "Turkish", "voices":  [{name: 'Filiz', mf: 'f'}]},
+      {"lang": "Welsh", "voices":  [{name: 'Gwyneth', mf: 'f'}]},
+    */
+
+  }
+
    public static function get_lang_options(){
        return array(
            constants::M_LANG_ENUS=>get_string('en-us',constants::M_COMPONENT),

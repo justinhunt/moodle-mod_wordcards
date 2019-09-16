@@ -164,9 +164,9 @@ define([
                 switch(message.type){
                     case 'speech':
                         var speechtext = message.capturedspeech;
-                        app.whatheard.text(speechtext);
                         var cleanspeechtext = app.cleanText(speechtext);
-                        if(cleanspeechtext===app.terms[app.pointer-1].term){
+                        if(app.wordsDoMatch(cleanspeechtext,app.terms[app.pointer-1])){
+                            app.whatheard.text(app.terms[app.pointer-1].term);
                             app.whatheard.addClass('wordcards-speechcards_gotit');
                             app.check(true,cleanspeechtext);
                             if(app.is_end()){
@@ -181,12 +181,32 @@ define([
                             }
 
                         }else{
+                            app.whatheard.text(speechtext);
                             //we wont send false results until user gives up and clicks next
                             //app.check(false,speechtext);
                         }
                 }
             };
             cloudpoodll.init('speechcards_pushrecorder',theCallback);
+        },
+
+        wordsDoMatch: function(wordheard, currentterm){
+            if(wordheard==currentterm.term){
+                return true;
+            }
+            if(!currentterm.alternates){
+                return false;
+            }
+            var awords = currentterm.alternates.split(',');
+            var matched =false;
+            $.each(awords,function(i,word){
+                if(app.cleanText(word)==wordheard){
+                    //this is to break out of the loop, not telling the parent its unmatched
+                    matched =true;
+                    return false;
+                }
+            });
+            return matched;
         },
 
         cleanText: function(text){

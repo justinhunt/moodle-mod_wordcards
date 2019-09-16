@@ -21,6 +21,7 @@
         <FIELD NAME="skipglobal" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Hide the global scatter of this specific activity if no wordcards activities have been completed in this course."/>
         <FIELD NAME="finishedscattermsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user finish a scatter."/>
         <FIELD NAME="completedmsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user complete the entire activity"/>
+        <FIELD NAME="ttslanguage" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="en-US" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -37,6 +38,8 @@
         <FIELD NAME="definition" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="image" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="audio" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="ttsvoice" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="Kendra" SEQUENCE="false"/>
+        <FIELD NAME="alternates" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="deleted" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
