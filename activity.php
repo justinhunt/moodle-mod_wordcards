@@ -44,6 +44,11 @@ if($currentstep==mod_wordcards_module::STATE_END) {
     redirect(new moodle_url('/mod/wordcards/finish.php', ['id' => $cm->id, 'sesskey'=>sesskey()]));
 }
 
+//redirect to finished if this state end
+if($currentstep==mod_wordcards_module::STATE_TERMS) {
+    redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
+}
+
 $practicetype = $mod->get_practicetype($currentstep);
 $wordpool = $mod->get_wordpool($currentstep);
 if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
