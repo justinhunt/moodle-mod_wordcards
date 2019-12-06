@@ -24,14 +24,34 @@ class mod_wordcards_helper {
                 new moodle_url('/mod/wordcards/view.php', ['id' => $cmid]),
                 get_string('tabdefinitions', 'mod_wordcards'), '', true),
 
-            new tabobject(mod_wordcards_module::STATE_LOCAL,
-                new moodle_url('/mod/wordcards/local.php', ['id' => $cmid]),
-                get_string('tablocal', 'mod_wordcards'), '', true),
-
-            new tabobject(mod_wordcards_module::STATE_GLOBAL,
-                new moodle_url('/mod/wordcards/global.php', ['id' => $cmid]),
-                get_string('tabglobal', 'mod_wordcards'), '', true),
+            new tabobject(mod_wordcards_module::STATE_STEP1,
+                new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep'=>mod_wordcards_module::STATE_STEP1]),
+                get_string('tabstep1', 'mod_wordcards'), '', true)
         ];
+
+        if($mod->get_mod()->{mod_wordcards_module::STATE_STEP2} != mod_wordcards_module::PRACTICETYPE_NONE){
+            $tabs[]= new tabobject(mod_wordcards_module::STATE_STEP2,
+                new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' =>mod_wordcards_module::STATE_STEP2]),
+                get_string('tabstep2', 'mod_wordcards'), '', true);
+        }
+
+        if($mod->get_mod()->{mod_wordcards_module::STATE_STEP3} != mod_wordcards_module::PRACTICETYPE_NONE) {
+            $tabs[]= new tabobject(mod_wordcards_module::STATE_STEP3,
+                    new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP3]),
+                    get_string('tabstep3', 'mod_wordcards'), '', true);
+        }
+
+        if($mod->get_mod()->{mod_wordcards_module::STATE_STEP4} != mod_wordcards_module::PRACTICETYPE_NONE) {
+            $tabs[]=  new tabobject(mod_wordcards_module::STATE_STEP4,
+                    new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' =>mod_wordcards_module::STATE_STEP4]),
+                    get_string('tabstep4', 'mod_wordcards'), '', true);
+        }
+        if($mod->get_mod()->{mod_wordcards_module::STATE_STEP5} != mod_wordcards_module::PRACTICETYPE_NONE) {
+            $tabs[]=  new tabobject(mod_wordcards_module::STATE_STEP5,
+                    new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP5]),
+                    get_string('tabstep5', 'mod_wordcards'), '', true);
+        }
+
 
         if ($canmanage) {
             $tabs[] = new tabobject('setup',

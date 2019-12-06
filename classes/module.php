@@ -17,20 +17,35 @@ defined('MOODLE_INTERNAL') || die();
 class mod_wordcards_module {
 
     const STATE_TERMS = 'terms';
-    const STATE_LOCAL = 'local';
-    const STATE_GLOBAL = 'global';
+    const STATE_STEP1 = 'step1practicetype';
+    const STATE_STEP2 = 'step2practicetype';
+    const STATE_STEP3 = 'step3practicetype';
+    const STATE_STEP4 = 'step4practicetype';
+    const STATE_STEP5 = 'step5practicetype';
     const STATE_END = 'end';
 
-    const PRACTICETYPE_SCATTER = 0;
+    const WORDPOOL_LEARN = 0;
+    const WORDPOOL_REVIEW = 1;
+
+    const PRACTICETYPE_SCATTER = -1;//not used
+    const PRACTICETYPE_SCATTER_REV = -2;//not used
+    const PRACTICETYPE_NONE = 0;
     const PRACTICETYPE_MATCHSELECT = 1;
     const PRACTICETYPE_MATCHTYPE = 2;
     const PRACTICETYPE_DICTATION = 3;
     const PRACTICETYPE_SPEECHCARDS = 4;
+    const PRACTICETYPE_MATCHSELECT_REV = 5;
+    const PRACTICETYPE_MATCHTYPE_REV = 6;
+    const PRACTICETYPE_DICTATION_REV = 7;
+    const PRACTICETYPE_SPEECHCARDS_REV = 8;
 
     protected static $states = [
         self::STATE_TERMS,
-        self::STATE_LOCAL,
-        self::STATE_GLOBAL,
+        self::STATE_STEP1,
+        self::STATE_STEP2,
+        self::STATE_STEP3,
+        self::STATE_STEP4,
+        self::STATE_STEP5,
         self::STATE_END,
     ];
 
@@ -96,8 +111,8 @@ class mod_wordcards_module {
         return [$state];
     }
 
-    public function get_finishedscattermsg() {
-        return $this->mod->finishedscattermsg;
+    public function get_finishedstepmsg() {
+        return $this->mod->finishedstepmsg;
     }
 
     public function get_completedmsg() {
@@ -128,12 +143,39 @@ class mod_wordcards_module {
         return $this->mod->id;
     }
 
-    public function get_localpracticetype() {
-        return $this->mod->localpracticetype;
+
+    public function get_practicetype($state) {
+        switch($state){
+            case self::STATE_STEP1:
+                return $this->mod->step1practicetype;
+            case self::STATE_STEP2:
+                return $this->mod->step2practicetype;
+            case self::STATE_STEP3:
+                return $this->mod->step3practicetype;
+            case self::STATE_STEP4:
+                return $this->mod->step4practicetype;
+            case self::STATE_STEP5:
+                return $this->mod->step5practicetype;
+        }
     }
 
-    public function get_globalpracticetype() {
-        return $this->mod->globalpracticetype;
+    public function get_wordpool($state) {
+        $practicetype = $this->get_practicetype($state);
+        switch($practicetype ){
+            case self::PRACTICETYPE_SCATTER:
+            case self::PRACTICETYPE_MATCHSELECT:
+            case self::PRACTICETYPE_MATCHTYPE:
+            case self::PRACTICETYPE_DICTATION:
+            case self::PRACTICETYPE_SPEECHCARDS:
+                return self::WORDPOOL_LEARN;
+
+            case self::PRACTICETYPE_MATCHSELECT_REV:
+            case self::PRACTICETYPE_MATCHTYPE_REV:
+            case self::PRACTICETYPE_DICTATION_REV:
+            case self::PRACTICETYPE_SPEECHCARDS_REV:
+            default:
+                return self::WORDPOOL_REVIEW;
+        }
     }
 
     public function insert_media_urls($terms) {
@@ -158,20 +200,20 @@ class mod_wordcards_module {
         return $terms;
     }
 
-    public function get_local_terms() {
+    public function get_learn_terms() {
         $records = $this->get_terms();
         if (!$records) {
             return [];
         }
         shuffle($records);
-        $selected_records = array_slice($records, 0, $this->mod->localtermcount);
+        $selected_records = array_slice($records, 0, $this->mod->step1termcount);
         return $this->insert_media_urls($selected_records);
     }
 
-    public function get_global_terms() {
+    public function get_review_terms() {
         global $DB, $USER;
 
-        $maxterms = $this->mod->globaltermcount;
+        $maxterms = $this->mod->step2termcount;
         $from = 0;
         $limit = $maxterms + 5;
 
@@ -289,7 +331,7 @@ class mod_wordcards_module {
         return $DB->get_records_sql($sql, [$this->mod->id, $USER->id]);
     }
 
-    protected function has_completed_local() {
+    protected function has_completed_state($state) {
         global $DB, $USER;
 
         $sql = "SELECT COUNT('x')
@@ -301,8 +343,29 @@ class mod_wordcards_module {
                    AND t.deleted = 0
                    AND a.successcount > 0";
 
+
+        switch($state){
+            case self::STATE_STEP1:
+                $termcount=$this->mod->step1termcount;
+                break;
+            case self::STATE_STEP2:
+                $termcount=$this->mod->step2termcount;
+                break;
+            case self::STATE_STEP3:
+                $termcount=$this->mod->step3termcount;
+                break;
+            case self::STATE_STEP4:
+                $termcount=$this->mod->step4termcount;
+                break;
+            case self::STATE_STEP5:
+                $termcount=$this->mod->step5termcount;
+                break;
+            default:
+                $termcount=0;
+        }
+
         // Completed when there is enough successful associations.
-        return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $this->mod->localtermcount;
+        return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $termcount;
     }
 
     protected function has_seen_all_terms() {
@@ -416,13 +479,14 @@ class mod_wordcards_module {
                 redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $this->get_cmid()]));
                 break;
 
-            case self::STATE_LOCAL:
-                redirect(new moodle_url('/mod/wordcards/local.php', ['id' => $this->get_cmid()]));
+            case self::STATE_STEP1:
+            case self::STATE_STEP2:
+            case self::STATE_STEP3:
+            case self::STATE_STEP4:
+            case self::STATE_STEP5:
+                redirect(new moodle_url('/mod/wordcards/activity.php', ['id' => $this->get_cmid(), 'nextstep'=>$state]));
                 break;
 
-            case self::STATE_GLOBAL:
-                redirect(new moodle_url('/mod/wordcards/global.php', ['id' => $this->get_cmid()]));
-                break;
         }
     }
 
@@ -470,26 +534,13 @@ class mod_wordcards_module {
 
         } else if ($state == self::STATE_TERMS) {
             if ($this->has_seen_all_terms()) {
-                $this->set_state(self::STATE_LOCAL);
-                return;
+                    $next_step = $this->get_next_step(self::STATE_TERMS);
+                    $this->set_state($next_step);
             }
 
-        } else if ($state == self::STATE_LOCAL) {
-            if ($this->has_completed_local()) {
-                if ($requestedstate == self::STATE_END && $this->completeafterlocal()) {
-                    $this->set_state(self::STATE_END);
-                    return;
-                }
-                $this->set_state(self::STATE_GLOBAL);
-                return;
-            }
-
-        } else if ($state == self::STATE_GLOBAL) {
-            // Unfortunately we do not have any other checks to perform but this one.
-            if ($requestedstate == self::STATE_END) {
-                $this->set_state(self::STATE_END);
-                return;
-            }
+        } else if ($this->has_completed_state($state)) {
+                $next_step = $this->get_next_step($state);
+                $this->set_state($next_step);
         }
     }
 
@@ -525,29 +576,82 @@ class mod_wordcards_module {
         require_capability('mod/wordcards:view', $context);
     }
 
-    /**
-     * Should we complete the wordcard when local scatter is finished.
-     *
-     * It is the case for a student who didn't complete any wordcard and if the
-     * wordcard is set to skip the global scatter as first fashcard instance.
-     *
-     * @return bool true if we should complete the activity after the local scatter..
-     */
-    public function completeafterlocal($userid = null){
+    public function get_next_step($currentstep) {
         global $USER, $DB;
+
+        //if we already ended, lets return that
+        if($currentstep ==self::STATE_END){
+            return $currentstep;
+        }
+
+        //TODO: add any newly created steps to this array to add them to the search
+        $steps = array(self::STATE_TERMS,
+                self::STATE_STEP1,
+                self::STATE_STEP2,
+                self::STATE_STEP3,
+                self::STATE_STEP4,
+                self::STATE_STEP5,
+                self::STATE_END);
+        //init our search start flag and return value
+        $searching=false;
+        $nextstep=false;
+
+        //loop through the steps
+        foreach($steps as $thisstep){
+            if($currentstep==$thisstep){
+                $searching=true;
+                continue;
+            }
+            //we loop through till we are beyond the current step, and then we are "searching" for the next step
+            if($searching){
+                //if the next step is the end step, then so be it.
+                if($thisstep==self::STATE_END){
+                    $nextstep= $thisstep;
+                    break;
+                }
+                //check if we have words in the review pool, and if the currebt "next" activity is a "learn" or "review" one
+                $arewordstoreview = $this->are_there_words_to_review();
+                $nextpracticetype = $this->mod->{$thisstep};//'step1practice' or 'step2practice' db field
+
+                //if not practice type was specified move on
+                if ($nextpracticetype==self::PRACTICETYPE_NONE){
+                    continue;
+                }
+
+                //get next word poodl
+                $nextwordpool = self::get_wordpool($nextpracticetype);
+
+                //if we have words in the review pool, then this step should be fine
+                if($arewordstoreview){
+                    $nextstep = $thisstep;
+                    break;
+
+                //if we have no words in the review pool, we need a learn step, lets see if we have one
+                }elseif($nextwordpool==self::WORDPOOL_LEARN){
+                    $nextstep = $thisstep;
+                    break;
+                }else{
+                    //we would continue if we need a learn activity, but $thisstep was a review activity
+                    continue;
+                }
+            }
+        }
+        //if we got no next step, then lets just jump to end
+        if(!$nextstep){$nextstep=self::STATE_END;}
+        //return next step
+        return $nextstep;
+    }
+
+    public function are_there_words_to_review($userid=null){
+        global $USER, $DB;
+
+        //if we are an admin, just say yes
+        if($this->can_manage()){
+            return true;
+        }
 
         if (empty($userid)) {
             $userid = $USER->id;
-        }
-
-        // if the user has setup permission then he can never complete the wordcard.
-        if ($this->can_manage()) {
-            return false;
-        }
-
-        // if the activity does not support "skip global scatter on first instance" then return false.
-        if (empty($this->mod->skipglobal)) {
-            return false;
         }
 
         // Retrieve the list of wordcard modids of the course.
@@ -563,9 +667,11 @@ class mod_wordcards_module {
         $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
 
         $completedwordcardtotal = $DB->count_records_select('wordcards_progress',
-            'state = :state AND userid = :userid ' . $sqlmodidtest, $params);
+                'state = :state AND userid = :userid ' . $sqlmodidtest, $params);
 
-        return (empty($completedwordcardtotal));
+        return (!empty($completedwordcardtotal));
+
+
     }
 
 }

@@ -2,7 +2,7 @@
     <div class="wordcards_timer">00:00:00</div>
     <div id="wordcards" class="wordcards">
         <div class="congrats">
-          <div class="wordcards_congrats">{{{finishedscattermsg}}}</div>
+          <div class="wordcards_congrats">{{{finishedstepmsg}}}</div>
           {{#hascontinue}}
               <button data-href="{{{nexturl}}}" class="btn btn-primary continue-button">{{continue}}</button>
           {{/hascontinue}}
@@ -24,8 +24,8 @@
 
         function displayfinishmessage() {
             // replace [[time]] by <span class="wordcards_timer_time">00:00:00</span>
-            var convertedfinishedscattermsg = $('.wordcards_congrats').text().replace("[[time]]", "<span class=\"wordcards_timer_time\">00:00:00</span>");
-            $('.wordcards_congrats').html(convertedfinishedscattermsg);
+            var convertedfinishedstepmsg = $('.wordcards_congrats').text().replace("[[time]]", "<span class=\"wordcards_timer_time\">00:00:00</span>");
+            $('.wordcards_congrats').html(convertedfinishedstepmsg);
 
             $('.wordcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
             $('.wordcards_timer').css('display', 'none');
@@ -48,13 +48,13 @@
 
                 {{#completeafterlocal}}
                     var redirecturl = "{{{nexturl}}}";
-                    window.location.replace(redirecturl.replace('&amp;','&') + "&localscattertime=" + timer.getTotalTimeValues().seconds);
+                    window.location.replace(redirecturl.replace(/&amp;/g,'&') + "&localscattertime=" +  timer.getTotalTimeValues().seconds);
                     return;
                 {{/completeafterlocal}}
 
                 {{#isglobalscatter}}
                     var redirecturl = "{{{nexturl}}}";
-                    window.location.replace(redirecturl.replace('&amp;','&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);
+                    window.location.replace(redirecturl.replace(/&amp;/g,'&') + "&globalscattertime=" + timer.getTotalTimeValues().seconds);
                     return;
                 {{/isglobalscatter}}
 

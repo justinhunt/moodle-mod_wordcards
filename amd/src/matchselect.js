@@ -54,7 +54,7 @@ define([
 
                 //"finish" with this one
                 var total_time=a4e.calc_total_time(app.results);
-                window.location.replace(app.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
+                window.location.replace(app.nexturl.replace(/&amp;/g,'&') + "&localscattertime=" + total_time);
 
             });
 
@@ -103,15 +103,6 @@ define([
             $("#vocab-list, #start-button").show();
         },
 
-        //no longer used
-        end_page_jump:function(){
-            clearInterval(app.timer.interval);
-            $("#gameboard, #quit-button, #start-button").hide();
-
-            var total_time=a4e.calc_total_time(app.results);
-            window.location.replace(this.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
-        },
-
         end:function(){
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button, #start-button").hide();
@@ -157,17 +148,17 @@ define([
             $("#progress-incorrect").css('width',progress.incorrect+'%');
             $("#question").html("");
 
-            if(app.terms[app.pointer]['definition']!=="" && app.terms[app.pointer]['term']!==""){
-                if(app.terms[app.pointer].image!==null){
+            if(app.terms[app.pointer]['definition']!=="" && app.terms[app.pointer]['term']!=""){
+                if(app.terms[app.pointer].image!==null && app.terms[app.pointer].image!=""){
                     $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image+"'><br/>");
                 }
-                else if(app.has_images && app.terms[app.pointer].image==null){
+                else if(app.has_images && (app.terms[app.pointer].image==null || app.terms[app.pointer].image=="")){
                     $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='/images/no-image.png'><br/>");
                 }
                 $("#question").append("<strong>"+app.terms[app.pointer]['definition']+"</strong>");
             }
 
-            else if(app.terms[app.pointer].image!==null){
+            else if(app.terms[app.pointer].image!==null && app.terms[app.pointer].image!=""){
                 $("#question").html("<img class='center-block img-responsive img-thumbnail' src='"+app.terms[app.pointer].image+"'>");
             }
 

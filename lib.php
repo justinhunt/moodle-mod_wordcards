@@ -36,11 +36,11 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
     $module->timecreated = time();
     $module->timemodified = time();
 
-    if (empty($module->skipglobal)) {
-        $module->skipglobal = 0;
+    if (empty($module->skipreview)) {
+        $module->skipreview = 0;
     }
 
-    $module->finishedscattermsg = $module->finishedscattermsg_editor['text'];
+    $module->finishedstepmsg = $module->finishedstepmsg_editor['text'];
     $module->completedmsg = $module->completedmsg_editor['text'];
 
     $module->id = $DB->insert_record('wordcards', $module);
@@ -54,11 +54,11 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
     $module->timemodified = time();
     $module->id = $module->instance;
 
-    if (empty($module->skipglobal)) {
-        $module->skipglobal = 0;
+    if (empty($module->skipreview)) {
+        $module->skipreview = 0;
     }
 
-    $module->finishedscattermsg = $module->finishedscattermsg_editor['text'];
+    $module->finishedstepmsg = $module->finishedstepmsg_editor['text'];
     $module->completedmsg = $module->completedmsg_editor['text'];
 
     return $DB->update_record('wordcards', $module);

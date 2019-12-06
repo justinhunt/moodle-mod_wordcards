@@ -102,7 +102,7 @@ define([
 
                 //"finish" with this one
                 var total_time=a4e.calc_total_time(app.results);
-                window.location.replace(app.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
+                window.location.replace(app.nexturl.replace(/&amp;/g,'&') + "&localscattertime=" + total_time);
             });
 
             $('body').on('click','#start-button',function(){
@@ -239,21 +239,6 @@ define([
             app.controls.gameboard.hide();
             app.controls.quit_button.hide();
             app.controls.vocab_list.show();
-        },
-
-        //no longer used
-        do_end_jump:function(){
-            clearInterval(app.timer.interval);
-            app.controls.gameboard.hide();
-            app.controls.quit_button.hide();
-
-            var total_time=0;
-            $.each(app.results,function(i,o){
-                if(o.time!=null){
-                    total_time+=o.time;
-                }
-            });
-            window.location.replace(this.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
         },
 
         do_end:function(){

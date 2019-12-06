@@ -41,8 +41,9 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
         $userinfo = $this->get_setting_value('userinfo');
         // Define the root element describing the wordcards instance.
         $wordcards = new backup_nested_element('wordcards', array('id'), array(
-            'name', 'intro', 'introformat', 'localtermcount', 'globaltermcount','localpracticetype','globalpracticetype', 'completionwhenfinish', 'timecreated', 'timemodified',
-            'skipglobal', 'finishedscattermsg', 'completedmsg', 'ttslanguage'));
+            'name', 'intro', 'introformat', 'step1termcount', 'step2termcount', 'step3termcount', 'step4termcount','step5termcount',
+                'step1practicetype','step2practicetype','step3practicetype','step4practicetype','step5practicetype',
+                'completionwhenfinish', 'timecreated', 'timemodified','skipreview', 'finishedstepmsg', 'completedmsg', 'ttslanguage'));
 
         $terms = new backup_nested_element('terms');
         $term = new backup_nested_element('term', array('id'), array(

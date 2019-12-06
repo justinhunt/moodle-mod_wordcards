@@ -19,6 +19,7 @@ define([
     var app = {
         dryRun: false,
         audio: false,
+        ttslanguage: 'en-US',
         init: function(props){
 
             //pick up opts from html
@@ -35,12 +36,10 @@ define([
                 return;
             }
 
-            polly.init($("#dictation_player"));
-
+            polly.init($("#dictation_player"),props.ttslanguage);
+            app.ttslanguage = props.ttslanguage;
             app.process(matchingdata);
-
             a4e.register_events();
-
             this.register_events();
         },
 
@@ -58,7 +57,7 @@ define([
 
                 //"finish" with this one
                 var total_time=a4e.calc_total_time(app.results);
-                window.location.replace(app.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
+                window.location.replace(app.nexturl.replace(/&amp;/g,'&') + "&localscattertime=" + total_time);
             });
 
             $("#listen-button").click(function(){
@@ -112,16 +111,6 @@ define([
             clearInterval(app.timer.interval);
             $("#gameboard, #quit-button").hide();
             $("#vocab-list, #start-button").show();
-        },
-
-        //no longer used
-        end_do_jump:function(){
-            keyboard.clear();
-            clearInterval(app.timer.interval);
-            $("#gameboard, #quit-button, #start-button").hide();
-
-            var total_time=a4e.calc_total_time(app.results);
-            window.location.replace(this.nexturl.replace('&amp;','&') + "&localscattertime=" + total_time);
         },
 
         end:function(){
@@ -178,7 +167,11 @@ define([
             $("#progress-incorrect").css('width',progress.incorrect+'%');
 
             app.tts = app.terms[app.pointer]['term'];
-            app.ttsvoice = app.terms[app.pointer]['ttsvoice'];
+            if(app.terms[app.pointer]['ttsvoice']) {
+                app.ttsvoice = app.terms[app.pointer]['ttsvoice'];
+            }else{
+                app.ttsvoice = 'auto';
+            }
             if(app.terms[app.pointer]['audio']){
                 app.audio = app.terms[app.pointer]['audio'];
             }else{

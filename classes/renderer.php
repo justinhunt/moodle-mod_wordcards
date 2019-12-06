@@ -47,7 +47,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
             'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_wordcards'),
-            'nexturl' => (new moodle_url('/mod/wordcards/local.php', ['id' => $mod->get_cmid()]))->out(true),
+            'nexturl' => (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'state'=>mod_wordcards_module::STATE_STEP1]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'seenall' => count($definitions) == count($seen),
@@ -81,94 +81,54 @@ class mod_wordcards_renderer extends plugin_renderer_base {
     }
 
 
-    public function local_a4e_page(mod_wordcards_module $mod) {
+    public function a4e_page(mod_wordcards_module $mod, $practicetype, $wordpool, $currentstep ) {
         global $PAGE, $OUTPUT;
 
+        //get state
+        list($state) = $mod->get_state();
 
-        $widgetid = \html_writer::random_id();
-        $definitions = $mod->get_local_terms();
-        $jsonstring=$this->make_json_string($definitions);
-        $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
-
-        //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
-        ///$hascontinue = true;
-
-        $completeafterlocal = $mod->completeafterlocal();
-        $data = [];
-        $nexturl = empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
-            : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
-        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
-        switch($mod->get_localpracticetype()){
-            case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
-                $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
-                $activity_html = $this->render_from_template('mod_wordcards/matchselect_page', $data);
-                break;
-            case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
-                $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
-                $activity_html = $this->render_from_template('mod_wordcards/matchtype_page', $data);
-                break;
-            case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
-                $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
-                $activity_html = $this->render_from_template('mod_wordcards/speechcards_page', $data);
-                break;
-            case mod_wordcards_module::PRACTICETYPE_DICTATION:
-            default:
-                $this->page->requires->js_call_amd("mod_wordcards/dictation", 'init', array($opts));
-            $activity_html = $this->render_from_template('mod_wordcards/dictation_page', $data);
+        //if we are in review state, we use different words and the next page is a finish page
+        if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+            $definitions = $mod->get_review_terms();
+        }else{
+            $definitions = $mod->get_learn_terms();
         }
-        return $opts_html . $activity_html;
-    }
-
-    public function global_a4e_page(mod_wordcards_module $mod) {
-        global $PAGE, $OUTPUT;
-
 
         $widgetid = \html_writer::random_id();
-        $definitions = $mod->get_global_terms();
         $jsonstring=$this->make_json_string($definitions);
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
-        //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
-        //list($state) = $mod->get_state();
-       // $hascontinue = $state != mod_wordcards_module::STATE_END;
 
-        $nexturl = (new moodle_url('/mod/wordcards/finish.php',
-            ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
+    $nextstep = $mod->get_next_step($currentstep);
+    $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
 
-        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
+        $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage, 'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         $data = [];
-        switch($mod->get_globalpracticetype()){
+        switch($practicetype){
             case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+            case mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/matchselect_page', $data);
                 break;
             case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
                 $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/matchtype_page', $data);
                 break;
-            case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
-                $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
-                $activity_html = $this->render_from_template('mod_wordcards/speechcards_page', $data);
-                break;
             case mod_wordcards_module::PRACTICETYPE_DICTATION:
+            case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
             default:
                 $this->page->requires->js_call_amd("mod_wordcards/dictation", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/dictation_page', $data);
         }
 
-
-
         return $opts_html . $activity_html;
     }
 
-    public function finish_page(mod_wordcards_module $mod, $globalscattertime = 0, $localscattertime = 0) {
-        if (!empty($globalscattertime)) {
-            $scattertime = $globalscattertime;
-        } else {
-            $scattertime = $localscattertime;
-        }
-        $scattertimemsg = $mod->get_finishedscattermsg();
-        $scattertimemsg = str_replace('[[time]]', gmdate("i:s:00", $scattertime), $scattertimemsg);
+    public function finish_page(mod_wordcards_module $mod) {
+
+        $scattertimemsg = $mod->get_finishedstepmsg();
+        //$scattertimemsg = str_replace('[[time]]', gmdate("i:s:00", $scattertime), $scattertimemsg);
 
         $data = [
             'canmanage' => $mod->can_manage(),
@@ -178,77 +138,93 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/finish_page', $data);
     }
 
-    public function local_speechcards(mod_wordcards_module $mod){
-        global $CFG;
 
+
+    public function speechcards_page(mod_wordcards_module $mod, $wordpool, $currentstep){
+        global $CFG;
+        //get state
+        list($state) = $mod->get_state();
+
+        //fitst confirm we have the cloud poodll token and can show the cards
+        $api_user = get_config(constants::M_COMPONENT,'apiuser');
+        $api_secret = get_config(constants::M_COMPONENT,'apisecret');
+
+        //check user has entered api credentials
+        if(empty($api_user) || empty($api_secret)){
+            $errormessage = get_string('nocredentials',constants::M_COMPONENT,
+                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
+            return ($this->show_problembox($errormessage));
+        }else {
+            $token = utils::fetch_token($api_user, $api_secret);
+
+            //check token authenticated and no errors in it
+            $errormessage = utils::fetch_token_error($token);
+            if(!empty($errormessage)){
+                return ($this->show_problembox($errormessage));
+            }
+        }
+
+        //ok we now have a token and can continue to set up the cards
         $widgetid = \html_writer::random_id();
-        $definitions = $mod->get_local_terms();
+
+        //next url
+        $nextstep = $mod->get_next_step($currentstep);
+        $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+
+        //if we are in review state, we use different words and the next page is a finish page
+        if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+            $definitions = $mod->get_review_terms();
+        }else{
+            $definitions = $mod->get_learn_terms();
+
+        }
+
         $jsonstring=$this->make_json_string($definitions);
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
-        //need to check cards_page.mustache but i think we do not need 'hascontinue' feature
-        ///$hascontinue = true;
 
-        $completeafterlocal = $mod->completeafterlocal();
-        $nexturl = empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
-            : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
         $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
 
         $data = [];
-        $data['cloudpoodlltoken']=utils::fetch_token(get_config(constants::M_COMPONENT,'apiuser'),
-                get_config(constants::M_COMPONENT,'apisecret') );
-        $data['language']='en-US';
+        $data['cloudpoodlltoken']=$token;
+        $data['language']=$mod->get_mod()->ttslanguage;
         $data['wwwroot']=$CFG->wwwroot;
         $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
         return $opts_html . $speechcards;
 
     }
 
-    public function global_speechcards(mod_wordcards_module $mod){
-        global $CFG;
+    public function scatter_page(mod_wordcards_module $mod, $wordpool,$currentstep) {
+        list($state) = $mod->get_state();
 
-        $widgetid = \html_writer::random_id();
-        $definitions = $mod->get_global_terms();
-        $jsonstring=$this->make_json_string($definitions);
-        $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
+        $nextstep = $mod->get_next_step($currentstep);
+        $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
 
-        $nexturl = (new moodle_url('/mod/wordcards/finish.php',
-                ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true);
-        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
-        $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
-
-        $data = [];
-        $data['cloudpoodlltoken']=utils::fetch_token(get_config(constants::M_COMPONENT,'apiuser'),
-                get_config(constants::M_COMPONENT,'apisecret') );
-        $data['language']='en-US';
-        $data['wwwroot']=$CFG->wwwroot;
-        $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
-        return $opts_html . $speechcards;
-
-    }
-
-    public function local_page(mod_wordcards_module $mod) {
-        $definitions = $mod->get_local_terms();
-
-        $completeafterlocal = $mod->completeafterlocal();
+        //if we are in review state, we use different words and the next page is a finish page
+        if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+            $definitions = $mod->get_review_terms();
+        }else{
+            $definitions = $mod->get_learn_terms();
+        }
 
         $data = [
-            'canmanage' => $mod->can_manage(),
-            'continue' => get_string('continue'),
-            'congrats' => get_string('congrats', 'mod_wordcards'),
-            'definitionsjson' => json_encode(array_values($definitions)),
-            'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
-            'finishedscattermsg' => $mod->get_finishedscattermsg(),
-            'modid' => $mod->get_id(),
-            'hascontinue' => true,
-            'completeafterlocal' => $completeafterlocal,
-            'nexturl' => empty($completeafterlocal) ? (new moodle_url('/mod/wordcards/global.php', ['id' => $mod->get_cmid()]))->out(true)
-                : (new moodle_url('/mod/wordcards/finish.php', ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
+                'canmanage' => $mod->can_manage(),
+                'continue' => get_string('continue'),
+                'congrats' => get_string('congrats', 'mod_wordcards'),
+                'definitionsjson' => json_encode(array_values($definitions)),
+                'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
+                'finishedstepmsg' => $mod->get_finishedstepmsg(),
+                'modid' => $mod->get_id(),
+                'isglobalcompleted' => $state == mod_wordcards_module::STATE_END,
+                'hascontinue' => $state != mod_wordcards_module::STATE_END,
+                'nexturl' => $nexturl,
+                'isglobalscatter' => true
         ];
 
-        return $this->render_from_template('mod_wordcards/cards_page', $data);
+        return $this->render_from_template('mod_wordcards/scatter_page', $data);
     }
+
 
     public function navigation(mod_wordcards_module $mod, $currentstate) {
         $tabtree = mod_wordcards_helper::get_tabs($mod, $currentstate);
@@ -280,26 +256,15 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/student_navigation', $data);
     }
 
-    public function global_page(mod_wordcards_module $mod) {
-        list($state) = $mod->get_state();
-        $definitions = $mod->get_global_terms();
-
-        $data = [
-            'canmanage' => $mod->can_manage(),
-            'continue' => get_string('continue'),
-            'congrats' => get_string('congrats', 'mod_wordcards'),
-            'definitionsjson' => json_encode(array_values($definitions)),
-            'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
-            'finishedscattermsg' => $mod->get_finishedscattermsg(),
-            'modid' => $mod->get_id(),
-            'isglobalcompleted' => $state == mod_wordcards_module::STATE_END,
-            'hascontinue' => $state != mod_wordcards_module::STATE_END,
-            'nexturl' => (new moodle_url('/mod/wordcards/finish.php',
-                ['id' => $mod->get_cmid(), 'sesskey' => sesskey()]))->out(true),
-            'isglobalscatter' => true
-        ];
-
-        return $this->render_from_template('mod_wordcards/cards_page', $data);
+    /**
+     * Return HTML to display message about problem
+     */
+    public function show_problembox($msg) {
+        $output = '';
+        $output .= $this->output->box_start(constants::M_COMPONENT . '_problembox');
+        $output .= $this->notification($msg, 'warning');
+        $output .= $this->output->box_end();
+        return $output;
     }
 
 }

@@ -159,5 +159,64 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2019091403, 'wordcards');
     }
 
+    if($oldversion<2019120501) {
+
+        $table = new xmldb_table('wordcards');
+        $field = new xmldb_field('skipglobal', XMLDB_TYPE_INTEGER, '1', null, null, null, '1');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'skipreview');
+        }
+        $field = new xmldb_field('finishedscattermsg', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'finishedstepmsg');
+        }
+        $field = new xmldb_field('finishedscattermsg', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'finishedstepmsg');
+        }
+        $field = new xmldb_field('localtermcount', XMLDB_TYPE_INTEGER, '2');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'step1termcount');
+        }
+        $field = new xmldb_field('globaltermcount', XMLDB_TYPE_INTEGER, '2');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'step2termcount');
+        }
+        $field = new xmldb_field('localpracticetype', XMLDB_TYPE_INTEGER, '2');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'step1practicetype');
+        }
+        $field = new xmldb_field('globalpracticetype', XMLDB_TYPE_INTEGER, '2');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'step2practicetype');
+        }
+
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2019120501, 'wordcards');
+    }
+
+    if($oldversion<2019120601) {
+
+        $table = new xmldb_table('wordcards');
+        $fields= array();
+        $fields[] = new xmldb_field('step3practicetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
+        $fields[] = new xmldb_field('step4practicetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
+        $fields[] = new xmldb_field('step5practicetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
+        $fields[] = new xmldb_field('step3termcount', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
+        $fields[] = new xmldb_field('step4termcount', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
+        $fields[] = new xmldb_field('step5termcount', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
+
+        foreach($fields as $field){
+            // Conditionally launch add field skipglobal.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2019120601, 'wordcards');
+     }
+
     return true;
 }
