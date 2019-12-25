@@ -42,7 +42,6 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
 
     $module->finishedstepmsg = $module->finishedstepmsg_editor['text'];
     $module->completedmsg = $module->completedmsg_editor['text'];
-
     $module->id = $DB->insert_record('wordcards', $module);
 
     return $module->id;
