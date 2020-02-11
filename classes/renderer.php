@@ -141,7 +141,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
 
     public function speechcards_page(mod_wordcards_module $mod, $wordpool, $currentstep){
-        global $CFG;
+        global $CFG,$USER;
+
         //get state
         list($state) = $mod->get_state();
 
@@ -190,6 +191,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $data['cloudpoodlltoken']=$token;
         $data['language']=$mod->get_mod()->ttslanguage;
         $data['wwwroot']=$CFG->wwwroot;
+        $data['owner']=hash('md5',$USER->username);
         $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
         return $opts_html . $speechcards;
 
