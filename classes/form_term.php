@@ -44,10 +44,8 @@ class mod_wordcards_form_term extends moodleform {
         $mform->setType('alternates', PARAM_NOTAGS);
 
         $voices=utils::get_tts_voices($ttslanguage);
-        $auto =array('Auto'=>'Auto');
-        $options = array_merge($auto,$voices);
         $mform->addElement('select', 'ttsvoice', get_string('ttsvoice', 'mod_wordcards'),
-                $options,'Auto');
+                $voices);
 
         $filemanageropts = utils::fetch_filemanager_opts('audio');
         $mform->addElement('filemanager', 'audio_filemanager', get_string('audiofile', constants::M_COMPONENT), null,

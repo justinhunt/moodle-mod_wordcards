@@ -12,7 +12,7 @@ define([
     'core/log',
     'mod_wordcards/a4e',
     'mod_wordcards/keyboard',
-    'mod_wordcards/polly',
+    'mod_wordcards/pollyhelper',
     'core/templates'
 ], function($, Ajax, log, a4e, keyboard, polly, templates) {
 
@@ -36,7 +36,7 @@ define([
                 return;
             }
 
-            polly.init($("#dictation_player"),props.ttslanguage);
+            polly.init(props.token,props.region,props.owner);
             app.ttslanguage = props.ttslanguage;
             app.process(matchingdata);
             a4e.register_events();
@@ -44,6 +44,9 @@ define([
         },
 
         register_events: function(){
+
+            // Get the audio element
+            var aplayer = $("#dictation_player");
 
 
             $("#next-button").on("click",function(){
@@ -62,12 +65,19 @@ define([
 
             $("#listen-button").click(function(){
                 if(app.audio){
-                    polly.play_audio(app.audio);
+                    aplayer.attr('src',app.audio);
+                    aplayer[0].play();
                 }else{
-                    polly.play_text(app.tts, app.ttsvoice);
+                    polly.fetch_polly_url(app.tts,'text', app.ttsvoice);
                 }
 
             });
+
+            //play what was returned in polly.fetch_polly_url
+            polly.onnewpollyurl=function(theurl){
+                aplayer.attr('src',theurl);
+                aplayer[0].play();
+            };
 
             $('body').on('click','#start-button',function(){
                 app.start();

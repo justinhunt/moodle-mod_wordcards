@@ -82,7 +82,10 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
 
     public function a4e_page(mod_wordcards_module $mod, $practicetype, $wordpool, $currentstep ) {
-        global $PAGE, $OUTPUT;
+        global $USER, $PAGE, $OUTPUT;
+
+        //config
+        $config = get_config('mod_wordcards');
 
         //get state
         list($state) = $mod->get_state();
@@ -101,8 +104,12 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
     $nextstep = $mod->get_next_step($currentstep);
     $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+    $token = utils::fetch_token($config->apiuser, $config->apisecret);
 
-        $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage, 'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
+        $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage,
+                'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl, 'region'=>$config->awsregion,
+                'token'=>$token,'owner'=>hash('md5',$USER->username));
+
         $data = [];
         switch($practicetype){
             case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:

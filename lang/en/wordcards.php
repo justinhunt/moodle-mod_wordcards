@@ -104,7 +104,7 @@ $string['singapore'] = 'Singapore';
 $string['forever']='Never expire';
 
 $string['en-us'] = 'English (US)';
-$string['en-uk'] = 'English (UK)';
+$string['en-gb'] = 'English (GB)';
 $string['en-au'] = 'English (AU)';
 $string['en-in'] = 'English (IN)';
 $string['es-es'] = 'Spanish (ES)';
