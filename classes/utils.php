@@ -190,6 +190,12 @@ class utils{
                 if(property_exists($resp_object,'sites')){
                     $tokenobject->sites = $resp_object->sites;
                 }
+                if(property_exists($resp_object,'awsaccesssecret')){
+                    $tokenobject->awsaccesssecret = $resp_object->awsaccesssecret;
+                }
+                if(property_exists($resp_object,'awsaccessid')){
+                    $tokenobject->awsaccessid = $resp_object->awsaccessid;
+                }
 
                 $cache->set('recentpoodlltoken', $tokenobject);
                 $cache->set('recentpoodlluser', $apiuser);
@@ -264,6 +270,21 @@ class utils{
       );
   }
 
+    public static function translate_region($key){
+        switch($key){
+            case "useast1": return "us-east-1";
+            case "tokyo": return "ap-northeast-1";
+            case "sydney": return "ap-southeast-2";
+            case "dublin": return "eu-east-1";
+            case "ottawa": return "us-east-1";
+            case "frankfurt": return "eu-central-2";
+            case "london": return "us-east-1";
+            case "saopaulo": return "sa-east-1";
+            case "singapore": return "us-east-1";
+            case "mumbai": return "us-east-1";
+        }
+    }
+
     public static function get_timelimit_options(){
         return array(
             0 => get_string("notimelimit",constants::M_COMPONENT),
@@ -330,7 +351,7 @@ class utils{
         $params['wstoken'] = $token;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
-        $params['text'] = $speaktext;
+        $params['text'] = urlencode($speaktext);
         $params['texttype'] = $texttype;
         $params['voice'] = $voice;
         $params['appid'] = 'mod_readaloud';

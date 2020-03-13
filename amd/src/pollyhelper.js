@@ -61,10 +61,10 @@ define(['jquery', 'core/log'], function ($, log) {
                 var xhrparams = "wstoken=" + this.token
                 + "&wsfunction=" + functionname
                 + "&moodlewsrestformat=" + 'json'
-                + "&text=" + speaktext
+                + "&text=" + encodeURIComponent(speaktext)
                 + '&texttype=' + texttype
                 + '&voice=' + voice
-                + '&appid=' + 'mod_readaloud'
+                + '&appid=' + 'mod_wordcards'
                 + '&owner=' + this.owner
                 + '&region=' + this.region;
 

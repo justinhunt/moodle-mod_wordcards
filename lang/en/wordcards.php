@@ -198,3 +198,4 @@ $string['instructions_dictation'] = 'Listen and type the word(s) that you hear. 
 $string['instructions_scatter'] = 'Match the Cards with the same meaning, by tapping them,';
 $string['instructions_speechcards'] = 'Tap the blue button and speak the word(s) that you see on the card. Speak slowly and clearly.';
 $string['instructions_vocablist'] = 'Check the words that you will be tested on in this activity. Tap the word card or press the \'meaning\' or \'word\' buttons to flipe the word card. When you are ready press \'Begin\' and test how well you remember.';
+$string['pushtospeak'] = 'Push to Speak';
