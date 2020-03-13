@@ -66,8 +66,8 @@ $renderer = $PAGE->get_renderer('mod_wordcards');
 $opts = [];
 $opts['language']='en-AU';
 $opts['region']='us-east-1';
-$opts['accessid']='AKIAICDHAGFWJJUNJZ3Q';
-$opts['secretkey']='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';
+$opts['accessid']='YYYYY';
+$opts['secretkey']='XXXXXXXXX';
 $PAGE->requires->js_call_amd("mod_wordcards/transcribehelper", 'init', array($opts));
 
 echo $output->footer();
