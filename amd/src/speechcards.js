@@ -216,8 +216,14 @@ define([
             var opts={};
             opts['language']=app.props.language;
             opts['region']=app.props.region;
-            opts['accessid']=app.props.accessid;
-            opts['secretkey']=app.props.secretkey;
+           // opts['accessid']=app.props.accessid;
+           // opts['secretkey']=app.props.secretkey;
+            opts['token'] = app.props.token;
+            opts['parent'] = app.props.parent;
+            opts['owner'] = app.props.owner;
+            opts['appid'] = app.props.appid;
+            opts['expiretime'] = app.props.expiretime;
+
             transcriber.init(opts);
             transcriber.onFinalResult =function(transcript,result){
                 var message ={type: 'speech'};
@@ -247,6 +253,9 @@ define([
         },
 
         wordsDoMatch: function(wordheard, currentterm){
+            //lets lower case everything
+            wordheard = wordheard.toLowerCase();
+            currentterm.term = currentterm.term.toLowerCase();
             if(wordheard==currentterm.term){
                 return true;
             }
@@ -256,8 +265,8 @@ define([
             var awords = currentterm.alternates.split(',');
             var matched =false;
             $.each(awords,function(i,word){
-                if(app.cleanText(word)==wordheard){
-                    //this is to break out of the loop, not telling the parent its unmatched
+                if(app.cleanText(word.toLowerCase())==wordheard){
+                    //we return false to break out of the loop, not to tell the parent its unmatched
                     matched =true;
                     return false;
                 }

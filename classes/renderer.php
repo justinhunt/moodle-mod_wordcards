@@ -162,7 +162,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $api_user = get_config(constants::M_COMPONENT,'apiuser');
         $api_secret = get_config(constants::M_COMPONENT,'apisecret');
         $region = get_config(constants::M_COMPONENT,'awsregion');
-        $region = utils::translate_region($region);
 
         //check user has entered api credentials
         if(empty($api_user) || empty($api_secret)){
@@ -178,12 +177,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
                 return ($this->show_problembox($errormessage));
             }
         }
-
-        //get aws info
-        $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
-        $tokenobject = $cache->get('recentpoodlltoken');
-        $accessid = $tokenobject->awsaccessid;
-        $accesssecret= $tokenobject->awsaccesssecret;
 
         //ok we now have a token and can continue to set up the cards
         $widgetid = \html_writer::random_id();
@@ -207,8 +200,14 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         $opts['language']=$mod->get_mod()->ttslanguage;
         $opts['region']=$region;
-        $opts['accessid']=$accessid;
-        $opts['secretkey']=$accesssecret;
+        //$opts['accessid']=$accessid;
+        //$opts['secretkey']=$accesssecret;
+        $opts['token']=$token;
+        $opts['parent']=$CFG->wwwroot;
+        $opts['owner']=hash('md5',$USER->username);
+        $opts['appid']=constants::M_COMPONENT;
+        $opts['expiretime']=300;//max expire time is 300 seconds
+
         $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
 
         $data = [];
