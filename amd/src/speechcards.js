@@ -44,10 +44,11 @@ define([
             }
             app.jsondata = jsondata;
             app.props=props;
+            app.browserspeech =  'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
             app.process(jsondata);
             app.whatheard = $('#submitted'); //$('#speechcards_whatheard');
             //do we have in browser speech rec?
-            app.browserspeech =  'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+
 
             a4e.register_events();
             this.init_controls();
@@ -254,8 +255,8 @@ define([
 
         wordsDoMatch: function(wordheard, currentterm){
             //lets lower case everything
-            wordheard = wordheard.toLowerCase();
-            currentterm.term = currentterm.term.toLowerCase();
+            wordheard = app.cleantext(wordheard);
+            currentterm.term = app.cleantext(currentterm.term);
             if(wordheard==currentterm.term){
                 return true;
             }
