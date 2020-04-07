@@ -446,6 +446,23 @@ class utils{
 
   }
 
+  /* An activity typoe will be eith practice or review */
+    public static function fetch_activity_tablabel($activitytype){
+      switch($activitytype){
+          case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+          case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+          case \mod_wordcards_module::PRACTICETYPE_DICTATION:
+          case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+              return get_string('practice','mod_wordcards') ;
+          case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+          case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+          case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+          case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+              return get_string('review','mod_wordcards');
+
+      }
+    }
+
   public static function get_practicetype_options($wordpool=false){
       $none =  array(\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', 'mod_wordcards'));
       $learnoptions = [
