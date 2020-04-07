@@ -61,11 +61,6 @@ $string['setup'] = 'Words Admin';
 $string['skipreview'] = 'Hide first review session';
 $string['skipreview_help'] = 'Hide the review session of this specific activity if no wordcards activities have been completed in this course.';
 $string['tabdefinitions'] = 'Definitions';
-$string['tabstep1'] = 'Try 1';
-$string['tabstep2'] = 'Try 2';
-$string['tabstep3'] = 'Try 3';
-$string['tabstep4'] = 'Try 4';
-$string['tabstep5'] = 'Try 5';
 $string['tabsetup'] = 'Words Admin';
 $string['tabimport'] = 'Import';
 $string['term'] = 'Term';
@@ -184,6 +179,9 @@ $string['title_matchtype'] = 'Type the Answer';
 $string['title_dictation'] = 'Listen and Type';
 $string['title_scatter'] = 'Match the Words';
 $string['title_speechcards'] = 'Say the Words';
+
+$string['review'] = 'Review';
+$string['practice'] = 'Practice';
 
 $string['title_noactivity'] = 'None';
 $string['title_matchselect_rev'] = 'Choose the Answer (Review)';
