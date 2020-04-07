@@ -173,6 +173,7 @@ $string['done'] = 'Done';
 $string['listen'] = 'Listen';
 $string['delete'] = 'Delete';
 $string['submit'] = 'Submit';
+$string['flip'] = 'Flip';
 $string['word'] = 'Word';
 $string['meaning'] = 'Meaning';
 $string['correct'] = 'Correct';

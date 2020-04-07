@@ -46,6 +46,7 @@ class mod_wordcards_helper {
                     new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' =>mod_wordcards_module::STATE_STEP4]),
                     get_string('tabstep4', 'mod_wordcards'), '', true);
         }
+      
         if($mod->get_mod()->{mod_wordcards_module::STATE_STEP5} != mod_wordcards_module::PRACTICETYPE_NONE) {
             $tabs[]=  new tabobject(mod_wordcards_module::STATE_STEP5,
                     new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP5]),

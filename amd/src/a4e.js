@@ -17,6 +17,8 @@ define([
 
     var a4e = {
 
+        face:true,
+
         register_events: function(){
          //nothing to do here currently
         },
@@ -52,11 +54,9 @@ define([
                         textFit(faces,{multiLine: true, maxFontSize: 50, alignHoriz: true, alignVert: true});
                     },100);
 
-                    $('.a4e-flashcards-container .mod_wordcards_matching_reversebtn').on('click',function(){
-                        $(".a4e-flashcards-container .a4e-card").flip(true);
-                    });
                     $('.a4e-flashcards-container .mod_wordcards_matching_frontbtn').on('click',function(){
-                        $(".a4e-flashcards-container .a4e-card").flip(false);
+                        $(".a4e-flashcards-container .a4e-card").flip(a4e.face);
+                        a4e.face=!a4e.face;
                     });
 
                 }

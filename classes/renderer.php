@@ -271,7 +271,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
                 'current' => $tab->selected,
                 'inactive' => $tab->inactive,
                 'last' => $step == count($tabtree->subtree),
-                'step' => $step++,
+                'step' => $step++
             ];
         }, $tabtree->subtree);
 
