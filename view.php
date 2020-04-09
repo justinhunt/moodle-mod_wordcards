@@ -26,6 +26,10 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 $PAGE->force_settings_menu(true);
+//load google font
+$googlefont = new moodle_url('https//fonts.googleapis.com/css2',array('family'=>'Orbitron','display'=>'swap'));
+$PAGE->requires->css($googlefont);
+
 
 $output = $PAGE->get_renderer('mod_wordcards');
 
