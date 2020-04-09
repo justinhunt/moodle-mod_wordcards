@@ -41,10 +41,6 @@ define([
 
     register_events: function() {
 
-      $("#next-button").on("click", function() {
-        app.next();
-      });
-
       $('body').on('click', "#close-results", function() {
 
         var total_time = a4e.calc_total_time(app.results);
@@ -65,9 +61,6 @@ define([
         app.start();
       });
 
-      $('body').on('click', '#quit-button', function() {
-        app.quit();
-      });
     },
 
     process: function(json) {
@@ -82,7 +75,7 @@ define([
       a4e.shuffle(app.terms);
       app.pointer = 0;
       $("#vocab-list, #start-button").hide();
-      $("#gameboard, #quit-button").show();
+      $("#gameboard").show();
       $("#time-counter").text("00:00");
       app.timer = {
         interval: setInterval(function() {
@@ -98,13 +91,13 @@ define([
     },
     quit: function() {
       clearInterval(app.timer.interval);
-      $("#gameboard, #quit-button").hide();
+      $("#gameboard").hide();
       $("#vocab-list, #start-button").show();
     },
 
     end: function() {
       clearInterval(app.timer.interval);
-      $("#gameboard, #quit-button, #start-button").hide();
+      $("#gameboard, #start-button").hide();
       $("#results").show();
 
       //template data
@@ -133,24 +126,15 @@ define([
 
     },
     next: function() {
-
-      $("#next-button").hide();
-
+      
       a4e.progress_dots(app.results, app.terms);
-
-      if (app.terms[app.pointer]['definition'] !== "" && app.terms[app.pointer]['term'] != "") {
-        if (app.terms[app.pointer].image !== null && app.terms[app.pointer].image != "") {
-          $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='" + app.terms[app.pointer].image + "'><br/>");
-        } else if (app.has_images && (app.terms[app.pointer].image == null || app.terms[app.pointer].image == "")) {
-          $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='/images/no-image.png'><br/>");
-        }
-        $("#question").append("<strong>" + app.terms[app.pointer]['definition'] + "</strong>");
-      } else if (app.terms[app.pointer].image !== null && app.terms[app.pointer].image != "") {
-        $("#question").html("<img class='center-block img-responsive img-thumbnail' src='" + app.terms[app.pointer].image + "'>");
-      } else {
-        a4e.alert("Could not generate a test with these settings!", "error");
-        app.end();
+      
+      var code="";
+      if(app.terms[app.pointer].image){
+        code+="<img class='a4e-prompt-img' src='" + app.terms[app.pointer].image + "'>";
       }
+      code+="<strong>" + app.terms[app.pointer].definition + "</strong>"
+      $("#question").html(code);
 
       $("#input").html(app.get_distractors());
 
@@ -193,7 +177,7 @@ define([
       if (!correct) {
         setTimeout(function() {
           if (app.pointer < app.terms.length) {
-            $("#next-button").trigger('click');
+            app.next();
           } else {
             app.end();
           }
@@ -201,7 +185,7 @@ define([
       } else {
         setTimeout(function() {
           if (app.pointer < app.terms.length) {
-            $("#next-button").trigger('click');
+            app.next();
           } else {
             app.end();
           }

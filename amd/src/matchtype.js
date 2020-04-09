@@ -58,9 +58,6 @@ define([
         app.start();
       });
 
-      $('body').on('click', '#quit-button', function() {
-        app.quit();
-      });
     },
 
     process: function(json) {
@@ -75,7 +72,7 @@ define([
       a4e.shuffle(app.terms);
       app.pointer = 0;
       $("#vocab-list, #start-button").hide();
-      $("#gameboard, #quit-button").show();
+      $("#gameboard").show();
       $("#time-counter").text("00:00");
       app.timer = {
         interval: setInterval(function() {
@@ -92,14 +89,14 @@ define([
     quit: function() {
       keyboard.clear();
       clearInterval(app.timer.interval);
-      $("#gameboard, #quit-button").hide();
+      $("#gameboard").hide();
       $("#vocab-list, #start-button").show();
     },
 
     end: function() {
       keyboard.clear();
       clearInterval(app.timer.interval);
-      $("#gameboard, #quit-button, #start-button").hide();
+      $("#gameboard, #start-button").hide();
       $("#results").show();
 
       //template data
@@ -129,41 +126,27 @@ define([
 
     next: function() {
 
+      a4e.progress_dots(app.results, app.terms);
+      
       $("#submitted").html("").removeClass("a4e-correct a4e-incorrect");
 
-      keyboard.create("input", app.terms[app.pointer]['term'], app.pointer, true, function(value) {
-        $("#submitted").html(app.terms[app.pointer]['term']);
+      keyboard.create("input", app.terms[app.pointer].term, app.pointer, true, function(value) {
+        $("#submitted").html(app.terms[app.pointer].term);
         keyboard.disable();
         app.check(value);
       });
 
-      var progress = {
-        correct: app.results.filter(function(e) {
-          return e.points > 0
-        }).length / app.terms.length * 100,
-        incorrect: app.results.filter(function(e) {
-          return e.points == 0
-        }).length / app.terms.length * 100
+      var code="";
+      if(app.terms[app.pointer].image){
+        code+="<img class='a4e-prompt-img' src='" + app.terms[app.pointer].image + "'>";
       }
-
-      if (app.terms[app.pointer]['definition'] !== "" && app.terms[app.pointer]['term'] !== "") {
-        if (app.terms[app.pointer].image !== null && app.terms[app.pointer]['image'] != "") {
-          $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='" + app.terms[app.pointer].image + "'><br/>");
-        } else if (app.has_images && (app.terms[app.pointer].image == null || app.terms[app.pointer]['term'] == "")) {
-          $("#question").html("<img style='height:200px;width:auto;' class='center-block img-responsive img-thumbnail' src='/images/no-image.png'><br/>");
-        }
-        $("#question").append("<strong>" + app.terms[app.pointer]['definition'] + "</strong>");
-      } else if (app.terms[app.pointer].image !== null && app.terms[app.pointer].image != "") {
-        $("#question").html("<img class='center-block img-responsive img-thumbnail' src='" + app.terms[app.pointer].image + "'>");
-      } else {
-        a4e.alert("Could not generate a test with these settings!", "error");
-        app.end();
-      }
+      code+="<strong>" + app.terms[app.pointer].definition + "</strong>"
+      $("#question").html(code);
 
     },
 
     check: function(selected) {
-      var correct = selected.toLowerCase().trim() == app.terms[app.pointer]['term'].toLowerCase().trim();
+      var correct = selected.toLowerCase().trim() == app.terms[app.pointer].term.toLowerCase().trim();
       var points = 0;
       if (correct == true) {
         //createjs.Sound.play('correct');

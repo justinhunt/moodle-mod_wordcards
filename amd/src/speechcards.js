@@ -58,7 +58,6 @@ define([
       app.controls.close_results = $("#close-results");
       app.controls.results = $("#results");
       app.controls.vocab_list = $("#vocab-list");
-      app.controls.quit_button = $("#quit-button");
       app.controls.the_list = $("#speechcards_thelist");
       app.controls.gameboard = $("#gameboard");
       app.controls.time_counter = $("#time-counter");
@@ -117,9 +116,6 @@ define([
         app.start();
       });
 
-      app.controls.quit_button.click(function() {
-        app.quit();
-      });
     },
 
     process: function(jsondata) {
@@ -288,7 +284,6 @@ define([
       a4e.shuffle(app.terms);
       app.controls.vocab_list.hide();
       app.controls.gameboard.show();
-      app.controls.quit_button.show();
       app.controls.time_counter.text("00:00");
       app.whatheard.text('........');
       app.timer = {
@@ -307,7 +302,6 @@ define([
     quit: function() {
       clearInterval(app.timer.interval);
       app.controls.gameboard.hide();
-      app.controls.quit_button.hide();
       app.controls.vocab_list.show();
     },
 

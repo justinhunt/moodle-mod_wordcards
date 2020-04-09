@@ -153,6 +153,8 @@ define([
 
 
     next: function() {
+      
+      a4e.progress_dots(app.results, app.terms);
 
       $("#submitted").html("").removeClass("a4e-correct a4e-incorrect");
 
@@ -162,26 +164,24 @@ define([
         app.check(value);
       });
 
-      var progress = {
-        correct: app.results.filter(function(e) {
-          return e.points > 0
-        }).length / app.terms.length * 100,
-        incorrect: app.results.filter(function(e) {
-          return e.points == 0
-        }).length / app.terms.length * 100
-      }
-
       app.tts = app.terms[app.pointer]['term'];
+      
       if (app.terms[app.pointer]['ttsvoice']) {
         app.ttsvoice = app.terms[app.pointer]['ttsvoice'];
-      } else {
+      } 
+      
+      else {
         app.ttsvoice = 'auto';
       }
+      
       if (app.terms[app.pointer]['audio']) {
         app.audio = app.terms[app.pointer]['audio'];
-      } else {
+      } 
+      
+      else {
         app.audio = false;
       }
+      
       $("#listen-button").trigger("click");
 
     },

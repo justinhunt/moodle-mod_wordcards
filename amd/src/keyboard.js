@@ -54,7 +54,7 @@ define(['jquery','core/templates'], function($,templates) {
         create:function(target,string,id,show_dist,func){
             var distractors=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
             keyboard.string=string;
-            keyboard.clear();
+            keyboard.off();
             keyboard.letters=[];
             $.each(string.split(''),function(i,l){
                 if(keyboard.letters.indexOf(l)==-1){
