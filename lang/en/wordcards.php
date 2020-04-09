@@ -164,7 +164,6 @@ $string['quit'] = 'Quit';
 $string['next'] = 'Next';
 $string['previous'] = 'Prev';
 $string['ok'] = 'OK';
-$string['done'] = 'Done';
 $string['listen'] = 'Listen';
 $string['delete'] = 'Delete';
 $string['submit'] = 'Submit';
@@ -196,5 +195,11 @@ $string['instructions_matchtype'] = 'Type the word that you learnt, which best m
 $string['instructions_dictation'] = 'Listen and type the word(s) that you hear. Tap the blue button to hear the word(s).';
 $string['instructions_scatter'] = 'Match the Cards with the same meaning, by tapping them,';
 $string['instructions_speechcards'] = 'Tap the blue button and speak the word(s) that you see on the card. Speak slowly and clearly.';
-$string['instructions_vocablist'] = 'Check the words that you will be tested on in this activity. Tap the word card or press the \'meaning\' or \'word\' buttons to flipe the word card. When you are ready press \'Begin\' and test how well you remember.';
+$string['instructions_vocablist'] = 'Check the words that you will be tested on in this activity. Tap the word card or press the \'flip\' button to show the other side of the cards. When you are ready, press \'Begin\' to test your knowledge of these words.';
 $string['pushtospeak'] = 'Push to Speak';
+
+// Paul's edits
+
+$string['try_again'] = "Try again";
+$string['next_step'] = "Next";
+$string['done'] = 'Next';

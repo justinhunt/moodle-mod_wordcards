@@ -1,616 +1,665 @@
 /* Global div encapsulating all the terms. */
+
 .path-mod-wordcards .terms {
-    display: flex;
-    flex-wrap: wrap;
-}
-/* Each term is defined by a .term-wrapper. */
-.path-mod-wordcards .term-wrapper {
-    width: 32%;
-    display: inline-block;
-    border: 1px solid #eee;
-    margin-right: 1%;
-    border-radius: 3px;
-    margin-bottom: 10px;
-    float: left;
-}
-/* Remove the margin at the end of each 'row'. */
-.path-mod-wordcards .term-wrapper:nth-of-type(3n) {
-    margin-right: 0;
-}
-.dir-rtl.path-mod-wordcards .term-wrapper {
-    margin-left: 1%;
-    margin-right: 0;
-}
-/* Another term div, in case the wrapper wasn't enough. */
-.path-mod-wordcards .term {
-    display: block;
-    padding: 5px;
-}
-/* The term header, where the title and tick will be. */
-.path-mod-wordcards .term-header {
-    position: relative;
-}
-/* Term title. Where a right padding is kept to leave room for the tick. */
-.path-mod-wordcards .term-header .term-title {
-    font-weight: bold;
-    padding-right: 25px;
-    border-bottom: 1px solid #ccc;  /* Separator between title and body. */
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
-.dir-rtl.path-mod-wordcards .term-header .term-title {
-    padding-right: 0;
-    padding-left: 25px;
-}
-/* The term tick, absolutely positioned to the right. */
-.path-mod-wordcards .term-header .term-tick {
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.dir-rtl.path-mod-wordcards .term-header .term-tick {
-    left: 0;
-    right: auto;
-}
-/* The term body, where the definition will be displayed. */
-.path-mod-wordcards .term-body {
+  display: flex;
+  flex-wrap: wrap;
 }
 
+/* Each term is defined by a .term-wrapper. */
+
+.path-mod-wordcards .term-wrapper {
+  width: 32%;
+  display: inline-block;
+  border: 1px solid #eee;
+  margin-right: 1%;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  float: left;
+}
+
+/* Remove the margin at the end of each 'row'. */
+
+.path-mod-wordcards .term-wrapper:nth-of-type(3n) {
+  margin-right: 0;
+}
+
+.dir-rtl.path-mod-wordcards .term-wrapper {
+  margin-left: 1%;
+  margin-right: 0;
+}
+
+/* Another term div, in case the wrapper wasn't enough. */
+
+.path-mod-wordcards .term {
+  display: block;
+  padding: 5px;
+}
+
+/* The term header, where the title and tick will be. */
+
+.path-mod-wordcards .term-header {
+  position: relative;
+}
+
+/* Term title. Where a right padding is kept to leave room for the tick. */
+
+.path-mod-wordcards .term-header .term-title {
+  font-weight: bold;
+  padding-right: 25px;
+  border-bottom: 1px solid #ccc;
+  /* Separator between title and body. */
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.dir-rtl.path-mod-wordcards .term-header .term-title {
+  padding-right: 0;
+  padding-left: 25px;
+}
+
+/* The term tick, absolutely positioned to the right. */
+
+.path-mod-wordcards .term-header .term-tick {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.dir-rtl.path-mod-wordcards .term-header .term-tick {
+  left: 0;
+  right: auto;
+}
+
+/* The term body, where the definition will be displayed. */
+
+.path-mod-wordcards .term-body {}
+
 /* Various classes for the appearance of the tick. */
+
 .path-mod-wordcards .term-seen-action {
-    display: block;
+  display: block;
 }
+
 .path-mod-wordcards .term-seen-state {
-    display: none;
+  display: none;
 }
+
 .path-mod-wordcards .term-seen .term-seen-action {
-    display: none;
+  display: none;
 }
+
 .path-mod-wordcards .term-seen .term-seen-state {
-    display: block;
+  display: block;
 }
+
 .path-mod-wordcards .term-seen-loading {
-    display: none;
+  display: none;
 }
-.path-mod-wordcards .term-loading .term-tick > * {
-    /* Hide all the children. */
-    display: none;
+
+.path-mod-wordcards .term-loading .term-tick>* {
+  /* Hide all the children. */
+  display: none;
 }
+
 .path-mod-wordcards .term-loading .term-seen-loading {
-    display: block;
+  display: block;
 }
 
 .path-mod-wordcards .page-footer {
-    margin-top: 20px;
+  margin-top: 20px;
 }
+
 .path-mod-wordcards .page-footer p {
-    text-align: right;
+  text-align: right;
 }
+
 .dirt-rtl.path-mod-wordcards .page-footer p {
-    text-align: left;
+  text-align: left;
 }
 
 .path-mod-wordcards .wordcards {
-    position: relative;
+  position: relative;
 }
+
 .path-mod-wordcards .wordcards .wordcard {
-    position: absolute;
-    display: table;
-    box-sizing: border-box;
-    background-color: #fff;
-    border: 1px solid #eee;
-    border-radius: 3px;
-    cursor: pointer;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+  position: absolute;
+  display: table;
+  box-sizing: border-box;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
+
 .path-mod-wordcards .wordcards .wordcard .wordcard-wrapper {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
+
 .path-mod-wordcards .wordcards .wordcard .wordcard-content {
-    overflow: hidden;
-    box-sizing: border-box;
-    padding: 5px;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 5px;
 }
+
 .path-mod-wordcards .wordcards .wordcard.selected,
 .path-mod-wordcards .wordcards .wordcard.found {
-    background-color: green;
-    color: white;
-    cursor: initial;
+  background-color: green;
+  color: white;
+  cursor: initial;
 }
+
 .path-mod-wordcards .wordcards .wordcard.mismatch {
-    background-color: red;
-    color: white;
+  background-color: red;
+  color: white;
 }
+
 .path-mod-wordcards .wordcards .congrats {
-    width: 300px;
-    height: 100px;
-    padding: 20px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -70px 0 0 -170px;
-    display: none;
-    text-align: center;
-    z-index:1;
+  width: 300px;
+  height: 100px;
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -70px 0 0 -170px;
+  display: none;
+  text-align: center;
+  z-index: 1;
 }
+
 .path-mod-wordcards .wordcards .congrats div {
-        padding-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .path-mod-wordcards .wordcards_timer {
-    position: absolute;
-    z-index: 1;
-    background-color: #ececec;
-    display: none;
+  position: absolute;
+  z-index: 1;
+  background-color: #ececec;
+  display: none;
 }
-.path-mod-wordcards  .wordcards_timer_time {
 
-}
+.path-mod-wordcards .wordcards_timer_time {}
 
 /**
  * Students navigate through tabs which look like arrows.
  *
  * Arrows need some ::before and ::after to work. A common CSS trick with borders.
  */
+
 .path-mod-wordcards .student-navigation .student-tab {
-    text-decoration: none;
-    display: block;
-    float: left;
-    height: 40px;
-    background: #ccc;       /* Color for disabled tab. */
-    text-align: center;
-    padding: 10px 4px 0 20px;
-    position: relative;
-    margin: 0 10px 10px 0;
-    text-decoration: none;
-    color: #fff;
-    box-sizing: border-box;
-    font-size: 14px;
+  text-decoration: none;
+  display: block;
+  float: left;
+  height: 40px;
+  background: #ccc;
+  /* Color for disabled tab. */
+  text-align: center;
+  padding: 10px 4px 0 20px;
+  position: relative;
+  margin: 0 10px 10px 0;
+  text-decoration: none;
+  color: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
 }
+
 .dir-rtl.path-mod-wordcards .student-navigation .student-tab {
-    float: right;
-    padding: 10px 20px 0 4px;
-    margin: 0 0 10px 10px;
+  float: right;
+  padding: 10px 20px 0 4px;
+  margin: 0 0 10px 10px;
 }
+
 .path-mod-wordcards .student-navigation .student-tab::after {
-    content: "";
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-left: 12px solid #ccc;   /* Color for disabled tab. */
-    position: absolute;
-    right: -12px;
-    top: 0;
-    z-index: 1;
+  content: "";
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 12px solid #ccc;
+  /* Color for disabled tab. */
+  position: absolute;
+  right: -12px;
+  top: 0;
+  z-index: 1;
 }
+
 .dir-rtl.path-mod-wordcards .student-navigation .student-tab::after {
-    border-left: 0;
-    border-right: 12px solid #ccc;  /* Color for disabled tab. */
-    left: -12px;
-    right: auto;
+  border-left: 0;
+  border-right: 12px solid #ccc;
+  /* Color for disabled tab. */
+  left: -12px;
+  right: auto;
 }
+
 .path-mod-wordcards .student-navigation .student-tab::before {
-    content: "";
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-left: 12px solid white;
-    position: absolute;
-    left: 0;
-    top: 0;
+  content: "";
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 12px solid white;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
+
 .dir-rtl.path-mod-wordcards .student-navigation .student-tab::before {
-    border-left: 0;
-    border-right: 12px solid white;
-    right: 0;
-    left: auto;
+  border-left: 0;
+  border-right: 12px solid white;
+  right: 0;
+  left: auto;
 }
 
 .path-mod-wordcards .student-navigation .student-tab.active {
-    background: #3498db;            /* The arrow colour for clickable tab. */
+  background: #3498db;
+  /* The arrow colour for clickable tab. */
 }
+
 .path-mod-wordcards .student-navigation .student-tab.active::after {
-    border-left-color: #3498db;     /* The arrow colour for clickable tab. */
+  border-left-color: #3498db;
+  /* The arrow colour for clickable tab. */
 }
+
 .dir-rtl.path-mod-wordcards .student-navigation .student-tab.active::after {
-    border-right-color: #3498db;    /* The arrow colour for clickable tab. */
+  border-right-color: #3498db;
+  /* The arrow colour for clickable tab. */
 }
 
 .path-mod-wordcards .student-navigation a.student-tab.current,
 .path-mod-wordcards .student-navigation a.student-tab:hover {
-    background: #0070a8;            /* The arrow colour for current tab and on hover effect. */
+  background: #0070a8;
+  /* The arrow colour for current tab and on hover effect. */
 }
+
 .path-mod-wordcards .student-navigation a.student-tab.current::after,
 .path-mod-wordcards .student-navigation a.student-tab:hover::after {
-    border-left-color: #0070a8;     /* The arrow colour for current tab and on hover effect. */
+  border-left-color: #0070a8;
+  /* The arrow colour for current tab and on hover effect. */
 }
+
 .dir-rtl.path-mod-wordcards .student-navigation a.student-tab.current::after,
 .dir-rtl.path-mod-wordcards .student-navigation a.student-tab:hover::after {
-    border-right-color: #0070a8;    /* The arrow colour for current tab and on hover effect. */
+  border-right-color: #0070a8;
+  /* The arrow colour for current tab and on hover effect. */
 }
+
 /* The step is the number within the arrows. */
+
 .path-mod-wordcards .student-navigation .student-tab .step {
-    border-radius: 50%;
-    background: #fff;
-    color: #ccc;        /* Color for disabled tab. */
-    width: 20px;
-    display: inline-block;
-    height: 20px;
-    font-size: 14px;
+  border-radius: 50%;
+  background: #fff;
+  color: #ccc;
+  /* Color for disabled tab. */
+  width: 20px;
+  display: inline-block;
+  height: 20px;
+  font-size: 14px;
 }
+
 .path-mod-wordcards .student-navigation .student-tab.active .step {
-    color: #3498db;     /* The arrow colour for clickable tab. */
+  color: #3498db;
+  /* The arrow colour for clickable tab. */
 }
+
 .path-mod-wordcards .student-navigation a.student-tab.current .step,
 .path-mod-wordcards .student-navigation a.student-tab:hover .step {
-    color: #0070a8;     /* The arrow colour for current tab and on hover effect. */
+  color: #0070a8;
+  /* The arrow colour for current tab and on hover effect. */
 }
 
 .path-mod-wordcards .student-navigation .student-tab .text {
-    display: inline-block;
+  display: inline-block;
 }
 
 /* Simple media query to reduce the number of terms to two on the width. */
-@media  (max-width:767px) {
-    .path-mod-wordcards .term-wrapper {
-        width: 49%;
-    }
-    .path-mod-wordcards .term-wrapper:nth-of-type(3n) {
-        margin-right: 1%;
-    }
-    .path-mod-wordcards .term-wrapper:nth-of-type(2n) {
-        margin-right: 0;
-    }
-    .dir-rtl.path-mod-wordcards .term-wrapper:nth-of-type(3n) {
-        margin-right: 0;
-        margin-left: 1%;
-    }
-    .dir-rtl.path-mod-wordcards .term-wrapper:nth-of-type(2n) {
-        margin-left: 0;
-    }
+
+@media (max-width:767px) {
+  .path-mod-wordcards .term-wrapper {
+    width: 49%;
+  }
+  .path-mod-wordcards .term-wrapper:nth-of-type(3n) {
+    margin-right: 1%;
+  }
+  .path-mod-wordcards .term-wrapper:nth-of-type(2n) {
+    margin-right: 0;
+  }
+  .dir-rtl.path-mod-wordcards .term-wrapper:nth-of-type(3n) {
+    margin-right: 0;
+    margin-left: 1%;
+  }
+  .dir-rtl.path-mod-wordcards .term-wrapper:nth-of-type(2n) {
+    margin-left: 0;
+  }
 }
 
 /* Simple media query for terms to go full width. */
-@media  (max-width:500px) {
-    .path-mod-wordcards .term-wrapper {
-        width: 100%;
-        margin-right: 0;
-        margin-left: 0;
-    }
-}
 
+@media (max-width:500px) {
+  .path-mod-wordcards .term-wrapper {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
 
 /* ACTIVITY CSS */
 
-#gameboard{
-    margin-top:20px;
-    display:none;
+#gameboard {
+  margin-top: 20px;
+  display: none;
 }
 
-#results{
-    display:none;
+#results {
+  display: none;
 }
 
-#answer-input{
-    width:100%;
-    border-radius: 5px;
-    padding:5px;
-    margin-top:5px;
-    margin-bottom:5px;
+#answer-input {
+  width: 100%;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
-
-#quit-button{
-    display:none;
+#quit-button {
+  display: none;
 }
 
-#counter{
-    margin-top:5px;
-    margin-bottom:5px;
-    text-align: center;
-    font-size: 20px;
-    background-color: #f7f7f7;
-    padding: 10px;
-    font-family: 'Orbitron', sans-serif;
-    border:1px solid rgba(0,0,0,0.3);
+#counter {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 20px;
+  background-color: #f7f7f7;
+  padding: 10px;
+  font-family: 'Orbitron', sans-serif;
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-#question{
-    border: 3px solid #6780ca;
-    margin-top:5px;
-    margin-bottom:5px;
-    text-align: center;
-    font-size: 20px;
-    padding: 10px;
-    background-color:#f5f5f5;
+#question {
+  border: 3px solid #6780ca;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 20px;
+  padding: 10px;
+  background-color: #f5f5f5;
 }
 
-.a4e-flashcard-img{
-    width:64px;
-    height:auto;
-    display:block;
+.a4e-flashcard-img {
+  width: 64px;
+  height: auto;
+  display: block;
 }
 
-.a4e-distractors, #question{
-    text-align: center;
-    font-size: 20px;
+.a4e-distractors,
+#question {
+  text-align: center;
+  font-size: 20px;
 }
 
-.a4e-distractor:hover{
-    background-color: #f7f7f7;
+.a4e-distractor:hover {
+  background-color: #f7f7f7;
 }
 
-.a4e-distractor{
-    cursor: pointer;
+.a4e-distractor {
+  cursor: pointer;
 }
 
-.a4e-correct-glyph{
-    color: green;
+.a4e-correct-glyph {
+  color: green;
 }
 
-.a4e-incorrect-glyph{
-    color:red;
+.a4e-incorrect-glyph {
+  color: red;
 }
 
-.a4e-click-disabled{
-    pointer-events: none;
+.a4e-click-disabled {
+  pointer-events: none;
 }
 
-.a4e-flashcards-container{
-    text-align: center;
-    margin-top:10px;
-    margin-bottom:10px;
-}
+/* FLASHCARDS */
 
-.a4e-card,.a4e-flashcards-container .front,.a4e-flashcards-container .back{
-    width:250px;
-    height:200px;
-}
-
-.a4e-flashcards-container .back{
-    position:relative;
-    background-color:#F7E7E7;
-    border:1px solid rgba(0,0,0,0.3);
-    padding:10px;
-}
-
-.a4e-flashcards-container .front{
-    position:relative;
-    background-color:#FFFFFF;
-    border:1px solid rgba(0,0,0,0.3);
-    padding:10px;
-}
-
-.a4e-img-def{
-    background-repeat: no-repeat;
-    background-position: center 0px;
-    background-size: auto 150px;
-}
-
-.a4e-no-def{
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-
-.a4e-flashcards-container .front-label-no-img{
-    position:absolute;
-    bottom:0;
-    right:0;
-    left:0;
-    top:0;
-    padding:5px;
-    transform-style: preserve-3d;
-}
-
-.a4e-flashcards-container .front-label {
-    position:absolute;
-    bottom:0;
-    right:0;
-    left:0;
-    top:150px;
-    border-top: 1px solid rgba(0,0,0,0.3);
-    padding: 5px;
-    transform-style: preserve-3d;
+.a4e-flashcards-container {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .a4e-card {
-    cursor: pointer;
-    display: inline-block;
-    margin: 5px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 5px;
+  width: 250px;
+  height: 100px;
 }
+
+.a4e-card .front {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  width: 250px;
+  height: 100px;
+}
+
+.a4e-card .back {
+  position: relative;
+  background-color: #F7E7E7;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  width: 250px;
+  height: 100px;
+}
+
+/* FEEDBACK */
 
 .a4e-correct {
-    background-color: rgba(0,255,0,0.5) !important;
+  background-color: rgba(0, 255, 0, 0.5) !important;
 }
 
-.a4e-incorrect{
-    background-color: rgba(255,0,0,0.5) !important;
+.a4e-incorrect {
+  background-color: rgba(255, 0, 0, 0.5) !important;
 }
 
 .a4e-basic_feedback {
-    text-align: center;
-    padding:10px;
-    margin-bottom: 5px;
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 5px;
 }
 
 .a4e-detailed_feedback_div {
-    text-align: left;
-    padding: 10px;
-    font-size: 20px;
-    border-radius: 5px;
-    margin: 5px;
-    display: inline-block;
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    vertical-align: top;
+  text-align: left;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 5px;
+  margin: 5px;
+  display: inline-block;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  vertical-align: top;
 }
 
 #submitted {
-    height:64px;
-    padding:10px;
-    margin-top:5px;
-    margin-bottom:5px;
-    border:1px solid black;
-    text-align: center;
-    font-size: 30px;
-}
-.progress.a4e-progress {
-    display: flex;
-    height: 20px;
-    overflow: hidden;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-}
-.a4e-progress .progress-bar {
-    -webkit-transition: width .6s ease;
-    -o-transition: width .6s ease;
-    transition: width .6s ease;
+  height: 64px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid black;
+  text-align: center;
+  font-size: 30px;
 }
 
-/* keyboard */
+/* KEYBOARD */
 
-.chunk-key{
-    width:64px;
-    height:64px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    border:1px solid black;
-    margin:5px;
-    display:inline-block;
-    cursor:pointer;
-}
-.chunk-key-inner{
-    width:64px;
-    height:64px;
-    display: flex;
-    justify-content: center; /* align horizontal */
-    align-items: center; /* align vertical */
-    font-size:36px;
-}
-#chunk-input{
-    width:100%;
-    text-align:center;
-    border:1px solid black;
-    vertical-align: top;
-    padding-top:50px;
-    padding-bottom:60px;
-    position:relative;
-    box-sizing: border-box;
-}
-#chunk-typed{
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    width:100%;
-    height:40px;
-    border-bottom:1px solid black;
-    box-sizing: border-box;
-}
-#chunk-typed-inner{
-    height:40px;
-    font-size:26px;
-    width:100%;
-    overflow-x: auto;
-    box-sizing: border-box;
-    background-color: #f5f5f5;
-    border-bottom:1px solid black;
-}
-#chunk-input-controls{
-    position:absolute;
-    bottom:0;
-    left:0;
-    right:0;
-    width:100%;
-    height:50px;
-    border-top:1px solid black;
-    cursor:pointer;
-    padding:0;
-    margin:0;
-    box-sizing: border-box;
-}
-.chunk-input-control{
-    height:49px;
-    line-height: 50px;
-    width:50%;
-    display:inline-block;
-}
-.chunk-input-disabled{
-    opacity:0.3;
-    pointer-events:none;
-}
-.a4e-key-pressed{
-    background-color: rgba(0,0,0,0.3) !important;
-}
-.a4e-key-disabled{
-    pointer-events: none;
-    opacity:0.3;
+.chunk-key {
+  width: 64px;
+  height: 64px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin: 5px;
+  display: inline-block;
+  cursor: pointer;
 }
 
-/* speechcards */
+.chunk-key-inner {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  /* align horizontal */
+  align-items: center;
+  /* align vertical */
+  font-size: 36px;
+}
+
+#chunk-input {
+  width: 100%;
+  text-align: center;
+  border: 1px solid black;
+  vertical-align: top;
+  padding-top: 50px;
+  padding-bottom: 60px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+#chunk-typed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid black;
+  box-sizing: border-box;
+}
+
+#chunk-typed-inner {
+  height: 40px;
+  font-size: 26px;
+  width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid black;
+}
+
+#chunk-input-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid black;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.chunk-input-control {
+  height: 49px;
+  line-height: 50px;
+  width: 50%;
+  display: inline-block;
+}
+
+.chunk-input-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.a4e-key-pressed {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.a4e-key-disabled {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* SPEECH CARDS */
+
 .wordcards-poodllspeechcards_box {
-    text-align: center;
-    color: #fff;
-    width: 50%;
-    background: #868686;
-    padding: 54px 18px;
-    font-size: 2em;
-    margin: auto;
-    border-radius: 6px;
+  text-align: center;
+  color: #fff;
+  width: 50%;
+  background: #868686;
+  padding: 54px 18px;
+  font-size: 2em;
+  margin: auto;
+  border-radius: 6px;
 }
-.wordcards-speechcards_toprow{
-    margin: 15px auto;
-    display: flex;
-    justify-content: center;
+
+.wordcards-speechcards_toprow {
+  margin: 15px auto;
+  display: flex;
+  justify-content: center;
 }
+
 /*
 .wordcards-poodllrecorder{
     margin-left: 15px;
 }
 */
-.wordcards-speechcards_whatheard{
-    width: 400px;
-    border: dotted 1px;
-    border-color: green;
-    text-align: center;
-    margin: 1px;
+
+.wordcards-speechcards_whatheard {
+  width: 400px;
+  border: dotted 1px;
+  border-color: green;
+  text-align: center;
+  margin: 1px;
 }
-.wordcards-speechcards_gotit{
-    color: white;
-    background-color: green;
+
+.wordcards-speechcards_gotit {
+  color: white;
+  background-color: green;
 }
+
 .wordcards-speechcards_button {
-    height: 60px;
-    margin-top: 7px;
+  height: 60px;
+  margin-top: 7px;
 }
+
 .wordcards_loading {
-    text-align: center;
-    margin: 20px;
-    padding: 10px;
+  text-align: center;
+  margin: 20px;
+  padding: 10px;
 }
+
 .wordcards_loadingtext {
-    margin: 10px;
+  margin: 10px;
 }
+
 .mod_wordcards_instructions {
-    text-align: center;
-    margin: auto;
-    font-style: italic;
-    padding: 5px;
-    max-width: 650px;
+  text-align: center;
+  margin: auto;
+  font-style: italic;
+  padding: 5px;
+  max-width: 650px;
 }
 
 .mod_wordcards_activity_header {
-    text-align: center;
-    margin: auto;
-    padding: 5px;
+  text-align: center;
+  margin: auto;
+  padding: 10px;
+  border: 1px solid darkgray;
+  border-radius: 5px;
 }
+
 .mod_wordcards_activity_header h3 {
-    text-align: center;
+  text-align: center;
+}
+
+/* PROGRESS DOTS */
+
+#progress-dots {
+  font-size: 40px;
+  text-align: center;
+  letter-spacing: 10px;
 }

@@ -1,23 +1,27 @@
 <div class="a4e-flashcards-container">
 
-    <button style='margin:5px;width:100%;display:inline-block;' class='btn btn-block btn-lg btn-primary mod_wordcards_matching_frontbtn'>&#8635; {{#str}}flip, mod_wordcards{{/str}}</button>
-
-    {{#terms}}
-        {{#image}}
-        {{#definition}}
-        <div class="a4e-card a4e-noselect"><div style="background-image: url('{{image}}')" class="front a4e-img-def"><div class="front-label">{{definition}}</div></div><div class="back">{{term}}</div></div>
-        {{/definition}}
-        {{/image}}
-        {{#image}}
-            {{^definition}}
-                <div class="a4e-card a4e-noselect"><div style="background-image: url('{{image}}')" class="front a4e-no-def"></div><div class="back">{{definition}}</div></div>
-            {{/definition}}
-        {{/image}}
-        {{^image}}
-            {{#definition}}
-            <div class="a4e-card a4e-noselect"><div class="front"><div class="front-label-no-img">{{definition}}</div></div><div class="back">{{term}}</div></div>
-            {{/definition}}
-        {{/image}}
-    {{/terms}}
+  <button style='margin:5px;width:100%;display:inline-block;' class='btn btn-block btn-lg btn-primary mod_wordcards_matching_frontbtn'>
+    <i class="fa fa-retweet"></i> {{#str}}flip, mod_wordcards{{/str}}
+  </button> 
+  
+  {{#terms}} 
+  
+    <div class="a4e-card a4e-noselect">
+      
+      <div style="background-image: url('{{image}}')" class="front">
+        {{definition}}
+      </div>
+      
+      <div class="back">
+        {{term}}
+      </div>
+      
+    </div>
+  
+  {{/terms}}
+  
 </div>
-<button id='start-button' class='btn btn-success btn-lg center-block btn-block'><i class='fa fa-play'></i> {{#str}}starttest, mod_wordcards{{/str}}</button>
+
+<button id='start-button' class='btn btn-success btn-lg center-block btn-block'>
+  <i class='fa fa-play'></i> {{#str}}starttest, mod_wordcards{{/str}}
+</button>

@@ -1,36 +1,42 @@
-
 <div class='container'>
-    <!-- Page contents -->
+  <!-- Page contents -->
 
-    <div class="panel panel-default" id='activity'>
-        <div class="panel-body">
+  <div class="panel panel-default" id='activity'>
+    <div class="panel-body">
 
-            <div id='vocab-list'>{{> mod_wordcards/vocablist_header}}<div id="vocab-list-inner">{{> mod_wordcards/loading}}</div></div>
+      <div id='vocab-list'>{{> mod_wordcards/vocablist_header}}
+        <div id="vocab-list-inner">{{> mod_wordcards/loading}}</div>
+      </div>
 
-            <div id='gameboard'>
-                <div class="mod_wordcards_activity_header">
-                    <h3>{{#str}}title_matchtype, mod_wordcards{{/str}}</h3>
-                    <div class="mod_wordcards_instructions">{{#str}}instructions_matchtype, mod_wordcards{{/str}}</div>
-                </div>
-                <button id='quit-button' class='btn btn-danger btn-lg center-block btn-block'><i class='fa fa-refresh'></i> {{#str}}backtostart, mod_wordcards{{/str}}</button>
-                <div id='counter'>
-                    <div id='time-counter'></div>
-                    <div id='question-counter'></div>
-                    <div id='progress-bar' class="progress a4e-progress">
-                        <div id='progress-correct' class="progress progress-bar bg-success" value="0" role="progressbar" style="width:0%"></div>
-                        <div id='progress-incorrect' class="progress progress-bar bg-danger" value="0" role="progressbar" style="width:0%"></div>
-                    </div>
-                </div>
-                <div id='question'></div>
-                <div id='submitted'></div>
-                <div id='input'></div>
-                <button style="margin-bottom:5px;" id="next-button" class="btn btn-success btn-block btn-lg">{{#str}}next, mod_wordcards{{/str}} <i class="fa fa-arrow-right"></i></button>
-            </div>
+      <div id='gameboard'>
 
-            <div id='results'><div id='results-inner'>{{> mod_wordcards/loading}}</div></div>
-
+        <div class="mod_wordcards_activity_header">
+          <h3>{{#str}}title_matchtype, mod_wordcards{{/str}}</h3>
+          <div class="mod_wordcards_instructions">{{#str}}instructions_matchtype, mod_wordcards{{/str}}</div>
         </div>
-    </div>
 
-    <!-- End page contents -->
+        <button id='quit-button' class='btn btn-danger btn-lg center-block btn-block'>
+          <i class='fa fa-refresh'></i> {{#str}}backtostart, mod_wordcards{{/str}}
+        </button>
+
+        <div id='counter'>
+          <div id='time-counter'></div>
+        </div>
+
+        {{> mod_wordcards/progress_dots}}
+
+        <div id='question'></div>
+        <div id='submitted'></div>
+        <div id='input'></div>
+
+      </div>
+
+      <div id='results'>
+        <div id='results-inner'>{{> mod_wordcards/loading}}</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- End page contents -->
 </div>
