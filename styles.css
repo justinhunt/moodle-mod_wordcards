@@ -382,7 +382,7 @@
   margin-top: 5px;
   margin-bottom: 5px;
   text-align: center;
-  font-size: 20px;
+  font-size: 35px;
   padding: 10px;
   background-color: #f5f5f5;
   height: 100px;
@@ -471,17 +471,24 @@
 /* FEEDBACK */
 
 .a4e-correct {
-  background-color: rgba(0, 255, 0, 0.5) !important;
+  background-color: rgba(0, 255, 0, .5) !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
 }
 
 .a4e-incorrect {
-  background-color: rgba(255, 0, 0, 0.5) !important;
+  background-color: rgba(255, 0, 0, .5) !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
 }
 
 .a4e-basic_feedback {
   text-align: center;
   padding: 10px;
   margin-bottom: 5px;
+  border: 1px solid darkgray;
 }
 
 .a4e-detailed_feedback_div {
@@ -581,6 +588,7 @@
   align-items: center;
   justify-content: center;
   font-size: 30px;
+  cursor: pointer;
 }
 
 .chunk-input-disabled {
@@ -599,15 +607,22 @@
 
 /* SPEECH CARDS */
 
+.glide__wrapper {
+  overflow: hidden;
+  margin-top: 20px;
+}
+
 .wordcards-poodllspeechcards_box {
   text-align: center;
-  color: #fff;
-  width: 50%;
-  background: #868686;
-  padding: 54px 18px;
-  font-size: 2em;
+  width: 300px;
+  font-size: 50px;
   margin: auto;
   border-radius: 6px;
+  border: 2px solid darkgray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
 }
 
 .wordcards-speechcards_toprow {

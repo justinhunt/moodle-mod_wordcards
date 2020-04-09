@@ -102,7 +102,7 @@ define([
 
       $('body').on('click', "#close-results", function() {
 
-        var total_time = a4e.calc_total_time(app.results);
+        var total_time = app.timer.count;
         var url = app.nexturl.replace(/&amp;/g, '&') + "&localscattertime=" + total_time
         window.location.replace(url);
 
@@ -315,7 +315,7 @@ define([
       tdata['results'] = app.results;
       tdata['total'] = app.terms.length;
       tdata['totalcorrect'] = a4e.calc_total_points(app.results);
-      var total_time = a4e.calc_total_time(app.results);
+      var total_time = app.timer.count;
       if (total_time == 0) {
         tdata['prettytime'] = '00:00';
       } else {
@@ -382,10 +382,9 @@ define([
         question: app.terms[app.pointer - 1]['definition'],
         selected: spokenwords,
         correct: app.terms[app.pointer - 1]['term'],
-        points: points,
-        time: app.timer.count
+        points: points
       };
-      app.timer.count = 0;
+      
       $.each(app.results, (function(result) {
         if (app.pointer === result.pointer) {
           //something here to remove the old result

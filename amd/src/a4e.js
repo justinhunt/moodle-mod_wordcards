@@ -96,16 +96,6 @@ define([
       });
       return total;
     },
-    calc_total_time: function(results) {
-      var total_time = 0;
-      $.each(results, function(i, o) {
-        if (o.time != null) {
-          total_time += o.time;
-        }
-      });
-      return total_time;
-
-    },
     basic_feedback: function(results) {
 
       var total = 0;
