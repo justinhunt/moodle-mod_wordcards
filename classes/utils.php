@@ -524,6 +524,30 @@ class utils{
       }
     }
 
+    /* Each activity shows an icon on the tab tree */
+    public static function fetch_activity_tabicon($activitytype){
+        switch($activitytype){
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+                return 'fa-bars';
+
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+                return 'fa-keyboard-o';
+
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+                return 'fa-headphones';
+
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+                return 'fa-comment-o';
+
+            default:
+                return 'fa-dot-circle-o';
+        }
+    }
+
   public static function get_practicetype_options($wordpool=false){
       $none =  array(\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', 'mod_wordcards'));
       $learnoptions = [
