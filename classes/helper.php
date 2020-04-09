@@ -32,7 +32,7 @@ class mod_wordcards_helper {
                 $tablabel, '', true)
         ];
 
-        if($mod->get_mod()->{mod_wordcards_module::STATE_STEP2} != mod_wordcards_module::PRACTICETYPE_NONE){
+        if($mod->get_mod()-> {mod_wordcards_module::STATE_STEP2} != mod_wordcards_module::PRACTICETYPE_NONE){
             $tablabel = utils::fetch_activity_tablabel($mod->get_practicetype(mod_wordcards_module::STATE_STEP2));
             $tabs[]= new tabobject(mod_wordcards_module::STATE_STEP2,
                 new moodle_url('/mod/wordcards/activity.php', ['id' => $cmid, 'nextstep' =>mod_wordcards_module::STATE_STEP2]),

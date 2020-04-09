@@ -49,8 +49,8 @@ class mod_wordcards_table_terms extends table_sql {
         ));
 
         // Define SQL.
-        $sqlfields = 't.id, t.term, t.definition, if(t.audio,"yes","no") as "audio", if(t.image,"yes","no") as "image",t.ttsvoice';
-        //$sqlfields = 't.id, t.term, t.definition, t.audio, t.image';
+        $sqlfields = 't.id, t.term, t.definition, CASE WHEN t.audio is null or t.audio = "" THEN "no" ELSE "yes" END as "audio",';
+        $sqlfields .= 'CASE WHEN t.image is null or t.image = "" THEN "no" ELSE "yes" END as "image",t.ttsvoice';
         $sqlfrom = '{wordcards_terms} t';
 
         $this->sql = new stdClass();
