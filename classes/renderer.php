@@ -263,11 +263,15 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $tabs = array_map(function($tab) use ($seencurrent, $currentstate, &$step, $tabtree) {
             $current = $tab->id == $currentstate;
             $seencurrent = $current || $seencurrent;
+            $icon = $tab->title;
+            $tab->title ='';
+
             return [
                 'id' => $tab->id,
                 'url' => $tab->link,
                 'text' => $tab->text,
-                'title' => $tab->title,
+                'title' => '',
+                'icon' => $icon,
                 'current' => $tab->selected,
                 'inactive' => $tab->inactive,
                 'last' => $step == count($tabtree->subtree),
