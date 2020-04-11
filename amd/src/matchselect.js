@@ -35,6 +35,7 @@ define([
       app.process(matchingdata);
 
       a4e.register_events();
+      a4e.init_audio(props.token,props.region,props.owner);
 
       this.register_events();
     },

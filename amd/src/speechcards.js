@@ -14,9 +14,8 @@ define([
   'mod_wordcards/glidecards',
   'mod_wordcards/cloudpoodllloader',
   'mod_wordcards/transcriber-lazy',
-  'core/templates',
-  'core/notification'
-], function($, Ajax, log, a4e, glidecards, cloudpoodll, transcriber, templates,notification) {
+  'core/templates'
+], function($, Ajax, log, a4e, glidecards, cloudpoodll, transcriber, templates) {
 
   var app = {
     passmark: 75,
@@ -34,9 +33,9 @@ define([
       var theid = '#' + props.widgetid;
       this.dryRun = props.dryRun;
       this.nexturl = props.nexturl;
-      var jsondata = $(theid).get(0);
-      if (jsondata) {
-        var jsondata = JSON.parse(jsondata.value);
+      var definitionscontrol = $(theid).get(0);
+      if (definitionscontrol) {
+        var jsondata = JSON.parse(definitionscontrol.value);
         $(theid).remove();
       } else {
         //if there is no config we might as well give up
@@ -50,6 +49,8 @@ define([
 
 
       a4e.register_events();
+      a4e.init_audio(props.token,props.region,props.owner);
+
       this.init_controls();
       this.register_events();
     },
@@ -185,19 +186,21 @@ define([
             var spoken = cleanspeechtext;
             var correct = app.terms[app.pointer - 1].term;
 
+            //Similarity check by character matching
             var similarity = app.similarity(spoken,correct);
             log.debug('JS similarity: ' + spoken + ':' + correct +':' + similarity);
 
-            if (app.wordsDoMatch(cleanspeechtext, app.terms[app.pointer - 1]) ||
-                similarity >= app.passmark ) {
+            //Similarity check by direct-match/acceptable-mistranscription
+            if (similarity >= app.passmark ||
+                app.wordsDoMatch(cleanspeechtext, app.terms[app.pointer - 1]) ) {
                 log.debug('local match:' + ':' + spoken +':' + correct);
                   app.showStarRating(100);
                   app.flagCorrectAndTransition(app.terms[app.pointer - 1]);
                   return;
             }
 
-            //phonetic check
-            app.check_by_phonetic(spoken,correct).then(function(similarity) {
+            //Similarity check by phonetics(ajax)
+            app.checkByPhonetic(spoken,correct).then(function(similarity) {
               if (similarity===false) {
                   return $.Deferred().reject();
               }else{
@@ -308,7 +311,7 @@ define([
     },
 
     //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
-    check_by_phonetic: function(spoken, correct){
+    checkByPhonetic: function(spoken, correct){
 
       return Ajax.call([{
             'methodname': 'mod_wordcards_check_by_phonetic',

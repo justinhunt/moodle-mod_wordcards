@@ -28,7 +28,7 @@ define([
       this.nexturl = props.nexturl;
       var configcontrol = $(theid).get(0);
       if (configcontrol) {
-        var matchingdata = JSON.parse(configcontrol.value);
+        var definitionsdata = JSON.parse(configcontrol.value);
         $(theid).remove();
       } else {
         //if there is no config we might as well give up
@@ -36,10 +36,15 @@ define([
         return;
       }
 
+      a4e.register_events();
+      a4e.init_audio(props.token,props.region,props.owner);
+
       polly.init(props.token, props.region, props.owner);
       app.ttslanguage = props.ttslanguage;
-      app.process(matchingdata);
-      a4e.register_events();
+      app.process(definitionsdata);
+
+
+
       this.register_events();
     },
 

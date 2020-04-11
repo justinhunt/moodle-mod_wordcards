@@ -8,11 +8,13 @@
 
 define([
   'jquery',
+  'core/log',
   'core/ajax',
   'mod_wordcards/flip',
   'mod_wordcards/textfit',
-  'core/templates'
-], function($, Ajax, flip, textFit, templates) {
+  'core/templates',
+  'mod_wordcards/pollyhelper',
+], function($, log, Ajax, flip, textFit, templates, polly) {
 
   var a4e = {
 
@@ -20,6 +22,34 @@ define([
 
     register_events: function() {
       console.log("register_events within a4e.js");
+    },
+
+    init_audio: function(token, region, owner){
+
+        //Init Polly TTS
+        polly.init(token, region, owner);
+
+        //play what was returned in polly.fetch_polly_url (callback)
+        polly.onnewpollyurl = function(theurl) {
+            var theplayer = $("#poodll_vocabplayer");
+            theplayer.attr('src', theurl);
+            theplayer[0].play();
+        };
+
+        //register button event handler to play audio
+        $(document.body).on('click','.a4e-flashcards-container .play-tts',function() {
+             var theplayer = $("#poodll_vocabplayer");
+
+          //if we have model audio use that, otherwise TTS
+            var audiourl=$(this).attr('data-modelaudio');
+            if(audiourl && (audiourl.indexOf('http:')===0 ||audiourl.indexOf('https:')===0)){
+                theplayer.attr('src', audiourl);
+                theplayer[0].play();
+            }else{
+                polly.fetch_polly_url($(this).attr('data-tts'), 'text', $(this).attr('data-ttsvoice'));
+            }
+        });
+
     },
 
     progress_dots: function(results, terms) {
