@@ -14,6 +14,40 @@
  */
 class mod_wordcards_external extends external_api {
 
+    public static function fetch_phonemes_parameters(){
+        return new external_function_parameters(
+                 array('terms' =>
+                         new external_multiple_structure(
+                                new external_value(PARAM_TEXT, 'The term we want phonemes for')
+                                , 'List of terms we want phonemes for')
+                        )
+        );
+
+    }
+    public static function fetch_phonemes($terms){
+        return array(['term'=>'help','phonemes'=>['h','e','lp']],
+                ['term'=>'heap','phonemes'=>['h','e','ap']]);
+
+    }
+
+    public static function fetch_phonemes_returns(){
+        return new external_multiple_structure(
+                new external_single_structure(
+                        array(
+                            'term' => new external_value(PARAM_TEXT, 'The term for which we want a list of phonemes'),
+                            'phonemes' => new external_multiple_structure(
+                                new external_single_structure(
+                                    array(
+                                        new external_value(PARAM_TEXT, 'A phoneme')
+                                    )
+                                )
+                            )
+                        )
+                )
+        );
+
+    }
+
     public static function mark_as_seen_parameters() {
         return new external_function_parameters([
             'termid' => new external_value(PARAM_INT)
