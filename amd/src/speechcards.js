@@ -14,10 +14,12 @@ define([
   'mod_wordcards/glidecards',
   'mod_wordcards/cloudpoodllloader',
   'mod_wordcards/transcriber-lazy',
-  'core/templates'
-], function($, Ajax, log, a4e, glidecards, cloudpoodll, transcriber, templates) {
+  'core/templates',
+  'core/notification'
+], function($, Ajax, log, a4e, glidecards, cloudpoodll, transcriber, templates,notification) {
 
   var app = {
+    passmark: 75,
     pointer: 1,
     jsondata: null,
     props: null,
@@ -182,75 +184,32 @@ define([
             
             var spoken = cleanspeechtext;
             var correct = app.terms[app.pointer - 1].term;
-            
-            /*
-            ajax.call([{
-                'methodname': 'string_to_phonetic',
-                'args': {
-                    'spoken': spoken,
-                    'correct': correct,
-                }
-            }])[0].then(function(result) {
-                if (!result) {
-                    return $.Deferred().reject();
-                }
-            })
-                .fail(notification.exception)
-                .always(function() {
-                    // always do
-                });
-            */
-            
-            var similar = app.similarity(spoken,correct);
-            
-            var stars = [true,true,true];
-            
-            if(similar<1){
-              stars=[true,true,false];
-            }
-            
-            if(similar<0.75){
-              stars=[true,false,false];
-            }
-            
-            if(similar<0.5){
-              stars=[false,false,false];
-            }
-            
-            console.log(stars,similar);
-            
-            var code="";
-            
-            stars.forEach(function(star){
-              if(star===true){
-                code+='<i class="fa fa-star"></i>';
-              }
-              else{
-                code+='<i class="fa fa-star-o"></i>';
-              }
-            });
-            
-            console.log(code);
-            $("#star-rating").html(code);
-            
-            console.log(spoken,correct,similar);
 
-            if (app.wordsDoMatch(cleanspeechtext, app.terms[app.pointer - 1])) {
-              app.check(true, cleanspeechtext);
-              if (app.is_end()) {
-                app.update_header();
-                setTimeout(function() {
-                  app.do_end();
-                }, 700);
-              } else {
-                setTimeout(function() {
-                  app.do_next();
-                }, 700);
-              }
+            var similarity = app.similarity(spoken,correct);
+            log.debug('JS similarity: ' + spoken + ':' + correct +':' + similarity);
 
+            if (app.wordsDoMatch(cleanspeechtext, app.terms[app.pointer - 1]) ||
+                similarity >= app.passmark ) {
+                log.debug('local match:' + ':' + spoken +':' + correct);
+                  app.showStarRating(100);
+                  app.flagCorrectAndTransition(app.terms[app.pointer - 1]);
+                  return;
             }
 
-        }
+            //phonetic check
+            app.check_by_phonetic(spoken,correct).then(function(similarity) {
+              if (similarity===false) {
+                  return $.Deferred().reject();
+              }else{
+                  log.debug('PHP similarity: ' + spoken + ':' + correct +':' + similarity);
+                  app.showStarRating(similarity);
+                  if(similarity>=app.passmark) {
+                      app.flagCorrectAndTransition(similarity, app.terms[app.pointer - 1]);
+                  }
+              }//end of if check_by_phonetic result
+             });//end of check by phonetic
+
+        }//end of switch message type
       };
 
       //init cloudpoodll push recorder
@@ -278,6 +237,53 @@ define([
       };
     },
 
+    showStarRating(similarity){
+        //how many stars code
+        var stars = [true,true,true];
+        if(similarity<1){
+            stars=[true,true,false];
+        }
+        if(similarity<app.passmark){
+            stars=[true,false,false];
+        }
+        if(similarity<0.5){
+            stars=[false,false,false];
+        }
+        console.log(stars,similarity);
+
+        //prepare stars html
+        var code="";
+        stars.forEach(function(star){
+            if(star===true){
+                code+='<i class="fa fa-star"></i>';
+            }
+            else{
+                code+='<i class="fa fa-star-o"></i>';
+            }
+        });
+        console.log(code);
+        $("#star-rating").html(code);
+    },
+
+    flagCorrectAndTransition: function(term){
+
+        //update students word log if matched
+        app.check(true, term);
+
+        //transition if required
+        if (app.is_end()) {
+            app.update_header();
+            setTimeout(function() {
+                app.do_end();
+            }, 700);
+        } else {
+            setTimeout(function() {
+                app.do_next();
+            }, 700);
+        }
+
+    },
+
     startAWSTranscriber: function() {
       if (transcriber.active) {
         return;
@@ -301,9 +307,23 @@ define([
       transcriber.closeSocket();
     },
 
+    //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
+    check_by_phonetic: function(spoken, correct){
+
+      return Ajax.call([{
+            'methodname': 'mod_wordcards_check_by_phonetic',
+            'args': {
+                'spoken': spoken,
+                'correct': correct,
+                'language': app.props.language,
+            }
+        }])[0];
+
+    },
+
     wordsDoMatch: function(wordheard, currentterm) {
       //lets lower case everything
-      wordheard = app.cleanText(wordheard);
+       wordheard = app.cleanText(wordheard);
       currentterm.term = app.cleanText(currentterm.term);
       if (wordheard == currentterm.term) {
         return true;

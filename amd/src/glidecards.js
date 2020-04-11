@@ -7,9 +7,10 @@
 
 define([
     'jquery',
+    'core/log',
     'core/ajax',
     'mod_wordcards/glide'
-], function($, Ajax, glide) {
+], function($, log,Ajax, glide) {
 
 return {
 

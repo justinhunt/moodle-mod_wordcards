@@ -59,6 +59,20 @@ class utils{
         return $ret;
     }
 
+    //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
+    public static function convert_to_phonetic($phrase,$language){
+
+        switch($language){
+            case 'en':
+                $phonetic = metaphone($phrase);
+                break;
+            case 'ja':
+            default:
+                $phonetic = $phrase;
+        }
+        return $phonetic;
+    }
+
 
     //we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     //this is our helper

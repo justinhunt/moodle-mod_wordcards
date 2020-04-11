@@ -6,6 +6,9 @@
  * @author  Frédéric Massart - FMCorz.net
  */
 
+
+use mod_wordcards\utils;
+
 /**
  * External class.
  *
@@ -14,38 +17,27 @@
  */
 class mod_wordcards_external extends external_api {
 
-    public static function fetch_phonemes_parameters(){
+    public static function check_by_phonetic_parameters(){
         return new external_function_parameters(
-                 array('terms' =>
-                         new external_multiple_structure(
-                                new external_value(PARAM_TEXT, 'The term we want phonemes for')
-                                , 'List of terms we want phonemes for')
-                        )
+                 array('spoken' => new external_value(PARAM_TEXT, 'The spoken phrase'),
+                       'correct' => new external_value(PARAM_TEXT, 'The correct phrase'),
+                       'language' => new external_value(PARAM_TEXT, 'The language eg en-US')
+                 )
         );
 
     }
-    public static function fetch_phonemes($terms){
-        return array(['term'=>'help','phonemes'=>['h','e','lp']],
-                ['term'=>'heap','phonemes'=>['h','e','ap']]);
+    public static function check_by_phonetic($spoken, $correct, $language){
+        $language = substr($language,0,2);
+        $spokenphonetic = utils::convert_to_phonetic($spoken,$language);
+        $correctphonetic = utils::convert_to_phonetic($correct,$language);
+        $similar_percent = 0;
+        $similar_chars = similar_text($correctphonetic,$spokenphonetic,$similar_percent);
+        return round($similar_percent,0);
 
     }
 
-    public static function fetch_phonemes_returns(){
-        return new external_multiple_structure(
-                new external_single_structure(
-                        array(
-                            'term' => new external_value(PARAM_TEXT, 'The term for which we want a list of phonemes'),
-                            'phonemes' => new external_multiple_structure(
-                                new external_single_structure(
-                                    array(
-                                        new external_value(PARAM_TEXT, 'A phoneme')
-                                    )
-                                )
-                            )
-                        )
-                )
-        );
-
+    public static function check_by_phonetic_returns(){
+        return new external_value(PARAM_INT,'how close is spoken to correct, 0 - 100');
     }
 
     public static function mark_as_seen_parameters() {

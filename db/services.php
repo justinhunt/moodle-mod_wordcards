@@ -35,10 +35,10 @@ $functions = array(
         'ajax'        => true,
     ),
 
-    'mod_wordcards_fetch_phonemes' => array(
+    'mod_wordcards_check_by_phonetic' => array(
             'classname'   => 'mod_wordcards_external',
-            'methodname'  => 'fetch_phonemes',
-            'description' => 'fetches a list of phonemes for one or more term',
+            'methodname'  => 'check_by_phonetic',
+            'description' => 'compares a spoken phrase to a correct phrase by phoneme' ,
             'capabilities'=> 'mod/wordcards:view',
             'type'        => 'read',
             'ajax'        => true,
