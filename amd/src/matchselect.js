@@ -43,7 +43,7 @@ define([
 
       $('body').on('click', "#close-results", function() {
 
-        var total_time = a4e.calc_total_time(app.results);
+        var total_time = app.timer.count;
         var url = app.nexturl.replace(/&amp;/g, '&') + "&localscattertime=" + total_time
         window.location.replace(url);
 
@@ -105,7 +105,7 @@ define([
       tdata['results'] = app.results;
       tdata['total'] = app.terms.length;
       tdata['totalcorrect'] = a4e.calc_total_points(app.results);
-      var total_time = a4e.calc_total_time(app.results);
+      var total_time = app.timer.count;
       if (total_time == 0) {
         tdata['prettytime'] = '00:00';
       } else {
@@ -149,14 +149,14 @@ define([
         //createjs.Sound.play('incorrect');
       }
       $(".a4e-distractor").css('pointer-events', 'none');
+      
       var result = {
         question: app.terms[app.pointer]['definition'],
         selected: $(clicked).text(),
         correct: app.terms[app.pointer]['term'],
-        points: points,
-        time: app.timer.count
+        points: points
       };
-      app.timer.count = 0;
+      
       app.results.push(result);
 
       var background = correct == true ? 'a4e-correct' : 'a4e-incorrect';

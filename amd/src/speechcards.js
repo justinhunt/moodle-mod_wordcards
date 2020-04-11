@@ -19,7 +19,6 @@ define([
 
   var app = {
     pointer: 1,
-    whatheard: null,
     jsondata: null,
     props: null,
     glider: null,
@@ -46,8 +45,6 @@ define([
       app.props = props;
       app.browserspeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
       app.process(jsondata);
-      app.whatheard = $('#submitted'); //$('#speechcards_whatheard');
-      //do we have in browser speech rec?
 
 
       a4e.register_events();
@@ -66,9 +63,9 @@ define([
       app.controls.standalonepushrecorder = $(".speechcards_standalonerecorder");
     },
     do_next: function() {
+      a4e.progress_dots(app.results, app.terms);
+      app.clearStarRating();
       if (!app.is_end()) {
-        app.whatheard.removeClass('wordcards-speechcards_gotit');
-        app.whatheard.text('........');
         app.glider.go('>');
         app.update_header();
       } else {
@@ -76,18 +73,18 @@ define([
       }
     },
     do_prev: function() {
-      app.whatheard.removeClass('wordcards-speechcards_gotit');
-      app.whatheard.text('........');
       app.glider.go('<');
       app.update_header();
     },
 
+    clearStarRating:function(){
+      $("#star-rating").html('· · ·');
+    },
+    
     register_events: function() {
 
       app.controls.prev_button.click(function() {
         app.do_prev();
-        //if we have a result already for this result, display it
-        app.update_whatheard();
       });
       app.controls.next_button.click(function() {
 
@@ -96,13 +93,11 @@ define([
         app.check(false, failedword);
         app.do_next();
 
-        //if we have a result already for this result, display it
-        app.update_whatheard();
       });
 
       $('body').on('click', "#close-results", function() {
 
-        var total_time = a4e.calc_total_time(app.results);
+        var total_time = app.timer.count;
         var url = app.nexturl.replace(/&amp;/g, '&') + "&localscattertime=" + total_time
         window.location.replace(url);
 
@@ -163,9 +158,11 @@ define([
       //The logic here is that on correct we transition.
       //on incorrect we do not. A subsequent nav button click then doesnt need to post a result
       var theCallback = function(message) {
+        console.log("triggered callback");
         //console.log(message);
         switch (message.type) {
           case 'recording':
+
             //we only use AWS transcription is browserspeech is not available
             if (app.browserspeech) {
               return;
@@ -182,9 +179,63 @@ define([
           case 'speech':
             var speechtext = message.capturedspeech;
             var cleanspeechtext = app.cleanText(speechtext);
+            
+            var spoken = cleanspeechtext;
+            var correct = app.terms[app.pointer - 1].term;
+            
+            /*
+            ajax.call([{
+                'methodname': 'string_to_phonetic',
+                'args': {
+                    'spoken': spoken,
+                    'correct': correct,
+                }
+            }])[0].then(function(result) {
+                if (!result) {
+                    return $.Deferred().reject();
+                }
+            })
+                .fail(notification.exception)
+                .always(function() {
+                    // always do
+                });
+            */
+            
+            var similar = app.similarity(spoken,correct);
+            
+            var stars = [true,true,true];
+            
+            if(similar<1){
+              stars=[true,true,false];
+            }
+            
+            if(similar<0.75){
+              stars=[true,false,false];
+            }
+            
+            if(similar<0.5){
+              stars=[false,false,false];
+            }
+            
+            console.log(stars,similar);
+            
+            var code="";
+            
+            stars.forEach(function(star){
+              if(star===true){
+                code+='<i class="fa fa-star"></i>';
+              }
+              else{
+                code+='<i class="fa fa-star-o"></i>';
+              }
+            });
+            
+            console.log(code);
+            $("#star-rating").html(code);
+            
+            console.log(spoken,correct,similar);
+
             if (app.wordsDoMatch(cleanspeechtext, app.terms[app.pointer - 1])) {
-              app.whatheard.text(app.terms[app.pointer - 1].term);
-              app.whatheard.addClass('wordcards-speechcards_gotit');
               app.check(true, cleanspeechtext);
               if (app.is_end()) {
                 app.update_header();
@@ -197,11 +248,8 @@ define([
                 }, 700);
               }
 
-            } else {
-              app.whatheard.text(speechtext);
-              //we wont send false results until user gives up and clicks next
-              //app.check(false,speechtext);
             }
+
         }
       };
 
@@ -285,7 +333,8 @@ define([
       app.controls.vocab_list.hide();
       app.controls.gameboard.show();
       app.controls.time_counter.text("00:00");
-      app.whatheard.text('........');
+      app.clearStarRating();
+      a4e.progress_dots(app.results, app.terms);
       app.timer = {
         interval: setInterval(function() {
           app.timer.update();
@@ -315,7 +364,7 @@ define([
       tdata['results'] = app.results;
       tdata['total'] = app.terms.length;
       tdata['totalcorrect'] = a4e.calc_total_points(app.results);
-      var total_time = a4e.calc_total_time(app.results);
+      var total_time = app.timer.count;
       if (total_time == 0) {
         tdata['prettytime'] = '00:00';
       } else {
@@ -340,18 +389,6 @@ define([
       } else {
         return true;
       }
-    },
-
-    update_whatheard: function() {
-      $.each(app.results, function(result) {
-        if (app.pointer === result.pointer) {
-          app.whatheard.text(result.selected);
-          if (app.cleanText(result.selected) === app.terms[app.pointer - 1].term) {
-            app.whatheard.addClass('wordcards-speechcards_gotit');
-          }
-        }
-
-      });
     },
 
     update_header: function() {
@@ -382,10 +419,9 @@ define([
         question: app.terms[app.pointer - 1]['definition'],
         selected: spokenwords,
         correct: app.terms[app.pointer - 1]['term'],
-        points: points,
-        time: app.timer.count
+        points: points
       };
-      app.timer.count = 0;
+
       $.each(app.results, (function(result) {
         if (app.pointer === result.pointer) {
           //something here to remove the old result
@@ -402,7 +438,6 @@ define([
       }
 
     },
-
 
     reportFailure: function(term1id, term2id) {
       if (this.dryRun) {
@@ -429,7 +464,48 @@ define([
           termid: termid
         }
       }]);
+    },
+
+    similarity: function(s1, s2) {
+      var longer = s1;
+      var shorter = s2;
+      if (s1.length < s2.length) {
+        longer = s2;
+        shorter = s1;
+      }
+      var longerLength = longer.length;
+      if (longerLength == 0) {
+        return 1.0;
+      }
+      return (longerLength - app.editDistance(longer, shorter)) / parseFloat(longerLength);
+    },
+    editDistance: function(s1, s2) {
+      s1 = s1.toLowerCase();
+      s2 = s2.toLowerCase();
+
+      var costs = new Array();
+      for (var i = 0; i <= s1.length; i++) {
+        var lastValue = i;
+        for (var j = 0; j <= s2.length; j++) {
+          if (i == 0)
+            costs[j] = j;
+          else {
+            if (j > 0) {
+              var newValue = costs[j - 1];
+              if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                newValue = Math.min(Math.min(newValue, lastValue),
+                  costs[j]) + 1;
+              costs[j - 1] = lastValue;
+              lastValue = newValue;
+            }
+          }
+        }
+        if (i > 0)
+          costs[s2.length] = lastValue;
+      }
+      return costs[s2.length];
     }
+
   };
 
   return app;

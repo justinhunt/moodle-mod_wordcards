@@ -1,7 +1,8 @@
-<div class='a4e-basic_feedback'><h2>
-  <i class='fa fa-trophy'></i> {{totalcorrect}}/{{total}} {{#str}}correct, mod_wordcards{{/str}}
-  <hr/>
-  <i class='fa fa-clock-o'></i> {{prettytime}}
+<div class='a4e-basic_feedback'>
+  <h2>
+    <i class='fa fa-trophy'></i> {{totalcorrect}}/{{total}} {{#str}}correct, mod_wordcards{{/str}}
+    <hr/>
+    <i class='fa fa-clock-o'></i> {{prettytime}}
   </h2>
 </div>
 
@@ -9,7 +10,7 @@
 
 <hr/>
 
-<div>
+<div id="try-again-or-next">
 
   <button style="width:50%;float:left;" id="try-again" class="btn btn-danger btn-lg">
     <i class="fa fa-refresh"></i> {{#str}}try_again, mod_wordcards{{/str}}
@@ -18,5 +19,5 @@
   <button style="width:50%;float:left;" id='close-results' class='btn btn-primary btn-lg'>
     {{#str}}done, mod_wordcards{{/str}} <i class='fa fa-arrow-right'></i>
   </button>
-  
+
 </div>
