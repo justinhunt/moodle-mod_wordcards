@@ -1,44 +1,48 @@
-{{!
-    Terms are organised as follows:
+{{! Terms are organised as follows:
 
-    <div class="term-wrapper">
-        <div class="term">
-            <div class="term-header">
-                <div class="term-title"></div>
-                <div class="term-tick"></div>
-            </div>
-            <div class="term-body"></div>
-        </div>
+<div class="term-wrapper">
+  <div class="term">
+    <div class="term-header">
+      <div class="term-title"></div>
+      <div class="term-tick"></div>
     </div>
+    <div class="term-body"></div>
+  </div>
+</div>
 
 }}
+
 <div id="definitions-page-{{uniqid}}">
-    <div class="terms clearfix">
-        {{#definitions}}<!--
-            --><div class="term-wrapper">
-                <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
-                    <div class="term-header">
-                        <div class="term-title">{{term}}</div>
-                        <div class="term-tick">
-                            <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
-                            <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}"/></div>
-                            <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
-                        </div>
-                    </div>
-                    <div class="term-body">
-                        {{definition}}
-                    </div>
-                </div>
-            </div><!--
-        -->{{/definitions}}
+
+  <h3 class="text-center font-weight-bold" style="border-radius:10px;background-color:lightgray;padding:5px;margin-bottom:10px">Check all the words to continue:</h3>
+
+  <div class="terms clearfix">
+    {{#definitions}}
+    <div class="term-wrapper">
+      <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
+        <div class="term-header">
+          <div class="term-title">{{term}}</div>
+          <div class="term-tick">
+            <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
+            <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}" /></div>
+            <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
+          </div>
+        </div>
+        <div class="term-body">
+          {{definition}}
+        </div>
+      </div>
     </div>
-    <div class="page-footer">
-        <p>
-            <button data-href="{{{nexturl}}}" class="continue-button btn btn-primary">Continue</button>
-            <br/><small>{{mustseealltocontinue}}</small>
-            <br/><small>{{noteaboutseenforteachers}}</small>
-        </p>
-    </div>
+    {{/definitions}}
+  </div>
+
+  <div class="page-footer">
+    <button data-href="{{{nexturl}}}" class="continue-button btn btn-primary btn-lg btn-block">
+        Continue <i class="fa fa-arrow-right"></i> 
+      </button>
+    <small>{{noteaboutseenforteachers}}</small>
+  </div>
+
 </div>
 
 {{#js}}

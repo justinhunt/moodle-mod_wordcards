@@ -49,7 +49,7 @@ $string['markasseen'] = 'Mark as seen';
 $string['modulename'] = 'Wordcards';
 $string['modulename_help'] = 'The wordcards activity module enables a teacher to create custom wordcards games for encouraging students learning new words.';
 $string['modulenameplural'] = 'Wordcards';
-$string['mustseealltocontinue'] = 'All the words must be marked as seen to continue.';
+$string['mustseealltocontinue'] = 'Check all the words to continue:';
 $string['name'] = 'Name';
 $string['nodefinitions'] = 'No words were added yet.';
 $string['noteaboutseenforteachers'] = 'Note: Teachers\' seen status are not saved.';
@@ -190,16 +190,17 @@ $string['title_scatter_rev'] = 'Match the Words (Review)';
 $string['title_speechcards_rev'] = 'Say the Words (Review)';
 
 $string['title_vocablist'] = 'Get Ready';
-$string['instructions_matchselect'] = 'Choose the word from the list below which best matches the highlighted word.';
-$string['instructions_matchtype'] = 'Type the word that you learnt, which best matches the highlighted word.';
+$string['instructions_matchselect'] = 'Tap the best match from the choices below for the highlighted word.';
+$string['instructions_matchtype'] = 'Type the best match for the highlighted word.';
 $string['instructions_dictation'] = 'Listen and type the word(s) that you hear. Tap the blue button to hear the word(s).';
-$string['instructions_scatter'] = 'Match the Cards with the same meaning, by tapping them,';
-$string['instructions_speechcards'] = 'Tap the blue button and speak the word(s) that you see on the card. Speak slowly and clearly.';
-$string['instructions_vocablist'] = 'Check the words that you will be tested on in this activity. Tap the word card or press the \'flip\' button to show the other side of the cards. When you are ready, press \'Begin\' to test your knowledge of these words.';
-$string['pushtospeak'] = 'Push to Speak';
+$string['instructions_scatter'] = 'Match the cards with the same meaning, by tapping them,';
+$string['instructions_speechcards'] = 'Tap the blue button and speak the word(s) shown on the card. Speak slowly and clearly.';
+$string['instructions_vocablist'] = 'Review the words that will be used in this activity. Tap the word card or the \'Flip\' button to show the other side of the cards. When you are ready, tap \'Begin\' to test your knowledge of these words.';
+$string['pushtospeak'] = 'Tap to Speak';
 
 // Paul's edits
 
 $string['try_again'] = "Try again";
 $string['next_step'] = "Next";
 $string['done'] = 'Next';
+$string['skip'] = 'Skip';

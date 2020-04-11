@@ -1,38 +1,28 @@
-<div class='container'>
-  <!-- Page contents -->
+<div id='vocab-list'>
+  {{> mod_wordcards/vocablist_header}}
+  <div id="vocab-list-inner">{{> mod_wordcards/loading}}</div>
+</div>
 
-  <div class="panel panel-default" id='activity'>
-    <div class="panel-body">
+<div id='gameboard'>
 
-      <div id='vocab-list'>{{> mod_wordcards/vocablist_header}}
-        <div id="vocab-list-inner">{{> mod_wordcards/loading}}</div>
-      </div>
-
-      <div id='gameboard'>
-        
-        <div class="mod_wordcards_activity_header">
-          <h3>{{#str}}title_matchselect, mod_wordcards{{/str}}</h3>
-          <div class="mod_wordcards_instructions">{{#str}}instructions_matchselect, mod_wordcards{{/str}}</div>
-        </div>
-        
-        <div id='counter'>
-          <div id='time-counter'></div>
-        </div>
-        
-        {{> mod_wordcards/progress_dots}}
-        
-        <div id='question'></div>
-        <div id='input'></div>
-        
-      </div>
-
-      <div id='results'>
-        <div id='results-inner'>{{> mod_wordcards/loading}}</div>
-      </div>
-      
-    </div>
-    
+  <div class="mod_wordcards_activity_header">
+    <h3>{{#str}}title_matchselect, mod_wordcards{{/str}}</h3>
+    <div class="mod_wordcards_instructions">{{#str}}instructions_matchselect, mod_wordcards{{/str}}</div>
   </div>
 
-  <!-- End page contents -->
+  <div id='counter'>
+    <div id='time-counter'></div>
+  </div>
+
+  {{> mod_wordcards/progress_dots}}
+
+  <div id='question'></div>
+  <div id='input'></div>
+
+</div>
+
+<div id='results'>
+  <div id='results-inner'>
+    {{> mod_wordcards/loading}}
+  </div>
 </div>

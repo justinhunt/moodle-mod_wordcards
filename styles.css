@@ -370,11 +370,13 @@
   margin-top: 5px;
   margin-bottom: 5px;
   text-align: center;
-  font-size: 20px;
-  background-color: #f7f7f7;
-  padding: 10px;
-  font-family: 'Orbitron', sans-serif;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  font-size: 28px;
+  background-color: black;
+  color: lawngreen;
+  border: 5px solid lightgray;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #question {
@@ -440,6 +442,8 @@
   text-align: center;
   margin-top: 10px;
   margin-bottom: 10px;
+  border: 2px solid darkgray;
+  padding: 5px;
 }
 
 .a4e-card {
@@ -466,6 +470,14 @@
   padding: 10px;
   width: 250px;
   height: 100px;
+}
+
+.play-tts {
+  position: absolute;
+  left: 0;
+  top: -12px;
+  border-right: 1px solid darkgray !important;
+  border-bottom: 1px solid darkgray !important;
 }
 
 /* FEEDBACK */
@@ -607,22 +619,47 @@
 
 /* SPEECH CARDS */
 
+#speech-container {
+  border: 1px solid darkgray;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+#speechcards_pushrecorder {
+  text-align: center;
+  background-image: url([[pix:mod_wordcards|spinner]]);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .glide__wrapper {
   overflow: hidden;
-  margin-top: 20px;
+  pointer-events: none;
+}
+
+.glide__slide {
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.glide {
+  height: 150px !important;
 }
 
 .wordcards-poodllspeechcards_box {
   text-align: center;
-  width: 300px;
-  font-size: 50px;
+  width: 225px;
+  font-size: 25px;
   margin: auto;
-  border-radius: 6px;
-  border: 2px solid darkgray;
+  border: 1px solid darkgray;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100px;
+  background-color: #f5f5f5;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.75);
 }
 
 .wordcards-speechcards_toprow {
@@ -630,12 +667,6 @@
   display: flex;
   justify-content: center;
 }
-
-/*
-.wordcards-poodllrecorder{
-    margin-left: 15px;
-}
-*/
 
 .wordcards-speechcards_whatheard {
   width: 400px;
@@ -650,10 +681,7 @@
   background-color: green;
 }
 
-.wordcards-speechcards_button {
-  height: 60px;
-  margin-top: 7px;
-}
+.wordcards-speechcards_button {}
 
 .wordcards_loading {
   text-align: center;
@@ -691,4 +719,23 @@
   font-size: 40px;
   text-align: center;
   letter-spacing: 10px;
+  border: 1px solid darkgray;
+  margin-bottom: 5px;
+}
+
+#star-rating {
+  letter-spacing: 20px;
+  text-align: center;
+  font-size: 30px;
+}
+
+#container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#try-again-or-next {
+  height: 48px;
+  border: 1px solid black;
+  margin-bottom: 50px;
 }
