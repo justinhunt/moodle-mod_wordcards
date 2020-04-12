@@ -21,7 +21,7 @@
     <div class="term-wrapper">
       <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
         <div class="term-header">
-          <div class="term-title">{{term}}</div>
+          <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up"></i></div>
           <div class="term-tick">
             <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
             <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}" /></div>
@@ -44,54 +44,3 @@
   </div>
 
 </div>
-
-{{#js}}
-    require(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notification) {
-        var container = $('#definitions-page-{{uniqid}}'),
-            modid = {{modid}},
-            canmanage = {{canmanage}},
-            btn = container.find('.continue-button');
-
-        function seenAll() {
-            return container.find('.term').length === container.find('.term.term-seen').length
-        }
-
-        container.on('click', '.term-seen-action', function(e) {
-            e.preventDefault();
-
-            var termNode = $(this).parents('.term').first(),
-                termId = termNode.data('termid');
-
-            // TODO Ajax.
-            termNode.addClass('term-loading')
-            Ajax.call([{
-                'methodname': 'mod_wordcards_mark_as_seen',
-                'args': {
-                    'termid': termId
-                }
-            }])[0].then(function(result) {
-                if (!result) {
-                    return $.Deferred().reject();
-                }
-                termNode.addClass('term-seen');
-            })
-            .fail(Notification.exception)
-            .always(function() {
-                termNode.removeClass('term-loading');
-                if (seenAll()) {
-                    btn.prop('disabled', false);
-                }
-            });
-        });
-
-        // Teachers can jump to the next steps.
-        if (!seenAll() && !canmanage) {
-            btn.prop('disabled', true);
-        }
-
-        btn.click(function(e) {
-            e.preventDefault();
-            location.href = $(this).data('href');
-        });
-    });
-{{/js}}

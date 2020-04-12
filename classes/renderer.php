@@ -20,7 +20,7 @@ use mod_wordcards\constants;
 class mod_wordcards_renderer extends plugin_renderer_base {
 
     public function definitions_page(mod_wordcards_module $mod) {
-        global $PAGE, $OUTPUT;
+        global $PAGE, $OUTPUT,$USER;
 
         $definitions = $mod->get_terms();
         if (empty($definitions)) {
@@ -36,6 +36,12 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             }
             $definitions[$s->termid]->seen = true;
         }
+
+
+        //config
+        $config = get_config('mod_wordcards');
+        $token = utils::fetch_token($config->apiuser, $config->apisecret);
+
 
         $data = [
             'canmanage' => $mod->can_manage(),
@@ -55,8 +61,12 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             'str_term' => get_string('term', 'mod_wordcards'),
             'termnotseen' => get_string('termnotseen', 'mod_wordcards'),
             'termseen' => get_string('termseen', 'mod_wordcards'),
+            'token'=>$token,
+            'region'=>$config->awsregion,
+            'owner'=>hash('md5',$USER->username)
         ];
 
+        $this->page->requires->js_call_amd("mod_wordcards/definitions", 'init', array($data));
         return $this->render_from_template('mod_wordcards/definitions_page', $data);
     }
 
