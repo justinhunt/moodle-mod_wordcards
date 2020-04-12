@@ -1,14 +1,31 @@
-define(['jquery', 'core/ajax', 'core/notification'], function($, Ajax, Notification) {
+define(['jquery', 'core/ajax', 'core/notification', 'mod_wordcards/a4e'], function($, Ajax, Notification, a4e) {
   "use strict"; // jshint ;_;
 
   return {
 
     init: function(opts) {
 
-      var container = $('#definitions-page-' + opts['uniqid']),
-        modid = opts['modid'],
-        canmanage = opts['canmanage'],
+        //pick up opts from html
+        var theid = '#' + opts['widgetid'];
+        var propscontrol = $(theid).get(0);
+        if (propscontrol) {
+            var props = JSON.parse(propscontrol.value);
+            this.props =props;
+            $(theid).remove();
+        } else {
+            //if there is no config we might as well give up
+            log.debug('No config found on page. Giving up.');
+            return;
+        }
+
+      var container = $('#definitions-page-' + opts['widgetid']),
+        modid = props.modid,
+        canmanage = props.canmanage,
         btn = container.find('.continue-button');
+
+       //set up audio
+       a4e.register_events();
+       a4e.init_audio(props.token,props.region,props.owner);
 
       function seenAll() {
         return container.find('.term').length === container.find('.term.term-seen').length

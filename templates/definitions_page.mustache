@@ -12,7 +12,7 @@
 
 }}
 
-<div id="definitions-page-{{uniqid}}">
+<div id="definitions-page-{{uniqid}}" class="definitions-container">
 
   <h3 class="text-center font-weight-bold" style="border-radius:10px;background-color:lightgray;padding:5px;margin-bottom:10px">Check all the words to continue:</h3>
 
@@ -21,7 +21,7 @@
     <div class="term-wrapper">
       <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
         <div class="term-header">
-          <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up"></i></div>
+          <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i></div>
           <div class="term-tick">
             <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
             <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}" /></div>
@@ -41,6 +41,7 @@
         Continue <i class="fa fa-arrow-right"></i> 
       </button>
     <small>{{noteaboutseenforteachers}}</small>
+      <audio id="poodll_vocabplayer"></audio>
   </div>
 
 </div>

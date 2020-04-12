@@ -365,6 +365,7 @@ class mod_wordcards_module {
         }
 
         // Completed when there is enough successful associations.
+        //we could set passmark to 1 or half of termcount?
         return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $termcount;
     }
 
@@ -619,7 +620,7 @@ class mod_wordcards_module {
                 }
 
                 //get next word poodl
-                $nextwordpool = self::get_wordpool($nextpracticetype);
+                $nextwordpool = self::get_wordpool($thisstep);
 
                 //if we have words in the review pool, then this step should be fine
                 if($arewordstoreview){
