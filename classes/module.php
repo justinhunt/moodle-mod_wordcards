@@ -366,7 +366,9 @@ class mod_wordcards_module {
 
         // Completed when there is enough successful associations.
         //we could set passmark to 1 or half of termcount?
-        return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $termcount;
+        //$passmark = $termcount;
+        $passmark=1;
+        return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $passmark;
     }
 
     protected function has_seen_all_terms() {

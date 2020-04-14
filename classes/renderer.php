@@ -27,6 +27,14 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             return $OUTPUT->notification(get_string('nodefinitions', 'mod_wordcards'));
         }
 
+        //make sure each definition has a voice
+        foreach($definitions as $def){
+            if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
+                $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+            }
+        }
+
+
         // Get whe the student has seen.
         $seen = $mod->get_terms_seen();
         foreach ($seen as $s) {
@@ -112,6 +120,13 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             $definitions = $mod->get_review_terms();
         }else{
             $definitions = $mod->get_learn_terms();
+        }
+
+        //make sure each definition has a voice
+        foreach($definitions as $def){
+            if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
+                $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+            }
         }
 
         $widgetid = \html_writer::random_id();
@@ -210,6 +225,13 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
         }
 
+        //make sure each definition has a voice
+        foreach($definitions as $def){
+            if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
+                $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+            }
+        }
+
         $jsonstring=$this->make_json_string($definitions);
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
@@ -248,6 +270,13 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             $definitions = $mod->get_review_terms();
         }else{
             $definitions = $mod->get_learn_terms();
+        }
+
+        //make sure each definition has a voice
+        foreach($definitions as $def){
+            if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
+                $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+            }
         }
 
         $data = [

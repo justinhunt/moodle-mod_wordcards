@@ -451,6 +451,12 @@ class utils{
         }
     }
 
+  public static function fetch_auto_voice($langcode){
+        $voices = self::get_tts_voices($langcode);
+        $autoindex = array_rand($voices);
+        return $voices[$autoindex];
+  }
+
   public static function get_tts_voices($langcode){
       $alllang= array(
               constants::M_LANG_ARAE => ['Zeina'],
