@@ -28,7 +28,7 @@ $PAGE->set_title($pagetitle);
 $PAGE->force_settings_menu(true);
 //load google font never works
 //$googlefont = new moodle_url('https//fonts.googleapis.com/css2',array('family'=>'Orbitron','display'=>'swap'));
-$PAGE->requires->css($googlefont);
+//$PAGE->requires->css($googlefont);
 
 
 $output = $PAGE->get_renderer('mod_wordcards');
