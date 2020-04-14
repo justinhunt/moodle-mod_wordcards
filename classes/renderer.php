@@ -52,7 +52,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
 
         $data = [
-            'uniqid'=> \html_writer::random_id(),
+            'uniqid'=> \html_writer::random_id('wordcards'),
             'canmanage' => $mod->can_manage(),
             'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
@@ -80,8 +80,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $opts_html = \html_writer::tag('input', '', array('id' => $data['uniqid'], 'type' => 'hidden', 'value' => $jsonstring));
         $jsdata=array('widgetid'=> $data['uniqid']);
         $this->page->requires->js_call_amd("mod_wordcards/definitions", 'init', array($jsdata));
-
-
+        
         return  $opts_html . $this->render_from_template('mod_wordcards/definitions_page', $data);
     }
 
