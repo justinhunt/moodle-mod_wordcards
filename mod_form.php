@@ -34,7 +34,8 @@ class mod_wordcards_mod_form extends moodleform_mod {
 
         $options = utils::get_lang_options();
         $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', 'mod_wordcards'),
-                $options, $config->ttslanguage);
+                $options);
+        $mform->setDefault('ttslanguage',$config->ttslanguage);
 
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');
