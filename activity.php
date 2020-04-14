@@ -63,8 +63,8 @@ $PAGE->set_heading(format_string($course->fullname, true, [context_course::insta
 $PAGE->set_title($pagetitle);
 //load glide
 $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
-//load google font
-$PAGE->requires->css(new moodle_url('https//fonts.googleapis.com/css2',array('family'=>'Orbitron','display'=>'swap')));
+//load google font never works ... why?
+//$PAGE->requires->css(new moodle_url('https//fonts.googleapis.com/css2',array('family'=>'Orbitron','display'=>'swap')));
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
