@@ -13,9 +13,8 @@ define([
   'mod_wordcards/a4e',
   'mod_wordcards/glidecards',
   'mod_wordcards/cloudpoodllloader',
-  'mod_wordcards/transcriber-lazy',
   'core/templates'
-], function($, Ajax, log, a4e, glidecards, cloudpoodll, transcriber, templates) {
+], function($, Ajax, log, a4e, glidecards, cloudpoodll, templates) {
 
   var app = {
     passmark: 75,
@@ -25,7 +24,6 @@ define([
     glider: null,
     dryRun: false,
     controls: {},
-    browserspeech: false,
 
     init: function(props) {
 
@@ -44,7 +42,6 @@ define([
       }
       app.jsondata = jsondata;
       app.props = props;
-      app.browserspeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
       app.process(jsondata);
 
 
@@ -161,22 +158,12 @@ define([
       //The logic here is that on correct we transition.
       //on incorrect we do not. A subsequent nav button click then doesnt need to post a result
       var theCallback = function(message) {
-        console.log("triggered callback");
-        //console.log(message);
+        //console.log("triggered callback");
+        console.log(message);
+
         switch (message.type) {
           case 'recording':
 
-            //we only use AWS transcription is browserspeech is not available
-            if (app.browserspeech) {
-              return;
-            }
-
-            //if using AWS transcriber
-            if (message.action == 'started') {
-              app.startAWSTranscriber();
-            } else if (message.action == 'stopped') {
-              app.stopAWSTranscriber();
-            }
             break;
 
           case 'speech':
@@ -218,29 +205,10 @@ define([
       //init cloudpoodll push recorder
       cloudpoodll.init('speechcards_pushrecorder', theCallback);
 
-      //init streaming transcriber
-      var opts = {};
-      opts['language'] = app.props.language;
-      opts['region'] = app.props.region;
-      // opts['accessid']=app.props.accessid;
-      // opts['secretkey']=app.props.secretkey;
-      opts['token'] = app.props.token;
-      opts['parent'] = app.props.parent;
-      opts['owner'] = app.props.owner;
-      opts['appid'] = app.props.appid;
-      opts['expiretime'] = app.props.expiretime;
 
-      transcriber.init(opts);
-      transcriber.onFinalResult = function(transcript, result) {
-        var message = {
-          type: 'speech'
-        };
-        message.capturedspeech = transcript;
-        theCallback(message);
-      };
     },
 
-    showStarRating(similarity){
+    showStarRating: function(similarity){
         //how many stars code
         var stars = [true,true,true];
         if(similarity<1){
@@ -285,29 +253,6 @@ define([
             }, 700);
         }
 
-    },
-
-    startAWSTranscriber: function() {
-      if (transcriber.active) {
-        return;
-      }
-      // first we get the microphone input from the browser (as a promise)...
-      window.navigator.mediaDevices.getUserMedia({
-        video: false,
-        audio: true,
-      }).then(function(stream) {
-        transcriber.start(stream, transcriber)
-      }).catch(function(error) {
-        log.debug(error);
-        log.debug('There was an error streaming your audio to Amazon Transcribe. Please try again.');
-      });
-    },
-
-    stopAWSTranscriber: function() {
-      if (!transcriber.active) {
-        return;
-      }
-      transcriber.closeSocket();
     },
 
     //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match

@@ -238,8 +238,6 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
         $opts['language']=$mod->get_mod()->ttslanguage;
         $opts['region']=$region;
-        //$opts['accessid']=$accessid;
-        //$opts['secretkey']=$accesssecret;
         $opts['token']=$token;
         $opts['parent']=$CFG->wwwroot;
         $opts['owner']=hash('md5',$USER->username);
@@ -252,6 +250,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $data['cloudpoodlltoken']=$token;
         $data['language']=$mod->get_mod()->ttslanguage;
         $data['wwwroot']=$CFG->wwwroot;
+        $data['region']=$region;
         $data['owner']=hash('md5',$USER->username);
         $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
         return $opts_html . $speechcards;
