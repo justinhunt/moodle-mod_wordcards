@@ -80,9 +80,14 @@ switch ($action) {
     /////// Delete attempt NOW////////
     case 'delete':
         require_sesskey();
-        if (!$DB->delete_records(constants::M_ATTEMPTSTABLE, array('id' => $attemptid))) {
+        if ($DB->delete_records(constants::M_ATTEMPTSTABLE, array('id' => $attemptid))) {
+            if($attempt){
+                wordcards_update_grades($moduleinstance, $attempt->userid, true);
+            }
+        }else{
             print_error("Could not delete attempt");
         }
+
 
         redirect($redirecturl);
         return;
@@ -90,10 +95,11 @@ switch ($action) {
     /////// Delete ALL attempts ////////
     case 'deleteall':
         require_sesskey();
-        if (!$DB->delete_records(constants::M_ATTEMPTSTABLE, array('modid' => $moduleinstance->id))) {
+        if ($DB->delete_records(constants::M_ATTEMPTSTABLE, array('modid' => $moduleinstance->id))) {
+            wordcards_update_grades($moduleinstance, 0, true);
+        }else{
             print_error("Could not delete attempts (all)");
         }
-
         redirect($redirecturl);
         return;
 

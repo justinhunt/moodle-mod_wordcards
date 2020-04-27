@@ -164,6 +164,7 @@ class utils{
         if($totalsteps>0) {
             $grade = ROUND(($totalgrade / $totalsteps), 0);
             $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade,array('userid'=>$USER->id,'modid'=>$modid));
+            wordcards_update_grades($mod->get_mod(), $USER->id, false);
         }
         return true;
     }

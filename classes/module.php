@@ -507,6 +507,7 @@ class mod_wordcards_module {
         if (!empty($record->id)) {
             $DB->update_record('wordcards_progress', $record);
         } else {
+            $record->timecreated = time();
             $DB->insert_record('wordcards_progress', $record);
         }
 
