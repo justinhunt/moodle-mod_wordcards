@@ -249,16 +249,12 @@ class renderer extends \plugin_renderer_base {
         $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
 
         //are we going to force streaning transcription from AWS only if its android
+        $hints = new \stdClass();
         $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
         if(stripos($ua,'android') !== false) {
-            $hints = new \stdClass();
             $hints->streamingtranscriber = 'aws';
-            $string_hints = base64_encode(json_encode($hints));
-        }else{
-            $string_hints ='';
         }
-
-
+        $string_hints = base64_encode(json_encode($hints));
 
         $data = [];
         $data['cloudpoodlltoken']=$token;
