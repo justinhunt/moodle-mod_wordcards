@@ -27,6 +27,8 @@ $string['editterm'] = 'Edit term \'{$a}\'';
 $string['finishscatterin'] = '<h4 style="text-align: center;">Congratulations!</h4>';
 $string['wordcards:addinstance'] = 'Add an instance';
 $string['wordcards:view'] = 'View the module';
+$string['wordcards:viewreports'] = 'View reports';
+$string['wordcards:manageattempts'] = 'Manage Attempts';
 $string['reviewactivity'] = 'Review';
 $string['reviewactivityfinished'] = 'You finished the review session in {$a->seconds} seconds.';
 
@@ -218,6 +220,7 @@ $string['deletenow'] = "Delete";
 
 $string['returntoreports'] = "Return to Reports";
 $string['exportexcel'] = "Export to Excel";
+$string['nodataavailable'] = "No  data available";
 
 
 // Paul's edits
