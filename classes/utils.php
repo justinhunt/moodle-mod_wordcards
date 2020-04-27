@@ -109,7 +109,7 @@ class utils{
         }
         if($field && $termcount && ($termcount>=$correct)){
             $grade = ROUND(($correct / $termcount) * 100, 0);
-            $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade);
+            $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade,array('userid'=>$USER->id,'modid'=>$modid));
         }
         return true;
     }
@@ -162,8 +162,8 @@ class utils{
             }
         }
         if($totalsteps>0) {
-            $grade = ROUND(($totalgrade / $totalsteps) * 100, 0);
-            $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade);
+            $grade = ROUND(($totalgrade / $totalsteps), 0);
+            $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade,array('userid'=>$USER->id,'modid'=>$modid));
         }
         return true;
     }
