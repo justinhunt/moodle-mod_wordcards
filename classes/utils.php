@@ -73,6 +73,101 @@ class utils{
         return $phonetic;
     }
 
+    public static function update_stepgrade($modid,$correct){
+        global $DB,$USER;
+        $mod = \mod_wordcards_module::get_by_modid($modid);
+        $record = $DB->get_record(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id]);
+        if (!$record) {return false;}
+        $field=false;
+        $termcount=0;
+        switch($record->state){
+            case \mod_wordcards_module::STATE_STEP1:
+                $termcount=$mod->get_mod()->step1termcount;
+                $field = 'grade1';
+                break;
+            case \mod_wordcards_module::STATE_STEP2:
+                $termcount=$mod->get_mod()->step2termcount;
+                $field = 'grade2';
+                break;
+            case \mod_wordcards_module::STATE_STEP3:
+                $termcount=$mod->get_mod()->step3termcount;
+                $field = 'grade3';
+                break;
+            case \mod_wordcards_module::STATE_STEP4:
+                $termcount=$mod->get_mod()->step4termcount;
+                $field = 'grade4';
+                break;
+            case \mod_wordcards_module::STATE_STEP5:
+                $termcount=$mod->get_mod()->step5termcount;
+                $field = 'grade5';
+                break;
+            case \mod_wordcards_module::STATE_END:
+            case \mod_wordcards_module::STATE_TERMS:
+            default:
+                //do nothing
+                break;
+        }
+        if($field && $termcount && ($termcount>=$correct)){
+            $grade = ROUND(($correct / $termcount) * 100, 0);
+            $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade);
+        }
+        return true;
+    }
+
+    public static function update_finalgrade($modid){
+        global $DB,$USER;
+
+        $mod = \mod_wordcards_module::get_by_modid($modid);
+        $record = $DB->get_record(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id]);
+        if (!$record) {return false;}
+        //one attempt and thats all for grading sorry
+        if ($record->totalgrade > 0 ) {return true;}
+        $states = array(\mod_wordcards_module::STATE_STEP1,\mod_wordcards_module::STATE_STEP2,\mod_wordcards_module::STATE_STEP3,
+                \mod_wordcards_module::STATE_STEP4,\mod_wordcards_module::STATE_STEP5);
+
+        $totalgrade=0;
+        $totalsteps=0;
+        foreach($states as $state) {
+            switch ($state) {
+                case \mod_wordcards_module::STATE_STEP1:
+                    $termcount = $mod->get_mod()->step1termcount;
+                    $grade= $record->grade1;
+                    break;
+                case \mod_wordcards_module::STATE_STEP2:
+                    $termcount = $mod->get_mod()->step2termcount;
+                    $grade= $record->grade2;
+                    break;
+                case \mod_wordcards_module::STATE_STEP3:
+                    $termcount = $mod->get_mod()->step3termcount;
+                    $grade= $record->grade3;
+                    break;
+                case \mod_wordcards_module::STATE_STEP4:
+                    $termcount = $mod->get_mod()->step4termcount;
+                    $grade= $record->grade4;
+                    break;
+                case \mod_wordcards_module::STATE_STEP5:
+                    $termcount = $mod->get_mod()->step5termcount;
+                    $grade= $record->grade5;
+                    break;
+                case \mod_wordcards_module::STATE_END:
+                case \mod_wordcards_module::STATE_TERMS:
+                default:
+                    $grade=0;
+                    $termcount=0;
+                    break;
+            }
+            if($termcount>0){
+                $totalsteps ++;
+                $totalgrade += $grade;
+            }
+        }
+        if($totalsteps>0) {
+            $grade = ROUND(($totalgrade / $totalsteps) * 100, 0);
+            $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade);
+        }
+        return true;
+    }
+
 
     //we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     //this is our helper
@@ -542,6 +637,23 @@ class utils{
               return get_string('review','mod_wordcards');
 
       }
+    }
+
+    /* An activity typoe will be eith practice or review */
+    public static function is_review_activity($activitytype){
+        switch($activitytype){
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION:
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+                return false;
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+                return true;
+
+        }
     }
 
     /* Each activity shows an icon on the tab tree */

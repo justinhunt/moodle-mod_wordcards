@@ -31,18 +31,17 @@ $PAGE->force_settings_menu(true);
 //$PAGE->requires->css($googlefont);
 
 
-$output = $PAGE->get_renderer('mod_wordcards');
+$renderer = $PAGE->get_renderer('mod_wordcards');
 
-echo $output->header();
-echo $output->heading($pagetitle);
+echo $renderer->header();
+echo $renderer->heading($pagetitle);
 
 if (!empty($mod->get_mod()->intro)) {
-    echo $output->box(format_module_intro('wordcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
+    echo $renderer->box(format_module_intro('wordcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
 }
 
-echo $output->navigation($mod, $currentstate);
+echo $renderer->navigation($mod, $currentstate);
 
-$renderer = $PAGE->get_renderer('mod_wordcards');
 echo $renderer->definitions_page($mod);
 
-echo $output->footer();
+echo $renderer->footer();

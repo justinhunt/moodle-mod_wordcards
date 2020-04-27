@@ -17,7 +17,16 @@ const M_COMPONENT='mod_wordcards';
 const M_MODNAME='wordcards';
 const M_URL='/mod/wordcards';
 const M_CLASS='mod_wordcards';
+const M_TABLE='wordcards';
+const M_ATTEMPTSTABLE='wordcards_progress';
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingwordcards';
+
+//grading options
+const M_GRADEHIGHEST= 0;
+const M_GRADELOWEST= 1;
+const M_GRADELATEST= 2; // we only use this one currently
+const M_GRADEAVERAGE= 3;
+const M_GRADENONE= 4;
 
 //languages
 const M_LANG_ENUS = 'en-US';

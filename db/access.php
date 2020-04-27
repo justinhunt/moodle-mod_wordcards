@@ -29,6 +29,28 @@ $capabilities = [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ],
+    ],
+
+    'mod/wordcards:manageattempts' => [
+            'riskbitmask' => RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE,
+            'archetypes' => [
+                    'teacher' => CAP_ALLOW,
+                    'editingteacher' => CAP_ALLOW,
+                    'manager' => CAP_ALLOW
+            ],
+    ],
+
+    'mod/wordcards:viewreports' => [
+            'riskbitmask' => RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE,
+            'archetypes' => [
+                    'teacher' => CAP_ALLOW,
+                    'editingteacher' => CAP_ALLOW,
+                    'manager' => CAP_ALLOW
+            ],
     ]
 
 ];

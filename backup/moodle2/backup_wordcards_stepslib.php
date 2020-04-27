@@ -18,7 +18,7 @@
  *
  * @package   mod_wordcards
  * @category  backup
- * @copyright 2016 Your Name <your@email.address>
+ * @copyright 2019 Your Name <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
@@ -42,6 +42,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
         // Define the root element describing the wordcards instance.
         $wordcards = new backup_nested_element('wordcards', array('id'), array(
             'name', 'intro', 'introformat', 'step1termcount', 'step2termcount', 'step3termcount', 'step4termcount','step5termcount',
+                'grade','gradeoptions','mingrade',
                 'step1practicetype','step2practicetype','step3practicetype','step4practicetype','step5practicetype',
                 'completionwhenfinish', 'timecreated', 'timemodified','skipreview', 'finishedstepmsg', 'completedmsg', 'ttslanguage'));
 
@@ -59,7 +60,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
         $progresses = new backup_nested_element('progresses');
         $progress = new backup_nested_element('progress', array('id'), array(
-            'userid', 'state', 'statedata'));
+            'userid', 'state', 'statedata','grade1','grade2','grade3','grade4','grade5','totalgrade','timecreated'));
 
         // If we had more elements, we would build the tree here.
         $wordcards->add_child($terms);

@@ -198,6 +198,28 @@ $string['instructions_speechcards'] = 'Tap the blue button and speak the word(s)
 $string['instructions_vocablist'] = 'Review the words that will be used in this activity. Tap the word card or the \'Flip\' button to show the other side of the cards. When you are ready, tap \'Begin\' to test your knowledge of these words.';
 $string['pushtospeak'] = 'Tap to Speak';
 
+//Reports
+$string['itemsperpage'] = "Items per Page";
+$string['itemsperpage_details'] = "";
+$string['tabreports'] = "Reports";
+$string['reports'] = "Reports";
+$string['deleteattemptconfirm'] = "Really delete this attempt?";
+$string['delete'] = "Delete";
+$string['attemptsreport'] = "Attempts Report";
+$string['attemptsheading'] = "Attempts Report";
+$string['basicheading'] = "Basic Report";
+$string['id'] = "ID";
+$string['name'] = "Name";
+$string['username'] = "Username";
+$string['grade'] = "Grade";
+$string['grade_p'] = "Grade(%)";
+$string['timecreated'] = "Created";
+$string['deletenow'] = "Delete";
+
+$string['returntoreports'] = "Return to Reports";
+$string['exportexcel'] = "Export to Excel";
+
+
 // Paul's edits
 
 $string['try_again'] = "Try again";

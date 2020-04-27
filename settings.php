@@ -63,5 +63,13 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
             $label, $details, $default, $options));
 
+    // Items per page options
+    $name = 'itemsperpage';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = 10;
+    $settings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
+            $label, $details, $default, PARAM_INT));
+
 
 }

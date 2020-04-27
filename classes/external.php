@@ -8,6 +8,7 @@
 
 
 use mod_wordcards\utils;
+use mod_wordcards\constants;
 
 /**
  * External class.
@@ -141,6 +142,21 @@ class mod_wordcards_external extends external_api {
     }
 
     public static function report_failed_association_returns() {
+        return new external_value(PARAM_BOOL);
+    }
+
+    public static function report_step_grade_parameters() {
+        return new external_function_parameters([
+                'modid' => new external_value(PARAM_INT),
+                'correct' => new external_value(PARAM_INT),
+        ]);
+    }
+
+    public static function report_step_grade($modid,$correct){
+        $ret= utils::update_stepgrade($modid, $correct);
+        return $ret;
+    }
+    public static function report_step_grade_returns() {
         return new external_value(PARAM_BOOL);
     }
 

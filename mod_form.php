@@ -11,7 +11,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 use mod_wordcards\utils;
-
+use mod_wordcards\constants;
 /**
  * Module form class.
  *
@@ -83,6 +83,16 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addElement('editor', 'completedmsg_editor', get_string('completedmsg', 'mod_wordcards'));
         $mform->setDefault('completedmsg_editor', array('text' => get_string('congratsitsover', 'mod_wordcards')));
         $mform->addHelpButton('completedmsg_editor', 'completedmsg', 'mod_wordcards');
+
+
+        // Grade.
+        $this->standard_grading_coursemodule_elements();
+
+        //grade options
+        //for now we hard code this to latest attempt
+        $mform->addElement('hidden', 'gradeoptions',constants::M_GRADELATEST);
+        $mform->setType('gradeoptions', PARAM_INT);
+
 
         $this->standard_coursemodule_elements();
 

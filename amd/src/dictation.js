@@ -26,6 +26,7 @@ define([
       var theid = '#' + props.widgetid;
       this.dryRun = props.dryRun;
       this.nexturl = props.nexturl;
+      this.modid = props.modid;
       var configcontrol = $(theid).get(0);
       if (configcontrol) {
         var definitionsdata = JSON.parse(configcontrol.value);
@@ -153,6 +154,14 @@ define([
         activity: "dictation"
       };
       console.log(data);
+
+      Ajax.call([{
+          methodname: 'mod_wordcards_report_step_grade',
+          args: {
+              modid: app.modid,
+              correct: tdata['totalcorrect']
+          }
+      }]);
 
     },
 

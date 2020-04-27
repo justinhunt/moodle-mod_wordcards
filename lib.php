@@ -9,6 +9,9 @@
 // TODO Support activity completion.
 defined('MOODLE_INTERNAL') || die();
 
+use \mod_wordcards\constants;
+use \mod_wordcards\utils;
+
 /**
  * Supported features.
  *
@@ -28,7 +31,7 @@ function wordcards_supports($feature) {
         case FEATURE_GRADE_HAS_GRADE:
             return true;
         case FEATURE_GRADE_OUTCOMES:
-            return true;
+            return false;
         default:
             return false;
     }
@@ -48,6 +51,12 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
     $module->completedmsg = $module->completedmsg_editor['text'];
     $module->id = $DB->insert_record('wordcards', $module);
 
+
+    if(!isset($module->cmidnumber)){
+        $module->cmidnumber=null;
+    }
+    wordcards_grade_item_update($module);
+
     return $module->id;
 }
 
@@ -56,6 +65,8 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
 
     $module->timemodified = time();
     $module->id = $module->instance;
+    $params = array('id' => $module->instance);
+    $oldgradefield = $DB->get_field(constants::M_TABLE, 'grade', $params);
 
     if (empty($module->skipreview)) {
         $module->skipreview = 0;
@@ -64,7 +75,19 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
     $module->finishedstepmsg = $module->finishedstepmsg_editor['text'];
     $module->completedmsg = $module->completedmsg_editor['text'];
 
-    return $DB->update_record('wordcards', $module);
+    $success = $DB->update_record('wordcards', $module);
+
+    if(!isset($module->cmidnumber)){
+        $module->cmidnumber=null;
+    }
+    wordcards_grade_item_update($module);
+    $update_grades = ($module->grade === $oldgradefield ? false : true);
+    if ($update_grades) {
+        wordcards_update_grades($module, 0, false);
+    }
+
+    return $success;
+
 }
 
 function wordcards_delete_instance($modid) {
@@ -148,9 +171,37 @@ function wordcards_reset_userdata($data) {
         $status[] = array('component' => $componentstr, 'item' => get_string('removeuserdata', 'wordcards'), 'error' => false);
     }
 
+    // remove all grades from gradebook
+    if (empty($data->reset_gradebook_grades)) {
+        wordcards_reset_gradebook($data->courseid);
+    }
+
     // PS: No wordcards date fields need to be shifted (i.e. need to be modified because the course start/end date changed)
 
     return $status;
+}
+
+
+/**
+ * Removes all grades from gradebook
+ *
+ * @global stdClass
+ * @global object
+ * @param int $courseid
+ * @param string optional type
+ */
+function wordcards_reset_gradebook($courseid, $type = '') {
+    global $CFG, $DB;
+
+    $sql = "SELECT l.*, cm.idnumber as cmidnumber, l.course as courseid
+              FROM {" . constants::M_TABLE . "} l, {course_modules} cm, {modules} m
+             WHERE m.name='" . constants::M_MODNAME . "' AND m.id=cm.module AND cm.instance=l.id AND l.course=:course";
+    $params = array("course" => $courseid);
+    if ($moduleinstances = $DB->get_records_sql($sql, $params)) {
+        foreach ($moduleinstances as $moduleinstance) {
+            wordcards_grade_item_update($moduleinstance, 'reset');
+        }
+    }
 }
 
 /**
@@ -233,3 +284,188 @@ function wordcards_extend_navigation(navigation_node $navref, stdclass $course, 
  */
 function wordcards_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $readseednode=null) {
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// API to update/select grades
+//////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Create grade item for given Wordcards
+ *
+ * @category grade
+ * @uses GRADE_TYPE_VALUE
+ * @uses GRADE_TYPE_NONE
+ * @param object $moduleinstance object with extra cmidnumber
+ * @param array|object $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
+ * @return int 0 if ok, error code otherwise
+ */
+function wordcards_grade_item_update($moduleinstance, $grades=null) {
+    global $CFG;
+    require_once($CFG->dirroot.'/lib/gradelib.php');
+
+    $params = array('itemname' => $moduleinstance->name);
+    if (array_key_exists('cmidnumber', $moduleinstance)) {
+        $params['idnumber'] = $moduleinstance->cmidnumber;
+    }
+
+    if ($moduleinstance->grade > 0) {
+        $params['gradetype'] = GRADE_TYPE_VALUE;
+        $params['grademax'] = $moduleinstance->grade;
+        $params['grademin'] = 0;
+    } else if ($moduleinstance->grade < 0) {
+        $params['gradetype'] = GRADE_TYPE_SCALE;
+        $params['scaleid'] = -$moduleinstance->grade;
+
+        // Make sure current grade fetched correctly from $grades
+        $currentgrade = null;
+        if (! empty($grades)) {
+            if (is_array($grades)) {
+                $currentgrade = reset($grades);
+            } else {
+                $currentgrade = $grades;
+            }
+        }
+
+        // When converting a score to a scale, use scale's grade maximum to calculate it.
+        if (! empty($currentgrade) && $currentgrade->rawgrade !== null) {
+            $grade = grade_get_grades($moduleinstance->course, 'mod', 'wordcards', $moduleinstance->id, $currentgrade->userid);
+            $params['grademax'] = reset($grade->items)->grademax;
+        }
+    } else {
+        $params['gradetype'] = GRADE_TYPE_NONE;
+    }
+
+    if ($grades  === 'reset') {
+        $params['reset'] = true;
+        $grades = null;
+    } else if (!empty($grades)) {
+        // Need to calculate raw grade (Note: $grades has many forms)
+        if (is_object($grades)) {
+            $grades = array($grades->userid => $grades);
+        } else if (array_key_exists('userid', $grades)) {
+            $grades = array($grades['userid'] => $grades);
+        }
+        foreach ($grades as $key => $grade) {
+            if (!is_array($grade)) {
+                $grades[$key] = $grade = (array) $grade;
+            }
+            //check raw grade isnt null otherwise we insert a grade of 0
+            if ($grade['rawgrade'] !== null) {
+                $grades[$key]['rawgrade'] = ($grade['rawgrade'] * $params['grademax'] / 100);
+            } else {
+                //setting rawgrade to null just in case user is deleting a grade
+                $grades[$key]['rawgrade'] = null;
+            }
+        }
+    }
+
+    if (is_object($moduleinstance->course)) {
+        $courseid = $moduleinstance->course->id;
+    } else {
+        $courseid = $moduleinstance->course;
+    }
+
+    return grade_update('mod/wordcards', $courseid, 'mod', 'wordcards', $moduleinstance->id, 0, $grades, $params);
+}
+
+/**
+ * Update grades in central gradebook
+ *
+ * @category grade
+ * @param object $moduleinstance
+ * @param int $userid specific user only, 0 means all
+ * @param bool $nullifnone
+ */
+function wordcards_update_grades($moduleinstance, $userid=0, $nullifnone=true) {
+    global $CFG, $DB;
+    require_once($CFG->dirroot.'/lib/gradelib.php');
+
+    if (empty($moduleinstance->grade)) {
+        $grades = null;
+    } else if ($grades = wordcards_get_user_grades($moduleinstance, $userid)) {
+        // do nothing
+    } else if ($userid && $nullifnone) {
+        $grades = (object)array('userid' => $userid, 'rawgrade' => null);
+    } else {
+        $grades = null;
+    }
+
+    wordcards_grade_item_update($moduleinstance, $grades);
+}
+
+/**
+ * Return grade for given user or all users.
+ *
+ * @global stdClass
+ * @global object
+ * @param int $id of wordcards
+ * @param int $userid optional user id, 0 means all users
+ * @return array array of grades, false if none
+ */
+function wordcards_get_user_grades($moduleinstance, $userid=0) {
+
+    global $CFG, $DB;
+
+    $params = array("moduleid" => $moduleinstance->id);
+
+    if (!empty($userid)) {
+        $params["userid"] = $userid;
+        $user = "AND u.id = :userid";
+    }
+    else {
+        $user="";
+    }
+
+    //grade_sql
+    $grade_sql = "SELECT u.id, u.id AS userid, a.totalgrade AS rawgrade
+                      FROM {user} u, {". constants::M_ATTEMPTSTABLE ."} a
+                     WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.modid = a.modid)  AND u.id = a.userid AND a.modid = :moduleid
+                           $user
+                  GROUP BY u.id";
+
+
+    $results = $DB->get_records_sql($grade_sql, $params);
+    return $results;
+}
+
+/**
+ * Is a given scale used by the instance of wordcards?
+ *
+ * This function returns if a scale is being used by one wordcards
+ * if it has support for grading and scales. Commented code should be
+ * modified if necessary. See forum, glossary or journal modules
+ * as reference.
+ *
+ * @param int $moduleid ID of an instance of this module
+ * @return bool true if the scale is used by the given instance
+ */
+function wordcards_scale_used($moduleid, $scaleid) {
+    global $DB;
+
+    /** @example */
+    if ($scaleid and $DB->record_exists(constants::M_TABLE, array('id' => $moduleid, 'grade' => -$scaleid))) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Checks if scale is being used by any instance of module.
+ *
+ * This is used to find out if scale used anywhere.
+ *
+ * @param $scaleid int
+ * @return boolean true if the scale is used by any module instance
+ */
+function wordcards_scale_used_anywhere($scaleid) {
+    global $DB;
+
+    /** @example */
+    if ($scaleid and $DB->record_exists(constants::M_TABLE, array('grade' => -$scaleid))) {
+        return true;
+    } else {
+        return false;
+    }
+}
+

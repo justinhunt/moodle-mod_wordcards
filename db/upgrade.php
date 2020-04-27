@@ -218,5 +218,59 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2019120601, 'wordcards');
      }
 
+    if($oldversion<20200425001) {
+
+        $table = new xmldb_table('wordcards');
+        $fields= array();
+        $fields[] = new xmldb_field('grade', XMLDB_TYPE_INTEGER, '3', null, null, null, '0');
+        $fields[] = new xmldb_field('gradeoptions', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('mingrade', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        foreach($fields as $field){
+            // Conditionally launch add field skipglobal.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        $table = new xmldb_table('wordcards_progress');
+        $fields= array();
+        $fields[] = new xmldb_field('grade1', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('grade2', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('grade3', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('grade4', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('grade5', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('totalgrade', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        foreach($fields as $field){
+            // Conditionally launch add field skipglobal.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 20200425001, 'wordcards');
+    }
+
+    if($oldversion<20200425003) {
+
+
+
+        $table = new xmldb_table('wordcards_progress');
+        $fields= array();
+        $fields[] = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        foreach($fields as $field){
+            // Conditionally launch add field skipglobal.
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 20200425003, 'wordcards');
+    }
+
     return true;
 }

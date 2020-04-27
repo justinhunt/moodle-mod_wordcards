@@ -13,13 +13,14 @@
  * @author  Frédéric Massart - FMCorz.net
  */
 
+namespace mod_wordcards\output;
 
 use mod_wordcards\utils;
 use mod_wordcards\constants;
 
-class mod_wordcards_renderer extends plugin_renderer_base {
+class renderer extends \plugin_renderer_base {
 
-    public function definitions_page(mod_wordcards_module $mod) {
+    public function definitions_page(\mod_wordcards_module $mod) {
         global $PAGE, $OUTPUT,$USER;
 
         $definitions = $mod->get_terms();
@@ -62,7 +63,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
             'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_wordcards'),
-            'nexturl' => (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'state'=>mod_wordcards_module::STATE_STEP1]))->out(true),
+            'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'state'=>\mod_wordcards_module::STATE_STEP1]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'seenall' => count($definitions) == count($seen),
@@ -89,7 +90,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
         $defs = array();
         foreach ($definitions as $definition){
-            $def = new stdClass();
+            $def = new \stdClass();
             $def->image=$definition->image;
             $def->audio=$definition->audio;
             $def->alternates=$definition->alternates;
@@ -99,13 +100,13 @@ class mod_wordcards_renderer extends plugin_renderer_base {
             $def->definition =$definition->definition;
             $defs[]=$def;
         }
-        $defs_object = new stdClass();
+        $defs_object = new \stdClass();
         $defs_object->terms = $defs;
         return json_encode($defs_object);
     }
 
 
-    public function a4e_page(mod_wordcards_module $mod, $practicetype, $wordpool, $currentstep ) {
+    public function a4e_page(\mod_wordcards_module $mod, $practicetype, $wordpool, $currentstep ) {
         global $USER, $PAGE, $OUTPUT;
 
         //config
@@ -115,7 +116,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         list($state) = $mod->get_state();
 
         //if we are in review state, we use different words and the next page is a finish page
-        if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+        if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             $definitions = $mod->get_review_terms();
         }else{
             $definitions = $mod->get_learn_terms();
@@ -134,27 +135,27 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
 
     $nextstep = $mod->get_next_step($currentstep);
-    $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+    $nexturl =  (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
     $token = utils::fetch_token($config->apiuser, $config->apisecret);
 
         $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage,
                 'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl, 'region'=>$config->awsregion,
-                'token'=>$token,'owner'=>hash('md5',$USER->username));
+                'token'=>$token,'owner'=>hash('md5',$USER->username),'modid'=>$mod->get_id());
 
         $data = [];
         switch($practicetype){
-            case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
-            case mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/matchselect_page', $data);
                 break;
-            case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
-            case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
                 $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/matchtype_page', $data);
                 break;
-            case mod_wordcards_module::PRACTICETYPE_DICTATION:
-            case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
             default:
                 $this->page->requires->js_call_amd("mod_wordcards/dictation", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/dictation_page', $data);
@@ -163,7 +164,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         return $opts_html . $activity_html;
     }
 
-    public function finish_page(mod_wordcards_module $mod) {
+    public function finish_page(\mod_wordcards_module $mod) {
 
         $scattertimemsg = $mod->get_finishedstepmsg();
         //$scattertimemsg = str_replace('[[time]]', gmdate("i:s:00", $scattertime), $scattertimemsg);
@@ -183,7 +184,7 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
 
 
-    public function speechcards_page(mod_wordcards_module $mod, $wordpool, $currentstep){
+    public function speechcards_page(\mod_wordcards_module $mod, $wordpool, $currentstep){
         global $CFG,$USER;
 
         //get state
@@ -214,10 +215,10 @@ class mod_wordcards_renderer extends plugin_renderer_base {
 
         //next url
         $nextstep = $mod->get_next_step($currentstep);
-        $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+        $nexturl =  (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
 
         //if we are in review state, we use different words and the next page is a finish page
-        if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+        if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             $definitions = $mod->get_review_terms();
         }else{
             $definitions = $mod->get_learn_terms();
@@ -242,29 +243,43 @@ class mod_wordcards_renderer extends plugin_renderer_base {
         $opts['parent']=$CFG->wwwroot;
         $opts['owner']=hash('md5',$USER->username);
         $opts['appid']=constants::M_COMPONENT;
+        $opts['modid']= $mod->get_id();
         $opts['expiretime']=300;//max expire time is 300 seconds
 
         $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
+
+        //are we going to force streaning transcription from AWS only if its android
+        $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+        if(stripos($ua,'android') !== false) {
+            $hints = new \stdClass();
+            $hints->streamingtranscriber = 'aws';
+            $string_hints = base64_encode(json_encode($hints));
+        }else{
+            $string_hints ='';
+        }
+
+
 
         $data = [];
         $data['cloudpoodlltoken']=$token;
         $data['language']=$mod->get_mod()->ttslanguage;
         $data['wwwroot']=$CFG->wwwroot;
         $data['region']=$region;
+        $data['hints']=$string_hints;
         $data['owner']=hash('md5',$USER->username);
         $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
         return $opts_html . $speechcards;
 
     }
 
-    public function scatter_page(mod_wordcards_module $mod, $wordpool,$currentstep) {
+    public function scatter_page(\mod_wordcards_module $mod, $wordpool,$currentstep) {
         list($state) = $mod->get_state();
 
         $nextstep = $mod->get_next_step($currentstep);
-        $nexturl =  (new moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+        $nexturl =  (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
 
         //if we are in review state, we use different words and the next page is a finish page
-        if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+        if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             $definitions = $mod->get_review_terms();
         }else{
             $definitions = $mod->get_learn_terms();
@@ -285,8 +300,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
                 'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
                 'finishedstepmsg' => $mod->get_finishedstepmsg(),
                 'modid' => $mod->get_id(),
-                'isglobalcompleted' => $state == mod_wordcards_module::STATE_END,
-                'hascontinue' => $state != mod_wordcards_module::STATE_END,
+                'isglobalcompleted' => $state == \mod_wordcards_module::STATE_END,
+                'hascontinue' => $state != \mod_wordcards_module::STATE_END,
                 'nexturl' => $nexturl,
                 'isglobalscatter' => true
         ];
@@ -295,8 +310,8 @@ class mod_wordcards_renderer extends plugin_renderer_base {
     }
 
 
-    public function navigation(mod_wordcards_module $mod, $currentstate) {
-        $tabtree = mod_wordcards_helper::get_tabs($mod, $currentstate);
+    public function navigation(\mod_wordcards_module $mod, $currentstate) {
+        $tabtree = \mod_wordcards_helper::get_tabs($mod, $currentstate);
         if ($mod->can_manage()) {
             // Teachers see the tabs, as normal tabs.
             return $this->render($tabtree);

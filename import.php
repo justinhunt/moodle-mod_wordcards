@@ -85,7 +85,6 @@ if ($data = $form->get_data()) {
 
 echo $output->header();
 echo $output->heading($pagetitle);
-
 echo $output->navigation($mod, 'import');
 
 $form->display();

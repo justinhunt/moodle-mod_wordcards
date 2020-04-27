@@ -44,4 +44,12 @@ $functions = array(
             'ajax'        => true,
     ),
 
+    'mod_wordcards_report_step_grade' => array(
+            'classname'   => 'mod_wordcards_external',
+            'methodname'  => 'report_step_grade',
+            'description' => 'Reports the grade of a step',
+            'capabilities'=> 'mod/wordcards:view',
+            'type'        => 'write',
+            'ajax'        => true,
+    ),
 );

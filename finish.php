@@ -8,6 +8,9 @@
 
 require_once(__DIR__ . '/../../config.php');
 
+use mod_wordcards\utils;
+use mod_wordcards\constants;
+
 $cmid = required_param('id', PARAM_INT);
 $sesskey = required_param('sesskey', PARAM_RAW);
 
@@ -20,6 +23,8 @@ require_login($course, true, $cm);
 require_sesskey();
 $mod->require_view();
 $mod->resume_progress($currentstate);
+
+utils::update_finalgrade($mod->get_id());
 
 $pagetitle = get_string('activitycompleted', 'mod_wordcards');
 
