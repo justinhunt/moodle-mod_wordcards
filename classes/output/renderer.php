@@ -117,7 +117,7 @@ class renderer extends \plugin_renderer_base {
 
         //if we are in review state, we use different words and the next page is a finish page
         if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
-            $definitions = $mod->get_review_terms();
+            $definitions = $mod->get_review_terms($currentstep);
         }else{
             $definitions = $mod->get_learn_terms();
         }
@@ -219,7 +219,7 @@ class renderer extends \plugin_renderer_base {
 
         //if we are in review state, we use different words and the next page is a finish page
         if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
-            $definitions = $mod->get_review_terms();
+            $definitions = $mod->get_review_terms($currentstep);
         }else{
             $definitions = $mod->get_learn_terms();
 
@@ -276,7 +276,7 @@ class renderer extends \plugin_renderer_base {
 
         //if we are in review state, we use different words and the next page is a finish page
         if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
-            $definitions = $mod->get_review_terms();
+            $definitions = $mod->get_review_terms($currentstep);
         }else{
             $definitions = $mod->get_learn_terms();
         }

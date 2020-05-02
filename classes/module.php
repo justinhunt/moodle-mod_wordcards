@@ -99,9 +99,40 @@ class mod_wordcards_module {
         $DB->set_field('wordcards_terms', 'deleted', 1, ['modid' => $this->get_id(), 'id' => $termid]);
     }
 
+    public function fetch_step_termcount($step){
+        global $DB,$USER;
+        $termcount=0;
+        switch($step){
+            case self::STATE_STEP1:
+                $termcount=$this->mod->step1termcount;
+                break;
+            case self::STATE_STEP2:
+                $termcount=$this->mod->step2termcount;
+                break;
+            case self::STATE_STEP3:
+                $termcount=$this->mod->step3termcount;
+                break;
+            case self::STATE_STEP4:
+                $termcount=$this->mod->step4termcount;
+                break;
+            case self::STATE_STEP5:
+                $termcount=$this->mod->step5termcount;
+                break;
+            case self::STATE_END:
+            case self::STATE_TERMS:
+            default:
+                //do nothing
+                break;
+        }
+
+        return $termcount;
+    }
+
     public static function get_all_states() {
         return self::$states;
     }
+
+
 
     public function get_allowed_states() {
         list($state) = $this->get_state();
@@ -210,10 +241,11 @@ class mod_wordcards_module {
         return $this->insert_media_urls($selected_records);
     }
 
-    public function get_review_terms() {
+    public function get_review_terms($step) {
         global $DB, $USER;
 
-        $maxterms = $this->mod->step2termcount;
+        $maxterms = $this->fetch_step_termcount($step);
+        if($maxterms<1){$maxterms=4;}
         $from = 0;
         $limit = $maxterms + 5;
 

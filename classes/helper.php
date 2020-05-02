@@ -21,7 +21,7 @@ class mod_wordcards_helper {
         $cmid = $mod->get_cmid();
         $canmanage = $mod->can_manage();
         $inactives = array_diff(mod_wordcards_module::get_all_states(), $mod->get_allowed_states());
-        $reviewpoolempty = $mod->get_review_terms() ? false : true;
+        $reviewpoolempty = $mod->get_review_terms(mod_wordcards_module::STATE_STEP2) ? false : true;
 
         $tablabel = utils::fetch_activity_tablabel($mod->get_practicetype(mod_wordcards_module::STATE_STEP1));
         $tabicon = utils::fetch_activity_tabicon($mod->get_practicetype(mod_wordcards_module::STATE_STEP1));
