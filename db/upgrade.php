@@ -217,7 +217,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2019120601, 'wordcards');
      }
-
+/*
     if($oldversion<20200425001) {
 
         $table = new xmldb_table('wordcards');
@@ -252,6 +252,8 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 20200425001, 'wordcards');
     }
+*/
+/*
 
     if($oldversion<20200425003) {
 
@@ -271,6 +273,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 20200425003, 'wordcards');
     }
+*/
 
     return true;
 }
