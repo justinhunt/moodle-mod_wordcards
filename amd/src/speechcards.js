@@ -411,7 +411,7 @@ define([
       if (correct) {
         this.reportSuccess(app.terms[app.pointer - 1]['id']);
       } else {
-        this.reportFailure(app.terms[app.pointer - 1]['id'], -1);
+        this.reportFailure(app.terms[app.pointer - 1]['id'], 0);
       }
 
     },

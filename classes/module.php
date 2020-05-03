@@ -276,6 +276,8 @@ class mod_wordcards_module {
                    ";
             // This is the way to make it simili random, we extract a random subset.
             $from = rand(0, $DB->count_records_sql($countsql . $sql, $params) - $maxterms - 1);
+            if($from<0){$from=0;}
+
             $sql = $selectsql . $sql;
         } else {
             $sql = "SELECT t.*
