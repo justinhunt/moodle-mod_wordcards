@@ -49,18 +49,19 @@ class renderer extends \plugin_renderer_base {
         //attempt info
         $canattempt=$mod->can_attempt();
         $attempts = $mod->get_attempts();
+        $canmanage=$mod->can_manage();
         if($attempts){
             $attemptcount=count($attempts);
         }else{
             $attemptcount=0;
         }
         $maxattempts=$mod->get_mod()->maxattempts;
-        $isreattempt = $attemptcount>0 && $canattempt;
+        $isreattempt = $attemptcount>0 && $canattempt && !$canmanage;
         if($isreattempt){
             $nextaction='reattempt';
             $reattempt=1;
             $nextbuttontext=get_string('reattempt',constants::M_COMPONENT);
-        }elseif($attemptcount==0){
+        }elseif($attemptcount==0 || $canattempt){
             $nextaction='attempt';
             $reattempt=0;
             $nextbuttontext=get_string('continue',constants::M_COMPONENT);
