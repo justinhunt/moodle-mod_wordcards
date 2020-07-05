@@ -128,6 +128,9 @@ abstract class basereport {
             $endrecord = $startrecord + $paging->perpage - 1;
         }
         $reccount = 0;
+        if(!$records){
+            return $returndata;
+        }
         foreach ($records as $record) {
             $reccount++;
             if ($paging && ($reccount < $startrecord || $reccount > $endrecord)) {

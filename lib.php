@@ -32,6 +32,10 @@ function wordcards_supports($feature) {
             return true;
         case FEATURE_GRADE_OUTCOMES:
             return false;
+        case FEATURE_GROUPINGS:
+            return false;
+        case FEATURE_GROUPS:
+            return true;
         default:
             return false;
     }
@@ -113,7 +117,7 @@ function wordcards_get_completion_state($course, $cm, $userid, $type) {
 
     $mod = mod_wordcards_module::get_by_cmid($cm->id);
     if ($mod->is_completion_enabled()) {
-        return $mod->has_user_completed_activity($userid);
+        return $mod->has_user_completed_activity();
     }
 
     // Completion option is not enabled, we must return $type.

@@ -327,6 +327,52 @@ class mod_wordcards_module {
         return $this->insert_media_urls($selected_records);
     }
 
+    public function get_attempts() {
+        global $DB, $USER;
+
+        // Teachers are always considered done.
+        if ($this->can_manage()) {
+            return [self::STATE_END, null];
+        }
+
+        $records = $DB->get_records('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id]);
+        return $records;
+    }
+
+    public function get_latest_attempt(){
+        global $USER, $DB;
+        $records = $DB->get_records('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id],'timecreated DESC','*',0,1);
+        if(!$records){
+            return false;
+        }else{
+            return array_shift($records);
+        }
+    }
+
+    public function can_attempt() {
+        //unlimited attempts can attempt
+        if($this->mod->maxattempts==0){return true;}
+
+        // Teachers can attempt.
+        if($this->can_manage()){return true;}
+
+        // If teachers, we can attempt
+        if ($this->can_manage()) {return true;}
+
+        //if no attempts, we can attempt
+        $attempts=$this->get_attempts();
+        if(!$attempts){return true;}
+
+        //if we have fewer attempts than the max, we can attemopt
+        if(count($attempts)<$this->mod->maxattempts){return true;}
+
+        //if we have not completed the last attempt, we can attempt
+        if(!$this->has_user_completed_activity()){return true;}
+
+        //otherwise, no we can not attempt
+        return false;
+    }
+
     public function get_state() {
         global $DB, $USER;
 
@@ -335,11 +381,12 @@ class mod_wordcards_module {
             return [self::STATE_END, null];
         }
 
-        $record = $DB->get_record('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id]);
-        if (!$record) {
+        $record = $this->get_latest_attempt();
+        if(!$record){
             return [self::STATE_TERMS, null];
+        }else{
+            return [$record->state, json_decode($record->statedata)];
         }
-        return [$record->state, json_decode($record->statedata)];
     }
 
     public function get_terms($includedeleted = false) {
@@ -430,9 +477,8 @@ class mod_wordcards_module {
         return $DB->record_exists('wordcards_terms', ['modid' => $this->get_id()]);
     }
 
-    public function has_user_completed_activity($userid) {
-        global $DB;
-        $record = $DB->get_record('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $userid]);
+    public function has_user_completed_activity() {
+        $record = $this->get_latest_attempt();
         return $record && $record->state == self::STATE_END;
     }
 
@@ -527,11 +573,31 @@ class mod_wordcards_module {
         }
     }
 
+    //force a reattemot that will then start them off on step1 (it will bump them up from terms step)
+    public function create_reattempt() {
+        global $DB, $USER;
+
+        //only reattempt if we dont have a current attempt going
+        $latestattempt = $record = $this->get_latest_attempt();
+        if(!$latestattempt){return false;}
+        if($latestattempt->state != self::STATE_END){return false;}
+
+        $params = ['userid' => $USER->id, 'modid' => $this->get_id()];
+        $record = (object) $params;
+
+        $record->state = self::STATE_TERMS;
+        $record->statedata = '{}';
+        $record->timecreated = time();
+        $ret = $DB->insert_record('wordcards_progress', $record);
+        return $ret;
+
+    }
+
     protected function set_state($state, $statedata = null) {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'modid' => $this->get_id()];
-        if ($record = $DB->get_record('wordcards_progress', $params)) {
+        if ($record = $this->get_latest_attempt()) {
         } else {
             $record = (object) $params;
         }
@@ -597,11 +663,15 @@ class mod_wordcards_module {
     public function can_manage() {
         return  has_capability('mod/wordcards:addinstance', $this->context);
     }
-
     public function require_manage() {
         require_capability('mod/wordcards:addinstance', $this->context);
     }
-
+    public function can_viewreports() {
+        return  has_capability('mod/wordcards:viewreports', $this->context);
+    }
+    public function require_viewreports() {
+        require_capability('mod/wordcards:viewreports', $this->context);
+    }
     public function can_view() {
         return  has_capability('mod/wordcards:view', $this->context);
     }
@@ -648,7 +718,8 @@ class mod_wordcards_module {
                     break;
                 }
                 //check if we have words in the review pool, and if the currebt "next" activity is a "learn" or "review" one
-                $arewordstoreview = $this->are_there_words_to_review();
+                //we stopped skipping activities if the review pool empty, and began usng learn terms: because grading got hard
+                $arewordstoreview = true;//$this->are_there_words_to_review();
                 $nextpracticetype = $this->mod->{$thisstep};//'step1practice' or 'step2practice' db field
 
                 //if not practice type was specified move on

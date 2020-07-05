@@ -217,14 +217,12 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2019120601, 'wordcards');
      }
-/*
-    if($oldversion<20200425001) {
+
+    if($oldversion<2020050204) {
 
         $table = new xmldb_table('wordcards');
         $fields= array();
-        $fields[] = new xmldb_field('grade', XMLDB_TYPE_INTEGER, '3', null, null, null, '0');
-        $fields[] = new xmldb_field('gradeoptions', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-        $fields[] = new xmldb_field('mingrade', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('maxattempts', XMLDB_TYPE_INTEGER, '10', null, true, null, '0');
 
         foreach($fields as $field){
             // Conditionally launch add field skipglobal.
@@ -233,47 +231,23 @@ function xmldb_wordcards_upgrade($oldversion) {
             }
         }
 
-        $table = new xmldb_table('wordcards_progress');
-        $fields= array();
-        $fields[] = new xmldb_field('grade1', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-        $fields[] = new xmldb_field('grade2', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-        $fields[] = new xmldb_field('grade3', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-        $fields[] = new xmldb_field('grade4', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-        $fields[] = new xmldb_field('grade5', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-        $fields[] = new xmldb_field('totalgrade', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $table = new xmldb_table('progress');
+        $index = new xmldb_index('moduser');
+        $dbman->drop_index($table,$index);
+        $table->add_index('wc_idmoduser', XMLDB_INDEX_UNIQUE, array('id','modid','userid'));
 
-        foreach($fields as $field){
-            // Conditionally launch add field skipglobal.
-            if (!$dbman->field_exists($table, $field)) {
-                $dbman->add_field($table, $field);
-            }
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2020050204, 'wordcards');
+    }
+    if($oldversion<2020050205) {
+        $table = new xmldb_table('wordcards_progress');
+        $index = new xmldb_index('moduser', XMLDB_INDEX_UNIQUE, array('modid', 'userid'));
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
         }
 
         // Wordcards savepoint reached.
-        upgrade_mod_savepoint(true, 20200425001, 'wordcards');
+        upgrade_mod_savepoint(true, 2020050205, 'wordcards');
     }
-*/
-/*
-
-    if($oldversion<20200425003) {
-
-
-
-        $table = new xmldb_table('wordcards_progress');
-        $fields= array();
-        $fields[] = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
-
-        foreach($fields as $field){
-            // Conditionally launch add field skipglobal.
-            if (!$dbman->field_exists($table, $field)) {
-                $dbman->add_field($table, $field);
-            }
-        }
-
-        // Wordcards savepoint reached.
-        upgrade_mod_savepoint(true, 20200425003, 'wordcards');
-    }
-*/
-
     return true;
 }

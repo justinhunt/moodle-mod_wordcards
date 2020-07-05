@@ -1,3 +1,8 @@
+1.2.0 Build( 2020070500)
+-Added attempts layer, so user can re-attempt, and grades taken from latest attempt
+-Added support for groups
+-Capabilities tidy up
+
 1.1.9 (Build 2020050200)
 -fixed up version number trouble
 -set proper defaults on fields

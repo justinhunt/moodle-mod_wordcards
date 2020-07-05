@@ -76,8 +76,12 @@ class utils{
     public static function update_stepgrade($modid,$correct){
         global $DB,$USER;
         $mod = \mod_wordcards_module::get_by_modid($modid);
-        $record = $DB->get_record(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id]);
+        $records = $DB->get_records(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id],'timecreated DESC');
+
+        if (!$records) {return false;}
+        $record = array_shift($records);
         if (!$record) {return false;}
+
         $field=false;
         $termcount=0;
         switch($record->state){
@@ -109,7 +113,7 @@ class utils{
         }
         if($field && $termcount && ($termcount>=$correct)){
             $grade = ROUND(($correct / $termcount) * 100, 0);
-            $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade,array('userid'=>$USER->id,'modid'=>$modid));
+            $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade,array('id'=>$record->id));
         }
         return true;
     }
@@ -118,9 +122,12 @@ class utils{
         global $DB,$USER;
 
         $mod = \mod_wordcards_module::get_by_modid($modid);
-        $record = $DB->get_record(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id]);
+        $records = $DB->get_records(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id],'timecreated DESC');
+
+        if (!$records) {return false;}
+        $record = array_shift($records);
         if (!$record) {return false;}
-        //one attempt and thats all for grading sorry
+
         if ($record->totalgrade > 0 ) {return true;}
         $states = array(\mod_wordcards_module::STATE_STEP1,\mod_wordcards_module::STATE_STEP2,\mod_wordcards_module::STATE_STEP3,
                 \mod_wordcards_module::STATE_STEP4,\mod_wordcards_module::STATE_STEP5);
@@ -163,7 +170,7 @@ class utils{
         }
         if($totalsteps>0) {
             $grade = ROUND(($totalgrade / $totalsteps), 0);
-            $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade,array('userid'=>$USER->id,'modid'=>$modid));
+            $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade,array('id'=>$record->id));
             wordcards_update_grades($mod->get_mod(), $USER->id, false);
         }
         return true;

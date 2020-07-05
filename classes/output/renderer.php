@@ -46,6 +46,30 @@ class renderer extends \plugin_renderer_base {
             $definitions[$s->termid]->seen = true;
         }
 
+        //attempt info
+        $canattempt=$mod->can_attempt();
+        $attempts = $mod->get_attempts();
+        if($attempts){
+            $attemptcount=count($attempts);
+        }else{
+            $attemptcount=0;
+        }
+        $maxattempts=$mod->get_mod()->maxattempts;
+        $isreattempt = $attemptcount>0 && $canattempt;
+        if($isreattempt){
+            $nextaction='reattempt';
+            $reattempt=1;
+            $nextbuttontext=get_string('reattempt',constants::M_COMPONENT);
+        }elseif($attemptcount==0){
+            $nextaction='attempt';
+            $reattempt=0;
+            $nextbuttontext=get_string('continue',constants::M_COMPONENT);
+        }else{
+            $nextaction='none';
+            $reattempt=0;
+            $nextbuttontext=get_string('continue',constants::M_COMPONENT);
+        }
+
 
         //config
         $config = get_config('mod_wordcards');
@@ -55,6 +79,12 @@ class renderer extends \plugin_renderer_base {
         $data = [
             'uniqid'=> \html_writer::random_id('wordcards'),
             'canmanage' => $mod->can_manage(),
+            'canattempt'=>$canattempt,
+            'attemptcount'=>$attemptcount,
+            'maxattempts'=>$maxattempts,
+            'nextaction'=>$nextaction,
+            'nextbuttontext'=>$nextbuttontext,
+            'isreattempt'=>$isreattempt,
             'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
             'gotit' => get_string('gotit', 'mod_wordcards'),
@@ -63,7 +93,7 @@ class renderer extends \plugin_renderer_base {
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
             'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_wordcards'),
-            'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'state'=>\mod_wordcards_module::STATE_STEP1]))->out(true),
+            'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'state'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'seenall' => count($definitions) == count($seen),
@@ -115,7 +145,7 @@ class renderer extends \plugin_renderer_base {
         //get state
         list($state) = $mod->get_state();
 
-        //if we are in review state, we use different words and the next page is a finish page
+        //if we are in review state, we use different words
         if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             $definitions = $mod->get_review_terms($currentstep);
         }else{

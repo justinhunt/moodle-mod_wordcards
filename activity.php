@@ -14,6 +14,9 @@ $nextstep = optional_param('nextstep',mod_wordcards_module::STATE_STEP1, PARAM_T
 //the most recent step they came from
 $oldstep = optional_param('oldstep',mod_wordcards_module::STATE_TERMS, PARAM_TEXT);
 
+//request a reattempt
+$reattempt = optional_param('reattempt',0, PARAM_INT);
+
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
@@ -21,6 +24,12 @@ $cm = $mod->get_cm();
 $PAGE->set_url('/mod/wordcards/activity.php', ['id' => $cmid,'oldstep'=>$oldstep, 'nextstep'=>$nextstep]);
 require_login($course, true, $cm);
 $mod->require_view();
+
+//create a new attempt and set it to STATE_TERMS (which should be bumped up to STATE_STEP1 shortly after)
+if($mod->can_attempt() && $reattempt){
+    $mod->create_reattempt();
+}
+
 
 //we use the suggested step if they are finished or a teacher
 //otherwsie we use their currentstate (the step they are up to)
@@ -49,8 +58,20 @@ if($currentstep==mod_wordcards_module::STATE_TERMS) {
     redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
 }
 
+//get our practicetype an wordpool
 $practicetype = $mod->get_practicetype($currentstep);
 $wordpool = $mod->get_wordpool($currentstep);
+
+//if its  review type and we have no review words, we just use a learn pool,
+//we used to skip such tabs, but grading would get messed up
+if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
+    $reviewpoolempty = !$mod->are_there_words_to_review();//$mod->get_review_terms(mod_wordcards_module::STATE_STEP2) ? false : true;
+    if($reviewpoolempty){
+        $wordpool=mod_wordcards_module::WORDPOOL_LEARN;
+    };
+}
+
+//depending on wordpool set page title
 if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
     $pagetitle = get_string('reviewactivity', 'mod_wordcards');
 }else{

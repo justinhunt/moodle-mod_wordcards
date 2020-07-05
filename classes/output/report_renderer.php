@@ -14,27 +14,22 @@ class report_renderer extends \plugin_renderer_base {
 
     public function render_reportmenu($moduleinstance, $cm) {
         $reports = [];
-/*
-        $basic = new \single_button(
+
+        $grades = new \single_button(
                 new \moodle_url(constants::M_URL . '/reports.php',
-                        array('report' => 'basic', 'id' => $cm->id, 'n' => $moduleinstance->id)),
-                get_string('basicreport', constants::M_COMPONENT), 'get');
-        $reports[]=$this->render($basic);
-*/
+                        array('report' => 'grades', 'id' => $cm->id, 'n' => $moduleinstance->id)),
+                get_string('gradesreport', constants::M_COMPONENT), 'get');
+        $reports[]=$this->render($grades);
+
         $attempts = new \single_button(
                 new \moodle_url(constants::M_URL . '/reports.php',
                         array('report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id)),
                 get_string('attemptsreport', constants::M_COMPONENT), 'get');
         $reports[]=$this->render($attempts);
 
-/*
-        $attemptssummary = new \single_button(
-                new \moodle_url(constants::M_URL . '/reports.php',
-                        array('report' => 'attemptssummary', 'id' => $cm->id, 'n' => $moduleinstance->id)),
-                get_string('attemptssummaryreport', constants::M_COMPONENT), 'get');
-        $reports[]=$this->render($attemptssummary);
 
-*/
+
+
 
         $ret = \html_writer::div(implode('<br />',$reports), constants::M_CLASS . '_listbuttons');
 
@@ -158,7 +153,7 @@ class report_renderer extends \plugin_renderer_base {
         // print's a popup link to your custom page
         $link = new \moodle_url(constants::M_URL . '/reports.php',
                 array('report' => 'menu', 'id' => $cm->id, 'n' => $moduleinstance->id));
-        $ret = \html_writer::link($link, get_string('returntoreports', constants::M_COMPONENT));
+        $ret = \html_writer::link($link, get_string('returntoreports', constants::M_COMPONENT),array('class'=>'btn btn-secondary'));
         $ret .= $this->render_exportbuttons_html($cm, $formdata, $showreport);
         return $ret;
     }

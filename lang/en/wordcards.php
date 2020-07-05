@@ -207,20 +207,36 @@ $string['tabreports'] = "Reports";
 $string['reports'] = "Reports";
 $string['deleteattemptconfirm'] = "Really delete this attempt?";
 $string['delete'] = "Delete";
-$string['attemptsreport'] = "Attempts Report";
-$string['attemptsheading'] = "Attempts Report";
+$string['attemptsreport'] = "All Attempts Report";
+$string['attemptsheading'] = "All Attempts Report";
 $string['basicheading'] = "Basic Report";
 $string['id'] = "ID";
 $string['name'] = "Name";
 $string['username'] = "Username";
 $string['grade'] = "Grade";
-$string['grade_p'] = "Grade(%)";
+$string['grade_p'] = "Total Grade(%)";
 $string['timecreated'] = "Created";
 $string['deletenow'] = "Delete";
 
 $string['returntoreports'] = "Return to Reports";
 $string['exportexcel'] = "Export to Excel";
 $string['nodataavailable'] = "No  data available";
+
+$string['maxattempts'] = "Maximum Attempts";
+$string['unlimited'] = "Unlimited";
+
+//grades report
+$string['grades'] = "Grades";
+$string['userattemptsheading'] = "User Attempts Report";
+$string['gradesheading'] = "Grades Report";
+$string['gradesreport'] = "Grades Report";
+$string['grade1_p'] = "Step1(%)";
+$string['grade2_p'] = "Step2(%)";
+$string['grade3_p'] = "Step3(%)";
+$string['grade4_p'] = "Step4(%)";
+$string['grade5_p'] = "Step5(%)";
+$string['attempts'] = "Attempts";
+$string['reportsmenutop']="Choose from the reports available below. You can export the data to CSV using the button on the lower right of the report when displayed.";
 
 
 // Paul's edits
@@ -229,3 +245,7 @@ $string['try_again'] = "Try again";
 $string['next_step'] = "Next";
 $string['done'] = 'Next';
 $string['skip'] = 'Skip';
+$string['reattempt'] = 'Try Again';
+$string['continue'] = 'Continue';
+$string['reattempttitle'] = 'Really Try Again?';
+$string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';

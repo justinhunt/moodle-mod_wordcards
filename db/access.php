@@ -21,6 +21,7 @@ $capabilities = [
         ]
     ],
 
+
     'mod/wordcards:addinstance' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
@@ -29,6 +30,7 @@ $capabilities = [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ],
+        'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
 
     'mod/wordcards:manageattempts' => [
@@ -40,6 +42,7 @@ $capabilities = [
                     'editingteacher' => CAP_ALLOW,
                     'manager' => CAP_ALLOW
             ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
 
     'mod/wordcards:viewreports' => [
@@ -51,6 +54,7 @@ $capabilities = [
                     'editingteacher' => CAP_ALLOW,
                     'manager' => CAP_ALLOW
             ],
+            'clonepermissionsfrom' => 'moodle/grade:viewall'
     ]
 
 ];

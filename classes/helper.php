@@ -20,8 +20,8 @@ class mod_wordcards_helper {
     public static function get_tabs(mod_wordcards_module $mod, $current) {
         $cmid = $mod->get_cmid();
         $canmanage = $mod->can_manage();
+        $canviewreports = $mod->can_viewreports();
         $inactives = array_diff(mod_wordcards_module::get_all_states(), $mod->get_allowed_states());
-        $reviewpoolempty = $mod->get_review_terms(mod_wordcards_module::STATE_STEP2) ? false : true;
 
         $tablabel = utils::fetch_activity_tablabel($mod->get_practicetype(mod_wordcards_module::STATE_STEP1));
         $tabicon = utils::fetch_activity_tabicon($mod->get_practicetype(mod_wordcards_module::STATE_STEP1));
@@ -37,61 +37,55 @@ class mod_wordcards_helper {
 
         if($mod->get_mod()-> {mod_wordcards_module::STATE_STEP2} != mod_wordcards_module::PRACTICETYPE_NONE){
             $practicetype =$mod->get_practicetype(mod_wordcards_module::STATE_STEP2);
-            if(!(utils::is_review_activity($practicetype) && $reviewpoolempty)){
-
-                $tablabel = utils::fetch_activity_tablabel($practicetype);
-                $tabicon = utils::fetch_activity_tabicon($practicetype);
-                $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP2,
-                        new moodle_url('/mod/wordcards/activity.php',
-                                ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP2]),
-                        $tablabel, $tabicon, true);
-            }
+            $tablabel = utils::fetch_activity_tablabel($practicetype);
+            $tabicon = utils::fetch_activity_tabicon($practicetype);
+            $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP2,
+                    new moodle_url('/mod/wordcards/activity.php',
+                            ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP2]),
+                    $tablabel, $tabicon, true);
         }
 
         if($mod->get_mod()->{mod_wordcards_module::STATE_STEP3} != mod_wordcards_module::PRACTICETYPE_NONE) {
             $practicetype =$mod->get_practicetype(mod_wordcards_module::STATE_STEP3);
-            if(!(utils::is_review_activity($practicetype) && $reviewpoolempty)) {
-                $tablabel = utils::fetch_activity_tablabel($practicetype);
-                $tabicon = utils::fetch_activity_tabicon($practicetype);
-                $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP3,
-                        new moodle_url('/mod/wordcards/activity.php',
-                                ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP3]),
-                        $tablabel, $tabicon, true);
-            }
+            $tablabel = utils::fetch_activity_tablabel($practicetype);
+            $tabicon = utils::fetch_activity_tabicon($practicetype);
+            $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP3,
+                    new moodle_url('/mod/wordcards/activity.php',
+                            ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP3]),
+                    $tablabel, $tabicon, true);
+
         }
 
 
         if($mod->get_mod()->{mod_wordcards_module::STATE_STEP4} != mod_wordcards_module::PRACTICETYPE_NONE) {
             $practicetype =$mod->get_practicetype(mod_wordcards_module::STATE_STEP4);
-            if(!(utils::is_review_activity($practicetype) && $reviewpoolempty)) {
-                $tablabel = utils::fetch_activity_tablabel($practicetype);
-                $tabicon = utils::fetch_activity_tabicon($practicetype);
-                $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP4,
-                        new moodle_url('/mod/wordcards/activity.php',
-                                ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP4]),
-                        $tablabel, $tabicon, true);
-            }
+            $tablabel = utils::fetch_activity_tablabel($practicetype);
+            $tabicon = utils::fetch_activity_tabicon($practicetype);
+            $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP4,
+                    new moodle_url('/mod/wordcards/activity.php',
+                            ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP4]),
+                    $tablabel, $tabicon, true);
         }
 
         if($mod->get_mod()->{mod_wordcards_module::STATE_STEP5} != mod_wordcards_module::PRACTICETYPE_NONE) {
             $practicetype =$mod->get_practicetype(mod_wordcards_module::STATE_STEP5);
-            if(!(utils::is_review_activity($practicetype) && $reviewpoolempty)) {
-                $tablabel = utils::fetch_activity_tablabel($practicetype);
-                $tabicon = utils::fetch_activity_tabicon($practicetype);
-                $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP5,
-                        new moodle_url('/mod/wordcards/activity.php',
-                                ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP5]),
-                        $tablabel, $tabicon, true);
-            }
+            $tablabel = utils::fetch_activity_tablabel($practicetype);
+            $tabicon = utils::fetch_activity_tabicon($practicetype);
+            $tabs[] = new tabobject(mod_wordcards_module::STATE_STEP5,
+                    new moodle_url('/mod/wordcards/activity.php',
+                            ['id' => $cmid, 'nextstep' => mod_wordcards_module::STATE_STEP5]),
+                    $tablabel, $tabicon, true);
+
         }
 
 
-        if ($canmanage) {
 
+        if($canviewreports){
             $tabs[] = new tabobject('reports',
                     new moodle_url('/mod/wordcards/reports.php', ['id' => $cmid]),
                     get_string('tabreports', constants::M_COMPONENT), '', true);
-
+        }
+        if ($canmanage) {
             $tabs[] = new tabobject('setup',
                 new moodle_url('/mod/wordcards/setup.php', ['id' => $cmid]),
                 get_string('tabsetup', constants::M_COMPONENT), '', true);

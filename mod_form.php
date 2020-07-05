@@ -69,6 +69,11 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addElement('select', 'step5termcount', get_string('step5termcount', 'mod_wordcards'), $termcount_options, 4);
         $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',mod_wordcards_module::PRACTICETYPE_NONE);
 
+        //Attempts
+        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
+                1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',);
+        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
+
 
         $mform->addElement('hidden', 'skipreview',0);
         $mform->setType('skipreview',PARAM_INT);

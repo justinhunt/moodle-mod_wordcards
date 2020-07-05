@@ -104,6 +104,7 @@ switch ($showreport) {
         $pagetitle =get_string('reports', constants::M_COMPONENT);
         echo $renderer->heading($pagetitle);
         echo $renderer->navigation($wordcardsmodule , 'reports');
+        echo get_string('reportsmenutop', constants::M_COMPONENT);
         echo $reportrenderer->render_reportmenu($moduleinstance, $cm);
         // Finish the page
         echo $renderer->footer();
@@ -118,6 +119,26 @@ switch ($showreport) {
 
     case 'attempts':
         $report = new \mod_wordcards\report\attempts();
+        $formdata = new stdClass();
+
+        $formdata->modid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
+
+    case 'userattempts':
+        if (!groups_user_groups_visible($course, $userid, $cm)) {
+            throw new moodle_exception('nopermissiontoshow');
+        }
+        $report = new \mod_wordcards\report\userattempts();
+        $formdata = new stdClass();
+        $formdata->modid = $moduleinstance->id;
+        $formdata->userid = $userid;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
+
+
+    case 'grades':
+        $report = new \mod_wordcards\report\grades();
         $formdata = new stdClass();
         $formdata->modid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;

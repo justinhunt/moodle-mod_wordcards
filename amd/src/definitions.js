@@ -1,9 +1,17 @@
-define(['jquery', 'core/ajax', 'core/notification', 'mod_wordcards/a4e'], function($, Ajax, Notification, a4e) {
+define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/str','core/modal_events', 'mod_wordcards/a4e'],
+    function($, Ajax, Notification,ModalFactory, str, ModalEvents, a4e) {
   "use strict"; // jshint ;_;
 
   return {
 
+    strings: {},
+
     init: function(opts) {
+
+        var that = this;
+
+        //init strings
+        this.init_strings();
 
         //pick up opts from html
         var theid = '#' + opts['widgetid'];
@@ -21,7 +29,8 @@ define(['jquery', 'core/ajax', 'core/notification', 'mod_wordcards/a4e'], functi
       var container = $('#definitions-page-' + opts['widgetid']),
         modid = props.modid,
         canmanage = props.canmanage,
-        btn = container.find('.continue-button');
+        canattempt = props.canattempt,
+        btn = container.find('.definitions-next');
 
        //set up audio
        a4e.register_events();
@@ -38,7 +47,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'mod_wordcards/a4e'], functi
           termId = termNode.data('termid');
 
         // TODO Ajax.
-        termNode.addClass('term-loading')
+        termNode.addClass('term-loading');
         Ajax.call([{
             'methodname': 'mod_wordcards_mark_as_seen',
             'args': {
@@ -66,9 +75,47 @@ define(['jquery', 'core/ajax', 'core/notification', 'mod_wordcards/a4e'], functi
 
       btn.click(function(e) {
         e.preventDefault();
-        location.href = $(this).data('href');
+        var buttonhref= $(this).data('href');
+
+        //f its not a reattempt ... proceed
+        if($(this).data('action')!=='reattempt') {
+            window.location.href = buttonhref;
+            return;
+        }
+
+        //if its a reattempt, confirm and proceed
+          ModalFactory.create({
+              type: ModalFactory.types.SAVE_CANCEL,
+              title: that.strings.reattempttitle,
+              body: that.strings.reattemptbody
+          })
+          .then(function(modal) {
+              modal.setSaveButtonText(that.strings.reattempt);
+              var root = modal.getRoot();
+              root.on(ModalEvents.save, function() {
+                  window.location.href = buttonhref;
+              });
+              modal.show();
+          });
+
       });
 
+    },
+
+    init_strings: function(){
+        var that = this;
+        // set up strings
+        str.get_strings([
+            {"key": "reattempttitle",       "component": 'mod_wordcards'},
+            {"key": "reattemptbody",           "component": 'mod_wordcards'},
+            {"key": "reattempt",           "component": 'mod_wordcards'}
+
+        ]).done(function(s) {
+            var i = 0;
+            that.strings.reattempttitle = s[i++];
+            that.strings.reattemptbody = s[i++];
+            that.strings.reattempt = s[i++];
+        });
     }
 
   }

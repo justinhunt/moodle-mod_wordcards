@@ -48,13 +48,6 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/wordcards:manageattempts', $context);
 
-//set up the page object
-/*
-$PAGE->set_title(format_string($moduleinstance->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
-*/
 
 //is the attempt if OK?
 if ($action == 'delete' && $attemptid > 0) {
@@ -66,7 +59,7 @@ if ($action == 'delete' && $attemptid > 0) {
     $edit = false;
 }
 
-//we always head back to the readaloud attempts page
+//we always head back to the reports page
 switch ($source) {
     case 'attempts':
     default:
@@ -80,7 +73,12 @@ switch ($action) {
     /////// Delete attempt NOW////////
     case 'delete':
         require_sesskey();
-        if ($DB->delete_records(constants::M_ATTEMPTSTABLE, array('id' => $attemptid))) {
+
+        // Check user has group access.
+        $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE, array('id' => $attemptid, 'modid' => $cm->instance), '*', MUST_EXIST);
+        if (!groups_user_groups_visible($course, $attempt->userid, $cm)) {
+            print_error("You do not have permssion to delete this user");
+        } else if ($DB->delete_records(constants::M_ATTEMPTSTABLE, array('id' => $attemptid))) {
             if($attempt){
                 wordcards_update_grades($moduleinstance, $attempt->userid, true);
             }
@@ -88,14 +86,26 @@ switch ($action) {
             print_error("Could not delete attempt");
         }
 
-
         redirect($redirecturl);
         return;
+
 
     /////// Delete ALL attempts ////////
     case 'deleteall':
         require_sesskey();
-        if ($DB->delete_records(constants::M_ATTEMPTSTABLE, array('modid' => $moduleinstance->id))) {
+
+
+        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
+        $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
+        $result = false;
+
+        //if no groups, or can see all groups then the SQL is simple
+        if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
+            $result = $DB->delete_records(constants::M_ATTEMPTSTABLE, array('modid' => $moduleinstance->id));
+        }
+
+        if ($result) {
             wordcards_update_grades($moduleinstance, 0, true);
         }else{
             print_error("Could not delete attempts (all)");

@@ -13,10 +13,10 @@ namespace mod_wordcards\report;
 use \mod_wordcards\constants;
 use \mod_wordcards\utils;
 
-class attempts extends basereport {
+class grades extends basereport {
 
-    protected $report = "attempts";
-    protected $fields = array('id', 'username', 'grade_p','timecreated', 'deletenow');
+    protected $report = "grades";
+    protected $fields = array('id', 'username','attempts','grade1_p','grade2_p','grade3_p','grade4_p','grade5_p','grade_p','timecreated', 'deletenow');
     protected $headingdata = null;
     protected $qcache = array();
     protected $ucache = array();
@@ -31,6 +31,37 @@ class attempts extends basereport {
             case 'username':
                 $user = $this->fetch_cache('user', $record->userid);
                 $ret = fullname($user);
+                break;
+
+            case 'attempts':
+                if ($withlinks) {
+                    $url = new \moodle_url(constants::M_URL . '/reports.php',
+                            array('report' => 'userattempts', 'n' => $record->modid, 'userid'=>$record->userid));
+                    $ret = "<a href='" . $url->out() . "'>". $record->attempts . "</a>" ;
+                } else {
+                    $ret =  $record->attempts;
+                }
+
+                break;
+
+            case 'grade1_p':
+                $ret = $record->grade1;
+                break;
+
+            case 'grade2_p':
+                $ret = $record->grade2;
+                break;
+
+            case 'grade3_p':
+                $ret = $record->grade3;
+                break;
+
+            case 'grade4_p':
+                $ret = $record->grade4;
+                break;
+
+            case 'grade5_p':
+                $ret = $record->grade5;
                 break;
 
             case 'grade_p':
@@ -70,12 +101,13 @@ class attempts extends basereport {
         if (!$record) {
             return $ret;
         }
-        return get_string('attemptsheading', constants::M_COMPONENT);
+        //$ec = $this->fetch_cache(constants::M_TABLE,$record->englishcentralid);
+        return get_string('gradesheading', constants::M_COMPONENT);
 
     }
 
     public function process_raw_data($formdata) {
-        global $DB, $USER;
+        global $DB,$USER;
 
         //heading data
         $this->headingdata = new \stdClass();
@@ -90,11 +122,12 @@ class attempts extends basereport {
         $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
         $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
 
-        //if no groups or can see all groups, simple SQL
+
+        //if no groups, or can see all groups then the SQL is simple
         if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
             $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE, array('modid' => $formdata->modid), 'timecreated DESC');
 
-        //if need to partition to groups, SQL for groups
+         //if need to partition to groups, SQL for groups
         }else{
             $groups = groups_get_user_groups($course->id);
             if (!$groups || empty($groups[0])) {
@@ -103,22 +136,34 @@ class attempts extends basereport {
             list($groupswhere, $allparams) = $DB->get_in_or_equal(array_values($groups[0]));
 
             $allsql ="SELECT att.* FROM {".constants::M_ATTEMPTSTABLE ."} att " .
-                    "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
-                    "WHERE gm.groupid $groupswhere AND att.modid = ? " .
-                    "ORDER BY timecreated DESC";
+              "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
+              "WHERE gm.groupid $groupswhere AND att.modid = ? " .
+              "ORDER BY timecreated DESC";
             $allparams[]=$formdata->modid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }
 
+        //loop through data an attemptcount and latestattempts
+        $userattemptcount=[];
         if ($alldata) {
             foreach ($alldata as $thedata) {
-
-                $this->rawdata[] = $thedata;
+                if(array_key_exists($thedata->userid,$userattemptcount)){
+                    $userattemptcount[$thedata->userid]++;
+                    continue;
+                }else{
+                    $userattemptcount[$thedata->userid]=1;
+                    $this->rawdata[] = $thedata;
+                }
             }
-            $this->rawdata = $alldata;
         } else {
             $this->rawdata = $emptydata;
         }
+
+        //add attempt count
+        foreach ($this->rawdata as $thedata) {
+            $thedata->attempts=$userattemptcount[$thedata->userid];
+        }
+
         return true;
     }
 

@@ -13,10 +13,10 @@ namespace mod_wordcards\report;
 use \mod_wordcards\constants;
 use \mod_wordcards\utils;
 
-class attempts extends basereport {
+class userattempts extends basereport {
 
-    protected $report = "attempts";
-    protected $fields = array('id', 'username', 'grade_p','timecreated', 'deletenow');
+    protected $report = "userattempts";
+    protected $fields = array('id', 'username','grade1_p','grade2_p','grade3_p','grade4_p','grade5_p', 'grade_p','timecreated', 'deletenow');
     protected $headingdata = null;
     protected $qcache = array();
     protected $ucache = array();
@@ -31,6 +31,26 @@ class attempts extends basereport {
             case 'username':
                 $user = $this->fetch_cache('user', $record->userid);
                 $ret = fullname($user);
+                break;
+
+            case 'grade1_p':
+                $ret = $record->grade1;
+                break;
+
+            case 'grade2_p':
+                $ret = $record->grade2;
+                break;
+
+            case 'grade3_p':
+                $ret = $record->grade3;
+                break;
+
+            case 'grade4_p':
+                $ret = $record->grade4;
+                break;
+
+            case 'grade5_p':
+                $ret = $record->grade5;
                 break;
 
             case 'grade_p':
@@ -70,45 +90,18 @@ class attempts extends basereport {
         if (!$record) {
             return $ret;
         }
-        return get_string('attemptsheading', constants::M_COMPONENT);
-
+        return get_string('userattemptsheading', constants::M_COMPONENT);
     }
 
     public function process_raw_data($formdata) {
-        global $DB, $USER;
+        global $DB;
 
         //heading data
         $this->headingdata = new \stdClass();
         $emptydata = array();
 
-        //groupsmode
-        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $formdata->modid), '*', MUST_EXIST);
-        $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-        $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
-
-        $groupsmode = groups_get_activity_groupmode($cm,$course);
-        $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
-        $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
-
-        //if no groups or can see all groups, simple SQL
-        if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
-            $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE, array('modid' => $formdata->modid), 'timecreated DESC');
-
-        //if need to partition to groups, SQL for groups
-        }else{
-            $groups = groups_get_user_groups($course->id);
-            if (!$groups || empty($groups[0])) {
-                return false;
-            }
-            list($groupswhere, $allparams) = $DB->get_in_or_equal(array_values($groups[0]));
-
-            $allsql ="SELECT att.* FROM {".constants::M_ATTEMPTSTABLE ."} att " .
-                    "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
-                    "WHERE gm.groupid $groupswhere AND att.modid = ? " .
-                    "ORDER BY timecreated DESC";
-            $allparams[]=$formdata->modid;
-            $alldata = $DB->get_records_sql($allsql, $allparams);
-        }
+        //we would usually check for group access here, but its already been checked in reports.php
+        $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE, array('modid' => $formdata->modid, 'userid'=>$formdata->userid),'timecreated DESC');
 
         if ($alldata) {
             foreach ($alldata as $thedata) {

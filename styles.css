@@ -739,3 +739,11 @@
   border: 1px solid black;
   margin-bottom: 50px;
 }
+
+.mod_wordcards_actionbuttons {
+  text-align: right;
+}
+.mod_wordcards_listbuttons {
+  margin: 10px;
+  display: grid;
+}
