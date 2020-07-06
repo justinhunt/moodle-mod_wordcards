@@ -230,12 +230,7 @@ function xmldb_wordcards_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-
-        $table = new xmldb_table('progress');
-        $index = new xmldb_index('moduser');
-        $dbman->drop_index($table,$index);
-        $table->add_index('wc_idmoduser', XMLDB_INDEX_UNIQUE, array('id','modid','userid'));
-
+        
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2020050204, 'wordcards');
     }
