@@ -230,7 +230,7 @@ function xmldb_wordcards_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-        
+
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2020050204, 'wordcards');
     }

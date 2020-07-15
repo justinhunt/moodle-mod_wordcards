@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_wordcards\report;
+namespace mod_wordcards\local\report;
 
 // This file is part of Moodle - http://moodle.org/
 //

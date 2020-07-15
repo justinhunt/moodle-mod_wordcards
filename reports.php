@@ -111,14 +111,14 @@ switch ($showreport) {
         return;
 
     case 'basic':
-        $report = new \mod_wordcards\report\basic();
+        $report = new \mod_wordcards\local\report\basic();
         //formdata should only have simple values, not objects
         //later it gets turned into urls for the export buttons
         $formdata = new stdClass();
         break;
 
     case 'attempts':
-        $report = new \mod_wordcards\report\attempts();
+        $report = new \mod_wordcards\local\report\attempts();
         $formdata = new stdClass();
 
         $formdata->modid = $moduleinstance->id;
@@ -129,7 +129,7 @@ switch ($showreport) {
         if (!groups_user_groups_visible($course, $userid, $cm)) {
             throw new moodle_exception('nopermissiontoshow');
         }
-        $report = new \mod_wordcards\report\userattempts();
+        $report = new \mod_wordcards\local\report\userattempts();
         $formdata = new stdClass();
         $formdata->modid = $moduleinstance->id;
         $formdata->userid = $userid;
@@ -138,7 +138,7 @@ switch ($showreport) {
 
 
     case 'grades':
-        $report = new \mod_wordcards\report\grades();
+        $report = new \mod_wordcards\local\report\grades();
         $formdata = new stdClass();
         $formdata->modid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
