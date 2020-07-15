@@ -1,3 +1,8 @@
+1.2.1 (Build 2020071500)
+-Fixed an issue with upgrades from previous attempts
+-Added a Readme and thirdpartylibs.xml
+-Fixed an issue with an unnecessary dependency on mod_readaloud
+
 1.2.0 Build( 2020070500)
 -Added attempts layer, so user can re-attempt, and grades taken from latest attempt
 -Added support for groups
