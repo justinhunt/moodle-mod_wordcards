@@ -30,7 +30,7 @@ use \mod_wordcards\constants;
 use \mod_wordcards\utils;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n = optional_param('n', 0, PARAM_INT);  // readaloud instance ID
+$n = optional_param('n', 0, PARAM_INT);  // wordcards instance ID
 $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or html
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // user id
@@ -70,14 +70,8 @@ if ($paging->perpage == -1) {
 }
 
 // Trigger module viewed event.
-$event = \mod_readaloud\event\course_module_viewed::create(array(
-        'objectid' => $moduleinstance->id,
-        'context' => $modulecontext
-));
-$event->add_record_snapshot('course_modules', $cm);
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot(constants::M_MODNAME, $moduleinstance);
-$event->trigger();
+$mod = mod_wordcards_module::get_by_cmid($cm->id);
+$mod->register_module_viewed();
 
 /// Set up the page header
 $PAGE->set_title(format_string($moduleinstance->name));

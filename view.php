@@ -4,6 +4,7 @@
  *
  * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . '/../../config.php');
@@ -18,6 +19,9 @@ $currentstate = mod_wordcards_module::STATE_TERMS;
 require_login($course, true, $cm);
 $mod->require_view();
 $mod->resume_progress($currentstate);
+
+//trigger module viewed event
+$mod->register_module_viewed();
 
 $pagetitle = get_string('tabdefinitions', 'mod_wordcards');
 

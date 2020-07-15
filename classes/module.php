@@ -8,6 +8,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use \mod_wordcards\constants;
+
 /**
  * Module class.
  *
@@ -72,6 +74,18 @@ class mod_wordcards_module {
                    AND f.course = ?
                    AND t.deleted = 0";
         return $DB->record_exists_sql($sql, [$termid, $this->get_course()->id]);
+    }
+
+    public function register_module_viewed(){
+        // Trigger module viewed event.
+        $event = \mod_wordcards\event\course_module_viewed::create(array(
+                'objectid' => $this->mod->id,
+                'context' => $this->context
+        ));
+        $event->add_record_snapshot('course_modules', $this->cm);
+        $event->add_record_snapshot('course', $this->course);
+        $event->add_record_snapshot(constants::M_MODNAME, $this->mod);
+        $event->trigger();
     }
 
     public function delete() {

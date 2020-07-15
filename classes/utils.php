@@ -532,7 +532,7 @@ class utils{
         $params['text'] = urlencode($speaktext);
         $params['texttype'] = $texttype;
         $params['voice'] = $voice;
-        $params['appid'] = 'mod_readaloud';
+        $params['appid'] = 'mod_wordcards';
         $params['owner'] = hash('md5',$USER->username);
         $params['region'] = $region;
         $serverurl = 'https://cloud.poodll.com/webservice/rest/server.php';
