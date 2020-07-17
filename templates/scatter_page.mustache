@@ -4,7 +4,7 @@
         <div class="congrats">
           <div class="wordcards_congrats">{{{finishedstepmsg}}}</div>
           {{#hascontinue}}
-              <button data-href="{{{nexturl}}}" class="btn btn-primary continue-button">{{continue}}</button>
+              <button data-href="{{{nexturl}}}" class="btn btn-primary wordcards-continue-button">{{continue}}</button>
           {{/hascontinue}}
         </div>
     </div>
@@ -17,7 +17,7 @@
             modid = {{modid}},
             canmanage = {{canmanage}},
             cards = container.find('.wordcards'),
-            btn = container.find('.continue-button'),
+            btn = container.find('.wordcards-continue-button'),
             timer = new Timer();
 
         var inst = new Cards(cards, {{{definitionsjson}}});

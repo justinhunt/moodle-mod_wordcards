@@ -110,8 +110,8 @@ if ($data = $form->get_data()) {
 
 echo $output->header();
 echo $output->heading($pagetitle);
-
 echo $output->navigation($mod, 'setup');
+echo $output->box(get_string('setupinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
 
 $form->display();
 

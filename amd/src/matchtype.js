@@ -44,7 +44,7 @@ define([
 
     register_events: function() {
 
-      $('body').on('click', "#close-results", function() {
+      $('body').on('click', "#wordcards-close-results", function() {
 
         var total_time = app.timer.count;
         var url = app.nexturl.replace(/&amp;/g, '&') + "&localscattertime=" + total_time
@@ -52,11 +52,11 @@ define([
 
       });
 
-      $('body').on('click', "#try-again", function() {
+      $('body').on('click', "#wordcards-try-again", function() {
         location.reload();
       });
 
-      $('body').on('click', '#start-button', function() {
+      $('body').on('click', '#wordcards-start-button', function() {
         app.start();
       });
 
@@ -73,9 +73,9 @@ define([
       app.results = [];
       a4e.shuffle(app.terms);
       app.pointer = 0;
-      $("#vocab-list, #start-button").hide();
-      $("#gameboard").show();
-      $("#time-counter").text("00:00");
+      $("#wordcards-vocab-list, #wordcards-start-button").hide();
+      $("#wordcards-gameboard").show();
+      $("#wordcards-time-counter").text("00:00");
       app.timer = {
         interval: setInterval(function() {
           app.timer.update();
@@ -83,7 +83,7 @@ define([
         count: 0,
         update: function() {
           app.timer.count++;
-          $("#time-counter").text(a4e.pretty_print_secs(app.timer.count));
+          $("#wordcards-time-counter").text(a4e.pretty_print_secs(app.timer.count));
         }
       };
       app.next();
@@ -91,15 +91,15 @@ define([
     quit: function() {
       keyboard.clear();
       clearInterval(app.timer.interval);
-      $("#gameboard").hide();
-      $("#vocab-list, #start-button").show();
+      $("#wordcards-gameboard").hide();
+      $("#wordcards-vocab-list, #wordcards-start-button").show();
     },
 
     end: function() {
       keyboard.clear();
       clearInterval(app.timer.interval);
-      $("#gameboard, #start-button").hide();
-      $("#results").show();
+      $("#wordcards-gameboard, #wordcards-start-button").hide();
+      $("#wordcards-results").show();
 
       //template data
       var tdata = [];
@@ -138,10 +138,10 @@ define([
 
       a4e.progress_dots(app.results, app.terms);
       
-      $("#submitted").html("").removeClass("a4e-correct a4e-incorrect");
+      $("#wordcards-submitted").html("").removeClass("a4e-correct a4e-incorrect");
 
-      keyboard.create("input", app.terms[app.pointer].term, app.pointer, true, function(value) {
-        $("#submitted").html(app.terms[app.pointer].term);
+      keyboard.create("wordcards-input", app.terms[app.pointer].term, app.pointer, true, function(value) {
+        $("#wordcards-submitted").html(app.terms[app.pointer].term);
         keyboard.disable();
         app.check(value);
       });
@@ -151,7 +151,7 @@ define([
         code+="<img class='a4e-prompt-img' src='" + app.terms[app.pointer].image + "'>";
       }
       code+="<strong>" + app.terms[app.pointer].definition + "</strong>"
-      $("#question").html(code);
+      $("#wordcards-question").html(code);
 
     },
 
@@ -160,10 +160,10 @@ define([
       var points = 0;
       if (correct == true) {
         //createjs.Sound.play('correct');
-        $("#submitted").addClass("a4e-correct");
+        $("#wordcards-submitted").addClass("a4e-correct");
         points = 1;
       } else {
-        $("#submitted").addClass("a4e-incorrect");
+        $("#wordcards-submitted").addClass("a4e-incorrect");
         //createjs.Sound.play('incorrect');
       }
 

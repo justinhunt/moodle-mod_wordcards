@@ -68,7 +68,7 @@ define([
         code += '<i style="color:' + color + ';" class="fa fa-circle"></i>';
       });
 
-      $("#progress-dots").html(code);
+      $("#wordcards-progress-dots").html(code);
 
     },
 

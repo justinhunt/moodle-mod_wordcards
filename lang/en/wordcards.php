@@ -15,6 +15,7 @@ $string['completionwhenfinish'] = 'The student has finished the activity.';
 $string['congrats'] = 'Congratulations!';
 $string['congratsitsover'] = '<div  style="text-align: center;">You have completed this activity. Feel free to go back and practice more!</div>';
 $string['definition'] = 'Definition';
+$string['definition_help'] = 'Enter definition of the term(word/phrase) here. It should be short but still tell the student what the term means.';
 $string['definitions'] = 'Definitions';
 $string['deleteallentries'] = 'Delete all user attempts and stats (keep the terms/definitions)';
 $string['deleteterm'] = 'Delete term \'{$a}\'';
@@ -66,6 +67,7 @@ $string['tabdefinitions'] = 'Definitions';
 $string['tabsetup'] = 'Words Admin';
 $string['tabimport'] = 'Import';
 $string['term'] = 'Term';
+$string['term_help'] = 'Enter the word or phrase to be learned here.';
 $string['termadded'] = 'The term \'{$a}\' has been added.';
 $string['termdeleted'] = 'The term has been deleted.';
 $string['termnotseen'] = 'Term not seen';
@@ -157,10 +159,14 @@ $string['transcriber_googlecloud'] = 'Fast Transcription (< 60s only)';
 $string['enabletts_details'] = 'TTS is currently not implemented';
 $string['ttslanguage'] = 'Target Language';
 $string['ttsvoice'] = 'TTS Voice';
+$string['ttsvoice_help'] = 'These are the machine voices that will read your words when users press the listen icons or do dictation activity. TTS is not used if you have uploaded an audio file for the word. The voices are limited to those for the language and dialect specified in the \'target language\' setting for the activity.';
 $string['alternates'] = 'Acceptable mistranscribes';
+$string['alternates_help'] = 'Enter a comma separated list of acceptable speech recognition mistranscriptions here. eg For the word \'seventy\' , \'70\' and \'seven tea\' would be ok so you might enter <i>\'70, seven tea\'</i>. Only use this if recognition is failing for the term.';
 
 $string['audiofile'] = 'Audio file';
+$string['audiofile_help'] = 'Upload an audio file illustrating the pronunciation of the word/phrase. Ths will be used in place of machine voices in dication and when students use the audio player icons for the word.';
 $string['imagefile'] = 'Image file';
+$string['imagefile_help'] = 'Upload an image file to be displayed on the cards.';
 $string['starttest'] = 'Begin';
 $string['quit'] = 'Quit';
 $string['next'] = 'Next';
@@ -237,10 +243,6 @@ $string['grade4_p'] = "Step4(%)";
 $string['grade5_p'] = "Step5(%)";
 $string['attempts'] = "Attempts";
 $string['reportsmenutop']="Choose from the reports available below. You can export the data to CSV using the button on the lower right of the report when displayed.";
-
-
-// Paul's edits
-
 $string['try_again'] = "Try again";
 $string['next_step'] = "Next";
 $string['done'] = 'Next';
@@ -249,3 +251,5 @@ $string['reattempt'] = 'Try Again';
 $string['continue'] = 'Continue';
 $string['reattempttitle'] = 'Really Try Again?';
 $string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';
+$string['importinstructions']='You can import lists of words using the \'import data\' text area below. Each line should contain one term(word/phrase) and it\'s definition separated by a delimiter. You can choose a delimiter from the dropdown box below. Each line therefore should look something like this: <i>Hello | Bonjour</i>';
+$string['setupinstructions']='Enter words for the activity using the form below. You can view, edit and delete previously added words from the table at the bottom of the page. Only the term and definition are required.';

@@ -1,3 +1,7 @@
+1.2.2 (Build 2020071700)
+- fixed some poor ID and CSS declarations that were not scoped
+- added clearer instructions and help icons to form fields
+
 1.2.1 (Build 2020071500)
 -Fixed an issue with upgrades from previous attempts
 -Added a Readme and thirdpartylibs.xml

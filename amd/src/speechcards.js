@@ -53,12 +53,12 @@ define([
       this.register_events();
     },
     init_controls: function() {
-      app.controls.close_results = $("#close-results");
-      app.controls.results = $("#results");
-      app.controls.vocab_list = $("#vocab-list");
+      app.controls.close_results = $("#wordcards-close-results");
+      app.controls.results = $("#wordcards-results");
+      app.controls.vocab_list = $("#wordcards-vocab-list");
       app.controls.the_list = $("#speechcards_thelist");
-      app.controls.gameboard = $("#gameboard");
-      app.controls.time_counter = $("#time-counter");
+      app.controls.gameboard = $("#wordcards-gameboard");
+      app.controls.time_counter = $("#wordcards-time-counter");
       app.controls.prev_button = $(".wordcards-speechcards_prevbutton");
       app.controls.next_button = $(".wordcards-speechcards_nextbutton");
       app.controls.standalonepushrecorder = $(".speechcards_standalonerecorder");
@@ -79,7 +79,7 @@ define([
     },
 
     clearStarRating:function(){
-      $("#star-rating").html('· · ·');
+      $("#wordcards-star-rating").html('· · ·');
     },
     
     register_events: function() {
@@ -96,7 +96,7 @@ define([
 
       });
 
-      $('body').on('click', "#close-results", function() {
+      $('body').on('click', "#wordcards-close-results", function() {
 
         var total_time = app.timer.count;
         var url = app.nexturl.replace(/&amp;/g, '&') + "&localscattertime=" + total_time
@@ -104,11 +104,11 @@ define([
 
       });
 
-      $('body').on('click', "#try-again", function() {
+      $('body').on('click', "#wordcards-try-again", function() {
         location.reload();
       });
 
-      $('body').on('click', '#start-button', function() {
+      $('body').on('click', '#wordcards-start-button', function() {
         app.start();
       });
 
@@ -234,7 +234,7 @@ define([
             }
         });
         console.log(code);
-        $("#star-rating").html(code);
+        $("#wordcards-star-rating").html(code);
     },
 
     flagCorrectAndTransition: function(term){
@@ -325,8 +325,8 @@ define([
 
     do_end: function() {
       clearInterval(app.timer.interval);
-      $("#gameboard, #quit-button, #start-button").hide();
-      $("#results").show();
+      $("#wordcards-gameboard, #wordcards-quit-button, #wordcards-start-button").hide();
+      $("#wordcards-results").show();
 
       //template data
       var tdata = [];

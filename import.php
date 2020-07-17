@@ -6,6 +6,8 @@
  * @author  Justin Hunt - ishinekk.co.jp
  */
 
+use \mod_wordcards\constants;
+
 require_once(__DIR__ . '/../../config.php');
 
 $cmid = required_param('id', PARAM_INT);
@@ -86,6 +88,7 @@ if ($data = $form->get_data()) {
 echo $output->header();
 echo $output->heading($pagetitle);
 echo $output->navigation($mod, 'import');
+echo $output->box(get_string('importinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
 
 $form->display();
 /*
