@@ -637,11 +637,13 @@ class utils{
           case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
           case \mod_wordcards_module::PRACTICETYPE_DICTATION:
           case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+          case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
               return get_string('practice','mod_wordcards') ;
           case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
           case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
           case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
           case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+          case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
               return get_string('review','mod_wordcards');
 
       }
@@ -679,6 +681,10 @@ class utils{
             case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
                 return 'fa-headphones';
 
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+                return 'fa-headphones';
+
             case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
             case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
                 return 'fa-comment-o';
@@ -694,14 +700,16 @@ class utils{
               \mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('title_matchselect', 'mod_wordcards'),
               \mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('title_matchtype', 'mod_wordcards'),
               \mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('title_dictation', 'mod_wordcards'),
-              \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', 'mod_wordcards')
+              \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', 'mod_wordcards'),
+              \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE => get_string('title_listenchoose', 'mod_wordcards')
       ];
 
         $reviewoptions = [
             \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV => get_string('title_matchselect_rev', 'mod_wordcards'),
             \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV => get_string('title_matchtype_rev', 'mod_wordcards'),
             \mod_wordcards_module::PRACTICETYPE_DICTATION_REV => get_string('title_dictation_rev', 'mod_wordcards'),
-            \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV => get_string('title_speechcards_rev', 'mod_wordcards')
+            \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV => get_string('title_speechcards_rev', 'mod_wordcards'),
+            \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV => get_string('title_listenchoose_rev', 'mod_wordcards')
             ];
 
       if($wordpool===\mod_wordcards_module::WORDPOOL_LEARN){

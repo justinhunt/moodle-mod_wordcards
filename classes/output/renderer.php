@@ -185,6 +185,11 @@ class renderer extends \plugin_renderer_base {
                 $this->page->requires->js_call_amd("mod_wordcards/matchtype", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/matchtype_page', $data);
                 break;
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+                $this->page->requires->js_call_amd("mod_wordcards/listenchoose", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/listenchoose_page', $data);
+                break;
             case \mod_wordcards_module::PRACTICETYPE_DICTATION:
             case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
             default:

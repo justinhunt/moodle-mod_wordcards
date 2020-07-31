@@ -186,6 +186,7 @@ $string['title_matchtype'] = 'Type the Answer';
 $string['title_dictation'] = 'Listen and Type';
 $string['title_scatter'] = 'Match the Words';
 $string['title_speechcards'] = 'Say the Words';
+$string['title_listenchoose'] = 'Listen and Choose';
 
 $string['review'] = 'Review';
 $string['practice'] = 'Practice';
@@ -196,6 +197,7 @@ $string['title_matchtype_rev'] = 'Type the Answer (Review)';
 $string['title_dictation_rev'] = 'Listen and Type (Review)';
 $string['title_scatter_rev'] = 'Match the Words (Review)';
 $string['title_speechcards_rev'] = 'Say the Words (Review)';
+$string['title_listenchoose_rev'] = 'Listen and Choose (Review)';
 
 $string['title_vocablist'] = 'Get Ready';
 $string['instructions_matchselect'] = 'Tap the best match from the choices below for the highlighted word.';

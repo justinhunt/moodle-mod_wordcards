@@ -204,7 +204,7 @@ define([
       };
 
       //init cloudpoodll push recorder
-      cloudpoodll.init('speechcards_pushrecorder', theCallback);
+      cloudpoodll.init('wordcards-speechcards_pushrecorder', theCallback);
 
 
     },

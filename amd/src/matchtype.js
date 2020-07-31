@@ -17,6 +17,8 @@ define([
 
   var app = {
     dryRun: false,
+    distractors: [],
+
     init: function(props) {
 
       //pick up opts from html
@@ -67,6 +69,7 @@ define([
       app.terms = json.terms;
       app.has_images = json.has_images;
       a4e.list_vocab("#vocab-list-inner", app.terms);
+      app.distractors=app.terms_to_distractors(app.terms);
 
     },
     start: function() {
@@ -140,7 +143,7 @@ define([
       
       $("#wordcards-submitted").html("").removeClass("a4e-correct a4e-incorrect");
 
-      keyboard.create("wordcards-input", app.terms[app.pointer].term, app.pointer, true, function(value) {
+      keyboard.create("wordcards-input", app.terms[app.pointer].term, app.pointer, app.distractors, function(value) {
         $("#wordcards-submitted").html(app.terms[app.pointer].term);
         keyboard.disable();
         app.check(value);
@@ -198,7 +201,21 @@ define([
 
     },
 
-    reportFailure: function(term1id, term2id) {
+     terms_to_distractors: function(terms){
+          var distractors=[];
+          for(var i=0;i<terms.length; i++){
+              var term = terms[i].term;
+              $.each(term.split(''),function(i,l){
+                  if(distractors.indexOf(l)==-1){
+                      distractors.push(l);
+                  }
+              });
+
+          }
+          return distractors;
+      },
+
+      reportFailure: function(term1id, term2id) {
       if (this.dryRun) {
         return;
       }

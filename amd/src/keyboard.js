@@ -51,8 +51,14 @@ define(['jquery','core/templates'], function($,templates) {
             $("#chunk-typed-inner").text("");
             $("#chunk-input").addClass("chunk-input-disabled");
         },
-        create:function(target,string,id,show_dist,func){
-            var distractors=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+        create:function(target,string,id,langdistractors,func){
+            var qwertydistractors=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+            if(Array.isArray(langdistractors)&& langdistractors.length>3){
+                var distractors = langdistractors;
+            }else{
+                distractors = qwertydistractors;
+            }
+
             keyboard.string=string;
             keyboard.off();
             keyboard.letters=[];
@@ -63,9 +69,10 @@ define(['jquery','core/templates'], function($,templates) {
                 }
             });
             keyboard.shuffle(distractors);
-            if(show_dist){
-                keyboard.letters=keyboard.letters.concat(distractors.slice(0,3));
+            if(distractors.length>2) {
+                keyboard.letters = keyboard.letters.concat(distractors.slice(0, 3));
             }
+
             keyboard.letters.sort();
             var letters=[];
             $.each(keyboard.letters,function(i,letter){

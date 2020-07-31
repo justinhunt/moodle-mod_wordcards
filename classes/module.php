@@ -36,10 +36,12 @@ class mod_wordcards_module {
     const PRACTICETYPE_MATCHTYPE = 2;
     const PRACTICETYPE_DICTATION = 3;
     const PRACTICETYPE_SPEECHCARDS = 4;
+    const PRACTICETYPE_LISTENCHOOSE = 9;
     const PRACTICETYPE_MATCHSELECT_REV = 5;
     const PRACTICETYPE_MATCHTYPE_REV = 6;
     const PRACTICETYPE_DICTATION_REV = 7;
     const PRACTICETYPE_SPEECHCARDS_REV = 8;
+    const PRACTICETYPE_LISTENCHOOSE_REV = 10;
 
     protected static $states = [
         self::STATE_TERMS,
@@ -212,12 +214,14 @@ class mod_wordcards_module {
             case self::PRACTICETYPE_MATCHTYPE:
             case self::PRACTICETYPE_DICTATION:
             case self::PRACTICETYPE_SPEECHCARDS:
+            case self::PRACTICETYPE_LISTENCHOOSE:
                 return self::WORDPOOL_LEARN;
 
             case self::PRACTICETYPE_MATCHSELECT_REV:
             case self::PRACTICETYPE_MATCHTYPE_REV:
             case self::PRACTICETYPE_DICTATION_REV:
             case self::PRACTICETYPE_SPEECHCARDS_REV:
+            case self::PRACTICETYPE_LISTENCHOOSE_REV:
             default:
                 return self::WORDPOOL_REVIEW;
         }

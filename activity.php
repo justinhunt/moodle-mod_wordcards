@@ -102,9 +102,11 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
     case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
     case mod_wordcards_module::PRACTICETYPE_DICTATION:
+    case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
     case mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
     case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+    case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
         echo $renderer->a4e_page($mod, $practicetype, $wordpool, $currentstep);
         break;
 
