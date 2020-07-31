@@ -631,7 +631,7 @@
     padding: 10px;
 }
 
-#speechcards_pushrecorder {
+#wordcards-speechcards_pushrecorder {
     text-align: center;
     background-image: url([[pix:mod_wordcards|spinner]]);
     background-repeat: no-repeat;
