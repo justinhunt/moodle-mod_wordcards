@@ -425,7 +425,7 @@ function wordcards_get_user_grades($moduleinstance, $userid=0) {
                       FROM {user} u, {". constants::M_ATTEMPTSTABLE ."} a
                      WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.modid = a.modid)  AND u.id = a.userid AND a.modid = :moduleid
                            $user
-                  GROUP BY u.id";
+                  GROUP BY u.id, a.totalgrade";
 
 
     $results = $DB->get_records_sql($grade_sql, $params);
