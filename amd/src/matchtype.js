@@ -143,7 +143,8 @@ define([
       
       $("#wordcards-submitted").html("").removeClass("a4e-correct a4e-incorrect");
 
-      keyboard.create("wordcards-input", app.terms[app.pointer].term, app.pointer, app.distractors, function(value) {
+      var distractorscopy = app.distractors.slice(0);
+      keyboard.create("wordcards-input", app.terms[app.pointer].term, app.pointer, distractorscopy, function(value) {
         $("#wordcards-submitted").html(app.terms[app.pointer].term);
         keyboard.disable();
         app.check(value);
