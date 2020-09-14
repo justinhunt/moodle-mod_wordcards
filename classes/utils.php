@@ -715,7 +715,8 @@ class utils{
       if($wordpool===\mod_wordcards_module::WORDPOOL_LEARN){
           $options=$learnoptions;
       }else{
-          $options = array_merge($none,$learnoptions,$reviewoptions);
+          //We need to merge arrays this way, not with array_merge, in order to preserve keys
+          $options = $none + $learnoptions + $reviewoptions;
       }
       return $options;
   }

@@ -85,6 +85,19 @@ if ($data = $form->get_data()) {
         $data = file_postupdate_standard_filemanager($data, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio',
                 $data->id);
         $needsupdating = true;
+
+        //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
+        $fs = get_file_storage();
+        $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','audio',$data->id);
+        if(!$areafiles || count($areafiles)==0){
+            $data->audio='';
+        }elseif(count($areafiles)==1) {
+            $file = array_pop($areafiles);
+            if ($file->is_directory()) {
+                $data->audio='';
+            }
+        }
+
     }
 
     //image data
@@ -94,6 +107,18 @@ if ($data = $form->get_data()) {
         $data = file_postupdate_standard_filemanager($data, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image',
                 $data->id);
         $needsupdating = true;
+
+        //in the case a user has deleted all files, we will still have the draftid in the image column, we want to set it to ''
+        $fs = get_file_storage();
+        $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','image',$data->id);
+        if(!$areafiles || count($areafiles)==0){
+            $data->image='';
+        }elseif(count($areafiles)==1) {
+            $file = array_pop($areafiles);
+            if ($file->is_directory()) {
+                $data->image='';
+            }
+        }
     }
 
     if ($needsupdating) {

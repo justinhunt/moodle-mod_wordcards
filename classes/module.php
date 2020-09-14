@@ -231,19 +231,20 @@ class mod_wordcards_module {
         global $CFG;
         foreach($terms as $term){
             $contextid = false;
+            $cachebuster='?cb=' . \html_writer::random_id();
             if($term->image){
                 if(!$contextid){
                     $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
                     $contextid = context_module::instance($thecm->id)->id;
                 }
-                $term->image="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/image/$term->id";
+                $term->image="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/image/$term->id" . $cachebuster;
             }
             if($term->audio){
                 if(!$contextid){
                     $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
                     $contextid = context_module::instance($thecm->id)->id;
                 }
-                $term->audio="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id";
+                $term->audio="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id  . $cachebuster";
             }
         }
         return $terms;
@@ -413,7 +414,11 @@ class mod_wordcards_module {
         if (!$includedeleted) {
             $params['deleted'] = 0;
         }
-        return $DB->get_records('wordcards_terms', $params, 'id ASC');
+        $terms = $DB->get_records('wordcards_terms', $params, 'id ASC');
+        if($terms){
+            $terms =$this->insert_media_urls($terms);
+        }
+        return $terms;
     }
 
     public function get_terms_seen() {

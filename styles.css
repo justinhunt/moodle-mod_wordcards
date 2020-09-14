@@ -467,6 +467,7 @@
     padding: 10px;
     width: 250px;
     height: 100px;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .a4e-card .back {
