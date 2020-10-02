@@ -234,6 +234,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2020050204, 'wordcards');
     }
+
     if($oldversion<2020050205) {
         $table = new xmldb_table('wordcards_progress');
         $index = new xmldb_index('moduser', XMLDB_INDEX_UNIQUE, array('modid', 'userid'));
@@ -244,5 +245,48 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2020050205, 'wordcards');
     }
+
+    if($oldversion<2020100200) {
+
+        //we added these fields in install.xml but not in upgrade.php in may
+
+        //progress
+        $ptable = new xmldb_table('wordcards_progress');
+        $pfields = array();
+        $pfields[] = new xmldb_field('grade1', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $pfields[] = new xmldb_field('grade2', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $pfields[] = new xmldb_field('grade3', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $pfields[] = new xmldb_field('grade4', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $pfields[] = new xmldb_field('grade5', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $pfields[] = new xmldb_field('totalgrade', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $pfields[] = new xmldb_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        foreach($pfields as $pfield){
+            // Conditionally launch add field .
+            if (!$dbman->field_exists($ptable, $pfield)) {
+                $dbman->add_field($ptable, $pfield);
+            }
+        }
+
+        //wordcards
+        $wtable = new xmldb_table('wordcards');
+        $wfields = array();
+        $wfields[] = new xmldb_field('grade', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0');
+        $wfields[] = new xmldb_field('gradeoptions', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $wfields[] = new xmldb_field('mingrade', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+        foreach($wfields as $wfield){
+            // Conditionally launch add field .
+            if (!$dbman->field_exists($wtable, $wfield)) {
+                $dbman->add_field($wtable, $wfield);
+            }
+        }
+
+
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2020100200, 'wordcards');
+    }
+
+
+
     return true;
 }

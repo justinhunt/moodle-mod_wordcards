@@ -1,4 +1,5 @@
-
+1.2.5 (Build 2020100200)
+-Adding in missing DB updates not applied in July
 
 1.2.4 (Build 2020091300)
 -Added white text outline on card fronts
