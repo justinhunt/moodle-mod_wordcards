@@ -36,12 +36,20 @@ class mod_wordcards_form_term extends moodleform {
         $mform->addHelpButton('term', 'term', constants::M_COMPONENT);
         $mform->addRule('term', null, 'required', null, 'client');
         $mform->addRule('term', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-
+    
         $mform->addElement('textarea', 'definition', get_string('definition', constants::M_COMPONENT));
         $mform->setType('definition', PARAM_NOTAGS);
         $mform->addHelpButton('definition', 'definition', constants::M_COMPONENT);
         $mform->addRule('definition', null, 'required', null, 'client');
+    
+        $mform->addElement('text', 'model_sentence', get_string('model_sentence', constants::M_COMPONENT));
+        $mform->setType('model_sentence', PARAM_NOTAGS);
+        $mform->addHelpButton('model_sentence', 'model_sentence', constants::M_COMPONENT);
+        $mform->addRule('model_sentence', null, 'required', null, 'client');
+        $mform->addRule('model_sentence', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
+
+ 
         $mform->addElement('textarea', 'alternates', get_string('alternates', constants::M_COMPONENT));
         $mform->addHelpButton('alternates', 'alternates', constants::M_COMPONENT);
         $mform->setType('alternates', PARAM_NOTAGS);
@@ -54,6 +62,12 @@ class mod_wordcards_form_term extends moodleform {
         $filemanageropts = utils::fetch_filemanager_opts('audio');
         $mform->addElement('filemanager', 'audio_filemanager', get_string('audiofile', constants::M_COMPONENT), null,
                 $filemanageropts);
+        $mform->addHelpButton('audio_filemanager', 'audiofile', constants::M_COMPONENT);
+        
+        $filemanageropts = utils::fetch_filemanager_opts('audio');
+        $mform->addElement('filemanager', 'model_sentence_audio_filemanager', get_string('model_sentence_audio', constants::M_COMPONENT), null,
+                $filemanageropts);
+
         $mform->addHelpButton('audio_filemanager', 'audiofile', constants::M_COMPONENT);
 
         $filemanageropts = utils::fetch_filemanager_opts('image');

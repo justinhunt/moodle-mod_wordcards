@@ -246,6 +246,15 @@ class mod_wordcards_module {
                 }
                 $term->audio="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id  . $cachebuster";
             }
+
+            if($term->model_sentence_audio){
+                if(!$contextid){
+                    $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
+                    $contextid = context_module::instance($thecm->id)->id;
+                }
+
+                $term->model_sentence_audio="$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/model_sentence_audio/$term->id  . $cachebuster";
+            }
         }
         return $terms;
     }
