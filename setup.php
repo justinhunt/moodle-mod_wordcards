@@ -116,7 +116,6 @@ if ($data = $form->get_data()) {
         //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
         $fs = get_file_storage();
         $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','model_sentence_audio',$data->id);
-//echo '<pre>';print_r($areafiles);die;
 
         if(!$areafiles || count($areafiles)==0){
             $data->model_sentence_audio='';
@@ -129,11 +128,8 @@ if ($data = $form->get_data()) {
 
     }
 
-//    echo '<pre>';    print_r($data);die;
-    //image data
     if(!empty($data->image_filemanager)){
         $imageoptions = utils::fetch_filemanager_opts('image');
-       // $data->image_filemanager = $imageitemid;
         $data = file_postupdate_standard_filemanager($data, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image',
                 $data->id);
         $needsupdating = true;
