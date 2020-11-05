@@ -62,6 +62,10 @@ $audiooptions= utils::fetch_filemanager_opts('audio');
 $imageoptions= utils::fetch_filemanager_opts('image');
 file_prepare_standard_filemanager($term, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio', $term->id);
 file_prepare_standard_filemanager($term, 'image', $audiooptions, $modulecontext, constants::M_COMPONENT, 'image', $term->id);
+
+file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
+
+
 //set data to form
 $form->set_data($term);
 
@@ -71,12 +75,14 @@ if ($data = $form->get_data()) {
     $needsupdating = false;
     if (empty($data->termid)) {
         $data->modid = $modid;
+
         $data->id  = $DB->insert_record('wordcards_terms', $data);
     //else set id to termid
     }else{
         $data->id = $data->termid;
         $needsupdating = true;
     }
+
 
     //audio data
     if(!empty( $data->audio_filemanager)){
@@ -100,6 +106,30 @@ if ($data = $form->get_data()) {
 
     }
 
+     //model sentence audio data
+    if(!empty($data->model_sentence_audio_filemanager)){
+        $audiooptions = utils::fetch_filemanager_opts('audio');
+        //$data->audio_filemanager = $audioitemid;
+        $data = file_postupdate_standard_filemanager($data, 'model_sentence_audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'model_sentence_audio',
+                $data->id);
+        $needsupdating = true;
+        //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
+        $fs = get_file_storage();
+        $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','model_sentence_audio',$data->id);
+//echo '<pre>';print_r($areafiles);die;
+
+        if(!$areafiles || count($areafiles)==0){
+            $data->model_sentence_audio='';
+        }elseif(count($areafiles)==1) {
+            $file = array_pop($areafiles);
+            if ($file->is_directory()) {
+                $data->model_sentence_audio='';
+            }
+        }
+
+    }
+
+//    echo '<pre>';    print_r($data);die;
     //image data
     if(!empty($data->image_filemanager)){
         $imageoptions = utils::fetch_filemanager_opts('image');
