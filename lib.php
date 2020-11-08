@@ -231,7 +231,7 @@ function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $f
 
     require_login($course, true, $cm);
 
-    if ($filearea === 'audio' or $filearea === 'image') {
+    if ($filearea === 'audio' or $filearea === 'image'  or $filearea === 'model_sentence_audio') {
 
         $itemid = (int) array_shift($args);
 

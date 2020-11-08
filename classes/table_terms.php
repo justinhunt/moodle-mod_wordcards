@@ -37,6 +37,7 @@ class mod_wordcards_table_terms extends table_sql {
             'audio',
             'image',
             'ttsvoice',
+            'model_sentence',
             'actions'
         ));
         $this->define_headers(array(
@@ -45,11 +46,16 @@ class mod_wordcards_table_terms extends table_sql {
                 get_string('audiofile', constants::M_COMPONENT),
                 get_string('imagefile', constants::M_COMPONENT),
                 get_string('ttsvoice', constants::M_COMPONENT),
+                get_string('model_sentence', constants::M_COMPONENT),
             get_string('actions')
         ));
 
+//t.model_sentence
         // Define SQL.
-        $sqlfields = "t.id, t.term, t.definition, CASE WHEN t.audio is null or t.audio = '' THEN 'no' ELSE 'yes' END as audio,";
+        $sqlfields = "t.id, t.term, CASE 
+         WHEN CHAR_LENGTH(t.model_sentence) > 15 THEN CONCAT(SUBSTRING(t.model_sentence, 1, 15), '...')
+         ELSE t.model_sentence
+       END AS model_sentence,t.definition, CASE WHEN t.audio is null or t.audio = '' THEN 'no' ELSE 'yes' END as audio,";
         $sqlfields .= " CASE WHEN t.image is null or t.image = '' THEN 'no' ELSE 'yes' END as image,t.ttsvoice";
         $sqlfrom = " {wordcards_terms} t";
 

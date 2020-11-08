@@ -64,3 +64,6 @@ $string['termdeleted'] = '新出用語は削除されました。';
 $string['termnotseen'] = '新出用語はまだ「チェック」されていません。';
 $string['termsaved'] = '新出用語は \'{$a}\' 保村されました。';
 $string['termseen'] = '新出用語は「チェック」';
+$string['model_sentence'] = 'モデル文';
+$string['model_sentence_audio'] = 'モデルセンテンスオーディオ';
+$string['model_sentence_help'] = '用語（単語/フレーズ）のモデル文をここに入力します。短くする必要がありますが、それでもその用語の意味を生徒に伝えます。';

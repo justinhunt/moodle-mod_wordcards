@@ -255,3 +255,6 @@ $string['reattempttitle'] = 'Really Try Again?';
 $string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';
 $string['importinstructions']='You can import lists of words using the \'import data\' text area below. Each line should contain one term(word/phrase) and it\'s definition separated by a delimiter. You can choose a delimiter from the dropdown box below. Each line therefore should look something like this: <i>Hello | Bonjour</i>';
 $string['setupinstructions']='Enter words for the activity using the form below. You can view, edit and delete previously added words from the table at the bottom of the page. Only the term and definition are required.';
+$string['model_sentence'] = 'Model sentence';
+$string['model_sentence_audio'] = 'Model sentence audio';
+$string['model_sentence_help'] = 'Enter model sentence of the term(word/phrase) here. It should be short but still tell the student what the term means.';

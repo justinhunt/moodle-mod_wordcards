@@ -135,6 +135,8 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
         $this->add_related_files('mod_wordcards', 'intro', null);
         $this->add_related_files('mod_wordcards', 'image', 'wordcards_term');
         $this->add_related_files('mod_wordcards', 'audio', 'wordcards_term');
+        $this->add_related_files('mod_wordcards', 'model_sentence_audio', 'wordcards_term');
+        
 
     }
 }

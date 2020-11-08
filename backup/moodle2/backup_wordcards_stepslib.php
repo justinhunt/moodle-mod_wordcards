@@ -48,7 +48,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
         $terms = new backup_nested_element('terms');
         $term = new backup_nested_element('term', array('id'), array(
-            'term', 'definition','image','audio', 'ttsvoice','alternates','deleted'));
+            'term', 'definition','model_sentence','image','audio','model_sentence_audio', 'ttsvoice','alternates','deleted'));
 
         $seens = new backup_nested_element('seens');
         $seen = new backup_nested_element('seen', array('id'), array(
@@ -107,6 +107,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
         $wordcards->annotate_files('mod_wordcards', 'intro', null);
         $term->annotate_files('mod_wordcards', 'image', 'id');
         $term->annotate_files('mod_wordcards', 'audio', 'id');
+        $term->annotate_files('mod_wordcards', 'model_sentence_audio', 'id');
 
         // Return the root element (wordcards), wrapped into standard activity structure.
         return $this->prepare_activity_structure($wordcards);
