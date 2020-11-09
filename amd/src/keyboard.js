@@ -87,27 +87,15 @@ define(['jquery','core/templates'], function($,templates) {
             });
             var tdata=[];
             tdata['letters'] = letters;
+            tdata['dataid'] = id;
             templates.render('mod_wordcards/keyboard',tdata).then(
                 function(html,js){
                     $("#"+target).html(html);
                 }
             );
 
-/*
-            var code="<div id='chunk-input' data-id='"+id+"' class='noselect'>";
-            code+="<div id='chunk-typed'><div id='chunk-typed-inner'></div></div>";
-            $.each(keyboard.letters,function(i,letter){
-                code+="<div class='chunk-key' data-val='"+letter.charCodeAt(0)+"'><div class='chunk-key-inner'>"+(letter==" "?"&nbsp;":letter)+"</div></div>";
-            });
-            code+="<div id='chunk-input-controls'>";
-            code+="<div id='delete-chunk-input' class='btn-primary chunk-input-control'><i class='fa fa-caret-square-o-left'></i> Delete</div>";
-            code+="<div id='submit-chunk-input' class='btn-success chunk-input-control'>Submit <i class='fa fa-arrow-circle-right'></i></div>";
-            code+="</div>";
 
-            code+="</div>";
-            */
-
-            $("body").on(keyboard.mobile_user()?'touchstart':'click',".chunk-key",function(){
+            var click_and_touchstart = function(e){
                 var text=$("#chunk-typed-inner").text();
                 if(text.length<string.length){
                     //createjs.Sound.play('click');
@@ -117,7 +105,12 @@ define(['jquery','core/templates'], function($,templates) {
                     keyboard.flash("#chunk-typed-inner","a4e-incorrect");
                     //createjs.Sound.play('cancel');
                 }
-            });
+                e.preventDefault();
+            };
+            $("body").on('touchstart',".chunk-key",click_and_touchstart);
+            $("body").on('click',".chunk-key",click_and_touchstart);
+
+
             $("body").on("touchmove","#"+target,function(e){
                 e.preventDefault();
             });
