@@ -32,6 +32,7 @@
         <FIELD NAME="finishedstepmsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user finish a scatter."/>
         <FIELD NAME="completedmsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user complete the entire activity"/>
         <FIELD NAME="passagehash" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The hash of the words and sentences"/>
+        <FIELD NAME="hashisold" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="ttslanguage" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="en-US" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

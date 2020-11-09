@@ -827,13 +827,14 @@ class mod_wordcards_module {
                     $ret = utils::fetch_lang_model($this);
                     if ($ret && isset($ret->success) && $ret->success)  {
                         $regionpassagehash = $region . '|' . $newpassagehash;
-                        $DB->update_record('wordcards', array('id'=>$this->get_mod()->id,'passagehash'=>$regionpassagehash));
+                        $DB->update_record('wordcards', array('id'=>$this->get_mod()->id,'passagehash'=>$regionpassagehash, 'hashisold'=>0));
                         return $regionpassagehash;
                     }
                 }
             }
         }
-        //by default just return what already exists
+        //by default just return what already exists, but also update our "dirty" flag so we do not keep coming back here
+        $DB->update_record('wordcards', array('id'=>$this->get_mod()->id,'hashisold'=>0));
         return $this->get_mod()->passagehash;
     }
 }

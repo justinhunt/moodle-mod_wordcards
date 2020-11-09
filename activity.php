@@ -78,6 +78,11 @@ if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
     $pagetitle = get_string('learnactivity', 'mod_wordcards');
 }
 
+//iif it looks like we have had some vocab updates, request an update of the lang speech model
+if($mod->get_mod()->hashisold) {
+    $mod->set_region_passagehash();
+}
+
 
 $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));

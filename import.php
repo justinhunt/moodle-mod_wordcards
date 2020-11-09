@@ -69,6 +69,13 @@ if ($data = $form->get_data()) {
         		$failed[]=$row;
         	}//end of if cols ok 
         }//end of for each
+
+        //if successful update our passagehash update flag
+        if($imported > 0) {
+            $DB->update_record('wordcards', array('id' => $mod->get_mod()->id, 'hashisold' => 1));
+        }
+
+
         // Uncomment when migrating to 3.1.
         // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
         $result=new stdClass();

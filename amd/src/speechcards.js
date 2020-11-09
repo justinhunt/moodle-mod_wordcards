@@ -157,6 +157,8 @@ define([
 
     initComponents: function() {
 
+        var that =this;
+
       //The logic here is that on correct we transition.
       //on incorrect we do not. A subsequent nav button click then doesnt need to post a result
       var theCallback = function(message) {
@@ -206,7 +208,7 @@ define([
 
       //init the recorder
         var recid= 'wordcards-speechcards_pushrecorder';
-        if(self.use_ttrecorder()) {
+        if(this.use_ttrecorder()) {
             //init tt recorder
             var opts = {};
             opts.uniqueid = recid;
@@ -522,12 +524,12 @@ define([
           if(ret===false){return false;}
 
           //check if language and region are ok
-          switch(this.region){
+          switch(app.props.region){
               case 'tokyo':
               case 'useast1':
               case 'dublin':
               case 'sydney':
-                  ret = this.language.substr(0,2)==='en';
+                  ret = app.props.language.substr(0,2)==='en';
                   break;
               default:
                   ret = false;

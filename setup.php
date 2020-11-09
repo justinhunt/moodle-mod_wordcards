@@ -148,8 +148,9 @@ if ($data = $form->get_data()) {
     }
 
     if ($needsupdating) {
-
         $DB->update_record('wordcards_terms', $data);
+        //also update our passagehash update flag
+        $DB->update_record('wordcards', array('id' => $modid, 'hashisold' => 1));
     }
 
     //finally redirect

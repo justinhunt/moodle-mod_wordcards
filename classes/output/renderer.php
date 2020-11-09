@@ -303,6 +303,7 @@ class renderer extends \plugin_renderer_base {
         //TT Recorder ---------------
         $data['waveheight']= 75;
         $data['maxtime']= 15000;
+        $data['data-id']='wordcards-speechcards_pushrecorder';
         //passagehash if not empty will be region|hash eg tokyo|2353531453415134545
         //but we only send the hash up so we strip the region
         $data['passagehash']="";
