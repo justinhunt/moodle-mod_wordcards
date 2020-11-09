@@ -23,18 +23,19 @@
                   <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
                </div>
             </div>
+			 {{#model_sentence}}
            <div class="term-header">
                <div>
                   <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
                </div>
             </div>
-            <div class="term-header">
-               <div class="term-title"></div>
-            </div>
            
+            {{/model_sentence}}
+			{{^model_sentence}}
 			  <div class="term-body">
                {{definition}} 
             </div>
+			{{/model_sentence}}
          </div>
       </div>
       {{/definitions}}
