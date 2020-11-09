@@ -37,7 +37,7 @@ define([
         };
 
         //register button event handler to play audio
-        $(document.body).on('click','.a4e-flashcards-container .play-tts, .definitions-container .definition-play-tts ',function() {
+        $(document.body).on('click','.a4e-flashcards-container .play-tts, span.model-sentence-play-tts,.definitions-container .definition-play-tts ',function() {
              var theplayer = $("#poodll_vocabplayer");
 
           //if we have model audio use that, otherwise TTS
@@ -57,7 +57,7 @@ define([
       var code = "",
         color;
       terms.forEach(function(o, i) {
-        color = "darkgray"
+        var color = "darkgray";
         if (results[i] !== undefined) {
           if (results[i].points) {
             color = "green";
