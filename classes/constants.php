@@ -21,6 +21,9 @@ const M_TABLE='wordcards';
 const M_ATTEMPTSTABLE='wordcards_progress';
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingwordcards';
 
+//  const CLOUDPOODLL = 'http://localhost/moodle';
+const CLOUDPOODLL = 'https://cloud.poodll.com';
+
 //grading options
 const M_GRADEHIGHEST= 0;
 const M_GRADELOWEST= 1;

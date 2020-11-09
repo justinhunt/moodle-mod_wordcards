@@ -81,6 +81,10 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
 
     $success = $DB->update_record('wordcards', $module);
 
+    //Process the hashcode and lang model if it makes sense
+    $themod = mod_wordcards_module::get_by_modid($module->instance);
+    $themod->set_region_passagehash();
+
     if(!isset($module->cmidnumber)){
         $module->cmidnumber=null;
     }

@@ -13,8 +13,9 @@ define([
   'mod_wordcards/a4e',
   'mod_wordcards/glidecards',
   'mod_wordcards/cloudpoodllloader',
+  'mod_wordcards/ttrecorder',
   'core/templates'
-], function($, Ajax, log, a4e, glidecards, cloudpoodll, templates) {
+], function($, Ajax, log, a4e, glidecards, cloudpoodll, ttrecorder, templates) {
 
   var app = {
     passmark: 75,
@@ -203,9 +204,18 @@ define([
         }//end of switch message type
       };
 
-      //init cloudpoodll push recorder
-      cloudpoodll.init('wordcards-speechcards_pushrecorder', theCallback);
-
+      //init the recorder
+        var recid= 'wordcards-speechcards_pushrecorder';
+        if(self.use_ttrecorder()) {
+            //init tt recorder
+            var opts = {};
+            opts.uniqueid = recid;
+            opts.callback = theCallback;
+            ttrecorder.clone().init(opts);
+        }else{
+            //init cloudpoodll push recorder
+            cloudpoodll.init(recid, theCallback);
+        }
 
     },
 
@@ -481,7 +491,49 @@ define([
           costs[s2.length] = lastValue;
       }
       return costs[s2.length];
-    }
+    },
+
+      mobile_user: function() {
+
+          if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+              return true;
+          } else {
+              return false;
+          }
+      },
+
+      chrome_user: function(){
+          if(/Chrome/i.test(navigator.userAgent)) {
+              return true;
+          }else{
+              return false;
+          }
+      },
+
+      use_ttrecorder: function(){
+          var ret =false;
+          if(this.mobile_user()){
+              ret = true;
+          }else if(this.chrome_user()){
+              ret = false;
+          }else{
+              ret = true;
+          }
+          if(ret===false){return false;}
+
+          //check if language and region are ok
+          switch(this.region){
+              case 'tokyo':
+              case 'useast1':
+              case 'dublin':
+              case 'sydney':
+                  ret = this.language.substr(0,2)==='en';
+                  break;
+              default:
+                  ret = false;
+          }
+          return ret;
+      },
 
   };
 

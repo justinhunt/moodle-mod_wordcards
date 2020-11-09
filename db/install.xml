@@ -31,6 +31,7 @@
         <FIELD NAME="skipreview" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Hide the review activities of this specific activity if no wordcards activities have been completed in this course."/>
         <FIELD NAME="finishedstepmsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user finish a scatter."/>
         <FIELD NAME="completedmsg" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="the message displayed when a user complete the entire activity"/>
+        <FIELD NAME="passagehash" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The hash of the words and sentences"/>
         <FIELD NAME="ttslanguage" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="en-US" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

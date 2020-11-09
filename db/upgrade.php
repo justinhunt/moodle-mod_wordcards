@@ -300,6 +300,18 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020110900, 'wordcards');
     }
 
+    // Add passage hashcode to wordcards table
+    if ($oldversion < 2020111000) {
+        $table = new xmldb_table('wordcards');
+
+        // Define field expiredays to be added to readaloud
+        $field = new xmldb_field('passagehash', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, null, null);
+        // add field to readaloud table
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2020111000, 'wordcards');
+    }
 
 
     return true;

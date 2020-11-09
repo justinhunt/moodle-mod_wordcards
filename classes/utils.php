@@ -721,7 +721,7 @@ class utils{
       return $options;
   }
 
-   public static function get_lang_options(){
+   public static function get_lang_options() {
        return array(
                constants::M_LANG_ARAE => get_string('ar-ae', constants::M_COMPONENT),
                constants::M_LANG_ARSA => get_string('ar-sa', constants::M_COMPONENT),
@@ -755,132 +755,167 @@ class utils{
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT)
        );
-	/*
-      return array(
-			"none"=>"No TTS",
-			"af"=>"Afrikaans", 
-			"sq"=>"Albanian", 
-			"am"=>"Amharic", 
-			"ar"=>"Arabic", 
-			"hy"=>"Armenian", 
-			"az"=>"Azerbaijani", 
-			"eu"=>"Basque", 
-			"be"=>"Belarusian", 
-			"bn"=>"Bengali", 
-			"bh"=>"Bihari", 
-			"bs"=>"Bosnian", 
-			"br"=>"Breton", 
-			"bg"=>"Bulgarian", 
-			"km"=>"Cambodian", 
-			"ca"=>"Catalan", 
-			"zh-CN"=>"Chinese (Simplified)", 
-			"zh-TW"=>"Chinese (Traditional)", 
-			"co"=>"Corsican", 
-			"hr"=>"Croatian", 
-			"cs"=>"Czech", 
-			"da"=>"Danish", 
-			"nl"=>"Dutch", 
-			"en"=>"English", 
-			"eo"=>"Esperanto", 
-			"et"=>"Estonian", 
-			"fo"=>"Faroese", 
-			"tl"=>"Filipino", 
-			"fi"=>"Finnish", 
-			"fr"=>"French", 
-			"fy"=>"Frisian", 
-			"gl"=>"Galician", 
-			"ka"=>"Georgian", 
-			"de"=>"German", 
-			"el"=>"Greek", 
-			"gn"=>"Guarani", 
-			"gu"=>"Gujarati", 
-			"xx-hacker"=>"Hacker", 
-			"ha"=>"Hausa", 
-			"iw"=>"Hebrew", 
-			"hi"=>"Hindi", 
-			"hu"=>"Hungarian", 
-			"is"=>"Icelandic", 
-			"id"=>"Indonesian", 
-			"ia"=>"Interlingua", 
-			"ga"=>"Irish", 
-			"it"=>"Italian", 
-			"ja"=>"Japanese", 
-			"jw"=>"Javanese", 
-			"kn"=>"Kannada", 
-			"kk"=>"Kazakh", 
-			"rw"=>"Kinyarwanda", 
-			"rn"=>"Kirundi", 
-			"xx-klingon"=>"Klingon", 
-			"ko"=>"Korean", 
-			"ku"=>"Kurdish", 
-			"ky"=>"Kyrgyz", 
-			"lo"=>"Laothian", 
-			"la"=>"Latin", 
-			"lv"=>"Latvian", 
-			"ln"=>"Lingala", 
-			"lt"=>"Lithuanian", 
-			"mk"=>"Macedonian", 
-			"mg"=>"Malagasy", 
-			"ms"=>"Malay", 
-			"ml"=>"Malayalam", 
-			"mt"=>"Maltese", 
-			"mi"=>"Maori", 
-			"mr"=>"Marathi", 
-			"mo"=>"Moldavian", 
-			"mn"=>"Mongolian", 
-			"sr-ME"=>"Montenegrin", 
-			"ne"=>"Nepali", 
-			"no"=>"Norwegian", 
-			"nn"=>"Norwegian(Nynorsk)", 
-			"oc"=>"Occitan", 
-			"or"=>"Oriya", 
-			"om"=>"Oromo", 
-			"ps"=>"Pashto", 
-			"fa"=>"Persian", 
-			"xx-pirate"=>"Pirate", 
-			"pl"=>"Polish", 
-			"pt-BR"=>"Portuguese(Brazil)", 
-			"pt-PT"=>"Portuguese(Portugal)", 
-			"pa"=>"Punjabi", 
-			"qu"=>"Quechua", 
-			"ro"=>"Romanian", 
-			"rm"=>"Romansh", 
-			"ru"=>"Russian", 
-			"gd"=>"Scots Gaelic", 
-			"sr"=>"Serbian", 
-			"sh"=>"Serbo-Croatian", 
-			"st"=>"Sesotho", 
-			"sn"=>"Shona", 
-			"sd"=>"Sindhi", 
-			"si"=>"Sinhalese", 
-			"sk"=>"Slovak", 
-			"sl"=>"Slovenian", 
-			"so"=>"Somali", 
-			"es"=>"Spanish", 
-			"su"=>"Sundanese", 
-			"sw"=>"Swahili", 
-			"sv"=>"Swedish", 
-			"tg"=>"Tajik", 
-			"ta"=>"Tamil", 
-			"tt"=>"Tatar", 
-			"te"=>"Telugu", 
-			"th"=>"Thai", 
-			"ti"=>"Tigrinya", 
-			"to"=>"Tonga", 
-			"tr"=>"Turkish", 
-			"tk"=>"Turkmen", 
-			"tw"=>"Twi", 
-			"ug"=>"Uighur", 
-			"uk"=>"Ukrainian", 
-			"ur"=>"Urdu", 
-			"uz"=>"Uzbek", 
-			"vi"=>"Vietnamese", 
-			"cy"=>"Welsh", 
-			"xh"=>"Xhosa", 
-			"yi"=>"Yiddish", 
-			"yo"=>"Yoruba", 
-			"zu"=>"Zulu"
-		);
-	*/
    }
+
+    /*
+     * Do we need to build a language model for this passage?
+     *
+     */
+    public static function needs_lang_model($mod) {
+        $region = get_config(constants::M_COMPONENT,'awsregion');
+        switch($region){
+            case 'tokyo':
+            case 'useast1':
+            case 'dublin':
+            case 'sydney':
+                return substr($mod->get_mod()->ttslanguage,0,2)=='en' && self::fetch_passagehash($mod);
+                break;
+            default:
+                return false;
+        }
+    }
+
+    /*
+     * Hash the passage and compare
+     *
+     */
+    public static function fetch_passagehash($mod) {
+        $cleantext = self::fetch_activity_text($mod);
+        if(!empty($cleantext)) {
+            return sha1($cleantext);
+        }else{
+            return false;
+        }
+    }
+
+
+    /*
+     * Build a language model for this passage
+     *
+     */
+    public static function fetch_lang_model($mod){
+        $conf= get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {;
+            $token = self::fetch_token($conf->apiuser, $conf->apisecret);
+
+            if(empty($token)){
+                return false;
+            }
+            $url = constants::CLOUDPOODLL . "/webservice/rest/server.php";
+            $params["wstoken"]=$token;
+            $params["wsfunction"]='local_cpapi_generate_lang_model';
+            $params["moodlewsrestformat"]='json';
+            $params["passage"]= self::fetch_activity_text($mod);
+            $params["language"]=$mod->get_mod()->ttslanguage;
+            $params["region"]=$conf->awsregion;
+
+            $resp = self::curl_fetch($url,$params);
+            $respObj = json_decode($resp);
+            $ret = new \stdClass();
+            if(isset($respObj->returnCode)){
+                $ret->success = $respObj->returnCode =='0' ? true : false;
+                $ret->payload = $respObj->returnMessage;
+            }else{
+                $ret->success=false;
+                $ret->payload = "unknown problem occurred";
+            }
+            return $ret;
+        }else{
+            return false;
+        }
+    }
+
+    /*
+    * Return all the cleaned and connected text for the activity
+    * Borrowed from read aloud
+    *
+    */
+    public static function fetch_activity_text($mod) {
+
+        $terms = $mod->get_terms();
+        if(!$terms){return "";}
+        $thetext = "";
+        foreach ($terms as $term){
+            $thetext .= $term->term . " ";
+            if(!empty($term->model_sentence)){
+                $thetext .= $term->model_sentence . " ";
+            }
+        }
+
+        //f we think its unicodemb4, first test and then get on with it
+        $unicodemb4=self::isUnicodemb4($thetext);
+
+        //lowercaseify
+        $thetext = strtolower($thetext);
+
+        //remove any html
+        $thetext = strip_tags($thetext);
+
+        //replace all line ends with spaces
+        if($unicodemb4) {
+            $thetext = preg_replace('/#\R+#/u', ' ', $thetext);
+            $thetext = preg_replace('/\r/u', ' ', $thetext);
+            $thetext = preg_replace('/\n/u', ' ', $thetext);
+        }else{
+            $thetext = preg_replace('/#\R+#/', ' ', $thetext);
+            $thetext = preg_replace('/\r/', ' ', $thetext);
+            $thetext = preg_replace('/\n/', ' ', $thetext);
+        }
+
+        //remove punctuation. This is where we needed the unicode flag
+        //see https://stackoverflow.com/questions/5233734/how-to-strip-punctuation-in-php
+        // $thetext = preg_replace("#[[:punct:]]#", "", $thetext);
+        //https://stackoverflow.com/questions/5689918/php-strip-punctuation
+        if($unicodemb4) {
+            $thetext = preg_replace("/[[:punct:]]+/u", "", $thetext);
+        }else{
+            $thetext = preg_replace("/[[:punct:]]+/", "", $thetext);
+        }
+
+        //remove bad chars
+        $b_open = "“";
+        $b_close = "”";
+        $b_sopen = '‘';
+        $b_sclose = '’';
+        $bads = array($b_open, $b_close, $b_sopen, $b_sclose);
+        foreach ($bads as $bad) {
+            $thetext = str_replace($bad, '', $thetext);
+        }
+
+        //remove double spaces
+        //split on spaces into words
+        $textbits = explode(' ', $thetext);
+        //remove any empty elements
+        $textbits = array_filter($textbits, function($value) {
+            return $value !== '';
+        });
+        $thetext = implode(' ', $textbits);
+        return $thetext;
+    }
+
+    /*
+    * Regexp replace with /u will return empty text if not unicodemb4
+    * some DB collations and char sets may do that to us. So we test for that here
+    */
+    public static function isUnicodemb4($thetext) {
+        //$testtext = "test text: " . "\xf8\xa1\xa1\xa1\xa1"; //this will fail for sure
+
+        $thetext = strtolower($thetext);
+        $thetext = strip_tags($thetext);
+        $testtext = "test text: " . $thetext;
+        $test1 = preg_replace('/#\R+#/u', ' ', $testtext);
+        if(empty($test1)){return false;}
+        $test2 = preg_replace('/\r/u', ' ', $testtext);
+        if(empty($test2)){return false;}
+        $test3 = preg_replace('/\n/u', ' ', $testtext);
+        if(empty($test3)){return false;}
+        $test4 = preg_replace("/[[:punct:]]+/u", "", $testtext);
+        if(empty($test4)){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
 }

@@ -9,6 +9,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use \mod_wordcards\constants;
+use \mod_wordcards\utils;
 
 /**
  * Module class.
@@ -812,7 +813,27 @@ class mod_wordcards_module {
 
         return (!empty($completedwordcardtotal));
 
-
     }
 
+    public function set_region_passagehash(){
+        global $DB;
+        if(utils::needs_lang_model($this)){
+            $region = get_config(constants::M_COMPONENT,'awsregion');
+            $newpassagehash = utils::fetch_passagehash($this);
+            if($newpassagehash){
+                //check if it has changed, if not do not waste time processing it
+                if($this->get_mod()->passagehash!= ($region . '|' . $newpassagehash)) {
+                    //build a lang model
+                    $ret = utils::fetch_lang_model($this);
+                    if ($ret && isset($ret->success) && $ret->success)  {
+                        $regionpassagehash = $region . '|' . $newpassagehash;
+                        $DB->update_record('wordcards', array('id'=>$this->get_mod()->id,'passagehash'=>$regionpassagehash));
+                        return $regionpassagehash;
+                    }
+                }
+            }
+        }
+        //by default just return what already exists
+        return $this->get_mod()->passagehash;
+    }
 }

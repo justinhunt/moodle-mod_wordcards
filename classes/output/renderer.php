@@ -299,6 +299,37 @@ class renderer extends \plugin_renderer_base {
         $data['region']=$region;
         $data['hints']=$string_hints;
         $data['owner']=hash('md5',$USER->username);
+
+        //TT Recorder ---------------
+        $data['waveheight']= 75;
+        $data['maxtime']= 15000;
+        //passagehash if not empty will be region|hash eg tokyo|2353531453415134545
+        //but we only send the hash up so we strip the region
+        $data['passagehash']="";
+        if(!empty($mod->get_mod()->passagehash)){
+            $hashbits = explode('|',$mod->get_mod()->passagehash);
+            if(count($hashbits)==2){
+                $data['passagehash']  = $hashbits[1];
+            }
+        }
+        switch($region) {
+            case 'tokyo':
+                $data['asrurl'] = 'https://dstokyo.poodll.com:3000/transcribe';
+                break;
+            case 'sydney':
+                $data['asrurl'] = 'https://dssydney.poodll.com:3000/transcribe';
+                break;
+            case 'dublin':
+                $data['asrurl'] = 'https://dsdublin.poodll.com:3000/transcribe';
+                break;
+            case 'useast1':
+            default:
+                $data['asrurl'] = 'https://dsuseast.poodll.com:3000/transcribe';
+        }
+        //---------------
+
+
+
         $speechcards = $this->render_from_template('mod_wordcards/speechcards_page', $data);
         return $opts_html . $speechcards;
 
