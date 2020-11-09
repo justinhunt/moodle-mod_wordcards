@@ -107,6 +107,8 @@ define(['jquery','core/templates'], function($,templates) {
                 }
                 e.preventDefault();
             };
+            $("body").off('touchstart',".chunk-key");
+            $("body").off('click',".chunk-key");
             $("body").on('touchstart',".chunk-key",click_and_touchstart);
             $("body").on('click',".chunk-key",click_and_touchstart);
 
