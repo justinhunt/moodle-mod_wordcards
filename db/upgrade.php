@@ -286,6 +286,20 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020100200, 'wordcards');
     }
 
+    if($oldversion<2020110900){
+        $table = new xmldb_table('wordcards_terms');
+        $fields = array();
+        $fields[] = new xmldb_field('model_sentence', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $fields[] = new xmldb_field('model_sentence_audio', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        foreach($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        // Wordcards savepoint reached.
+        upgrade_mod_savepoint(true, 2020110900, 'wordcards');
+    }
+
 
 
     return true;
