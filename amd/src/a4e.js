@@ -57,7 +57,7 @@ define([
       var code = "",
         color;
       terms.forEach(function(o, i) {
-        color = "darkgray"
+        var color = "darkgray";
         if (results[i] !== undefined) {
           if (results[i].points) {
             color = "green";
