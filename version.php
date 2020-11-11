@@ -13,3 +13,4 @@ $plugin->version = 2020111001;
 $plugin->requires = 2015111603;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = "1.2.7 (Build 2020111001)";
+
