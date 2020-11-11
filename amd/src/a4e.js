@@ -37,10 +37,10 @@ define([
         };
 
         //register button event handler to play audio
-        $(document.body).on('click','.a4e-flashcards-container .play-tts, .definitions-container .definition-play-tts ',function() {
-             var theplayer = $("#poodll_vocabplayer");
+        $(document.body).on('click','.a4e-flashcards-container .play-tts, span.model-sentence-play-tts,.definitions-container .definition-play-tts ',function() {
+            var theplayer = $("#poodll_vocabplayer");
 
-          //if we have model audio use that, otherwise TTS
+            //if we have model audio use that, otherwise TTS
             var audiourl=$(this).attr('data-modelaudio');
             if(audiourl && (audiourl.indexOf('http:')===0 ||audiourl.indexOf('https:')===0)){
                 theplayer.attr('src', audiourl);
@@ -49,7 +49,6 @@ define([
                 polly.fetch_polly_url($(this).attr('data-tts'), 'text', $(this).attr('data-ttsvoice'));
             }
         });
-
     },
 
     progress_dots: function(results, terms) {
