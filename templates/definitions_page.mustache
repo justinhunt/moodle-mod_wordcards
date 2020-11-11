@@ -22,20 +22,16 @@
                   <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}" /></div>
                   <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
                </div>
+                {{#model_sentence}}
+                    <div class="term-modelsentence">
+                        <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
+                    </div>
+                {{/model_sentence}}
             </div>
-			 {{#model_sentence}}
-           <div class="term-header">
-               <div>
-                  <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
-               </div>
-            </div>
-           
-            {{/model_sentence}}
-			{{^model_sentence}}
-			  <div class="term-body">
+			<div class="term-body">
                {{definition}} 
             </div>
-			{{/model_sentence}}
+
          </div>
       </div>
       {{/definitions}}

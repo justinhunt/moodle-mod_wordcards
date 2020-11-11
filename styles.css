@@ -43,7 +43,7 @@
 
 /* Term title. Where a right padding is kept to leave room for the tick. */
 
-.path-mod-wordcards .term-header .term-title {
+.path-mod-wordcards .term-header  {
     font-weight: bold;
     padding-right: 25px;
     border-bottom: 1px solid #ccc;
@@ -801,4 +801,9 @@
     justify-content: center;
     cursor: pointer;
     background-color: red;
+}
+
+.path-mod-wordcards .term-header .term-modelsentence {
+    font-weight: normal;
+    margin-top: 2px;
 }
