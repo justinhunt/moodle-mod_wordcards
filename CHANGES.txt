@@ -1,5 +1,6 @@
 1.2.7 (Build 2020111000)
 -Adding in TT Recorder
+-Fixed faulty NOT NULL setting on model sentence install.xml
 
 1.2.6 (Build 2020110900)
 -Adding in model sentence and model sentence audio

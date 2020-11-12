@@ -48,7 +48,7 @@
         <FIELD NAME="modid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The ID from the wordcards table"/>
         <FIELD NAME="term" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="definition" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="model_sentence" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="model_sentence" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="image" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="audio" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="model_sentence_audio" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
