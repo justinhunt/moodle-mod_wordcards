@@ -1,3 +1,6 @@
+1.2.8 (Build 2020111700)
+-Added new speech servers
+
 1.2.7 (Build 2020111000)
 -Adding in TT Recorder
 -Fixed faulty NOT NULL setting on model sentence install.xml
