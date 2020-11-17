@@ -319,16 +319,5 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020111001, 'wordcards');
     }
 
-    // Make sure language models are saved on langservices server.
-    if ($oldversion < 2020111700) {
-        $mods = $DB->get_records('wordcards',array());
-        foreach ($mods as $mod) {
-            $themod = mod_wordcards_module::get_by_modid($mod->id);
-            utils::fetch_lang_model($themod);
-        }
-        upgrade_mod_savepoint(true, 2020111700, 'wordcards');
-    }
-
-
     return true;
 }
