@@ -8,21 +8,20 @@
 
 define([
   'jquery',
+  'jqueryui',
   'core/ajax',
   'core/log',
   'mod_wordcards/a4e',
-  'mod_wordcards/glidecards',
   'mod_wordcards/cloudpoodllloader',
   'mod_wordcards/ttrecorder',
   'core/templates'
-], function($, Ajax, log, a4e, glidecards, cloudpoodll, ttrecorder, templates) {
+], function($, jqui, Ajax, log, a4e, cloudpoodll, ttrecorder, templates) {
 
   var app = {
     passmark: 75,
     pointer: 1,
     jsondata: null,
     props: null,
-    glider: null,
     dryRun: false,
     controls: {},
 
@@ -63,20 +62,40 @@ define([
       app.controls.prev_button = $(".wordcards-speechcards_prevbutton");
       app.controls.next_button = $(".wordcards-speechcards_nextbutton");
       app.controls.standalonepushrecorder = $(".speechcards_standalonerecorder");
+      app.controls.slider = $(".wordcards-poodllspeechcards_box");
     },
     do_next: function() {
       a4e.progress_dots(app.results, app.terms);
       app.clearStarRating();
       if (!app.is_end()) {
-        app.glider.go('>');
+        app.move_card('>');
         app.update_header();
       } else {
         app.do_end();
       }
     },
     do_prev: function() {
-      app.glider.go('<');
+      app.move_card('<');
       app.update_header();
+    },
+
+    move_card: function(direction){
+        switch(direction){
+            case '<':
+                app.set_pointer(app.pointer - 1);
+                app.controls.slider.toggle("slide",{direction:"right"});
+                app.controls.slider.text(app.terms[app.pointer - 1].term);
+                app.controls.slider.toggle("slide",{direction:"left"})
+                app.update_header();
+                break;
+            case '>':
+            default:
+                app.set_pointer(app.pointer + 1);
+                app.controls.slider.toggle("slide",{direction:"left"});
+                app.controls.slider.text(app.terms[app.pointer - 1].term);
+                app.controls.slider.toggle("slide",{direction:"right"});
+                app.update_header();
+        }
     },
 
     clearStarRating:function(){
@@ -126,38 +145,17 @@ define([
 
     },
 
+    set_pointer:  function (newpointer) {
+        app.pointer = newpointer;
+    },
+
     initCards: function() {
-      $.getScript('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/glide.min.js').done(function() {
-
-        function setPointer(newpointer) {
-          app.pointer = newpointer;
-        }
-
-        //add speechcards
-        var li_template = "<li class='glide__slide'><div class='wordcards-poodllspeechcards_box'>@thetext@</div></li>";
-        var thelist = app.controls.the_list;
-
-        $.each(app.jsondata.terms, function(index, card) {
-          thelist.append(li_template.replace('@thetext@', card.term))
-        });
-
-        app.glider = $("#speechcards_glide").glide({
-          type: "carousel",
-          autoplay: false,
-          afterTransition: function(data) {
-            setPointer(data.index);
-            app.update_header();
-          },
-          afterInit: function(data) {
-            setPointer(data.index);
-          },
-        }).data('glide_api');
-      });
+        app.controls.slider.text(app.terms[app.pointer - 1].term);
     },
 
     initComponents: function() {
 
-        var that =this;
+      var that =this;
 
       //The logic here is that on correct we transition.
       //on incorrect we do not. A subsequent nav button click then doesnt need to post a result

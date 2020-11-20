@@ -639,36 +639,6 @@
     background-position: center;
 }
 
-.glide__wrapper {
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.glide__slide {
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.glide {
-    height: 150px !important;
-}
-
-.wordcards-poodllspeechcards_box {
-    text-align: center;
-    width: 225px;
-    font-size: 25px;
-    margin: auto;
-    border: 1px solid darkgray;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100px;
-    background-color: #f5f5f5;
-    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.75);
-}
-
 .wordcards-speechcards_toprow {
     margin: 15px auto;
     display: flex;
@@ -806,4 +776,17 @@
 .path-mod-wordcards .term-header .term-modelsentence {
     font-weight: normal;
     margin-top: 2px;
+}
+
+.wordcards-poodllspeechcards_box {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid black;
+    font-size: 32px;
+    width: 75%;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
