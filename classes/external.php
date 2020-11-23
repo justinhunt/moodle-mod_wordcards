@@ -160,4 +160,169 @@ class mod_wordcards_external extends external_api {
         return new external_value(PARAM_BOOL);
     }
 
+    public static function submit_mform_parameters() {
+        return new external_function_parameters(
+                array(
+                        'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                        'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
+                )
+        );
+    }
+
+    public static function submit_mform($contextid,$jsonformdata) {
+        global $CFG, $DB, $USER;
+
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::submit_mform_parameters(),
+                ['contextid' => $contextid, 'jsonformdata' => $jsonformdata]);
+
+        $context = context::instance_by_id($params['contextid'], MUST_EXIST);
+
+        // We always must call validate_context in a webservice.
+        self::validate_context($context);
+
+        //Init return object
+        $ret = new \stdClass();
+        $ret->termid=0;
+        $ret->error=true;
+        $ret->message="";
+
+
+        list($ignored, $course) = get_context_info_array($context->id);
+        $serialiseddata = json_decode($params['jsonformdata']);
+
+        $data = array();
+        parse_str($serialiseddata, $data);
+
+        //get filechooser and html editor options
+        $audiooptions= utils::fetch_filemanager_opts('audio');
+        $imageoptions= utils::fetch_filemanager_opts('image');;
+
+        // get the objects we need
+        $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
+        $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+
+
+        //we need to pretend this was posted and these help
+        $method='post';
+        $target='';
+        $attributes=null;
+        $editable=true;
+
+        //get the mform for our term
+        $mform = new \mod_wordcards_form_term(null,
+                ['termid' => $data['termid'] ? $data['termid'] : 0,'ttslanguage'=>$moduleinstance->ttslanguage],
+                        $method, $target,$attributes,$editable,$data
+                );
+       // $mform = new \mod_wordcards_form_term(null, $data);
+
+        $validateddata = $mform->get_data();
+        if ($validateddata) {
+
+            //currently data is an array, but it should be an object
+            $data = (object)$data;
+
+            //if this new add and collect data->id
+            $needsupdating = false;
+            if (empty($data->termid)) {
+                $data->modid = $moduleinstance->id;
+                $data->id  = $DB->insert_record('wordcards_terms', $data);
+
+            //else set id to termid
+            }else{
+                $data->id = $data->termid;
+                $needsupdating = true;
+            }
+            if($data->id){
+                $ret->error=false;
+            }
+
+
+            //audio data
+            if(!empty( $data->audio_filemanager)){
+                $data = file_postupdate_standard_filemanager($data, 'audio', $audiooptions, $context, constants::M_COMPONENT, 'audio',
+                        $data->id);
+                $needsupdating = true;
+
+                //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
+                $fs = get_file_storage();
+                $areafiles = $fs->get_area_files($context->id,'mod_wordcards','audio',$data->id);
+                if(!$areafiles || count($areafiles)==0){
+                    $data->audio='';
+                }elseif(count($areafiles)==1) {
+                    $file = array_pop($areafiles);
+                    if ($file->is_directory()) {
+                        $data->audio='';
+                    }
+                }
+
+            }
+
+            //model sentence audio data
+            if(!empty($data->model_sentence_audio_filemanager)){
+                //$data->audio_filemanager = $audioitemid;
+                $data = file_postupdate_standard_filemanager($data, 'model_sentence_audio', $audiooptions, $context, constants::M_COMPONENT, 'model_sentence_audio',
+                        $data->id);
+                $needsupdating = true;
+                //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
+                $fs = get_file_storage();
+                $areafiles = $fs->get_area_files($context->id,'mod_wordcards','model_sentence_audio',$data->id);
+
+                if(!$areafiles || count($areafiles)==0){
+                    $data->model_sentence_audio='';
+                }elseif(count($areafiles)==1) {
+                    $file = array_pop($areafiles);
+                    if ($file->is_directory()) {
+                        $data->model_sentence_audio='';
+                    }
+                }
+
+            }
+
+            if(!empty($data->image_filemanager)){
+                $data = file_postupdate_standard_filemanager($data, 'image', $imageoptions, $context, constants::M_COMPONENT, 'image',
+                        $data->id);
+                $needsupdating = true;
+
+                //in the case a user has deleted all files, we will still have the draftid in the image column, we want to set it to ''
+                $fs = get_file_storage();
+                $areafiles = $fs->get_area_files($context->id,'mod_wordcards','image',$data->id);
+                if(!$areafiles || count($areafiles)==0){
+                    $data->image='';
+                }elseif(count($areafiles)==1) {
+                    $file = array_pop($areafiles);
+                    if ($file->is_directory()) {
+                        $data->image='';
+                    }
+                }
+            }
+
+
+            //lets update the passage hash here before we save the item in db
+            if ($needsupdating) {
+                if($DB->update_record('wordcards_terms', $data)) {
+                    //also update our passagehash update flag
+                    $DB->update_record('wordcards', array('id' => $moduleinstance->id, 'hashisold' => 1));
+                    $ret->error=false;
+                }
+            }
+
+            if($ret->error==true){
+                //$ret->message = $ret->message;
+            }else{
+                $theitem=$data;
+                $ret->itemid=$theitem->id;
+                $ret->error=false;
+            }
+        }
+        return json_encode($ret);
+    }
+
+    public static function submit_mform_returns() {
+        return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_INT, 'group id');
+    }
+
 }

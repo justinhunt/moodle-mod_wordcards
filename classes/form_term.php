@@ -45,19 +45,19 @@ class mod_wordcards_form_term extends moodleform {
         $mform->addElement('text', 'model_sentence', get_string('model_sentence', constants::M_COMPONENT));
         $mform->setType('model_sentence', PARAM_NOTAGS);
         $mform->addHelpButton('model_sentence', 'model_sentence', constants::M_COMPONENT);
-        $mform->addRule('model_sentence', null, 'required', null, 'client');
         $mform->addRule('model_sentence', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-
-
  
         $mform->addElement('textarea', 'alternates', get_string('alternates', constants::M_COMPONENT));
         $mform->addHelpButton('alternates', 'alternates', constants::M_COMPONENT);
         $mform->setType('alternates', PARAM_NOTAGS);
 
         $voices=utils::get_tts_voices($ttslanguage);
-        $mform->addElement('select', 'ttsvoice', get_string('ttsvoice', 'mod_wordcards'),
+        $mform->addElement('select', 'ttsvoice', get_string('ttsvoice', constants::M_COMPONENT),
                 $voices);
         $mform->addHelpButton('ttsvoice', 'ttsvoice', constants::M_COMPONENT);
+
+        $mform->addElement('header', 'audioandimages', get_string('audioandimages', constants::M_COMPONENT));
+        $mform->setExpanded('audioandimages', false);
 
         $filemanageropts = utils::fetch_filemanager_opts('audio');
         $mform->addElement('filemanager', 'audio_filemanager', get_string('audiofile', constants::M_COMPONENT), null,

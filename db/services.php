@@ -52,4 +52,12 @@ $functions = array(
             'type'        => 'write',
             'ajax'        => true,
     ),
+    'mod_wordcards_submit_mform' => array(
+                'classname'   => 'mod_wordcards_external',
+                'methodname'  => 'submit_mform',
+                'description' => 'saves or edits term/def form',
+                'capabilities'=> 'mod/wordcards:view',
+                'type'        => 'write',
+                'ajax'        => true,
+     ),
 );

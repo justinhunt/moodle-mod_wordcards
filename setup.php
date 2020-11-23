@@ -61,8 +61,7 @@ if (!$term) {
 $audiooptions= utils::fetch_filemanager_opts('audio');
 $imageoptions= utils::fetch_filemanager_opts('image');
 file_prepare_standard_filemanager($term, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio', $term->id);
-file_prepare_standard_filemanager($term, 'image', $audiooptions, $modulecontext, constants::M_COMPONENT, 'image', $term->id);
-
+file_prepare_standard_filemanager($term, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image', $term->id);
 file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
 
 
@@ -165,10 +164,14 @@ echo $output->heading($pagetitle);
 echo $output->navigation($mod, 'setup');
 echo $output->box(get_string('setupinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
 
-$form->display();
+// $form->display();
+echo html_writer::link('#',get_string('addnewterm',constants::M_COMPONENT),
+        array('class'=>'btn btn-primary mod_wordcards_item_row_addlink','data-id'=>0,'data-type'=>"add"));
 
 $table = new mod_wordcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);
 $table->out(25, false);
 
+$props=array('contextid'=>$modulecontext->id);
+$PAGE->requires->js_call_amd(constants::M_COMPONENT . '/setuphelper', 'init', array($props));
 echo $output->footer();

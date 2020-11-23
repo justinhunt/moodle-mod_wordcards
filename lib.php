@@ -477,3 +477,49 @@ function wordcards_scale_used_anywhere($scaleid) {
     }
 }
 
+function wordcards_output_fragment_mform($args) {
+    global $CFG, $PAGE, $DB;
+
+    $args = (object) $args;
+    $context = $args->context;
+    $formname = $args->formname;
+    $mform= null;
+    $o = '';
+
+    // get the objects we need
+    $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+
+    if($args->itemid) {
+        $term = $DB->get_record('wordcards_terms', ['modid' => $moduleinstance->id, 'id' => $args->itemid], '*');
+    }else{
+        $term=false;
+    }
+    if (!$term) {
+        $term = new stdClass();
+        $term->id=null;
+    }
+
+    list($ignored, $course) = get_context_info_array($context->id);
+
+    //get filechooser and html editor options
+    $audiooptions= utils::fetch_filemanager_opts('audio');
+    $imageoptions= utils::fetch_filemanager_opts('image');
+    file_prepare_standard_filemanager($term, 'audio', $audiooptions, $context, constants::M_COMPONENT, 'audio', $term->id);
+    file_prepare_standard_filemanager($term, 'image', $imageoptions, $context, constants::M_COMPONENT, 'image', $term->id);
+    file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $context, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
+
+    $theform = new mod_wordcards_form_term(null, ['termid' => $term ? $term->id : 0,'ttslanguage'=>$moduleinstance->ttslanguage],null,null,array('class'=>'mod_wordcards_form_term'));
+    $theform->set_data($term);
+
+    if(!empty($theform)) {
+        ob_start();
+        $theform->display();
+        $o .= ob_get_contents();
+        ob_end_clean();
+    }
+
+    return $o;
+}
+

@@ -258,3 +258,5 @@ $string['setupinstructions']='Enter words for the activity using the form below.
 $string['model_sentence'] = 'Model sentence';
 $string['model_sentence_audio'] = 'Model sentence audio';
 $string['model_sentence_help'] = 'Enter model sentence of the term(word/phrase) here. It should be short but still tell the student what the term means.';
+$string['audioandimages'] = 'Audio and Images';
+$string['addnewterm']= "Add";

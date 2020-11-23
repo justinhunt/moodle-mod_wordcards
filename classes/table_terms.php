@@ -88,6 +88,12 @@ class mod_wordcards_table_terms extends table_sql {
             get_string('editterm', 'mod_wordcards', $row->term)));
         $actions[] = $actionlink;
 
+        //ajax action
+        $ajaxeditlink = $OUTPUT->action_link('#', '', null, array('data-id'=>$row->id,'data-type'=>"edit",'class'=>"mod_wordcards_item_row_editlink"), new pix_icon('t/edit',
+                get_string('editterm', 'mod_wordcards', $row->term)));
+        $actions[] = $ajaxeditlink;
+
+
         $action = new confirm_action(get_string('reallydeleteterm', 'mod_wordcards', $row->term));
         $url = new moodle_url($this->baseurl);
         $url->params(['action' => 'delete', 'termid' => $row->id, 'sesskey' => sesskey()]);
