@@ -82,11 +82,14 @@ class mod_wordcards_table_terms extends table_sql {
 
         $actions = [];
 
+        //non AJAX edit form - defunct
+        /*
         $url = new moodle_url($this->baseurl);
         $url->params(['action' => 'edit', 'termid' => $row->id]);
         $actionlink = $OUTPUT->action_link($url, '', null, null, new pix_icon('t/edit',
             get_string('editterm', 'mod_wordcards', $row->term)));
         $actions[] = $actionlink;
+        */
 
         //ajax action
         $ajaxeditlink = $OUTPUT->action_link('#', '', null, array('data-id'=>$row->id,'data-type'=>"edit",'class'=>"mod_wordcards_item_row_editlink"), new pix_icon('t/edit',
