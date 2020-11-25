@@ -24,6 +24,14 @@ define(['jquery','core/templates'], function($,templates) {
                 return false;
             }
         },
+        iphone_user:function(){
+            if( /iPhone|iPod/i.test(navigator.userAgent) ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
         shuffle:function(a) {
             var j, x, i;
             for (i = a.length; i; i -= 1) {
@@ -40,7 +48,12 @@ define(['jquery','core/templates'], function($,templates) {
             }, 100);
         },
         off:function(){
-            $("body").off(keyboard.mobile_user()?'touchstart':'click',".chunk-key").off("click","#delete-chunk-input").off("click","#clear-chunk-input").off("click","#submit-chunk-input").off("keypress").off("keydown");
+            $("body").off(keyboard.mobile_user()?'touchstart':'click',".chunk-key")
+            .off("click","#delete-chunk-input")
+            .off("click","#clear-chunk-input")
+            .off("click","#submit-chunk-input")
+            .off("keypress")
+            .off("keydown");
         },
         clear:function(){
             keyboard.off();
@@ -107,10 +120,14 @@ define(['jquery','core/templates'], function($,templates) {
                 }
                 e.preventDefault();
             };
-            $("body").off('touchstart',".chunk-key");
-            $("body").off('click',".chunk-key");
-            $("body").on('touchstart',".chunk-key",click_and_touchstart);
-            $("body").on('click',".chunk-key",click_and_touchstart);
+            
+            if(keyboard.mobile_user() && !keyboard.iphone_user()){
+              $("body").off('touchstart',".chunk-key");
+              $("body").on('touchstart',".chunk-key",click_and_touchstart);
+            }else{
+              $("body").off('click',".chunk-key");
+              $("body").on('click',".chunk-key",click_and_touchstart);            
+            }
 
 
             $("body").on("touchmove","#"+target,function(e){

@@ -1,5 +1,6 @@
-1.2.9 (Build xxxx)
+1.2.9 (Build 2020112500)
 -Added an ajax fragmentable form constructor
+-Fixed bug affecting keyboard on mobile devices
 
 1.2.8 (Build 2020111700)
 -Added new speech servers
