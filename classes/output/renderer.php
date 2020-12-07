@@ -97,6 +97,8 @@ class renderer extends \plugin_renderer_base {
             'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'state'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
+            'definition_grid' => $this->image_url('grid', 'mod_wordcards')->out(true),
+            'definition_flashcards' => $this->image_url('flashcards', 'mod_wordcards')->out(true),
             'seenall' => count($definitions) == count($seen),
             'seenurl' => $this->image_url('seen', 'mod_wordcards')->out(true),
             'str_term' => get_string('term', 'mod_wordcards'),

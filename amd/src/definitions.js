@@ -1,123 +1,100 @@
-define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/str','core/modal_events', 'mod_wordcards/a4e'],
-    function($, Ajax, Notification,ModalFactory, str, ModalEvents, a4e) {
-  "use strict"; // jshint ;_;
+define("mod_wordcards/definitions", ["jquery", "core/ajax", "core/notification", "core/modal_factory", "core/str", "core/modal_events", "mod_wordcards/a4e"], function (a, b, c, d, e, f, g) {
+	"use strict";
+	return {
+		strings: {},
+		init: function init(e) {
+			var i = this;
+			this.init_strings();
+			var j = "#" + e.widgetid,
+				k = a(j).get(0);
+			if (k) {
+				var l = JSON.parse(k.value);
+				this.props = l;
+				a(j).remove()
+			} else {
+				log.debug("No config found on page. Giving up.");
+				return
+			}
+			var m = a("#definitions-page-" + e.widgetid),
+				n = l.modid,
+				o = l.canmanage,
+				p = l.canattempt,
+				q = m.find(".definitions-next");
+			g.register_events();
+			g.init_audio(l.token, l.region, l.owner);
 
-  return {
-
-    strings: {},
-
-    init: function(opts) {
-
-        var that = this;
-
-        //init strings
-        this.init_strings();
-
-        //pick up opts from html
-        var theid = '#' + opts['widgetid'];
-        var propscontrol = $(theid).get(0);
-        if (propscontrol) {
-            var props = JSON.parse(propscontrol.value);
-            this.props =props;
-            $(theid).remove();
-        } else {
-            //if there is no config we might as well give up
-            log.debug('No config found on page. Giving up.');
-            return;
-        }
-
-      var container = $('#definitions-page-' + opts['widgetid']),
-        modid = props.modid,
-        canmanage = props.canmanage,
-        canattempt = props.canattempt,
-        btn = container.find('.definitions-next');
-
-       //set up audio
-       a4e.register_events();
-       a4e.init_audio(props.token,props.region,props.owner);
-
-      function seenAll() {
-        return container.find('.term').length === container.find('.term.term-seen').length
-      }
-
-      container.on('click', '.term-seen-action', function(e) {
-        e.preventDefault();
-
-        var termNode = $(this).parents('.term').first(),
-          termId = termNode.data('termid');
-
-        // TODO Ajax.
-        termNode.addClass('term-loading');
-        Ajax.call([{
-            'methodname': 'mod_wordcards_mark_as_seen',
-            'args': {
-              'termid': termId
-            }
-          }])[0].then(function(result) {
-            if (!result) {
-              return $.Deferred().reject();
-            }
-            termNode.addClass('term-seen');
-          })
-          .fail(Notification.exception)
-          .always(function() {
-            termNode.removeClass('term-loading');
-            if (seenAll()) {
-              btn.prop('disabled', false);
-            }
-          });
-      });
-
-      // Teachers can jump to the next steps.
-      if (!seenAll() && !canmanage) {
-        btn.prop('disabled', true);
-      }
-
-      btn.click(function(e) {
-        e.preventDefault();
-        var buttonhref= $(this).data('href');
-
-        //f its not a reattempt ... proceed
-        if($(this).data('action')!=='reattempt') {
-            window.location.href = buttonhref;
-            return;
-        }
-
-        //if its a reattempt, confirm and proceed
-          ModalFactory.create({
-              type: ModalFactory.types.SAVE_CANCEL,
-              title: that.strings.reattempttitle,
-              body: that.strings.reattemptbody
-          })
-          .then(function(modal) {
-              modal.setSaveButtonText(that.strings.reattempt);
-              var root = modal.getRoot();
-              root.on(ModalEvents.save, function() {
-                  window.location.href = buttonhref;
-              });
-              modal.show();
-          });
-
-      });
-
-    },
-
-    init_strings: function(){
-        var that = this;
-        // set up strings
-        str.get_strings([
-            {"key": "reattempttitle",       "component": 'mod_wordcards'},
-            {"key": "reattemptbody",           "component": 'mod_wordcards'},
-            {"key": "reattempt",           "component": 'mod_wordcards'}
-
-        ]).done(function(s) {
-            var i = 0;
-            that.strings.reattempttitle = s[i++];
-            that.strings.reattemptbody = s[i++];
-            that.strings.reattempt = s[i++];
-        });
-    }
-
-  }
-
+			function h() {
+				return m.find(".term").length === m.find(".term.term-seen").length
+			}
+			m.on("click", ".term-seen-action", function (d) {
+				d.preventDefault();
+				var e = a(this).parents(".term").first(),
+					f = e.data("termid");
+				e.addClass("term-loading");
+					
+				b.call([{
+					methodname: "mod_wordcards_mark_as_seen",
+					args: {
+						termid: f
+					}
+				}])[0].then(function (b) {
+					if (!b) {
+						return a.Deferred().reject()
+					}
+					//e.addClass("term-seen")
+					$('.definition_flashcards [data-termid="'+f+'"]').addClass('term-seen')
+					$('.definition_grid [data-termid="'+f+'"]').addClass('term-seen')
+					
+				}).fail(c.exception).always(function () {
+					e.removeClass("term-loading");
+					if (h()) {
+						q.prop("disabled", !1)
+					}
+				})
+			});
+			if (!h() && !o) {
+				q.prop("disabled", !0)
+			}
+			q.click(function (b) {
+				b.preventDefault();
+				var c = a(this).data("href");
+				if ("reattempt" !== a(this).data("action")) {
+					window.location.href = c;
+					return
+				}
+				d.create({
+					type: d.types.SAVE_CANCEL,
+					title: i.strings.reattempttitle,
+					body: i.strings.reattemptbody
+				}).then(function (a) {
+					a.setSaveButtonText(i.strings.reattempt);
+					var b = a.getRoot();
+					b.on(f.save, function () {
+						window.location.href = c
+					});
+					a.show()
+				})
+			})
+		},
+		init_strings: function init_strings() {
+			var a = this;
+			e.get_strings([{
+				key: "reattempttitle",
+				component: "mod_wordcards"
+			}, {
+				key: "reattemptbody",
+				component: "mod_wordcards"
+			}, {
+				key: "reattempt",
+				component: "mod_wordcards"
+			}]).done(function (b) {
+				var c = 0;
+				a.strings.reattempttitle = b[c++];
+				a.strings.reattemptbody = b[c++];
+				a.strings.reattempt = b[c++]
+			})
+		}
+	}
 });
+
+//# sourceMappingURL=definitions.min.js.map
