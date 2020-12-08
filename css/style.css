@@ -139,6 +139,7 @@ ul.definition_flashcards_ul {
 }
 
 .flash_img{
-	width:100%;
+	width: auto;
 	height: 180px;
+    margin: auto;
 }
