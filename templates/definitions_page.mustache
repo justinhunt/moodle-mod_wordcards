@@ -11,7 +11,7 @@
 </div>
 }}
 <div id="definitions-page-{{uniqid}}" class="definitions-container">
-<h3 class="text-center font-weight-bold" style="border-radius:10px;background-color:lightgray;padding:5px;margin-bottom:10px">Check all the words to continue: <span  class="event_grid" style="float:right;cursor: pointer;"> <img src="{{definition_flashcards}}" style="width: 40px;height: 38px;" alt="{{definition_flashcards}}"> </span><span class="event_flashcards" style="float:right;cursor: pointer;"><img src="{{definition_grid}}" style="width: 40px;height: 38px;" alt="{{definition_grid}}"></span></h3>
+<h3 class="text-center font-weight-bold" style="border-radius:10px;background-color:lightgray;padding:5px;margin-bottom:10px">Check all the words to continue: <span class="wordcards_display_options"><span class="wordcards_display_option event_grid"><i class="fa fa-th"></i></span><span class="wordcards_display_option event_flashcards"><i class="fa fa-clone"></i></span></span></h3>
 <div class="terms clearfix definition_grid">
    {{#definitions}}
    <div class="term-wrapper">
@@ -131,11 +131,11 @@
 		$('.wrapper_pr').append('<div class="mb_nav"><span class="curr_level_card">1</span> / <span class="tot_level_card">' + definition_flashcards_ul + '</span></div>');
 		$('.ProgressBar').hide();
 	}
-	$('.event_grid').click(function () {
+	$('.event_flashcards').click(function () {
 		$('.definition_flashcards').show();
 		$('.definition_grid').hide();
 	});
-	$('.event_flashcards').click(function () {
+	$('.event_grid').click(function () {
 		$('.definition_flashcards').hide();
 		$('.definition_grid').show();
 	});

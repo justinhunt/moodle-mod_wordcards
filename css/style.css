@@ -139,7 +139,15 @@ ul.definition_flashcards_ul {
 }
 
 .flash_img{
+    max-width: 100%;
 	width: auto;
 	height: 180px;
-    margin: auto;
+}
+
+.wordcards_display_options {
+   float: right;
+}
+.wordcards_display_option {
+   cursor: pointer;
+   padding: 8px;
 }
