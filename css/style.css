@@ -15,6 +15,7 @@
   text-align: center;
   position: relative;
   width: 100%;
+  margin-left:3%;
 }
 .ProgressBar-step:before, .ProgressBar-step:after {
   content: "";
@@ -46,6 +47,7 @@
     height: 1.5em;
     /* background-color: #9F9FA3; */
     /* fill: #9F9FA3; */
+	cursor: pointer;
     border-radius: 50%;
     border: 1px solid;
     padding: 0.5em;
@@ -121,3 +123,22 @@ ul.definition_flashcards_ul {
 	opacity: 0.6;
 }
 
+.add_wraper_handle_im{
+	margin-top: 5%;
+	width: 100% !important;
+}
+.add_wraper_handle{
+	width: 100% !important;
+}
+@media only screen and (max-width: 750px) {
+
+ .df_fl{
+   width: 100%;
+   margin: 0 auto;
+   }
+}
+
+.flash_img{
+	width:100%;
+	height: 180px;
+}
