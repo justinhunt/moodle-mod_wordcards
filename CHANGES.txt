@@ -1,3 +1,6 @@
+1.3.0 (Build 2020121100)
+-Added a proper flashcards mode
+
 1.2.9 (Build 2020112500)
 -Added an ajax fragmentable form constructor
 -Fixed bug affecting keyboard on mobile devices
