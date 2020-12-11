@@ -1,89 +1,101 @@
-define("mod_wordcards/definitions", ["jquery", "core/ajax", "core/notification", "core/modal_factory", "core/str", "core/modal_events", "mod_wordcards/a4e"], function (a, b, c, d, e, f, g) {
-	"use strict";
-	return {
-		strings: {},
-		init: function init(e) {
-			var i = this;
-			this.init_strings();
-			var j = "#" + e.widgetid,
-				k = a(j).get(0);
-			if (k) {
-				var l = JSON.parse(k.value);
-				this.props = l;
-				a(j).remove()
-			} else {
-				log.debug("No config found on page. Giving up.");
-				return
-			}
-			/* flashcards code start */
-			var ef = a(".event_flashcards");
-			var eg = a(".event_grid");
+define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/str','core/modal_events', 'mod_wordcards/a4e'],
+    function($, Ajax, Notification,ModalFactory, str, ModalEvents, a4e) {
+  "use strict"; // jshint ;_;
+
+  return {
+
+    strings: {},
+
+    init: function(opts) {
+
+        var that = this;
+
+        //init strings
+        this.init_strings();
+
+        //pick up opts from html
+        var theid = '#' + opts['widgetid'];
+        var propscontrol = $(theid).get(0);
+        if (propscontrol) {
+            var props = JSON.parse(propscontrol.value);
+            this.props =props;
+            $(theid).remove();
+        } else {
+            //if there is no config we might as well give up
+            log.debug('No config found on page. Giving up.');
+            return;
+        }
+
+/* flashcards code start */
+			var ef = $(".event_flashcards");
+			var eg = $(".event_grid");
 
 			$('.ProgressBar-step').on('click', function () {
 				if ($(this).hasClass("is-current")) {
 					return false;
 				}
-				a('.ProgressBar-step').removeClass("is-current").removeClass('is-complete');
-				a(this).addClass("is-current");
+				$('.ProgressBar-step').removeClass("is-current").removeClass('is-complete');
+				$(this).addClass("is-current");
 				var str = $(this).index();
 				if (str > 0) {
 					for (var i = 0; i <= str; i++) {
-						a('.ProgressBar')
+						$('.ProgressBar')
 							.find('li:eq(' + i + ')')
 							.addClass('is-complete');
 					}
 				}
-				a('.definition_flashcards_ul li').slideUp(300);
-				a('.definition_flashcards_ul')
+				$('.definition_flashcards_ul li').slideUp(300);
+				$('.definition_flashcards_ul')
 					.find('li:eq(' + str + ')')
 					.slideDown(300);
-				a('.is-current').removeClass('is-complete');
+				$('.is-current').removeClass('is-complete');
 				check_prev_level();
 				check_next_level();
 
 			});
+			
 			if (window.matchMedia("(max-width: 767px)").matches) {
 
-				var definition_flashcards_ul = a('.definition_flashcards_ul li').length;
-				a('.wrapper_pr').append('<div class="mb_nav"><span class="curr_level_card">1</span> / <span class="tot_level_card">' + definition_flashcards_ul + '</span></div>');
-				a('.ProgressBar').hide();
+				var definition_flashcards_ul = $('.definition_flashcards_ul li').length;
+				$('.wrapper_pr').append('<div class="mb_nav"><span class="curr_level_card">1</span> / <span class="tot_level_card">' + definition_flashcards_ul + '</span></div>');
+				$('.ProgressBar').hide();
 			}
-			a(".definition_flashcards_ul li:gt(0)").hide();
-			var $bar = a(".ProgressBar");
+			$(".definition_flashcards_ul li:gt(0)").hide();
+			var $bar = $(".ProgressBar");
 			$bar.children("li:first").addClass('is-current');
 			check_prev_level();
 			check_next_level();
 			ef.click(function (d) {
 				d.preventDefault();
-				a('.definition_flashcards').show();
-				a('.definition_grid').hide();
+				$('.definition_flashcards').show();
+				$('.definition_grid').hide();
 			});
 			eg.click(function (d) {
 				d.preventDefault();
-				a('.definition_flashcards').hide();
-				a('.definition_grid').show();
+				$('.definition_flashcards').hide();
+				$('.definition_grid').show();
 			});
 
 			function check_prev_level() {
 
-				var $bar = a(".ProgressBar");
+				var $bar = $(".ProgressBar");
 				if ($bar.children("li:first").hasClass('is-current') === true) {
-					a('#Prev').attr('disabled', 'disabled').addClass('add_opacity_level');
+					$('#Prev').attr('disabled', 'disabled').addClass('add_opacity_level');
 					return true;
 				}
 
-				a('#Prev').removeAttr('disabled');
-				a('#Prev').removeAttr('disabled').removeClass('add_opacity_level');
+				$('#Prev').removeAttr('disabled');
+				$('#Prev').removeAttr('disabled').removeClass('add_opacity_level');
 			}
 
-			a('#Next').click(function () {
-				var cr_index = a(".is-current").index() + 1;
+			$('#Next').click(function () {
+				var cr_index = $(".is-current").index() + 1;
 				$('.definition_flashcards_ul li').slideUp(300);
 				$('.definition_flashcards_ul li:eq(' + cr_index + ')').slideDown(300);
-				var curr_level_card = a('.curr_level_card').html();
+				var curr_level_card = $('.curr_level_card').html();
 				$('.curr_level_card').html(parseInt(curr_level_card) + 1);
 
-				var $bar = a(".ProgressBar");
+				var $bar = $(".ProgressBar");
 				if ($bar.children(".is-current").length > 0) {
 					$bar.children(".is-current").removeClass("is-current").addClass("is-complete").next().addClass("is-current");
 				} else {
@@ -93,12 +105,12 @@ define("mod_wordcards/definitions", ["jquery", "core/ajax", "core/notification",
 				check_next_level();
 			});
 
-			a('#Prev').click(function () {
+			$('#Prev').click(function () {
 				var cr_index = $(".is-current").index() - 1;
-				a('.definition_flashcards_ul li').slideUp(300);
-				a('.definition_flashcards_ul li:eq(' + cr_index + ')').slideDown(300);
-				var curr_level_card = a('.curr_level_card').html();
-				a('.curr_level_card').html(parseInt(curr_level_card) - 1);
+				$('.definition_flashcards_ul li').slideUp(300);
+				$('.definition_flashcards_ul li:eq(' + cr_index + ')').slideDown(300);
+				var curr_level_card = $('.curr_level_card').html();
+				$('.curr_level_card').html(parseInt(curr_level_card) - 1);
 				var $bar = $(".ProgressBar");
 				if ($bar.children(".is-current").length > 0) {
 					$bar.children(".is-current").removeClass("is-current").prev().removeClass("is-complete").addClass("is-current");
@@ -110,94 +122,108 @@ define("mod_wordcards/definitions", ["jquery", "core/ajax", "core/notification",
 			});
 
 			function check_next_level() {
-				var $bar = a(".ProgressBar");
+				var $bar = $(".ProgressBar");
 				if ($bar.children("li:last").hasClass('is-current') === true) {
-					a('#Next').attr('disabled', 'disabled').addClass('add_opacity_level');
+					$('#Next').attr('disabled', 'disabled').addClass('add_opacity_level');
 					return true;
 				}
-				a('#Next').removeAttr('disabled').removeClass('add_opacity_level');
+				$('#Next').removeAttr('disabled').removeClass('add_opacity_level');
 			}
 			/* flashcards code end */
-			var m = a("#definitions-page-" + e.widgetid),
-				n = l.modid,
-				o = l.canmanage,
-				p = l.canattempt,
-				q = m.find(".definitions-next");
-			g.register_events();
-			g.init_audio(l.token, l.region, l.owner);
+      var container = $('#definitions-page-' + opts['widgetid']),
+        modid = props.modid,
+        canmanage = props.canmanage,
+        canattempt = props.canattempt,
+        btn = container.find('.definitions-next');
 
-			function h() {
-				return m.find(".term").length === m.find(".term.term-seen").length
-			}
-			m.on("click", ".term-seen-action", function (d) {
-				d.preventDefault();
-				var e = a(this).parents(".term").first(),
-					f = e.data("termid");
-				e.addClass("term-loading");
+       //set up audio
+       a4e.register_events();
+       a4e.init_audio(props.token,props.region,props.owner);
 
-				b.call([{
-					methodname: "mod_wordcards_mark_as_seen",
-					args: {
-						termid: f
-					}
-				}])[0].then(function (b) {
-					if (!b) {
-						return a.Deferred().reject()
-					}
-					//e.addClass("term-seen")
-					$('.definition_flashcards [data-termid="' + f + '"]').addClass('term-seen')
-					$('.definition_grid [data-termid="' + f + '"]').addClass('term-seen')
+      function seenAll() {
+        return container.find('.term').length === container.find('.term.term-seen').length
+      }
 
-				}).fail(c.exception).always(function () {
-					e.removeClass("term-loading");
-					if (h()) {
-						q.prop("disabled", !1)
-					}
-				})
-			});
-			if (!h() && !o) {
-				q.prop("disabled", !0)
-			}
-			q.click(function (b) {
-				b.preventDefault();
-				var c = a(this).data("href");
-				if ("reattempt" !== a(this).data("action")) {
-					window.location.href = c;
-					return
-				}
-				d.create({
-					type: d.types.SAVE_CANCEL,
-					title: i.strings.reattempttitle,
-					body: i.strings.reattemptbody
-				}).then(function (a) {
-					a.setSaveButtonText(i.strings.reattempt);
-					var b = a.getRoot();
-					b.on(f.save, function () {
-						window.location.href = c
-					});
-					a.show()
-				})
-			})
-		},
-		init_strings: function init_strings() {
-			var a = this;
-			e.get_strings([{
-				key: "reattempttitle",
-				component: "mod_wordcards"
-			}, {
-				key: "reattemptbody",
-				component: "mod_wordcards"
-			}, {
-				key: "reattempt",
-				component: "mod_wordcards"
-			}]).done(function (b) {
-				var c = 0;
-				a.strings.reattempttitle = b[c++];
-				a.strings.reattemptbody = b[c++];
-				a.strings.reattempt = b[c++]
-			})
-		}
-	}
+      container.on('click', '.term-seen-action', function(e) {
+        e.preventDefault();
+
+        var termNode = $(this).parents('.term').first(),
+          termId = termNode.data('termid');
+
+        // TODO Ajax.
+        termNode.addClass('term-loading');
+        Ajax.call([{
+            'methodname': 'mod_wordcards_mark_as_seen',
+            'args': {
+              'termid': termId
+            }
+          }])[0].then(function(result) {
+            if (!result) {
+              return $.Deferred().reject();
+            }
+//            termNode.addClass('term-seen');
+			$('.definition_flashcards [data-termid="' + f + '"]').addClass('term-seen')
+			$('.definition_grid [data-termid="' + f + '"]').addClass('term-seen')
+          })
+          .fail(Notification.exception)
+          .always(function() {
+            termNode.removeClass('term-loading');
+            if (seenAll()) {
+              btn.prop('disabled', false);
+            }
+          });
+      });
+
+      // Teachers can jump to the next steps.
+      if (!seenAll() && !canmanage) {
+        btn.prop('disabled', true);
+      }
+
+      btn.click(function(e) {
+        e.preventDefault();
+        var buttonhref= $(this).data('href');
+
+        //f its not a reattempt ... proceed
+        if($(this).data('action')!=='reattempt') {
+            window.location.href = buttonhref;
+            return;
+        }
+
+        //if its a reattempt, confirm and proceed
+          ModalFactory.create({
+              type: ModalFactory.types.SAVE_CANCEL,
+              title: that.strings.reattempttitle,
+              body: that.strings.reattemptbody
+          })
+          .then(function(modal) {
+              modal.setSaveButtonText(that.strings.reattempt);
+              var root = modal.getRoot();
+              root.on(ModalEvents.save, function() {
+                  window.location.href = buttonhref;
+              });
+              modal.show();
+          });
+
+      });
+
+    },
+
+    init_strings: function(){
+        var that = this;
+        // set up strings
+        str.get_strings([
+            {"key": "reattempttitle",       "component": 'mod_wordcards'},
+            {"key": "reattemptbody",           "component": 'mod_wordcards'},
+            {"key": "reattempt",           "component": 'mod_wordcards'}
+
+        ]).done(function(s) {
+            var i = 0;
+            that.strings.reattempttitle = s[i++];
+            that.strings.reattemptbody = s[i++];
+            that.strings.reattempt = s[i++];
+        });
+    }
+
+  }
+
 });
-
-//# sourceMappingURL=definitions.min.js.map
