@@ -29,11 +29,11 @@ class mod_wordcards_form_import extends moodleform {
          );
         $mform->addElement('select', 'delimiter', get_string('delimiter', 'mod_wordcards'),$delimiter_options);
         $mform->setType('delimiter', PARAM_NOTAGS);
-        $mform->setDefault('delimiter', 'delim_tab');
+        $mform->setDefault('delimiter', 'delim_comma');
         $mform->addRule('delimiter', null, 'required', null, 'client');
 
         
-        $mform->addElement('textarea', 'importdata', get_string('importdata', 'mod_wordcards'));
+        $mform->addElement('textarea', 'importdata', get_string('importdata', 'mod_wordcards'), array('style'=>'width: 100%'));
         $mform->setDefault('importdata', $leftover_rows);
         $mform->setType('importdata', PARAM_NOTAGS);
         $mform->addRule('importdata', null, 'required', null, 'client');

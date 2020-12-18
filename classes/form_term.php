@@ -26,28 +26,29 @@ class mod_wordcards_form_term extends moodleform {
         $mform = $this->_form;
         $termid = $this->_customdata['termid'];
         $ttslanguage = $this->_customdata['ttslanguage'];
+        $bigwidth = array('style'=>'width: 100%');
 
         $mform->addElement('hidden', 'termid');
         $mform->setType('termid', PARAM_INT);
         $mform->setConstant('termid', $termid);
 
-        $mform->addElement('text', 'term', get_string('term', constants::M_COMPONENT));
+        $mform->addElement('text', 'term', get_string('term', constants::M_COMPONENT),$bigwidth);
         $mform->setType('term', PARAM_NOTAGS);
         $mform->addHelpButton('term', 'term', constants::M_COMPONENT);
         $mform->addRule('term', null, 'required', null, 'client');
         $mform->addRule('term', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
     
-        $mform->addElement('textarea', 'definition', get_string('definition', constants::M_COMPONENT));
+        $mform->addElement('textarea', 'definition', get_string('definition', constants::M_COMPONENT),$bigwidth);
         $mform->setType('definition', PARAM_NOTAGS);
         $mform->addHelpButton('definition', 'definition', constants::M_COMPONENT);
         $mform->addRule('definition', null, 'required', null, 'client');
     
-        $mform->addElement('text', 'model_sentence', get_string('model_sentence', constants::M_COMPONENT));
+        $mform->addElement('text', 'model_sentence', get_string('model_sentence', constants::M_COMPONENT),$bigwidth);
         $mform->setType('model_sentence', PARAM_NOTAGS);
         $mform->addHelpButton('model_sentence', 'model_sentence', constants::M_COMPONENT);
         $mform->addRule('model_sentence', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
  
-        $mform->addElement('textarea', 'alternates', get_string('alternates', constants::M_COMPONENT));
+        $mform->addElement('textarea', 'alternates', get_string('alternates', constants::M_COMPONENT),$bigwidth);
         $mform->addHelpButton('alternates', 'alternates', constants::M_COMPONENT);
         $mform->setType('alternates', PARAM_NOTAGS);
 

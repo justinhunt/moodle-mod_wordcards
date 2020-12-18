@@ -7,6 +7,7 @@
  */
 
 use \mod_wordcards\constants;
+use \mod_wordcards\utils;
 
 require_once(__DIR__ . '/../../config.php');
 
@@ -57,12 +58,22 @@ if ($data = $form->get_data()) {
     	$failed = array();
     	
     	foreach($rows as $row){
-    		$cols = explode($delimiter,$row,2);
-    		if(count($cols)==2 && !empty($cols[0]) && !empty($cols[1])){ 
+    		$cols = explode($delimiter,$row);
+    		if(count($cols)>=2 && !empty($cols[0]) && !empty($cols[1])){
 				$insertdata = new stdClass();
 				$insertdata->modid = $modid;
-				$insertdata->term = $cols[0];
-				$insertdata->definition = $cols[1];
+				$insertdata->term = trim($cols[0]);
+				$insertdata->definition = trim($cols[1]);
+				//voices
+                $voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
+				if(!empty($cols[2]) && array_key_exists(trim($cols[2]),$voices) && trim($cols[2])!='auto') {
+                    $insertdata->ttsvoice = trim($cols[2]);
+                }else{
+                    $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+                }
+                if(!empty($cols[3])) {
+                    $insertdata->model_sentence = trim($cols[3]);
+                }
 				$DB->insert_record('wordcards_terms', $insertdata);
 				$imported++;
         	}else{
