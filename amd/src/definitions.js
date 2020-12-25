@@ -147,10 +147,10 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
       container.on('click', '.term-seen-action', function(e) {
         e.preventDefault();
 
-        var termNode = $(this).parents('.term').first(),
-          termId = termNode.data('termid');
+        var termNode = $(this).parents('.term').first();
+        var termId = termNode.data('termid');
 
-        // TODO Ajax.
+        //On the clicked (and visible) node add loading
         termNode.addClass('term-loading');
         Ajax.call([{
             'methodname': 'mod_wordcards_mark_as_seen',
@@ -161,12 +161,17 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
             if (!result) {
               return $.Deferred().reject();
             }
-//            termNode.addClass('term-seen');
-			$('.definition_flashcards [data-termid="' + f + '"]').addClass('term-seen')
-			$('.definition_grid [data-termid="' + f + '"]').addClass('term-seen')
+
+          //since we have two nodes (grid and flashcards) for a single term,
+			// and the user might toggle between the grid and flashcards view we need to update both
+			//so the old termNode.addClass('term-seen') is no good. it would only update one
+          //  termNode.addClass('term-seen');
+			$('.definition_flashcards [data-termid="' + termId + '"]').addClass('term-seen')
+			$('.definition_grid [data-termid="' + termId + '"]').addClass('term-seen')
           })
           .fail(Notification.exception)
           .always(function() {
+          	//remove loading from  node which loading was applied to
             termNode.removeClass('term-loading');
             if (seenAll()) {
               btn.prop('disabled', false);
