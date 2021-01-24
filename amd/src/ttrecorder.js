@@ -114,6 +114,7 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
             this.passagehash =this.controls.recorderbutton.data('passagehash');
             this.region=this.controls.recorderbutton.data('region');
             this.asrurl=this.controls.recorderbutton.data('asrurl');
+            this.lang=this.controls.recorderbutton.data('lang');
             this.maxTime=this.controls.recorderbutton.data('maxtime');
             this.waveHeight=this.controls.recorderbutton.data('waveheight');
         },
@@ -237,7 +238,7 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
             var blobname = this.uniqueid + Math.floor(Math.random() * 100) +  '.wav';
             bodyFormData.append('audioFile', blob, blobname);
             bodyFormData.append('scorer', this.passagehash);
-
+            bodyFormData.append('lang', this.lang);
             var oReq = new XMLHttpRequest();
             oReq.open("POST", this.asrurl, true);
             oReq.onUploadProgress= function(progressEvent) {};
