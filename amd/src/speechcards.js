@@ -527,7 +527,8 @@ define([
               case 'useast1':
               case 'dublin':
               case 'sydney':
-                  ret = app.props.language.substr(0,2)==='en';
+                  ret =true;
+                 // ret = app.props.language.substr(0,2)==='en';
                   break;
               default:
                   ret = false;

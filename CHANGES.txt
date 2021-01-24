@@ -1,3 +1,6 @@
+1.3.3 (Build 2021012400)
+- Better support for non English languages in speech cards
+
 1.3.2 (Build 2020122500)
 - Fixed bug which prevented students "check"ing a definition
 

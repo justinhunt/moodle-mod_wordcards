@@ -27,6 +27,7 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
         passagehash: null,
         region: null,
         asrurl: null,
+        lang: null,
 
         //for making multiple instances
         clone: function () {
