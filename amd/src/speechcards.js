@@ -24,6 +24,7 @@ define([
     props: null,
     dryRun: false,
     controls: {},
+    region: 'useast1',
 
     init: function(props) {
 
@@ -32,6 +33,7 @@ define([
       this.dryRun = props.dryRun;
       this.nexturl = props.nexturl;
       this.modid = props.modid;
+      this.region = props.region;
       var definitionscontrol = $(theid).get(0);
       if (definitionscontrol) {
         var jsondata = JSON.parse(definitionscontrol.value);
