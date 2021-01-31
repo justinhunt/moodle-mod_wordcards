@@ -515,26 +515,19 @@ define([
 
       use_ttrecorder: function(){
           var ret =false;
-          if(this.mobile_user()){
-              ret = true;
-          }else if(this.chrome_user()){
-              ret = false;
-          }else{
-              ret = true;
-          }
-          if(ret===false){return false;}
+
 
           //check if language and region are ok
-          switch(app.props.region){
+          switch(this.region){
               case 'tokyo':
               case 'useast1':
               case 'dublin':
               case 'sydney':
+                  //ret = this.language.substr(0,2)==='en';
                   ret =true;
-                 // ret = app.props.language.substr(0,2)==='en';
                   break;
               default:
-                  ret = false;
+                  ret = this.chrome_user();
           }
           return ret;
       },
