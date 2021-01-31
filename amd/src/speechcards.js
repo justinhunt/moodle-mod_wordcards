@@ -303,7 +303,10 @@ define([
     },
 
     cleanText: function(text) {
-      return text.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim();
+        var lowertext = text.toLowerCase();
+        var punctuationless = lowertext.replace(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
+        var ret = punctuationless.replace(/\s+/g, " ").trim();
+        return ret;
     },
 
     start: function() {
