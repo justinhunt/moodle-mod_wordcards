@@ -18,6 +18,7 @@ use mod_wordcards\constants;
 class mod_wordcards_helper {
 
     public static function get_tabs(mod_wordcards_module $mod, $current) {
+        $config = get_config(constants::M_COMPONENT);
         $cmid = $mod->get_cmid();
         $canmanage = $mod->can_manage();
         $canviewreports = $mod->can_viewreports();
@@ -79,6 +80,11 @@ class mod_wordcards_helper {
         }
 
 
+        if($canmanage && $config->enablesetuptab){
+            $tabs[] = new tabobject('setup',
+                    new moodle_url('/mod/wordcards/setup.php', ['id' => $cmid]),
+                    get_string('tabsetup', constants::M_COMPONENT), '', true);
+        }
 
         if($canviewreports){
             $tabs[] = new tabobject('reports',
@@ -86,9 +92,9 @@ class mod_wordcards_helper {
                     get_string('tabreports', constants::M_COMPONENT), '', true);
         }
         if ($canmanage) {
-            $tabs[] = new tabobject('setup',
-                new moodle_url('/mod/wordcards/setup.php', ['id' => $cmid]),
-                get_string('tabsetup', constants::M_COMPONENT), '', true);
+            $tabs[] = new tabobject('managewords',
+                new moodle_url('/mod/wordcards/managewords.php', ['id' => $cmid]),
+                get_string('tabmanagewords', constants::M_COMPONENT), '', true);
 
             $tabs[] = new tabobject('import',
                 new moodle_url('/mod/wordcards/import.php', ['id' => $cmid]),

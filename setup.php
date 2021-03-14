@@ -1,177 +1,116 @@
 <?php
+
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Displays the set-up phase.
+ * Setup Tab for Poodll wordcards
  *
- * @package mod_wordcards
- * @author  Frédéric Massart - FMCorz.net
+ * @package    mod_wordcards
+ * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once($CFG->dirroot . '/course/modlib.php');
+require_once($CFG->dirroot . '/mod/wordcards/mod_form.php');
 
-use \mod_wordcards\utils;
-use \mod_wordcards\constants;
+use mod_wordcards\constants;
+use mod_wordcards\utils;
 
-$cmid = required_param('id', PARAM_INT);
-$termid = optional_param('termid', null, PARAM_INT);
-$action = optional_param('action', null, PARAM_ALPHA);
 
-$mod = mod_wordcards_module::get_by_cmid($cmid);
-$course = $mod->get_course();
-$cm = $mod->get_cm();
+global $DB;
+
+
+// Course module ID.
+$id = optional_param('id',0, PARAM_INT); // course_module ID, or
+$n  = optional_param('n', 0, PARAM_INT);  // wordcards instance ID
+
+// Course and course module data.
+if ($id) {
+    $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+} elseif ($n) {
+    $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $n), '*', MUST_EXIST);
+    $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+    $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $id = $cm->id;
+} else {
+    print_error('You must specify a course_module ID or an instance ID');
+}
+
 $modulecontext = context_module::instance($cm->id);
+require_capability('mod/wordcards:manage', $modulecontext);
 
+// Set page login data.
+$PAGE->set_url(constants::M_URL . '/setup.php',array('id'=>$id));
 require_login($course, true, $cm);
-$mod->require_manage();
 
-$modid = $mod->get_id();
-$pagetitle = get_string('setup', 'mod_wordcards');
-$baseurl = new moodle_url('/mod/wordcards/setup.php', ['id' => $cmid]);
-$formurl = new moodle_url($baseurl);
-$term = null;
 
-$PAGE->set_url($baseurl);
-$PAGE->navbar->add($pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
-$PAGE->set_title($pagetitle);
+// Set page meta data.
+$PAGE->set_title(format_string($moduleinstance->name));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_context($modulecontext);
+$PAGE->set_pagelayout('course');
 
-$output = $PAGE->get_renderer('mod_wordcards');
 
-if ($action == 'delete') {
-    confirm_sesskey();
-    $mod->delete_term($termid);
-    // Uncomment when migrating to 3.1.
-    // redirect($PAGE->url, get_string('termdeleted', 'mod_wordcards'));
-    redirect($PAGE->url);
 
-} else if ($action == 'edit') {
-    // Adding those parameters ensures that we confirm that the term belongs to the right module after submission.
-    $formurl->param('action', 'edit');
-    $formurl->param('termid', 'termid');
-    $term = $DB->get_record('wordcards_terms', ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
+
+// Render template and display page.
+$renderer = $PAGE->get_renderer(constants::M_COMPONENT);
+
+$mform = new \mod_wordcards\setupform(null,['context'=>$modulecontext]);
+
+$redirecturl = new moodle_url('/mod/wordcards/view.php', array('id'=>$cm->id));
+//if the cancel button was pressed, we are out of here
+if ($mform->is_cancelled()) {
+    redirect($redirecturl);
+    exit;
+}else if ($data = $mform->get_data()) {
+    $data->timemodified = time();
+    $data->id = $data->n;
+    $data->coursemodule = $cm->id;
+
+    $data->timemodified = time();
+    $data->id = $data->n;
+
+    if (empty($data->skipreview)) {
+        $data->skipreview = 0;
+    }
+
+    $data->finishedstepmsg = $data->finishedstepmsg_editor['text'];
+    $data->completedmsg = $data->completedmsg_editor['text'];
+
+    //now update the db once we have saved files and stuff
+    if ($DB->update_record(constants::M_TABLE, $data)) {
+        //Process the hashcode and lang model if it makes sense
+        $themod = mod_wordcards_module::get_by_modid($data->id);
+        $themod->set_region_passagehash();
+
+        redirect($redirecturl);
+        exit;
+    }
 }
 
-$form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0,'ttslanguage'=>$mod->get_mod()->ttslanguage]);
+//if we got here we is loading up dat form
+$moduleinstance->n =$moduleinstance->id;
+$data =(array)$moduleinstance;
+$data = utils::prepare_file_and_json_stuff($data,$modulecontext);
+$mform->set_data($data);
 
-if (!$term) {
-    $term = new stdClass();
-    $term->id=null;
-}
-
-//prepare filemanager
-$audiooptions= utils::fetch_filemanager_opts('audio');
-$imageoptions= utils::fetch_filemanager_opts('image');
-file_prepare_standard_filemanager($term, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio', $term->id);
-file_prepare_standard_filemanager($term, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image', $term->id);
-file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
-
-
-//set data to form
-$form->set_data($term);
-
-if ($data = $form->get_data()) {
-
-    //if this new add and collect data->id
-    $needsupdating = false;
-    if (empty($data->termid)) {
-        $data->modid = $modid;
-
-        $data->id  = $DB->insert_record('wordcards_terms', $data);
-    //else set id to termid
-    }else{
-        $data->id = $data->termid;
-        $needsupdating = true;
-    }
-
-
-    //audio data
-    if(!empty( $data->audio_filemanager)){
-        $audiooptions = utils::fetch_filemanager_opts('audio');
-        //$data->audio_filemanager = $audioitemid;
-        $data = file_postupdate_standard_filemanager($data, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio',
-                $data->id);
-        $needsupdating = true;
-
-        //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
-        $fs = get_file_storage();
-        $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','audio',$data->id);
-        if(!$areafiles || count($areafiles)==0){
-            $data->audio='';
-        }elseif(count($areafiles)==1) {
-            $file = array_pop($areafiles);
-            if ($file->is_directory()) {
-                $data->audio='';
-            }
-        }
-
-    }
-
-     //model sentence audio data
-    if(!empty($data->model_sentence_audio_filemanager)){
-        $audiooptions = utils::fetch_filemanager_opts('audio');
-        //$data->audio_filemanager = $audioitemid;
-        $data = file_postupdate_standard_filemanager($data, 'model_sentence_audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'model_sentence_audio',
-                $data->id);
-        $needsupdating = true;
-        //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
-        $fs = get_file_storage();
-        $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','model_sentence_audio',$data->id);
-
-        if(!$areafiles || count($areafiles)==0){
-            $data->model_sentence_audio='';
-        }elseif(count($areafiles)==1) {
-            $file = array_pop($areafiles);
-            if ($file->is_directory()) {
-                $data->model_sentence_audio='';
-            }
-        }
-
-    }
-
-    if(!empty($data->image_filemanager)){
-        $imageoptions = utils::fetch_filemanager_opts('image');
-        $data = file_postupdate_standard_filemanager($data, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image',
-                $data->id);
-        $needsupdating = true;
-
-        //in the case a user has deleted all files, we will still have the draftid in the image column, we want to set it to ''
-        $fs = get_file_storage();
-        $areafiles = $fs->get_area_files($modulecontext->id,'mod_wordcards','image',$data->id);
-        if(!$areafiles || count($areafiles)==0){
-            $data->image='';
-        }elseif(count($areafiles)==1) {
-            $file = array_pop($areafiles);
-            if ($file->is_directory()) {
-                $data->image='';
-            }
-        }
-    }
-
-    if ($needsupdating) {
-        $DB->update_record('wordcards_terms', $data);
-        //also update our passagehash update flag
-        $DB->update_record('wordcards', array('id' => $modid, 'hashisold' => 1));
-    }
-
-    //finally redirect
-    // Uncomment when migrating to 3.1.
-    // redirect($PAGE->url, get_string('termsaved', 'mod_wordcards', $data->term));
-    redirect($PAGE->url);
-
-}
-
-echo $output->header();
-echo $output->heading($pagetitle);
-echo $output->navigation($mod, 'setup');
-echo $output->box(get_string('setupinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
-
-// $form->display();
-echo html_writer::link('#',get_string('addnewterm',constants::M_COMPONENT),
-        array('class'=>'btn btn-primary mod_wordcards_item_row_addlink','data-id'=>0,'data-type'=>"add"));
-
-$table = new mod_wordcards_table_terms('tblterms', $mod);
-$table->define_baseurl($PAGE->url);
-$table->out(25, false);
-
-$props=array('contextid'=>$modulecontext->id);
-$PAGE->requires->js_call_amd(constants::M_COMPONENT . '/setuphelper', 'init', array($props));
-echo $output->footer();
+echo $renderer->header($moduleinstance, $cm, "setup");
+$mform->display();
+echo $renderer->footer();

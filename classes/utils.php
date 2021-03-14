@@ -67,6 +67,22 @@ class utils{
                 $phonetic = metaphone($phrase);
                 break;
             case 'ja':
+                //gettting phonetics for JP requires php-mecab library doc'd here
+                //https://github.com/nihongodera/php-mecab-documentation
+                if(extension_loaded('mecab')){
+                    $mecab = new \MeCab\Tagger();
+                    $nodes=$mecab->parseToNode($phrase);
+                    $katakanaarray=[];
+                    foreach ($nodes as $n) {
+                        $f =  $n->getFeature();
+                        $reading = explode(',',$f)[8];
+                        if($reading!='*'){
+                            $katakanaarray[] =$reading;
+                        }
+                    }
+                    $phonetic=implode($katakanaarray,'');
+                    break;
+                }
             default:
                 $phonetic = $phrase;
         }
@@ -916,6 +932,110 @@ class utils{
             return true;
         }
     }
+
+    public static function add_mform_elements($mform, $context,$setuptab=false) {
+        global $CFG;
+        $config = get_config(constants::M_COMPONENT);
+
+        //if this is setup tab we need to add a field to tell it the id of the activity
+        if($setuptab) {
+            $mform->addElement('hidden', 'n');
+            $mform->setType('n', PARAM_INT);
+        }
+
+        //-------------------------------------------------------------------------------
+        // Adding the "general" fieldset, where all the common settings are showed
+        $mform->addElement('header', 'general', get_string('general', 'form'));
+
+        // Adding the standard "name" field
+        $mform->addElement('text', 'name', get_string('modulename', constants::M_COMPONENT), array('size'=>'64'));
+        if (!empty($CFG->formatstringstriptags)) {
+            $mform->setType('name', PARAM_TEXT);
+        } else {
+            $mform->setType('name', PARAM_CLEAN);
+        }
+        $mform->addRule('name', null, 'required', null, 'client');
+        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+        $mform->addHelpButton('name', 'modulename', constants::M_COMPONENT);
+
+        // Adding the standard "intro" and "introformat" fields
+        //we do not support this in tabs
+        if(!$setuptab) {
+            $label = get_string('moduleintro');
+            $mform->addElement('editor', 'introeditor', $label, array('rows' => 10), array('maxfiles' => EDITOR_UNLIMITED_FILES,
+                    'noclean' => true, 'context' => $context, 'subdirs' => true));
+            $mform->setType('introeditor', PARAM_RAW); // no XSS prevention here, users must be trusted
+            $mform->addElement('advcheckbox', 'showdescription', get_string('showdescription'));
+            $mform->addHelpButton('showdescription', 'showdescription');
+        }
+
+        $options = utils::get_lang_options();
+        $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', 'mod_wordcards'),
+                $options);
+        $mform->setDefault('ttslanguage',$config->ttslanguage);
+
+        $mform->addElement('header', 'hdrappearance', get_string('appearance'));
+        $mform->setExpanded('hdrappearance');
+
+        //options for practicetype and term count
+        $ptype_options_learn = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
+        $ptype_options_all = utils::get_practicetype_options();
+        $termcount_options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
+
+        $mform->addElement('select', 'step1practicetype', get_string('step1practicetype', 'mod_wordcards'),
+                $ptype_options_learn, \mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
+        $mform->addElement('select', 'step1termcount', get_string('step1termcount', 'mod_wordcards'), $termcount_options, 4);
+
+        $mform->addElement('select', 'step2practicetype', get_string('step2practicetype', 'mod_wordcards'),
+                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+        $mform->addElement('select', 'step2termcount', get_string('step2termcount', 'mod_wordcards'), $termcount_options, 4);
+        $mform->disabledIf('step2termcount', 'step2practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+
+        $mform->addElement('select', 'step3practicetype', get_string('step3practicetype', 'mod_wordcards'),
+                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+        $mform->addElement('select', 'step3termcount', get_string('step3termcount', 'mod_wordcards'), $termcount_options, 4);
+        $mform->disabledIf('step3termcount', 'step3practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+
+        $mform->addElement('select', 'step4practicetype', get_string('step4practicetype', 'mod_wordcards'),
+                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+        $mform->addElement('select', 'step4termcount', get_string('step4termcount', 'mod_wordcards'), $termcount_options, 4);
+        $mform->disabledIf('step4termcount', 'step4practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+
+        $mform->addElement('select', 'step5practicetype', get_string('step5practicetype', 'mod_wordcards'),
+                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+        $mform->addElement('select', 'step5termcount', get_string('step5termcount', 'mod_wordcards'), $termcount_options, 4);
+        $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+
+        //Attempts
+        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
+                1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',);
+        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
+
+
+        $mform->addElement('hidden', 'skipreview',0);
+        $mform->setType('skipreview',PARAM_INT);
+        // $mform->addElement('checkbox', 'skipreview', get_string('skipreview', 'mod_wordcards'));
+        // $mform->setDefault('skipreview', 1);
+        // $mform->addHelpButton('skipreview', 'skipreview', 'mod_wordcards');
+
+        $mform->addElement('editor', 'finishedstepmsg_editor', get_string('finishedstepmsg', 'mod_wordcards'));
+        $mform->setDefault('finishedstepmsg_editor', array('text' => get_string('finishscatterin', 'mod_wordcards')));
+        $mform->addHelpButton('finishedstepmsg_editor', 'finishedstepmsg', 'mod_wordcards');
+
+        $mform->addElement('editor', 'completedmsg_editor', get_string('completedmsg', 'mod_wordcards'));
+        $mform->setDefault('completedmsg_editor', array('text' => get_string('congratsitsover', 'mod_wordcards')));
+        $mform->addHelpButton('completedmsg_editor', 'completedmsg', 'mod_wordcards');
+
+
+    } //end of add_mform_elements
+
+    public static function prepare_file_and_json_stuff($moduleinstance, $modulecontext){
+        $moduleinstance['finishedstepmsg_editor']['text'] = $moduleinstance['finishedstepmsg'];
+        $moduleinstance['completedmsg_editor']['text'] = $moduleinstance['completedmsg'];
+
+        return $moduleinstance;
+
+    }//end of prepare_file_and_json_stuff
 
 
 }

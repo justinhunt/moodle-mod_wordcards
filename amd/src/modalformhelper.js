@@ -75,7 +75,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                 }).then(function (modal) {
                     // Keep a reference to the modal.
                     dd.modal = modal;
-                    Str.get_string('setup' , 'mod_wordcards').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
+                    Str.get_string('managewords' , 'mod_wordcards').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
 
 
                     // Forms are big, we want a big modal.

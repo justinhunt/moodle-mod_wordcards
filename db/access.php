@@ -33,6 +33,17 @@ $capabilities = [
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
 
+    'mod/wordcards:manage' => [
+            'riskbitmask' => RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE,
+            'archetypes' => [
+                    'editingteacher' => CAP_ALLOW,
+                    'manager' => CAP_ALLOW
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ],
+
     'mod/wordcards:manageattempts' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',

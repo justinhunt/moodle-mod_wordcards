@@ -4,7 +4,7 @@ define(['jquery', 'core/log', 'mod_wordcards/modalformhelper'], function ($, log
     This file helps you get Polly URLs at runtime
      */
 
-    log.debug('setup helper: initialising');
+    log.debug('managewords helper: initialising');
 
     return {
 

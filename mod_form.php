@@ -20,7 +20,7 @@ use mod_wordcards\constants;
  */
 class mod_wordcards_mod_form extends moodleform_mod {
 
-    public function __construct($current, $section, $cm, $course, $ajaxformdata=null) {
+    public function __construct($current, $section, $cm, $course, $ajaxformdata=null,$customdata=null) {
         global $CFG;
         $this->current   = $current;
         $this->_instance = $current->instance;
@@ -45,78 +45,17 @@ class mod_wordcards_mod_form extends moodleform_mod {
             $this->_modname = $matches[1];
         }
         $this->init_features();
-        moodleform::__construct('modedit.php', null, 'post', '', null, true, $ajaxformdata);
+        $action = 'modedit.php';
+        moodleform::__construct($action, $customdata, 'post', '', null, true, $ajaxformdata);
     }
 
     public function definition() {
         $mform = $this->_form;
-        $config = get_config('mod_wordcards');
 
-        $mform->addElement('header', 'general', get_string('general', 'form'));
-        $mform->addElement('text', 'name', get_string('name', 'mod_wordcards'));
-        $mform->setType('name', PARAM_TEXT);
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-
-        $this->standard_intro_elements(get_string('introduction', 'mod_wordcards'));
-
-        $options = utils::get_lang_options();
-        $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', 'mod_wordcards'),
-                $options);
-        $mform->setDefault('ttslanguage',$config->ttslanguage);
-
-        $mform->addElement('header', 'hdrappearance', get_string('appearance'));
-        $mform->setExpanded('hdrappearance');
-
-        //options for practicetype and term count
-        $ptype_options_learn = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
-        $ptype_options_all = utils::get_practicetype_options();
-        $termcount_options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
-
-        $mform->addElement('select', 'step1practicetype', get_string('step1practicetype', 'mod_wordcards'),
-                $ptype_options_learn, mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
-        $mform->addElement('select', 'step1termcount', get_string('step1termcount', 'mod_wordcards'), $termcount_options, 4);
-
-        $mform->addElement('select', 'step2practicetype', get_string('step2practicetype', 'mod_wordcards'),
-                $ptype_options_all,mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
-        $mform->addElement('select', 'step2termcount', get_string('step2termcount', 'mod_wordcards'), $termcount_options, 4);
-        $mform->disabledIf('step2termcount', 'step2practicetype', 'eq',mod_wordcards_module::PRACTICETYPE_NONE);
-
-        $mform->addElement('select', 'step3practicetype', get_string('step3practicetype', 'mod_wordcards'),
-                $ptype_options_all,mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
-        $mform->addElement('select', 'step3termcount', get_string('step3termcount', 'mod_wordcards'), $termcount_options, 4);
-        $mform->disabledIf('step3termcount', 'step3practicetype', 'eq',mod_wordcards_module::PRACTICETYPE_NONE);
-
-        $mform->addElement('select', 'step4practicetype', get_string('step4practicetype', 'mod_wordcards'),
-                $ptype_options_all,mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
-        $mform->addElement('select', 'step4termcount', get_string('step4termcount', 'mod_wordcards'), $termcount_options, 4);
-        $mform->disabledIf('step4termcount', 'step4practicetype', 'eq',mod_wordcards_module::PRACTICETYPE_NONE);
-
-        $mform->addElement('select', 'step5practicetype', get_string('step5practicetype', 'mod_wordcards'),
-                $ptype_options_all,mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
-        $mform->addElement('select', 'step5termcount', get_string('step5termcount', 'mod_wordcards'), $termcount_options, 4);
-        $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',mod_wordcards_module::PRACTICETYPE_NONE);
-
-        //Attempts
-        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
-                1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',);
-        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
-
-
-        $mform->addElement('hidden', 'skipreview',0);
-        $mform->setType('skipreview',PARAM_INT);
-       // $mform->addElement('checkbox', 'skipreview', get_string('skipreview', 'mod_wordcards'));
-       // $mform->setDefault('skipreview', 1);
-       // $mform->addHelpButton('skipreview', 'skipreview', 'mod_wordcards');
-
-        $mform->addElement('editor', 'finishedstepmsg_editor', get_string('finishedstepmsg', 'mod_wordcards'));
-        $mform->setDefault('finishedstepmsg_editor', array('text' => get_string('finishscatterin', 'mod_wordcards')));
-        $mform->addHelpButton('finishedstepmsg_editor', 'finishedstepmsg', 'mod_wordcards');
-
-        $mform->addElement('editor', 'completedmsg_editor', get_string('completedmsg', 'mod_wordcards'));
-        $mform->setDefault('completedmsg_editor', array('text' => get_string('congratsitsover', 'mod_wordcards')));
-        $mform->addHelpButton('completedmsg_editor', 'completedmsg', 'mod_wordcards');
-
+        //Add this activity specific form fields
+        //We want to do this procedurally because in setup tabs we want to show a subset of this form
+        // with just the activity specific fields,and we use a custom form and the same elements
+        utils::add_mform_elements($mform,$this->context);
 
         // Grade.
         $this->standard_grading_coursemodule_elements();
@@ -126,11 +65,12 @@ class mod_wordcards_mod_form extends moodleform_mod {
         $mform->addElement('hidden', 'gradeoptions',constants::M_GRADELATEST);
         $mform->setType('gradeoptions', PARAM_INT);
 
-
+        // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
-
+        // add standard buttons, common to all modules
         $this->add_action_buttons();
-    }
+
+  }
 
     public function add_completion_rules() {
         $mform =& $this->_form;
@@ -154,8 +94,7 @@ class mod_wordcards_mod_form extends moodleform_mod {
 
      public function data_preprocessing(&$data) {
         if ($this->current->instance) {
-            $data['finishedstepmsg_editor']['text'] = $data['finishedstepmsg'];
-            $data['completedmsg_editor']['text'] = $data['completedmsg'];
+            utils::prepare_file_and_json_stuff($data,$this->context);
         }
     }
 
