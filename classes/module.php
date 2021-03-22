@@ -406,7 +406,7 @@ class mod_wordcards_module {
         global $DB, $USER;
 
         // Teachers are always considered done.
-        if ($this->can_manage()) {
+        if ($this->can_manage() || $this->can_viewreports()) {
             return [self::STATE_END, null];
         }
 
