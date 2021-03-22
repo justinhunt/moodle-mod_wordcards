@@ -94,7 +94,7 @@ class mod_wordcards_mod_form extends moodleform_mod {
 
      public function data_preprocessing(&$data) {
         if ($this->current->instance) {
-            utils::prepare_file_and_json_stuff($data,$this->context);
+            $data =  utils::prepare_file_and_json_stuff($data,$this->context);
         }
     }
 
