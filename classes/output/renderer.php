@@ -382,7 +382,7 @@ class renderer extends \plugin_renderer_base {
 
     public function navigation(\mod_wordcards_module $mod, $currentstate) {
         $tabtree = \mod_wordcards_helper::get_tabs($mod, $currentstate);
-        if ($mod->can_manage()) {
+        if ($mod->can_manage() || $mod->can_viewreports()) {
             // Teachers see the tabs, as normal tabs.
             return $this->render($tabtree);
         }
