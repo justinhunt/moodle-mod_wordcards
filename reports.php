@@ -35,6 +35,7 @@ $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or h
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // user id
 $attemptid = optional_param('attemptid', 0, PARAM_INT); // attempt id
+$groupid = optional_param('group', 0, PARAM_INT); // group id
 
 //paging details
 $paging = new stdClass();
@@ -55,7 +56,8 @@ if ($id) {
 }
 
 $PAGE->set_url(constants::M_URL . '/reports.php',
-        array('id' => $cm->id, 'report' => $showreport, 'format' => $format, 'userid' => $userid, 'attemptid' => $attemptid));
+        array('id' => $cm->id, 'report' => $showreport, 'format' => $format,
+                'userid' => $userid, 'attemptid' => $attemptid, 'grade'=>$gradeid));
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
@@ -117,6 +119,7 @@ switch ($showreport) {
 
         $formdata->modid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
         break;
 
     case 'userattempts':
@@ -136,6 +139,7 @@ switch ($showreport) {
         $formdata = new stdClass();
         $formdata->modid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
         break;
 
     default:
@@ -154,6 +158,20 @@ switch ($showreport) {
 3) call $rows=report->fetch_formatted_records($withlinks=true(html) false(print/excel))
 5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
+
+$groupmenu = '';
+if(isset($formdata->groupid)){
+    // fetch groupmode/menu/id for this activity
+    if ($groupmode = groups_get_activity_groupmode($cm)) {
+        $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
+        $groupmenu .= ' ';
+        $formdata->groupid = groups_get_activity_group($cm);
+    }else{
+        $formdata->groupid  = 0;
+    }
+}else{
+    $formdata->groupid  = 0;
+}
 
 $report->process_raw_data($formdata);
 $reportheading = $report->fetch_formatted_heading();
@@ -174,6 +192,7 @@ switch ($format) {
         echo $renderer->heading($pagetitle);
         echo $renderer->navigation($wordcardsmodule, 'reports');
         echo $extraheader;
+        echo $groupmenu;
         echo $pagingbar;
         echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows,
                 $report->fetch_fields());
