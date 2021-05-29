@@ -789,8 +789,10 @@ class utils{
             case 'dublin':
             case 'sydney':
             default:
-                return (substr($mod->get_mod()->ttslanguage,0,2)=='en' || substr($mod->get_mod()->ttslanguage,0,2)=='de')
-                        && self::fetch_passagehash($mod);
+            return (substr($mod->get_mod()->ttslanguage,0,2)=='en' ||
+                            substr($mod->get_mod()->ttslanguage,0,2)=='de' ||
+                            substr($mod->get_mod()->ttslanguage,0,2)=='fr' ||
+                            substr($mod->get_mod()->ttslanguage,0,2)=='es') && trim($mod->get_mod()->passage)!=="";
         }
     }
 
