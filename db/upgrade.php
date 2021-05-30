@@ -319,5 +319,20 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020111001, 'wordcards');
     }
 
+    // Add foriframe option to wordcards table
+    if ($oldversion < 2021053100) {
+        $table = new xmldb_table('wordcards');
+
+
+        // Define field foriframe to be added to wordcards
+        $field= new xmldb_field('foriframe', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+
+        // add richtextprompt field to minilesson table
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2021053100, 'wordcards');
+    }
+
     return true;
 }
