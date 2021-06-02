@@ -33,6 +33,14 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 
+//Get admin settings
+$config = get_config(constants::M_COMPONENT);
+if($config->enablesetuptab){
+    $PAGE->set_pagelayout('popup');
+}else{
+    $PAGE->set_pagelayout('course');
+}
+
 $output = $PAGE->get_renderer('mod_wordcards');
 
 $form = new mod_wordcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);

@@ -8,6 +8,8 @@
 
 require_once(__DIR__ . '/../../config.php');
 
+use \mod_wordcards\constants;
+
 $cmid = required_param('id', PARAM_INT);
 //the step that the user is requesting
 $nextstep = optional_param('nextstep',mod_wordcards_module::STATE_STEP1, PARAM_TEXT);
@@ -87,6 +89,14 @@ if($mod->get_mod()->hashisold) {
 $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
+
+$config = get_config(constants::M_COMPONENT);
+if($config->enablesetuptab){
+    $PAGE->set_pagelayout('popup');
+}else{
+    $PAGE->set_pagelayout('course');
+}
+
 //load glide
 $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
 //load google font never works ... why?
