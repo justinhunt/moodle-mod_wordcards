@@ -23,7 +23,8 @@ require_login($course, true, $cm);
 $mod->require_manage();
 
 $modid = $mod->get_id();
-$pagetitle = get_string('import', 'mod_wordcards');
+$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle .= ': ' . get_string('import', 'mod_wordcards');
 $baseurl = new moodle_url('/mod/wordcards/import.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
 $term = null;
@@ -114,7 +115,7 @@ if ($data = $form->get_data()) {
 echo $output->header();
 echo $output->heading($pagetitle);
 echo $output->navigation($mod, 'import');
-echo $output->box(get_string('importinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
+echo $output->box(get_string('importinstructions',constants::M_COMPONENT), 'generalbox wordcards_importintro', 'intro');
 
 $form->display();
 /*
