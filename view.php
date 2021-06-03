@@ -46,7 +46,7 @@ if($config->enablesetuptab){
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
 echo $renderer->header();
-echo $renderer->heading($pagetitle);
+echo $renderer->heading($pagetitle, 3, 'main');
 
 if (!empty($mod->get_mod()->intro)) {
     echo $renderer->box(format_module_intro('wordcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');

@@ -78,7 +78,7 @@ $pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
 if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
     $pagetitle .= ': ' . get_string('reviewactivity', 'mod_wordcards');
 }else{
-    $pagetitle = ': ' .  get_string('learnactivity', 'mod_wordcards');
+    $pagetitle .= ': ' .  get_string('learnactivity', 'mod_wordcards');
 }
 
 
