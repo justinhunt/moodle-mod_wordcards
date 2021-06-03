@@ -75,7 +75,9 @@ $mod = mod_wordcards_module::get_by_cmid($cm->id);
 $mod->register_module_viewed();
 
 /// Set up the page header
-$PAGE->set_title(format_string($moduleinstance->name));
+$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle .= ': ' . get_string('reports', constants::M_COMPONENT);
+$PAGE->set_title($pagetitle);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 if($config->enablesetuptab){
@@ -100,7 +102,6 @@ switch ($showreport) {
     //not a true report, separate implementation in renderer
     case 'menu':
         echo $renderer->header();
-        $pagetitle =get_string('reports', constants::M_COMPONENT);
         echo $renderer->heading($pagetitle);
         echo $renderer->navigation($wordcardsmodule , 'reports');
         echo get_string('reportsmenutop', constants::M_COMPONENT);

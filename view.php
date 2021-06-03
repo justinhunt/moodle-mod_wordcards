@@ -25,7 +25,8 @@ $mod->resume_progress($currentstate);
 //trigger module viewed event
 $mod->register_module_viewed();
 
-$pagetitle = get_string('tabdefinitions', 'mod_wordcards');
+//$pagetitle = get_string('tabdefinitions', 'mod_wordcards');
+$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
 
 $PAGE->set_url('/mod/wordcards/view.php', ['id' => $cmid]);
 $PAGE->navbar->add($pagetitle, $PAGE->url);

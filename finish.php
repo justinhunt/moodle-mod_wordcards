@@ -26,7 +26,8 @@ $mod->resume_progress($currentstate);
 
 utils::update_finalgrade($mod->get_id());
 
-$pagetitle = get_string('activitycompleted', 'mod_wordcards');
+$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle .= ': ' . get_string('activitycompleted', 'mod_wordcards');
 
 $PAGE->set_url('/mod/wordcards/finish.php', ['id' => $cmid]);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
