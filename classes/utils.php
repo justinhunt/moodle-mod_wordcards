@@ -741,6 +741,12 @@ class utils{
       return $options;
   }
 
+  public static function fetch_options_fontfaceflip(){
+      return array(
+              constants::M_FRONTFACEFLIP_TERM=> get_string('term', constants::M_COMPONENT),
+              constants::M_FRONTFACEFLIP_DEF => get_string('definition', constants::M_COMPONENT));
+  }
+
    public static function get_lang_options() {
        return array(
                constants::M_LANG_ARAE => get_string('ar-ae', constants::M_COMPONENT),
@@ -792,7 +798,7 @@ class utils{
             return (substr($mod->get_mod()->ttslanguage,0,2)=='en' ||
                             substr($mod->get_mod()->ttslanguage,0,2)=='de' ||
                             substr($mod->get_mod()->ttslanguage,0,2)=='fr' ||
-                            substr($mod->get_mod()->ttslanguage,0,2)=='es') && trim($mod->get_mod()->passage)!=="";
+                            substr($mod->get_mod()->ttslanguage,0,2)=='es') && $mod->get_terms();
         }
     }
 
@@ -1030,6 +1036,14 @@ class utils{
         $mform->addElement('editor', 'completedmsg_editor', get_string('completedmsg', 'mod_wordcards'));
         $mform->setDefault('completedmsg_editor', array('text' => get_string('congratsitsover', 'mod_wordcards')));
         $mform->addHelpButton('completedmsg_editor', 'completedmsg', 'mod_wordcards');
+
+        //Show images on task flip screen
+        $mform->addElement('selectyesno', 'showimageflip', get_string('showimagesonflipscreen', 'mod_wordcards'));
+        $mform->setDefault('showimageflip', $config->showimageflip);
+
+        $frontfaceoptions = self::fetch_options_fontfaceflip();
+        $mform->addElement('select', 'frontfaceflip', get_string('frontfaceflip', 'mod_wordcards'),
+                $frontfaceoptions, $config->frontfaceflip);
 
 
     } //end of add_mform_elements

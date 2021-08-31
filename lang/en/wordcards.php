@@ -268,3 +268,9 @@ $string['enablesetuptab']="Enable setup tab";
 $string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
 $string['setup']="Setup";
 $string['tabsetup']="Setup";
+
+$string['showimagesonflipscreen']="Show images on flip cards";
+$string['showimagesonflipscreen_desc']="If the wordcards set has images, and this property is true, the image will be displayed under the word on the flip cards screen before a practice activity.";
+$string['frontfaceflip']="Front face on flip cards";
+$string['frontfaceflip_details']="Show the term or definition on the front face of the wordcards.";
+

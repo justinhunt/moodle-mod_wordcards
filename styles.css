@@ -471,7 +471,7 @@
     height: 100px;
 }
 
-.a4e-card .front {
+.a4e-card .wordcards_defcard {
     position: relative;
     background-color: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -481,7 +481,7 @@
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
-.a4e-card .back {
+.a4e-card .wordcards_termcard {
     position: relative;
     background-color: #F7E7E7;
     border: 1px solid rgba(0, 0, 0, 0.3);

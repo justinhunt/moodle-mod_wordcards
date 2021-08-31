@@ -45,11 +45,11 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
                 'grade','gradeoptions','mingrade',
                 'step1practicetype','step2practicetype','step3practicetype','step4practicetype','step5practicetype',
                 'completionwhenfinish','maxattempts', 'timecreated', 'timemodified','skipreview', 'finishedstepmsg',
-                'completedmsg', 'ttslanguage','passagehash','hashisold','foriframe'));
+                'completedmsg', 'ttslanguage','passagehash','hashisold','foriframe','showimageflip', 'frontfaceflip'));
 
         $terms = new backup_nested_element('terms');
         $term = new backup_nested_element('term', array('id'), array(
-            'term', 'definition','model_sentence','image','audio','model_sentence_audio', 'ttsvoice','alternates','deleted'));
+            'term', 'definition','model_sentence','image','audio','model_sentence_audio', 'ttsvoice','alternates','deleted','phonetic','phoneticms'));
 
         $seens = new backup_nested_element('seens');
         $seen = new backup_nested_element('seen', array('id'), array(

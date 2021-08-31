@@ -119,7 +119,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    private function make_json_string($definitions){
+    private function make_json_string($definitions,$mod){
 
         $defs = array();
         foreach ($definitions as $definition){
@@ -131,6 +131,13 @@ class renderer extends \plugin_renderer_base {
             $def->id=$definition->id;
             $def->term =$definition->term;
             $def->definition =$definition->definition;
+            if($mod->get_mod()->showimageflip){
+                $def->showimageflip=true;
+            }
+            //which face to tag as front and which as back
+            if($mod->get_mod()->frontfaceflip == constants::M_FRONTFACEFLIP_DEF) {
+                $def->frontfacedef = true;
+            }
             $defs[]=$def;
         }
         $defs_object = new \stdClass();
@@ -163,7 +170,7 @@ class renderer extends \plugin_renderer_base {
         }
 
         $widgetid = \html_writer::random_id();
-        $jsonstring=$this->make_json_string($definitions);
+        $jsonstring=$this->make_json_string($definitions, $mod);
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
 
@@ -270,7 +277,7 @@ class renderer extends \plugin_renderer_base {
             }
         }
 
-        $jsonstring=$this->make_json_string($definitions);
+        $jsonstring=$this->make_json_string($definitions,$mod);
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
 
