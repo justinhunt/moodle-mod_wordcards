@@ -87,7 +87,7 @@ if ($ADMIN->fulltree) {
     $name = 'frontfaceflip';
     $label = get_string($name, constants::M_COMPONENT);
     get_string($name . '_details', constants::M_COMPONENT);
-    $default = constants::M_FRONTFACEFLIP_TERM;
+    $default = constants::M_FRONTFACEFLIP_DEF;
     $options = utils::fetch_options_fontfaceflip();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
             $label, $details, $default, $options));

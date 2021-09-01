@@ -159,7 +159,7 @@ class renderer extends \plugin_renderer_base {
         if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             $definitions = $mod->get_review_terms($currentstep);
         }else{
-            $definitions = $mod->get_learn_terms();
+            $definitions = $mod->get_learn_terms($currentstep);
         }
 
         //make sure each definition has a voice
