@@ -1048,7 +1048,7 @@ class utils{
 
         $t_options = utils::fetch_options_transcribers();
         $mform->addElement('select', 'transcriber', get_string('transcriber', 'mod_wordcards'),
-                $t_options,$config->ttslanguage);
+                $t_options,$config->transcriber);
 
         $mform->addElement('hidden', 'skipreview',0);
         $mform->setType('skipreview',PARAM_INT);
