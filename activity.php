@@ -43,6 +43,8 @@ $isteacher = ($mod->can_manage() || $mod->can_viewreports());
 //cancel attempt?
 //must be not a reattempt (url fiddling by someone) and not on END or TERM. But a teacher is always on END so we let teachers through
 //because they may be in "switch role to student" mode
+// There is an issue currently, if a user is on their first attempt and "quits" their latest stare will be terms and since all terms are seen
+// they wil "resume" to step 1. First attempt users can not quit basically 2021-12-02
 if(!$reattempt
     && $cancelattempt
     && ($currentstate!==mod_wordcards_module::STATE_END  && $currentstate!== mod_wordcards_module::STATE_TERMS)

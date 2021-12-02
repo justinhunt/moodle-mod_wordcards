@@ -689,7 +689,7 @@ class mod_wordcards_module {
             return;
 
         } else if ($state == self::STATE_TERMS) {
-            if ($this->has_seen_all_terms()) {
+            if ( $this->has_seen_all_terms()) {
                     $next_step = $this->get_next_step(self::STATE_TERMS);
                     $this->set_state($next_step);
             }

@@ -25,7 +25,19 @@ class renderer extends \plugin_renderer_base {
 
         $definitions = $mod->get_terms();
         if (empty($definitions)) {
-            return $OUTPUT->notification(get_string('nodefinitions', 'mod_wordcards'));
+
+            $displaytext = $this->output->box_start();
+            $displaytext .= $this->output->heading(get_string('nodefinitions', constants::M_COMPONENT), 3, 'main');
+            $showaddwordlinks = $mod->can_manage();
+            if ($showaddwordlinks) {
+                $displaytext .= \html_writer::div(get_string('letsaddwords', constants::M_COMPONENT), '', array());
+                $displaytext .= $this->output->single_button(new \moodle_url(constants::M_URL . '/managewords.php',
+                    array('id' => $mod->get_cmid())), get_string('addwords', constants::M_COMPONENT));
+            }
+            $displaytext .= $this->output->box_end();
+            $ret= \html_writer::div($displaytext,'');
+            return $ret;
+
         }
 
         //make sure each definition has a voice
@@ -230,6 +242,8 @@ class renderer extends \plugin_renderer_base {
         $latestattempt = $mod->get_latest_attempt();
         if($latestattempt){
             $finishmsg = str_replace('[[totalgrade]]', $latestattempt->totalgrade, $finishmsg);
+        }else{
+            $finishmsg = str_replace('[[totalgrade]]', '[students grade]', $finishmsg);
         }
 
 

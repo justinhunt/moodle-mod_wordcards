@@ -25,7 +25,7 @@ $string['delim_comma'] = 'Comma';
 $string['delim_pipe'] = 'Pipe';
 $string['description'] = 'Description';
 $string['editterm'] = 'Edit term \'{$a}\'';
-$string['finishscatterin'] = '<h4 style="text-align: center;">Congratulations!</h4>';
+$string['finishscatterin'] = '<h4 style="text-align: center;">Congratulations!</h4><br><br><p style="text-align: center;">Your score is [[totalgrade]]%</p>';
 $string['wordcards:addinstance'] = 'Add an instance';
 $string['wordcards:view'] = 'View the module';
 $string['wordcards:viewreports'] = 'View reports';
@@ -288,5 +288,5 @@ $string['gradeoptions_help'] =
     'When there are multiple attempts by a user, this setting determines which attempt to use when grading';
 $string['gradeoptions_details'] =
     'NB This determines the gradebook entry. The activity grading report will display the attempt selected here.';
-
-
+$string['letsaddwords']="Lets add some words..";
+$string['addwords']="Add Words";
