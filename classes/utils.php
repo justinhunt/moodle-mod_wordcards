@@ -1082,7 +1082,24 @@ class utils{
         $mform->addElement('select', 'frontfaceflip', get_string('frontfaceflip', 'mod_wordcards'),
                 $frontfaceoptions, $config->frontfaceflip);
 
+  // show activity open closes
+   $dateoptions = array('optional' => true);
+        $name = 'activityopenscloses';
+        $label = get_string($name, 'wordcards');
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, false);
+        //-----------------------------------------------------------------------------
 
+        $name = 'viewstart';
+        $label = get_string($name, "wordcards");
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, constants::M_COMPONENT);
+        
+
+        $name = 'viewend';
+        $label = get_string($name, "wordcards");
+        $mform->addElement('date_time_selector', $name, $label, $dateoptions);
+        $mform->addHelpButton($name, $name, constants::M_COMPONENT);
     } //end of add_mform_elements
 
     public static function prepare_file_and_json_stuff($moduleinstance, $modulecontext){
