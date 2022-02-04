@@ -21,7 +21,7 @@ $currentstate = mod_wordcards_module::STATE_TERMS;
 require_login($course, true, $cm);
 $mod->require_view();
 $mod->resume_progress($currentstate);
-$moduleinstance = $DB->get_record('wordcards', array('id' => $cm->instance), '*', MUST_EXIST);
+$moduleinstance = $mod->get_mod();
 //trigger module viewed event
 $mod->register_module_viewed();
 
@@ -33,7 +33,7 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 $PAGE->force_settings_menu(true);
-$modulecontext = context_module::instance($cm->id);
+$modulecontext = $mod->get_context();
 //Get an admin settings
 $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab){
