@@ -461,6 +461,20 @@ class renderer extends \plugin_renderer_base {
         $output .= $this->output->box_end();
         return $output;
     }
+ 
+    /*
+    * Show open and close dates to the activity
+    */
+   public function show_open_close_dates($moduleinstance){
+        $tdata=[];
+        if($moduleinstance->viewstart>0){$tdata['opendate']=$moduleinstance->viewstart;}
+        if($moduleinstance->viewend>0){$tdata['closedate']=$moduleinstance->viewend;}
+        $ret = $this->output->render_from_template( constants::M_COMPONENT . '/openclosedates',$tdata);
+        return $ret;
+    }
+      /*
+     * Show attempt for review by student. called from view php
+     */
 
     /**
      * Show error (but when?)

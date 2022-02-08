@@ -308,3 +308,17 @@ $string['dismiss'] = "Dismiss";
 $string['deflanguage'] = "Definitions Language";
 $string['wizardinstructions'] = "Word Wizard will search a dictionary for a list of words and return a list of dictionary entries. Choose the definition language, enter a comma separated list of words and press the 'Fetch Definitions' button. From the entries returned, edit the entry content and press the 'use' button to add the word to the wordcards activity. ";
 $string['nodefinitionfound'] = "No definition found";
+$string['viewstart']="Activity open";
+$string['viewend']="Activity close";
+$string['viewstart_help']="If set, prevents a student from entering the activity before the start date/time.";
+$string['viewend_help']="If set, prevents a student from entering the activity after the closing date/time.";
+$string['activitydate:submissionsdue'] = 'Due:';
+$string['activitydate:submissionsopen'] = 'Opens:';
+$string['activitydate:submissionsopened'] = 'Opened:';
+$string['activityisnotopenyet']="This activity is not open yet.";
+$string['activityisclosed']="This activity is closed.";
+$string['open']="Open: ";
+$string['until']="Until: ";
+$string['activityopenscloses']="Activity open/close dates";
+$string['wordcards:preview']="Can preview Wordcards activities";
+

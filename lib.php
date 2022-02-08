@@ -543,3 +543,26 @@ function wordcards_output_fragment_mform($args) {
     return $o;
 }
 
+function mod_wordcards_cm_info_dynamic(cm_info $cm) {
+    global $USER,$DB;
+
+        $moduleinstance= $DB->get_record('wordcards', array('id' => $cm->instance,), '*', MUST_EXIST);
+        $cm->override_customdata('duedate',  $moduleinstance->viewend);
+        $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
+    
+}
+function wordcards_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    $moduleinstance= $DB->get_record('wordcards', array('id' => $coursemodule->instance,), '*', MUST_EXIST);
+    $result = new cached_cm_info();
+    if ($coursemodule->showdescription) {
+        if (time() > $moduleinstance->viewstart) {
+            $result->content = format_module_intro('wordcards', $moduleinstance, $coursemodule->id, false);
+        }
+    }
+    $result->name = 'wordcards';
+    $result->customdata['duedate'] = $moduleinstance->viewend;
+    $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
+   return $result;
+}
