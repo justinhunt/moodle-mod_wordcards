@@ -21,7 +21,7 @@ $currentstate = mod_wordcards_module::STATE_TERMS;
 require_login($course, true, $cm);
 $mod->require_view();
 $mod->resume_progress($currentstate);
-
+$moduleinstance = $mod->get_mod();
 //trigger module viewed event
 $mod->register_module_viewed();
 
@@ -33,7 +33,7 @@ $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 $PAGE->force_settings_menu(true);
-
+$modulecontext = $mod->get_context();
 //Get an admin settings
 $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab){
@@ -53,6 +53,26 @@ if (!empty($mod->get_mod()->intro)) {
 }
 
 echo $renderer->navigation($mod, $currentstate);
+
+//show open close dates
+$hasopenclosedates = $moduleinstance->viewend > 0 || $moduleinstance->viewstart>0;
+if($hasopenclosedates){
+    echo $renderer->show_open_close_dates($moduleinstance);
+    $current_time=time();
+    $closed = false;
+    if ( $current_time>$moduleinstance->viewend){
+        echo get_string('activityisclosed',constants::M_COMPONENT);
+        $closed = true;
+    }elseif($current_time<$moduleinstance->viewstart){
+        echo get_string('activityisnotopenyet',constants::M_COMPONENT);
+        $closed = true;
+    }
+    //if we are not a teacher and the activity is closed/not-open leave at this point
+    if(!has_capability('mod/wordcards:preview',$modulecontext) && $closed){
+        echo $renderer->footer();
+        exit;
+    }
+}
 
 echo $renderer->definitions_page($mod);
 
