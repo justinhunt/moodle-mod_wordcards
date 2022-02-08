@@ -70,8 +70,10 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
     $module->timemodified = time();
     $module->id = $module->instance;
     $params = array('id' => $module->instance);
-    $oldgradefield = $DB->get_field(constants::M_TABLE, 'grade', $params);
-    $oldgradeoptionsfield = $DB->get_field(constants::M_TABLE, 'gradeoptions', $params);
+    $oldmod = $DB->get_record(constants::M_TABLE,  $params);
+    $oldgradefield = $oldmod->grade;
+    $oldgradeoptionsfield = $oldmod->gradeoptions;
+    $olddeflanguage = $oldmod->deflanguage;
 
     if (empty($module->skipreview)) {
         $module->skipreview = 0;
@@ -94,6 +96,11 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
     if(!$update_grades){ $update_grades = ($module->gradeoptions === $oldgradeoptionsfield ? false : true);}
     if ($update_grades) {
         wordcards_update_grades($module, 0, false);
+    }
+
+    //If definitions language has changed update it
+    if( $olddeflanguage !==$module->deflanguage){
+        utils::update_deflanguage($themod);
     }
 
     return $success;
