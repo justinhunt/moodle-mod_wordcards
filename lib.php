@@ -563,7 +563,7 @@ function wordcards_get_coursemodule_info($coursemodule) {
             $result->content = format_module_intro('wordcards', $moduleinstance, $coursemodule->id, false);
         }
     }
-    $result->name = 'wordcards';
+    $result->name = $moduleinstance->name;
     $result->customdata['duedate'] = $moduleinstance->viewend;
     $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
    return $result;
