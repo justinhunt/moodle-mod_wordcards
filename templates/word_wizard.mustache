@@ -15,38 +15,103 @@
 {{^element.frozen}}
     {{#js}}
 
-        require(['jquery','core/templates'],function($,templates) {
+        require(['jquery','core/templates','core/ajax'],function($,templates, ajax) {
 
             //get words from text area and fetch definitions
             var resultscont = $("#{{uniqid}}_resultscont");
 
-            $("#{{uniqid}}_fetchbtn").on("click", function() {
+            $("xxx#{{uniqid}}_fetchbtn").on("click", function() {
+                var langs = ['ar','id','zh','zh_tw','ja','ko','pt','es','th','vi','fr','rus'];
+                var langdef = $("#{{uniqid}}_ww_langdef").val();
+                var allwords = $("#{{uniqid}}_ww_words").val();
+                if (allwords.trim() === '') {
+                    return;
+                }
+                var wordsarray = allwords.split(',');
+                var promises = ajax.call([
+                    {methodname: 'mod_wordcards_search_dictionary', args: {words: wordsarray, cmid: 'CMID' }},
+                ]);
+
+                promises[0].done(function (response) {
+                    if (response && response.response[0]) {
+
+                        for(var i; i < results.length;i++){
+                            var result = results[i];
+                            //if a word search failed show an editable area
+                            if(result.count===0){
+                                var tdata = {term: result.term,nosenses: true, senses: [], modid: {{modid}} };
+                                templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
+                                        function(html,js){
+                                            resultscont.append(html);
+                                            templates.runTemplateJS(js);
+                                        }
+                                );
+                            }else{
+                                var tdata = {term: result.term, senses: [], modid: {{modid}} };
+                                for(var sindex = 0;sindex < result.count; sindex++ ){
+                                    var modelsentence = result[sindex].example;
+                                    var sourcedefinition = result[sindex].definition;
+                                    var alltrans={};
+                                    for(var ti=0;ti<langs.length;ti++){
+                                        alltrans[langs[ti]] = result['lang_' + langs[ti]];
+                                    }
+                                    var translations = JSON.stringify(alltrans);
+                                    var definition = sourcedefinition;
+                                    if(langdef!=="{{langterm}}"){
+                                        if(result.hasOwnProperty('lang_' + langdef)){
+                                            definition = result['lang_' + langdef];
+                                        }else{
+                                            definition = 'No translation available';
+                                        }
+                                    }
+                                    tdata.senses.push({definition: definition,sourcedefinition: sourcedefinition,
+                                        modelsentence: modelsentence, senseindex: sindex, translations: translations});
+                                }//end of results loop
+                                templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
+                                        function(html,js){
+                                            resultscont.append(html);
+                                            templates.runTemplateJS(js);
+                                        }
+                                );
+                            }
+                        }
+                    }
+                });
+            });
+
+
+            $("#{{uniqid}}_fetchbtn").on("click", async function() {
                 var langdef = $("#{{uniqid}}_ww_langdef").val();
                 var allwords = $("#{{uniqid}}_ww_words").val();
                 if(allwords.trim()===''){return;}
                 var wordsarray = allwords.split(',');
+                var analyzed=false;
 
                 //choose dictionary (global has more entries, but passport has more en -> otherlangs
                 var global_en_translations = ['br','dk','es','fr','ja','no','sv'];
                 if('{{langterm}}' == 'en' && !global_en_translations.includes(langdef)){
                     var dictionary="password";
+                    analyzed=true;
                 }else{
                     var dictionary="global";
                 }
 
                 for (var i=0;i<wordsarray.length && i>-1;i++){
-                    $.ajax({
+                   await $.ajax({
                         type: "GET",
                         url: "https://dictapi.lexicala.com/search-entries",
                         headers: {
                         "Authorization": "Basic " + btoa("{{lexicalauser}}" + ":" + "{{lexicalapass}}")
                         },
-                        data: {source: dictionary,language: "{{langterm}}", text: wordsarray[i]},
+                        data: {source: dictionary,language: "{{langterm}}", text: wordsarray[i], analyzed: analyzed},
                         success: function (ret){
 
                             //if no results
                             if(ret.results.length===0){
-                                var tdata = {term: 'word not found',nosenses: true, senses: [], modid: {{modid}} };
+                                var senses=[];
+                                senses.push({definition: '',sourcedefinition: 'No def. available',
+                                    modelsentence: '', senseindex: 0, translations: {}})
+                                var tdata = {term: wordsarray[i], senses: senses, modid: {{modid}} };
                                 templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
                                         function(html,js){
                                             resultscont.append(html);

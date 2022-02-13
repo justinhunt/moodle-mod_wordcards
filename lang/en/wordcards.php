@@ -15,6 +15,7 @@ $string['completionwhenfinish'] = 'The student has finished the activity.';
 $string['congrats'] = 'Congratulations!';
 $string['congratsitsover'] = '<div  style="text-align: center;">You have finished this activity. Thank you!</div>';
 $string['definition'] = 'Definition';
+$string['shortdefinition'] = 'Def:';
 $string['definition_help'] = 'Enter definition of the term(word/phrase) here. It should be short but still tell the student what the term means.';
 $string['definitions'] = 'Definitions';
 $string['deleteallentries'] = 'Delete all user attempts and stats (keep the terms/definitions)';
