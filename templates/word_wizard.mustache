@@ -88,8 +88,10 @@
                 var analyzed=false;
 
                 //choose dictionary (global has more entries, but passport has more en -> otherlangs
+                //For now FORCING password
                 var global_en_translations = ['br','dk','es','fr','ja','no','sv'];
-                if('{{langterm}}' == 'en' && !global_en_translations.includes(langdef)){
+              //  if('{{langterm}}' == 'en' && !global_en_translations.includes(langdef)){
+                if(true){
                     var dictionary="password";
                     analyzed=true;
                 }else{
