@@ -44,6 +44,7 @@ if($config->enablesetuptab){
 
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
+$PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', [$course->id]);
 
 echo $renderer->header();
 echo $renderer->heading($pagetitle, 3, 'main');

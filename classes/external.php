@@ -381,4 +381,44 @@ class mod_wordcards_external extends external_api {
         );
     }
 
+    public static function set_my_words_parameters(){
+        return new external_function_parameters(
+            array(
+                'courseid' => new external_value(PARAM_INT, 'The course id'),
+                'termid' => new external_value(PARAM_INT, 'The term id for the word'),
+                'newstatus' => new external_value(PARAM_BOOL, 'The new status (in my words or not)')
+            )
+        );
+
+    }
+
+    /**
+     * Set a word as being in "My words" pool or not.
+     * @param int $courseid
+     * @param int $termid
+     * @param bool $newstatus
+     * @return array
+     * @throws invalid_parameter_exception
+     */
+    public static function set_my_words(int $courseid, int $termid, bool $newstatus){
+        $params = self::validate_parameters(
+            self::set_my_words_parameters(),
+            ['courseid' => $courseid, 'termid' => $termid, 'newstatus' => $newstatus]
+        );
+        $mywordspool = new \mod_wordcards\my_words_pool($params['courseid']);
+        return [
+            'success' => $newstatus ? $mywordspool->add_word($params['termid']) : $mywordspool->remove_word($params['termid']),
+            'newStatus' => $newstatus
+        ];
+    }
+
+    public static function set_my_words_returns(){
+        return new external_single_structure(
+            array(
+                'success' => new external_value(PARAM_INT, 'Indicates success or failure of the call'),
+                'newStatus' => new external_value(PARAM_BOOL, 'Indicates new status of the word')
+            )
+        );
+    }
+
 }

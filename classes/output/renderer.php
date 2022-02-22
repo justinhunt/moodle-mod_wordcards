@@ -15,6 +15,7 @@
 
 namespace mod_wordcards\output;
 
+use mod_wordcards\my_words_pool;
 use mod_wordcards\utils;
 use mod_wordcards\constants;
 
@@ -24,6 +25,7 @@ class renderer extends \plugin_renderer_base {
         global $PAGE, $OUTPUT,$USER;
 
         $definitions = $mod->get_terms();
+
         if (empty($definitions)) {
 
             $displaytext = $this->output->box_start();
@@ -40,13 +42,18 @@ class renderer extends \plugin_renderer_base {
 
         }
 
-        //make sure each definition has a voice
+        $mywordspool = new my_words_pool($mod->get_course()->id);
+
         foreach($definitions as $def){
+            //make sure each definition has a voice
             if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
                 $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
-        }
 
+            // Add flag to show if it's in "My words" or not.
+            $def->isinmywords = $mywordspool->has_term($def->id);
+
+        }
 
         // Get whe the student has seen.
         $seen = $mod->get_terms_seen();

@@ -234,7 +234,7 @@ class mod_wordcards_module {
         }
     }
 
-    public function insert_media_urls($terms) {
+    public static function insert_media_urls($terms) {
         global $CFG;
         foreach($terms as $term){
             $contextid = false;
@@ -274,7 +274,7 @@ class mod_wordcards_module {
         shuffle($records);
         $maxterms = $this->fetch_step_termcount($step);
         $selected_records = array_slice($records, 0, $maxterms);
-        return $this->insert_media_urls($selected_records);
+        return self::insert_media_urls($selected_records);
     }
 
     public function get_review_terms($step) {
@@ -361,7 +361,7 @@ class mod_wordcards_module {
         shuffle($records);
         $selected_records = array_slice($records, 0, $maxterms);
 
-        return $this->insert_media_urls($selected_records);
+        return self::insert_media_urls($selected_records);
     }
 
     public function get_attempts() {
@@ -434,7 +434,7 @@ class mod_wordcards_module {
         }
         $terms = $DB->get_records('wordcards_terms', $params, 'id ASC');
         if($terms){
-            $terms =$this->insert_media_urls($terms);
+            $terms = self::insert_media_urls($terms);
         }
         return $terms;
     }

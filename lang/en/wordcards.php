@@ -326,3 +326,9 @@ $string['wordcards:preview']="Can preview Wordcards activities";
 $string['mode_sequential']="Sequential mode";
 $string['mode_free']="Free mode";
 $string['journeymode']="Mode";
+
+// My words.
+$string['m'] = "m";
+$string['addtomywords'] = "Click to add to My Words";
+$string['removefrommywords'] = "Click to remove from My Words";
+$string['saving'] = "Saving";

@@ -22,6 +22,7 @@
                <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}" /></div>
                <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
             </div>
+             {{>mod_wordcards/my_words_button}}
             {{#model_sentence}}
             <div class="term-modelsentence">
                <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>

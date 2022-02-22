@@ -1000,3 +1000,21 @@ ul.definition_flashcards_ul {
     margin: 20px;
     padding: 10px;
 }
+
+.wordcards-my-words-action.btn.btn-primary,
+.wordcards-my-words-action.btn.btn-outline-primary {
+    font-weight: normal;
+    font-size: 0.7em;
+    position: absolute;
+    top: 2px;
+    right: 20px;
+    padding: 1px 5px 1px 5px;
+    border-radius: 3px;
+}
+.wordcards-my-words .saved-notification {
+    position: absolute;
+    top: 2px;
+    right: 60px;
+    font-weight: normal;
+    color: gray;
+}
