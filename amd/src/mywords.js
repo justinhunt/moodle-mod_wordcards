@@ -37,7 +37,6 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
             {key: "removefrommywords", component: "mod_wordcards"},
         ]).done(function (strings) {
             stringStore = strings;
-            console.log('cb', typeof callback)
             if (typeof callback == 'function') {
                 callback();
             }
@@ -83,12 +82,10 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
      * Existing button statuses are on the main freemode template markup, so we need to grab them and render them,
      */
     const applyButtonStatuses = function() {
-        console.log('aply', stringStore)
         const myWordsDiv = $(SELECTOR.MY_WORDS_DIV);
         if (myWordsDiv) {
             const ids = JSON.parse(myWordsDiv.attr(DATA.MY_WORDS_IDS));
             ids.forEach((id) => {
-                console.log('id', id)
                 const btn = $(SELECTOR.MY_WORDS_ACTION_BTN_ID + id);
                 if (!btn.hasClass(CLASS.BTN_IN_MY_WORDS)) {
                     btn

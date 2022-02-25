@@ -162,13 +162,15 @@ define([
       };
       console.log(data);
 
-      Ajax.call([{
+      if (!app.isFreeMode) {
+        Ajax.call([{
           methodname: 'mod_wordcards_report_step_grade',
           args: {
-              modid: app.modid,
-              correct: tdata['totalcorrect']
+            modid: app.modid,
+            correct: tdata['totalcorrect']
           }
-      }]);
+        }]);
+      }
 
     },
 
