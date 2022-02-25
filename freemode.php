@@ -46,7 +46,7 @@ $renderer = $PAGE->get_renderer('mod_wordcards');
 $templateable = new \mod_wordcards\output\freemode($cm, $course, $practicetype, $wordpool);
 $templatedata = $templateable->export_for_template($renderer);
 $PAGE->navbar->add($templatedata->pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
+$PAGE->set_heading(format_string($course->fullname, true));
 $PAGE->set_title($templatedata->pagetitle);
 
 $config = get_config(constants::M_COMPONENT);

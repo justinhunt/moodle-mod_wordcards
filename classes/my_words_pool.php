@@ -42,9 +42,7 @@ class my_words_pool {
             }
         }
         return $this->pool;
-        //todo still update a word as learnt when practised.
     }
-    //todo this class should be cmid not courseid.
 
     public function word_count() {
         global $DB, $USER;
