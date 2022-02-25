@@ -1,6 +1,6 @@
 <div class="mod_wordcards_freemode">
     <div class="row">
-        <div class="col-md-3" style="max-width: 250px;">
+        <div class="col-md-3 buttons-column">
             <div class="mt-3">
                 <div class="nav flex-column nav-pills mb-3" id="pills-practice-type">
                     <a class="nav-link{{#introactive}} active{{/introactive}}" id="pill-practice-type-intro"
@@ -19,32 +19,50 @@
                 </div>
             </div>
             <div class="mt-3">
-                <h5>{{#str}}words, mod_wordcards{{/str}}</h5>
-                <div class="dropdown">
-                    <button class="dropbtn text-left">
-                        <i class="fa {{selectedwordpoolicon}} wordpool-chooser-icon"></i>
-                        <span>{{{selectedwordpool}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpool}}">{{{selectedwordpoolcountwords}}}</span>)</span>
-                        <i class="icon fa fa-chevron-down fa-fw" aria-hidden="true"></i>
-                    </button>
-                    <div class="dropdown-content wordpool-chooser">
-                        {{#wordpools}}
-                            {{^selected}}
-                                {{^disabled}}
-                                    <a href="{{config.wwwroot}}/mod/wordcards/freemode.php?id={{id}}&wordpool={{wordpoolid}}&practicetype={{{practicetype}}}" id="wordpool-picker-{{wordpoolid}}">
+                {{^showselectmenu}}
+                    <h5>{{#str}}words, mod_wordcards{{/str}}</h5>
+                    <div class="dropdown">
+                        <button class="dropbtn text-left">
+                            <i class="fa {{selectedwordpoolicon}} wordpool-chooser-icon"></i>
+                            <span>{{{selectedwordpool}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpool}}">{{{selectedwordpoolcountwords}}}</span>)</span>
+                            <i class="icon fa fa-chevron-down fa-fw" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-content wordpool-chooser">
+                            {{#wordpools}}
+                                {{^selected}}
+                                    {{^disabled}}
+                                        <a href="{{config.wwwroot}}/mod/wordcards/freemode.php?id={{id}}&wordpool={{wordpoolid}}&practicetype={{{practicetype}}}" id="wordpool-picker-{{wordpoolid}}">
                                         <i class="fa {{icon}} fa-fw wordpool-chooser-icon"></i>
-                                    <span>{{{title}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpoolid}}">{{{ countwordstoreview }}}</span>)</span>
+                                        <span>{{{title}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpoolid}}">{{{ countwordstoreview }}}</span>)</span>
+                                        </a>
+                                    {{/disabled}}
+                                {{/selected}}
+                                {{#disabled}}
+                                    <a href="#" class="disabled" id="wordpool-picker-{{wordpoolid}}">
+                                        <i class="fa {{icon}} fa-fw wordpool-chooser-icon"></i>
+                                        <span>{{{title}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpoolid}}">{{{ countwordstoreview }}}</span>)</span>
                                     </a>
                                 {{/disabled}}
-                            {{/selected}}
-                            {{#disabled}}
-                                <a href="#" class="disabled" id="wordpool-picker-{{wordpoolid}}">
-                                    <i class="fa {{icon}} fa-fw wordpool-chooser-icon"></i>
-                                    <span>{{{title}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpoolid}}">{{{ countwordstoreview }}}</span>)</span>
-                                </a>
-                            {{/disabled}}
-                        {{/wordpools}}
+                            {{/wordpools}}
+                        </div>
                     </div>
-                </div>
+                {{/showselectmenu}}
+                {{#showselectmenu}}
+                {{! If the user is on mobile or tablet we use a form instead of the above dropdown }}
+                    <form method="GET" action="{{{config.wwwroot}}}/mod/wordcards/freemode.php" style="margin-left: 25px;margin-top: 10px;">
+                        <label for="wordpool" class="d-block">{{#str}}words, mod_wordcards{{/str}}</label>
+                        <select onchange="this.form.submit()" name="wordpool">
+                            {{#wordpools}}
+                                <option value="{{wordpoolid}}"{{#selected}} selected{{/selected}}{{#disabled}} disabled{{/disabled}}>
+                                    <span>{{{title}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpoolid}}">{{{ countwordstoreview }}}</span>)</span>
+                                </option>
+                            {{/wordpools}}
+                        </select>
+                        <input type="hidden" name="id" value="{{id}}"/>
+                        <input type="hidden" name="practicetype" value="{{practicetype}}"/>
+
+                    </form>
+                {{/showselectmenu}}
             </div>
             <div class="mt-3">
                 <a href="{{config.wwwroot}}/mod/wordcards/view.php?id={{id}}" id="exit-btn">

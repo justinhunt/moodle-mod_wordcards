@@ -74,5 +74,8 @@
 .mod_wordcards_freemode  a:hover .fa.wordpool-chooser-icon {
     color: #fff;
 }
-
-
+@media (min-width: 768px) {
+    .col-md-3.buttons-column {
+        max-width: 250px;
+    }
+}

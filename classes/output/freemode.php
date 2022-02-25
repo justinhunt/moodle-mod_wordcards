@@ -111,6 +111,11 @@ class freemode implements \renderable, \templatable {
 
             $data->wordpools[] = $pool;
         }
+
+        // For the wordpool we show a <select> form element if the device is mobile or tablet.
+        $devicetype = \core_useragent::get_device_type();
+        $data->showselectmenu = in_array($devicetype, [\core_useragent::DEVICETYPE_MOBILE, \core_useragent::DEVICETYPE_TABLET]);
+
         if ($data->selectedpoolhaswords) {
             $definitions = $this->get_terms($this->wordpool, false);
             switch ($this->practicetype){
