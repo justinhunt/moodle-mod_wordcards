@@ -16,13 +16,16 @@
    <div class="term-wrapper">
       <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
          <div class="term-header">
-            <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i></div>
+            <div class="term-title">
+                {{term}}
+                <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                {{>mod_wordcards/my_words_button}}
+            </div>
             <div class="term-tick">
                <a href="#" class="term-seen-action" title="{{markasseen}}"><img src="{{{notseenurl}}}" alt="{{termnotseen}}" /></a>
                <div class="term-seen-state"><img src="{{{seenurl}}}" alt="{{termseen}}" /></div>
                <div class="term-seen-loading"><img src="{{loadingurl}}" alt="{{loading}}"></div>
             </div>
-             {{>mod_wordcards/my_words_button}}
             {{#model_sentence}}
             <div class="term-modelsentence">
                <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>

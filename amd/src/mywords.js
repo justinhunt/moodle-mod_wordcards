@@ -1,24 +1,21 @@
 /**
- * Apps4EFL module.
+ * Module to watch my words buttons for clicks and report to back end.
  *
  * @package mod_wordcards
  * @author David Watson - evolutioncode.uk
  */
-define(['jquery', 'core/ajax'], function($, ajax) {
+define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
     const SELECTOR = {
-        DATA_SET: '*[data-action="wordcards-set-my-words"]'
+        DATA_SET: '*[data-action="wordcards-set-my-words"]',
+        MY_WORDS_DIV: '#my-words-ids',
+        MY_WORDS_ACTION_BTN_ID: '#wordcards-mywords-action-',
+        WORDPOOL_COUNTS: '.wordpool-count'
     }
 
     const CLASS = {
-        ICON_NO: 'fa-plus',
-        ICON_YES: 'fa-check',
-        SPINNER: 'fa-spinner',
-        PULSE: 'fa-pulse',
         DISABLED: 'disabled',
-        EXCLAMATION: 'fa-exclamation-triangle',
         BTN_NOT_IN_MY_WORDS: 'btn-outline-primary',
-        BTN_IN_MY_WORDS: 'btn-primary',
-        DANGER: 'text-danger'
+        BTN_IN_MY_WORDS: 'btn-primary'
     }
 
     const EVENT = {
@@ -27,49 +24,91 @@ define(['jquery', 'core/ajax'], function($, ajax) {
 
     const DATA = {
         TERM_ID: 'data-termid',
-        VALUE: 'data-value'
+        VALUE: 'data-value',
+        ADD: 'data-add',
+        REMOVE: 'data-remove',
+        MY_WORDS_IDS: 'data-my-words-term-ids'
+    }
+    var stringStore = {};
+
+    const initStrings = function (callback) {
+        str.get_strings([
+            {key: "addtomywords", component: "mod_wordcards"},
+            {key: "removefrommywords", component: "mod_wordcards"},
+        ]).done(function (strings) {
+            stringStore = strings;
+            console.log('cb', typeof callback)
+            if (typeof callback == 'function') {
+                callback();
+            }
+        });
+    }
+
+    const initButtonListeners = function() {
+        $(SELECTOR.DATA_SET).on(EVENT.CLICK, function(e) {
+            const currTar = $(e.currentTarget);
+            const termId = currTar.attr(DATA.TERM_ID);
+            if (!currTar.hasClass(CLASS.DISABLED)) {
+                currTar.addClass(CLASS.DISABLED)
+                // Hide wordpool counts in drop down as may become incorrect here.
+                $(SELECTOR.WORDPOOL_COUNTS).fadeOut();
+                const newStatus = currTar.hasClass(CLASS.BTN_IN_MY_WORDS) ? 0 : 1;
+                ajax.call([{
+                    methodname: 'mod_wordcards_set_my_words',
+                    args: {
+                        termid: termId,
+                        newstatus: newStatus
+                    }
+                }])[0].done(function(response) {
+                    if (response.success) {
+                        currTar.removeClass(CLASS.DISABLED);
+                        if (response.newStatus) {
+                            currTar.addClass(CLASS.BTN_IN_MY_WORDS);
+                            currTar.removeClass(CLASS.BTN_NOT_IN_MY_WORDS);
+                            currTar.attr('title', stringStore[1]);
+                        } else {
+                            currTar.removeClass(CLASS.BTN_IN_MY_WORDS);
+                            currTar.addClass(CLASS.BTN_NOT_IN_MY_WORDS);
+                            currTar.attr('title', stringStore[0]);
+                        }
+                    }
+                }).fail(function() {
+                    currTar.removeClass(CLASS.DISABLED);
+                })
+            }
+        })
+    }
+
+    /**
+     * Existing button statuses are on the main freemode template markup, so we need to grab them and render them,
+     */
+    const applyButtonStatuses = function() {
+        console.log('aply', stringStore)
+        const myWordsDiv = $(SELECTOR.MY_WORDS_DIV);
+        if (myWordsDiv) {
+            const ids = JSON.parse(myWordsDiv.attr(DATA.MY_WORDS_IDS));
+            ids.forEach((id) => {
+                console.log('id', id)
+                const btn = $(SELECTOR.MY_WORDS_ACTION_BTN_ID + id);
+                if (!btn.hasClass(CLASS.BTN_IN_MY_WORDS)) {
+                    btn
+                        .addClass(CLASS.BTN_IN_MY_WORDS)
+                        .removeClass(CLASS.BTN_NOT_IN_MY_WORDS)
+                        .attr('title', stringStore[1]);
+                }
+            });
+            return true;
+        }
     }
     return {
-        init: function (courseId) {
+        init: function () {
             $(document).ready(function() {
-                $(SELECTOR.DATA_SET).on(EVENT.CLICK, function(e) {
-                    const currTar = $(e.currentTarget);
-                    const termId = currTar.attr(DATA.TERM_ID);
-                    const ELEMS = {
-                        ADD_BUTTON: $("#wordcards-add-btn-" + termId),
-                        REMOVE_BUTTON: $("#wordcards-remove-btn-" + termId),
-                        SAVING: $("#wordcards-spinner-" + termId),
-                    }
-                    if (!ELEMS.ADD_BUTTON.hasClass(CLASS.DISABLED) && !ELEMS.REMOVE_BUTTON.hasClass(CLASS.DISABLED)) {
-                        ELEMS.ADD_BUTTON.addClass(CLASS.DISABLED)
-                        ELEMS.REMOVE_BUTTON.addClass(CLASS.DISABLED)
-                        const newStatus = currTar.attr(DATA.VALUE) === "0" // If zero now, set to 1.
-                        ELEMS.SAVING.fadeIn();
-                        currTar.fadeOut();
-                        ajax.call([{
-                            methodname: 'mod_wordcards_set_my_words',
-                            args: {
-                                courseid: courseId,
-                                termid: termId,
-                                newstatus: newStatus
-                            }
-                        }])[0].done(function(response) {
-                            if (response.success) {
-                                ELEMS.SAVING.fadeOut()
-                                if (response.newStatus) {
-                                    ELEMS.REMOVE_BUTTON.fadeIn();
-                                } else
-                                    ELEMS.ADD_BUTTON.fadeIn();
-                                }
-                                ELEMS.ADD_BUTTON.removeClass(CLASS.DISABLED)
-                                ELEMS.REMOVE_BUTTON.removeClass(CLASS.DISABLED)
-                            }).fail(function() {
-                                ELEMS.ADD_BUTTON.removeClass(CLASS.DISABLED)
-                                ELEMS.REMOVE_BUTTON.removeClass(CLASS.DISABLED)
-                        })
-                    }
-                })
+                initButtonListeners();
             })
+        },
+        initFromFeedbackPage: function () {
+            initStrings(applyButtonStatuses);
+            initButtonListeners();
         }
     }
 });

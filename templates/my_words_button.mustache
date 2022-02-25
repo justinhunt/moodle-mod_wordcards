@@ -1,13 +1,8 @@
-<div class="wordcards-my-words d-inline" id="wordcards-my-words-button-{{id}}">
-    <div class="saved-notification text-muted" id="wordcards-spinner-{{id}}" style="display: none;">
-        <i class="fa fa-spinner fa-pulse mr-1" title="{{#str}}saving, mod_wordcards{{/str}}"></i>
-    </div>
-    <a href="#" class="wordcards-my-words-action btn btn-primary" id="wordcards-remove-btn-{{id}}" title="{{#str}}removefrommywords, wordcards{{/str}}"
-       data-action="wordcards-set-my-words" data-value="1" data-termid="{{id}}"{{^isinmywords}} style="display: none;"{{/isinmywords}}>
-        <i class="fa fa-check mr-1" aria-hidden="true"></i><span>{{#str}}m, wordcards{{/str}}</span>
-    </a>
-    <a href="#" class="wordcards-my-words-action btn btn-outline-primary" id="wordcards-add-btn-{{id}}" title="{{#str}}addtomywords, wordcards{{/str}}"
-       data-action="wordcards-set-my-words" data-value="0" data-termid="{{id}}"{{#isinmywords}} style="display: none;"{{/isinmywords}}>
-        <i class="fa fa-plus mr-1" aria-hidden="true"></i><span>{{#str}}m, wordcards{{/str}}</span>
-    </a>
-</div>
+<a href="#" class="wordcards-my-words-action btn {{#isinmywords}}btn-primary{{/isinmywords}}{{^isinmywords}}btn-outline-primary{{/isinmywords}}" id="wordcards-mywords-action-{{id}}"
+   title="{{#isinmywords}}{{#str}}removefrommywords, wordcards{{/str}}{{/isinmywords}}{{^isinmywords}}{{#str}}addtomywords, wordcards{{/str}}{{/isinmywords}}"
+   data-action="wordcards-set-my-words" data-termid="{{id}}">
+    <i class="fa fa-check" aria-hidden="true"></i>
+    <i class="fa fa-plus" aria-hidden="true"></i>
+    <i class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+    <span>{{#str}}m, wordcards{{/str}}</span>
+</a>

@@ -29,6 +29,7 @@ class mod_wordcards_module {
 
     const WORDPOOL_LEARN = 0;
     const WORDPOOL_REVIEW = 1;
+    const WORDPOOL_MY_WORDS = 2;
 
     const PRACTICETYPE_SCATTER = -1;//not used
     const PRACTICETYPE_SCATTER_REV = -2;//not used
@@ -146,6 +147,18 @@ class mod_wordcards_module {
 
     public static function get_all_states() {
         return self::$states;
+    }
+
+    public static function get_wordpools() {
+        $refClass = new ReflectionClass(__CLASS__);
+        $constants = $refClass->getConstants();
+        $pools = [];
+        foreach ($constants as $k => $v) {
+            if (substr($k, 0, 9) == 'WORDPOOL_') {
+                $pools[$k] = $v;
+            }
+        }
+        return $pools;
     }
 
     public function get_allowed_states() {
@@ -266,22 +279,20 @@ class mod_wordcards_module {
         return $terms;
     }
 
-    public function get_learn_terms($step) {
+    public function get_learn_terms(int $maxterms) {
         $records = $this->get_terms();
         if (!$records) {
             return [];
         }
         shuffle($records);
-        $maxterms = $this->fetch_step_termcount($step);
         $selected_records = array_slice($records, 0, $maxterms);
         return self::insert_media_urls($selected_records);
     }
 
-    public function get_review_terms($step) {
+    public function get_review_terms(int $maxterms) {
         global $DB, $USER;
-
-        $maxterms = $this->fetch_step_termcount($step);
-        if($maxterms<1){$maxterms=4;}
+        // Old code had a min of 4 so keeping this - not sure why.
+        $maxterms = max(4, $maxterms);
         $from = 0;
         $limit = $maxterms + 5;
 
@@ -804,7 +815,7 @@ class mod_wordcards_module {
         return $nextstep;
     }
 
-    public function are_there_words_to_review($userid=null){
+    public function are_there_words_to_review($userid = null) {
         global $USER, $DB;
 
         //if we are an admin, just say yes
@@ -812,21 +823,21 @@ class mod_wordcards_module {
             return true;
         }
 
-        if (empty($userid)) {
-            $userid = $USER->id;
-        }
+            if (empty($userid)) {
+                $userid = $USER->id;
+            }
 
-        // Retrieve the list of wordcard modids of the course.
-        $modids = array();
+            // Retrieve the list of wordcard modids of the course.
+            $modids = array();
 
-        foreach(get_fast_modinfo($this->course)->get_instances_of('wordcards') as $wordcard) {
-            $modids[] = $wordcard->instance;
-        }
+            foreach(get_fast_modinfo($this->course)->get_instances_of('wordcards') as $wordcard) {
+                $modids[] = $wordcard->instance;
+            }
 
-        $params = array('state' => self::STATE_END, 'userid' => $userid);
-        list($sqlmodidtest, $modidparams) = $DB->get_in_or_equal($modids, SQL_PARAMS_NAMED);
-        $params = array_merge($params, $modidparams);
-        $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
+            $params = array('state' => self::STATE_END, 'userid' => $userid);
+            list($sqlmodidtest, $modidparams) = $DB->get_in_or_equal($modids, SQL_PARAMS_NAMED);
+            $params = array_merge($params, $modidparams);
+            $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
 
         $completedwordcardtotal = $DB->count_records_select('wordcards_progress',
                 'state = :state AND userid = :userid ' . $sqlmodidtest, $params);

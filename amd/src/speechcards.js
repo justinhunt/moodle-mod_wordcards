@@ -34,6 +34,7 @@ define([
       this.nexturl = props.nexturl;
       this.modid = props.modid;
       this.region = props.region;
+      this.isFreeMode = props.isfreemode;
       var definitionscontrol = $(theid).get(0);
       if (definitionscontrol) {
         var jsondata = JSON.parse(definitionscontrol.value);
@@ -341,6 +342,7 @@ define([
 
       //template data
       var tdata = [];
+      tdata['nexturl'] = this.nexturl;
       tdata['results'] = app.results;
       tdata['total'] = app.terms.length;
       tdata['totalcorrect'] = a4e.calc_total_points(app.results);
@@ -353,6 +355,10 @@ define([
       templates.render('mod_wordcards/feedback', tdata).then(
         function(html, js) {
           $("#results-inner").html(html);
+            // Add listeners for the "Add to my words" buttons.
+            require(["mod_wordcards/mywords"], function(mywords) {
+                mywords.initFromFeedbackPage();
+            });
         }
       );
 
@@ -407,7 +413,8 @@ define([
         question: app.terms[app.pointer - 1]['definition'],
         selected: spokenwords,
         correct: app.terms[app.pointer - 1]['term'],
-        points: points
+        points: points,
+        id: app.terms[app.pointer - 1]['id']
       };
 
       $.each(app.results, (function(result) {
@@ -436,7 +443,8 @@ define([
         methodname: 'mod_wordcards_report_failed_association',
         args: {
           term1id: term1id,
-          term2id: term2id
+          term2id: term2id,
+          isfreemode: app.isFreeMode
         }
       }]);
     },
@@ -449,7 +457,8 @@ define([
       Ajax.call([{
         methodname: 'mod_wordcards_report_successful_association',
         args: {
-          termid: termid
+          termid: termid,
+          isfreemode: app.isFreeMode
         }
       }]);
     },
