@@ -413,10 +413,12 @@ class mod_wordcards_external extends external_api {
             self::set_my_words_parameters(),
             ['termid' => $termid, 'newstatus' => $newstatus]
         );
+
         $courseandmoduleid = $DB->get_record_sql(
             "SELECT cm.course, cm.id as cmid
             FROM {course_modules} cm
-            JOIN {wordcards_terms} wt ON wt.modid = cm.id AND wt.id = ?",
+            JOIN {modules} m ON m.id = cm.module AND m.name = 'wordcards'
+            JOIN {wordcards_terms} wt ON wt.modid = cm.instance AND wt.id = ?",
             [$params['termid']]
         );
         if (!$courseandmoduleid) {
