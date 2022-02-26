@@ -99,6 +99,8 @@ class mod_wordcards_external extends external_api {
         $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
+        self::mark_as_seen_db($term->id);
+
         // We do not log associations for teachers.
         if ($mod->can_manage()) {
             return true;
@@ -107,9 +109,7 @@ class mod_wordcards_external extends external_api {
         // We need read access.
         $mod->require_view();
         $mod->record_successful_association($term);
-        if ($isfreemode) {
-            self::mark_as_seen_db($term->id);
-        }
+
         return true;
     }
 
@@ -134,6 +134,7 @@ class mod_wordcards_external extends external_api {
         $term = $DB->get_record('wordcards_terms', ['id' => $term1id], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
+        self::mark_as_seen_db($term->id);
 
         // We do not log associations for teachers.
         if ($mod->can_manage()) {
@@ -143,9 +144,6 @@ class mod_wordcards_external extends external_api {
         // We need read access in at least one of the terms. The rest will be validated elsewhere.
         $mod->require_view();
         $mod->record_failed_association($term, $term2id);
-        if ($isfreemode) {
-            self::mark_as_seen_db($term->id);
-        }
 
         return true;
     }

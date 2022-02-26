@@ -11,7 +11,6 @@
     position: relative;
     display: inline-block;
     width: 100%;
-    margin-bottom: 60px;
 }
 .mod_wordcards_freemode .dropdown .fa-chevron-down {
     position: absolute;
@@ -54,12 +53,13 @@
 }
 .mod_wordcards_freemode a#exit-btn {
     padding: .5rem 1rem;
-    width: 100%;
     color: #333;
     display: block;
     border-top: 1px solid lightgray;
-    margin-top: 100px;
     text-decoration: none;
+    position: absolute;
+    bottom: 25px;
+    width: 220px;
 }
 .mod_wordcards_freemode a.nav-link {
     color: #333;

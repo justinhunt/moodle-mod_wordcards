@@ -140,10 +140,6 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
        a4e.register_events();
        a4e.init_audio(props.token,props.region,props.owner);
 
-      function seenAll() {
-        return container.find('.term').length === container.find('.term.term-seen').length
-      }
-
       container.on('click', '.term-seen-action', function(e) {
         e.preventDefault();
 
@@ -173,16 +169,9 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
           .always(function() {
           	//remove loading from  node which loading was applied to
             termNode.removeClass('term-loading');
-            if (seenAll()) {
-              btn.prop('disabled', false);
-            }
+
           });
       });
-
-      // Teachers can jump to the next steps.
-      if (!seenAll() && !canmanage) {
-        btn.prop('disabled', true);
-      }
 
       btn.click(function(e) {
         e.preventDefault();

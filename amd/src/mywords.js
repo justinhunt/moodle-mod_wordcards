@@ -48,6 +48,7 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
             const currTar = $(e.currentTarget);
             const termId = currTar.attr(DATA.TERM_ID);
             if (!currTar.hasClass(CLASS.DISABLED)) {
+                e.preventDefault();
                 currTar.addClass(CLASS.DISABLED)
                 // Hide wordpool counts in drop down as may become incorrect here.
                 $(SELECTOR.WORDPOOL_COUNTS).fadeOut();

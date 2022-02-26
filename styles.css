@@ -45,7 +45,6 @@
 
 .path-mod-wordcards .term-header  {
     font-weight: bold;
-    padding-right: 25px;
     border-bottom: 1px solid #ccc;
     /* Separator between title and body. */
     padding-bottom: 10px;
@@ -956,13 +955,6 @@ ul.definition_flashcards_ul {
 	height: 180px;
 }
 
-.wordcards_display_options {
-   float: right;
-}
-.wordcards_display_option {
-   cursor: pointer;
-   padding: 8px;
-}
 .wordcards_importintro {
     max-width: 1200px;
     margin: 10px;
@@ -1024,7 +1016,5 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 }
 .mod_wordcards_freemode #results-inner .wordcards-my-words-action.btn.btn-primary,
 .mod_wordcards_freemode #results-inner .wordcards-my-words-action.btn.btn-outline-primary {
-    bottom: 10px;
-    right: 10px;
-    top: inherit;
+    margin-top: 3px;
 }

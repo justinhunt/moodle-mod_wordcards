@@ -123,19 +123,24 @@ class freemode implements \renderable, \templatable {
                 case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
                 case \mod_wordcards_module::PRACTICETYPE_DICTATION:
                 case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
-                    $data->mainhtml = $renderer->a4e_page($this->mod, $this->practicetype, $definitions);
+                    $data->mainhtml = $renderer->a4e_page($this->mod, $this->practicetype, $definitions, true);
                     break;
                 case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
-                    $data->mainhtml = $renderer->speechcards_page($this->mod, $definitions);
+                    $data->mainhtml = $renderer->speechcards_page($this->mod, $definitions, true);
                     break;
                 default:
-                    $data->mainhtml = '';
-                    $data->freemodeintro = 'Intro';
+                    // Show the intro page and cards.
+                    $data->isintropage = 1;
+                    $data->definitions = $renderer->definitions_page_data($this->mod);
+                    $data->definitions['isfreemode'] = 1;
+                    $data->definitions['nexturl'] = isset($data->tabs[0]['url']) ? $data->tabs[0]['url'] : '';
+                    $data->definitions['introheading'] = get_string('freemode', 'mod_wordcards');
                     $stringmanager = get_string_manager();
+                    $data->definitions['introstrings'] = [];
                     for ($x = 1; $x <= 10; $x++) {
                         $stringkey = 'freemodeintropara' . $x;
                         if ($stringmanager->string_exists($stringkey, 'mod_wordcards')) {
-                            $data->freemodeintrostrings[] = get_string($stringkey, 'mod_wordcards');
+                            $data->definitions['introstrings'][] = get_string($stringkey, 'mod_wordcards');
                         } else {
                             break;
                         }

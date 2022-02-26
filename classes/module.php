@@ -332,14 +332,10 @@ class mod_wordcards_module {
                       FROM {wordcards_terms} t
                       JOIN {wordcards} f
                         ON f.id = t.modid
-                      JOIN {wordcards_seen} s          -- Join on what the student has marked as seen.
-                        ON s.termid = t.id
-                       AND s.userid = :userid1
                  LEFT JOIN {wordcards_associations} a  -- Link the associations, if any.
                         ON a.termid = t.id
                        AND a.userid = :userid2
                      WHERE t.deleted = 0        -- The term was not deleted.
-                       AND s.id IS NOT NULL     -- The user has marked the term as seen.
                        AND f.id $insql          -- The user has access to the module in which the term is.
                   ORDER BY
                            -- Prioritise the terms which have never been associated, associated once or associated twice.
@@ -448,20 +444,6 @@ class mod_wordcards_module {
             $terms = self::insert_media_urls($terms);
         }
         return $terms;
-    }
-
-    public function get_terms_seen() {
-        global $DB, $USER;
-
-        $sql = 'SELECT s.*
-                  FROM {wordcards_seen} s
-                  JOIN {wordcards_terms} t
-                    ON s.termid = t.id
-                   AND t.deleted = 0
-                 WHERE t.modid = ?
-                   AND s.userid = ?';
-
-        return $DB->get_records_sql($sql, [$this->mod->id, $USER->id]);
     }
 
     protected function has_completed_state($state) {

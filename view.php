@@ -82,5 +82,6 @@ if($hasopenclosedates){
 }
 
 echo $renderer->navigation($mod, $currentstate);
-echo $renderer->definitions_page($mod);
+$data = $renderer->definitions_page_data($mod);
+echo $renderer->render_from_template('mod_wordcards/definitions_page', $data);
 echo $renderer->footer();

@@ -146,13 +146,13 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
         $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
-        echo $renderer->a4e_page($mod, $practicetype, $definitions, $currentstep);
+        echo $renderer->a4e_page($mod, $practicetype, $definitions, false, $currentstep);
         break;
 
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
         $definitions = $mod->get_review_terms($mod->fetch_step_termcount($currentstep));
-        echo $renderer->speechcards_page($mod, $definitions, $currentstep);
+        echo $renderer->speechcards_page($mod, $definitions, false, $currentstep);
         break;
     //no longer using this
     case mod_wordcards_module::PRACTICETYPE_SCATTER:

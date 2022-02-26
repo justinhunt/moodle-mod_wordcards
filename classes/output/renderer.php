@@ -21,8 +21,8 @@ use mod_wordcards\constants;
 
 class renderer extends \plugin_renderer_base {
 
-    public function definitions_page(\mod_wordcards_module $mod) {
-        global $PAGE, $OUTPUT,$USER;
+    public function definitions_page_data(\mod_wordcards_module $mod) {
+        global $USER;
 
         $definitions = $mod->get_terms();
 
@@ -55,16 +55,6 @@ class renderer extends \plugin_renderer_base {
 
         }
 
-        // Get whe the student has seen.
-        $seen = $mod->get_terms_seen();
-        foreach ($seen as $s) {
-            if (!isset($definitions[$s->termid])) {
-                // Shouldn't happen.
-                continue;
-            }
-            $definitions[$s->termid]->seen = true;
-        }
-
         //attempt info
         $canattempt=$mod->can_attempt();
         $attempts = $mod->get_attempts();
@@ -90,11 +80,9 @@ class renderer extends \plugin_renderer_base {
             $nextbuttontext=get_string('continue',constants::M_COMPONENT);
         }
 
-
         //config
         $config = get_config('mod_wordcards');
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
-
 
         $data = [
             'uniqid'=> \html_writer::random_id('wordcards'),
@@ -112,14 +100,12 @@ class renderer extends \plugin_renderer_base {
             'loadingurl' => $this->image_url('i/loading_small')->out(true),
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
-            'mustseealltocontinue' => get_string('mustseealltocontinue', 'mod_wordcards'),
             'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),
                 'state'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'definition_grid' => $this->image_url('grid', 'mod_wordcards')->out(true),
             'definition_flashcards' => $this->image_url('flashcards', 'mod_wordcards')->out(true),
-            'seenall' => count($definitions) == count($seen),
             'seenurl' => $this->image_url('seen', 'mod_wordcards')->out(true),
             'str_term' => get_string('term', 'mod_wordcards'),
             'termnotseen' => get_string('termnotseen', 'mod_wordcards'),
@@ -129,13 +115,23 @@ class renderer extends \plugin_renderer_base {
             'owner'=>hash('md5',$USER->username)
         ];
 
+        // Heading and intro paras.
+        $data['introheading'] = get_string('tabdefinitions', 'mod_wordcards');
+        $stringmanager = get_string_manager();
+        $data['introstrings'] = [];
+        for ($x = 1; $x <= 10; $x++) {
+            $stringkey = 'startintropara' . $x;
+            if ($stringmanager->string_exists($stringkey, 'mod_wordcards')) {
+                $data['introstrings'][] = get_string($stringkey, 'mod_wordcards');
+            } else {
+                break;
+            }
+        }
 
-        $jsonstring=json_encode($data);
-        $opts_html = \html_writer::tag('input', '', array('id' => $data['uniqid'], 'type' => 'hidden', 'value' => $jsonstring));
+        $data['optshtml'] = \html_writer::tag('input', '', array('id' => $data['uniqid'], 'type' => 'hidden', 'value' => json_encode($data)));
         $jsdata=array('widgetid'=> $data['uniqid']);
         $this->page->requires->js_call_amd("mod_wordcards/definitions", 'init', array($jsdata));
-
-        return  $opts_html . $this->render_from_template('mod_wordcards/definitions_page', $data);
+        return $data;
     }
 
     public function cancel_attempt_button($mod){
@@ -180,7 +176,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    public function a4e_page(\mod_wordcards_module $mod, int $practicetype, array $definitions, $currentstep = '' ) {
+    public function a4e_page(\mod_wordcards_module $mod, int $practicetype, array $definitions, bool $isfreemode, $currentstep = '' ) {
         global $USER, $PAGE, $OUTPUT;
 
         //config
@@ -212,7 +208,7 @@ class renderer extends \plugin_renderer_base {
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
 
         $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage,
-                'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl, 'region'=>$config->awsregion,
+                'dryRun'=> $mod->can_manage() && !$isfreemode, 'nexturl'=>$nexturl, 'region'=>$config->awsregion,
                 'token'=>$token,'owner'=>hash('md5',$USER->username),'modid'=>$mod->get_id(),
                 'isfreemode' => $PAGE->url->compare(new \moodle_url('/mod/wordcards/freemode.php'), URL_MATCH_BASE)
             );
@@ -270,7 +266,7 @@ class renderer extends \plugin_renderer_base {
 
 
 
-    public function speechcards_page(\mod_wordcards_module $mod, array $definitions, $currentstep = ''){
+    public function speechcards_page(\mod_wordcards_module $mod, array $definitions, bool $isfreemode, $currentstep = ''){
         global $CFG,$USER;
 
         //get state
@@ -314,7 +310,7 @@ class renderer extends \plugin_renderer_base {
         $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
 
-        $opts=array('widgetid'=>$widgetid,'dryRun'=> $mod->can_manage(),'nexturl'=>$nexturl);
+        $opts=array('widgetid'=>$widgetid, 'dryRun'=> $mod->can_manage() && !$isfreemode, 'nexturl'=>$nexturl);
         $opts['language']=$mod->get_mod()->ttslanguage;
         $opts['region']=$region;
         $opts['token']=$token;

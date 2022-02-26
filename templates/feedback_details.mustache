@@ -9,7 +9,6 @@
       <div class="term-header">
         <div class="term-title">
             <span>{{correct}}</span>
-            {{>mod_wordcards/my_words_button}}
         </div>
         <div class="term-tick">
             {{#points}}<div class="a4e-correct"><i class='fa fa-lg fa-check'></i></div>{{/points}}
@@ -18,7 +17,8 @@
       </div>
 
       <div class="term-body">
-        {{question}}
+        <span>{{question}}</span>
+          {{>mod_wordcards/my_words_button}}
       </div>
     </div>
 
