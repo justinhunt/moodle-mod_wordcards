@@ -79,5 +79,8 @@ const TRANSCRIBER_POODLL = 2;
 
 const M_USE_DATATABLES=true;
 
+const M_NEURALVOICES = array("Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
+        "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe", "Gabrielle", "Vicki", "Seoyeon","Takumi","lucia");
+
 
 }

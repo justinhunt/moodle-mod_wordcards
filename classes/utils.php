@@ -596,6 +596,7 @@ class utils{
         $params['appid'] = constants::M_COMPONENT;
         $params['owner'] = hash('md5',$USER->username);
         $params['region'] = $region;
+        $params['engine'] = self::can_speak_neural($voice, $region)?'neural' : 'standard';
         $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
@@ -665,7 +666,7 @@ class utils{
         return $voices[$autoindex];
   }
 
-  public static function get_tts_voices($langcode){
+  public static function get_tts_voices($langcode, $showall=false){
       $alllang= array(
               constants::M_LANG_ARAE => ['Zeina'],
           //constants::M_LANG_ARSA => [],
@@ -683,7 +684,7 @@ class utils{
               constants::M_LANG_ESES => [ 'Enrique'=>'Enrique', 'Conchita'=>'Conchita', 'Lucia'=>'Lucia'],
           //constants::M_LANG_FAIR => [],
               constants::M_LANG_FRCA => ['Chantal'=>'Chantal'],
-              constants::M_LANG_FRFR => ['Mathieu'=>'Mathieu','Celine'=>'Celine', 'Léa'=>'Léa'],
+              constants::M_LANG_FRFR => ['Mathieu'=>'Mathieu','Celine'=>'Celine', 'Lea'=>'Léa'],
               constants::M_LANG_HIIN => ["Aditi"=>"Aditi"],
           //constants::M_LANG_HEIL => [],
           //constants::M_LANG_IDID => [],
@@ -700,8 +701,25 @@ class utils{
               constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
               constants::M_LANG_ZHCN => ['Zhiyu']
       );
-      if(array_key_exists($langcode,$alllang)) {
+      if(array_key_exists($langcode,$alllang)&& !$showall) {
           return $alllang[$langcode];
+      }elseif($showall) {
+          $usearray =[];
+
+          //add current language first
+          foreach($alllang[$langcode] as $v=>$thevoice){
+              $neuraltag = in_array($thevoice,constants::M_NEURALVOICES) ? ' (+)' : '';
+              $usearray[$thevoice] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+          }
+          //then all the rest
+          foreach($alllang as $lang=>$voices){
+              if($lang==$langcode){continue;}
+              foreach($voices as $v=>$thevoice){
+                  $neuraltag = in_array($thevoice,constants::M_NEURALVOICES) ? ' (+)' : '';
+                  $usearray[$thevoice] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+              }
+          }
+          return $usearray;
       }else{
           return $alllang[constants::M_LANG_ENUS];
       }
@@ -1313,6 +1331,32 @@ class utils{
                 }
                 $DB->update_record('wordcards_terms', ['id'=>$term->id,'definition'=>$newdef]);
             }
+        }
+    }
+
+    //can speak neural?
+    public static function can_speak_neural($voice,$region){
+        //check if the region is supported
+        switch($region){
+            case "useast1":
+            case "tokyo":
+            case "sydney":
+            case "dublin":
+            case "ottawa":
+            case "frankfurt":
+            case "london":
+            case "singapore":
+                //ok
+                break;
+            default:
+                return false;
+        }
+
+        //check if the voice is supported
+        if(in_array($voice,constants::M_NEURALVOICES)){
+            return true;
+        }else{
+            return false;
         }
     }
 
