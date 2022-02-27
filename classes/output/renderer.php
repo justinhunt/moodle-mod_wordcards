@@ -112,10 +112,16 @@ class renderer extends \plugin_renderer_base {
             'termseen' => get_string('termseen', 'mod_wordcards'),
             'token'=>$token,
             'region'=>$config->awsregion,
-            'owner'=>hash('md5',$USER->username)
+            'owner'=>hash('md5',$USER->username),
+            'cmid' => $mod->get_cmid(),
+            'freemodeavailable' => get_config(constants::M_COMPONENT, 'journeymode') == constants::MODE_FREE
         ];
 
-        // Heading and intro paras.
+        $data['optshtml'] = \html_writer::tag('input', '', array('id' => $data['uniqid'], 'type' => 'hidden', 'value' => json_encode($data)));
+        $jsdata=array('widgetid'=> $data['uniqid']);
+        $this->page->requires->js_call_amd("mod_wordcards/definitions", 'init', array($jsdata));
+
+        // Heading and intro paras (these are after opthtml for JS as we dont want to include them there).
         $data['introheading'] = get_string('tabdefinitions', 'mod_wordcards');
         $stringmanager = get_string_manager();
         $data['introstrings'] = [];
@@ -127,10 +133,6 @@ class renderer extends \plugin_renderer_base {
                 break;
             }
         }
-
-        $data['optshtml'] = \html_writer::tag('input', '', array('id' => $data['uniqid'], 'type' => 'hidden', 'value' => json_encode($data)));
-        $jsdata=array('widgetid'=> $data['uniqid']);
-        $this->page->requires->js_call_amd("mod_wordcards/definitions", 'init', array($jsdata));
         return $data;
     }
 
@@ -210,7 +212,8 @@ class renderer extends \plugin_renderer_base {
         $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage,
                 'dryRun'=> $mod->can_manage() && !$isfreemode, 'nexturl'=>$nexturl, 'region'=>$config->awsregion,
                 'token'=>$token,'owner'=>hash('md5',$USER->username),'modid'=>$mod->get_id(),
-                'isfreemode' => $PAGE->url->compare(new \moodle_url('/mod/wordcards/freemode.php'), URL_MATCH_BASE)
+                'isfreemode' => get_config(constants::M_COMPONENT, 'journeymode') == constants::MODE_FREE
+                    && $PAGE->url->compare(new \moodle_url('/mod/wordcards/freemode.php'), URL_MATCH_BASE)
             );
 
         $data = [];

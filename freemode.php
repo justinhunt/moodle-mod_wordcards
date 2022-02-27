@@ -11,8 +11,6 @@ require_once(__DIR__ . '/../../config.php');
 use \mod_wordcards\constants;
 use mod_wordcards\utils;
 
-const FREEMODE_MAX_TERMS = 6;
-
 $cmid = required_param('id', PARAM_INT);
 //the step that the user is requesting
 
@@ -21,6 +19,14 @@ $course = $mod->get_course();
 $cm = $mod->get_cm();
 require_login($course, true, $cm);
 
+if (get_config(constants::M_COMPONENT, 'journeymode') != constants::MODE_FREE) {
+    redirect(
+        new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]),
+        get_string('freemodenotavailable', constants::M_COMPONENT),
+        null,
+        \core\output\notification::NOTIFY_ERROR
+    );
+}
 $practicetypeoptions =  utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
 $practicetype = optional_param('practicetype', mod_wordcards_module::PRACTICETYPE_NONE, PARAM_INT);
 if ($practicetype && !isset($practicetypeoptions[$practicetype])) {

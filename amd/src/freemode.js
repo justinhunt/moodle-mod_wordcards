@@ -9,13 +9,10 @@ define(['jquery'], function($) {
         init: function () {
             $(document).ready(function() {
                 $('#wordpool-selector-btn').on('click', function() {
-                    console.log('cl')
                     const content = $('#wordpool-selector-content');
                     if (content.hasClass('show')) {
-                        console.log('hide')
                         content.removeClass('show')
                     } else {
-                        console.log('s')
                         content.addClass('show')
                     }
                 })

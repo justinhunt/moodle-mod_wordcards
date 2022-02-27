@@ -347,3 +347,6 @@ $string['startintropara2'] = "[Start intro para 2 - JH to amend or delete]";
 $string['flashcards'] = "Flashcards";
 $string['grid'] = "Grid";
 $string['selectwordstolearn'] = "Select words to learn";
+$string['freemodenotavailable'] = "The Site Administrator has not enabled free mode.";
+$string['def_wordstoshow'] = "Max words to show (free mode)";
+$string['def_wordstoshow_details'] = "How many words to show the user from the wordpool when in free mode.";

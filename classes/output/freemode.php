@@ -41,7 +41,7 @@ class freemode implements \renderable, \templatable {
      * @return \stdClass
      */
     public function export_for_template($renderer) {
-        
+
         $data = new \stdClass();
 
         // First check if the selected wordpool is empty.  If it is, pick another.
@@ -157,7 +157,9 @@ class freemode implements \renderable, \templatable {
         global $DB, $USER;
         if ($wordpool == \mod_wordcards_module::WORDPOOL_MY_WORDS) {
             $wordpool = new \mod_wordcards\my_words_pool($this->course->id);
-            return $countonly ? $wordpool->word_count() : $wordpool->get_words(FREEMODE_MAX_TERMS);
+            return $countonly
+                ? $wordpool->word_count()
+                : $wordpool->get_words(get_config(constants::M_COMPONENT, 'def_wordstoshow'));
         }
 
         $sql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
@@ -175,11 +177,11 @@ class freemode implements \renderable, \templatable {
         }
         $params = ['userid' => $USER->id, 'modid' => $this->cm->instance];
         if ($countonly) {
-            // We don't apply the max FREEMODE_MAX_TERMS when getting the count for the select menu.
+            // We don't apply the max terms config setting def_wordstoshow when getting the count for the select menu.
             return $DB->get_field_sql($sql, $params);
         }
         $records = $DB->get_records_sql($sql, $params);
         shuffle($records);
-        return \mod_wordcards_module::insert_media_urls(array_slice($records, 0, FREEMODE_MAX_TERMS));
+        return \mod_wordcards_module::insert_media_urls(array_slice($records, 0, get_config(constants::M_COMPONENT, 'def_wordstoshow')));
     }
 }
