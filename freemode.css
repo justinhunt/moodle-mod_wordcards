@@ -34,7 +34,8 @@
 .mod_wordcards_freemode .dropdown-content a.disabled {
     color: gray;
 }
-.mod_wordcards_freemode .dropdown:hover .dropdown-content {
+.mod_wordcards_freemode .dropdown:hover .dropdown-content,
+.mod_wordcards_freemode .dropdown .dropdown-content.show {
     display: block;
     transition: display 3000ms ease-in-out;
 }

@@ -67,13 +67,17 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 			check_next_level();
 			ef.click(function (d) {
 				d.preventDefault();
-				$('.definition_flashcards').show();
-				$('.definition_grid').hide();
+				$('.definition_flashcards').fadeIn();
+				$('.definition_grid').fadeOut();
+				ef.addClass('btn-primary').removeClass('btn-outline-primary')
+				eg.removeClass('btn-primary').addClass('btn-outline-primary')
 			});
 			eg.click(function (d) {
 				d.preventDefault();
-				$('.definition_flashcards').hide();
-				$('.definition_grid').show();
+				$('.definition_flashcards').fadeOut();
+				$('.definition_grid').fadeIn();
+				eg.addClass('btn-primary').removeClass('btn-outline-primary')
+				ef.removeClass('btn-primary').addClass('btn-outline-primary')
 			});
 
 			function check_prev_level() {

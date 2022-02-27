@@ -344,3 +344,6 @@ $string['seenwords'] = "Seen words";
 $string['selectedpoolhasnowords'] = "The selected set of words is empty.  Please choose another.";
 $string['startintropara1'] = "[Start intro para 1 - JH to amend or delete]";
 $string['startintropara2'] = "[Start intro para 2 - JH to amend or delete]";
+$string['flashcards'] = "Flashcards";
+$string['grid'] = "Grid";
+$string['selectwordstolearn'] = "Select words to learn";

@@ -8,7 +8,7 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
     const SELECTOR = {
         DATA_SET: '*[data-action="wordcards-set-my-words"]',
         MY_WORDS_DIV: '#my-words-ids',
-        MY_WORDS_ACTION_BTN_ID: '#wordcards-mywords-action-',
+        MY_WORDS_ACTION_BTN_ID: '.wordcards-mywords-action-',
         WORDPOOL_COUNTS: '.wordpool-count'
     }
 
@@ -45,14 +45,16 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
 
     const initButtonListeners = function() {
         $(SELECTOR.DATA_SET).on(EVENT.CLICK, function(e) {
+            // There are two buttons for each term (one in grid and one in flashcards).
             const currTar = $(e.currentTarget);
-            const termId = currTar.attr(DATA.TERM_ID);
+            const buttons = $(SELECTOR.MY_WORDS_ACTION_BTN_ID + currTar.attr(DATA.TERM_ID));
+            const termId = buttons.attr(DATA.TERM_ID);
             if (!currTar.hasClass(CLASS.DISABLED)) {
                 e.preventDefault();
-                currTar.addClass(CLASS.DISABLED)
+                buttons.addClass(CLASS.DISABLED)
                 // Hide wordpool counts in drop down as may become incorrect here.
                 $(SELECTOR.WORDPOOL_COUNTS).fadeOut();
-                const newStatus = currTar.hasClass(CLASS.BTN_IN_MY_WORDS) ? 0 : 1;
+                const newStatus = buttons.hasClass(CLASS.BTN_IN_MY_WORDS) ? 0 : 1;
                 ajax.call([{
                     methodname: 'mod_wordcards_set_my_words',
                     args: {
@@ -61,19 +63,19 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
                     }
                 }])[0].done(function(response) {
                     if (response.success) {
-                        currTar.removeClass(CLASS.DISABLED);
+                        buttons.removeClass(CLASS.DISABLED);
                         if (response.newStatus) {
-                            currTar.addClass(CLASS.BTN_IN_MY_WORDS);
-                            currTar.removeClass(CLASS.BTN_NOT_IN_MY_WORDS);
-                            currTar.attr('title', stringStore[1]);
+                            buttons.addClass(CLASS.BTN_IN_MY_WORDS);
+                            buttons.removeClass(CLASS.BTN_NOT_IN_MY_WORDS);
+                            buttons.attr('title', stringStore[1]);
                         } else {
-                            currTar.removeClass(CLASS.BTN_IN_MY_WORDS);
-                            currTar.addClass(CLASS.BTN_NOT_IN_MY_WORDS);
-                            currTar.attr('title', stringStore[0]);
+                            buttons.removeClass(CLASS.BTN_IN_MY_WORDS);
+                            buttons.addClass(CLASS.BTN_NOT_IN_MY_WORDS);
+                            buttons.attr('title', stringStore[0]);
                         }
                     }
                 }).fail(function() {
-                    currTar.removeClass(CLASS.DISABLED);
+                    buttons.removeClass(CLASS.DISABLED);
                 })
             }
         })
@@ -101,6 +103,7 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
     return {
         init: function () {
             $(document).ready(function() {
+                initStrings();
                 initButtonListeners();
             })
         },

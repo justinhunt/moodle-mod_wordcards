@@ -22,12 +22,12 @@
                 {{^showselectmenu}}
                     <h5>{{#str}}words, mod_wordcards{{/str}}</h5>
                     <div class="dropdown">
-                        <button class="dropbtn text-left">
+                        <button class="dropbtn text-left" aria-label="{{#str}}selectwordstolearn, mod_wordcards{{/str}}" id="wordpool-selector-btn">
                             <i class="fa {{selectedwordpoolicon}} wordpool-chooser-icon"></i>
                             <span>{{{selectedwordpool}}}</span> <span class="wordpool-count">(<span id="count-words-{{wordpool}}">{{{selectedwordpoolcountwords}}}</span>)</span>
                             <i class="icon fa fa-chevron-down fa-fw" aria-hidden="true"></i>
                         </button>
-                        <div class="dropdown-content wordpool-chooser">
+                        <div class="dropdown-content wordpool-chooser" id="wordpool-selector-content">
                             {{#wordpools}}
                                 {{^selected}}
                                     {{^disabled}}
