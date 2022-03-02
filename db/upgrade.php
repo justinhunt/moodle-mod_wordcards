@@ -396,7 +396,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if ($oldversion < 2022020500) {
         $table = new xmldb_table('wordcards');
         // Define field foriframe to be added to wordcards
-        $field= new xmldb_field('deflanguage', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, null, null);
+        $field= new xmldb_field('deflanguage', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, null, null,'en');
 
         // add  field to wordcards table
         if (!$dbman->field_exists($table, $field)) {
