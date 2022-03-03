@@ -24,22 +24,6 @@ class renderer extends \plugin_renderer_base {
     public function definitions_page_data(\mod_wordcards_module $mod, $definitions) {
         global $USER;
 
-        if (empty($definitions)) {
-
-            $displaytext = $this->output->box_start();
-            $displaytext .= $this->output->heading(get_string('nodefinitions', constants::M_COMPONENT), 3, 'main');
-            $showaddwordlinks = $mod->can_manage();
-            if ($showaddwordlinks) {
-                $displaytext .= \html_writer::div(get_string('letsaddwords', constants::M_COMPONENT), '', array());
-                $displaytext .= $this->output->single_button(new \moodle_url(constants::M_URL . '/managewords.php',
-                    array('id' => $mod->get_cmid())), get_string('addwords', constants::M_COMPONENT));
-            }
-            $displaytext .= $this->output->box_end();
-            $ret= \html_writer::div($displaytext,'');
-            return $ret;
-
-        }
-
         $mywordspool = new my_words_pool($mod->get_course()->id);
 
         foreach($definitions as $def){
@@ -149,6 +133,20 @@ class renderer extends \plugin_renderer_base {
             );
         $this->page->requires->js_call_amd("mod_wordcards/cancel_attempt_button", 'init', array($data));
         return $this->render_from_template('mod_wordcards/cancel_attempt_button', $data);
+    }
+
+    public function no_definitions_yet($mod){
+        $displaytext = $this->output->box_start();
+        $displaytext .= $this->output->heading(get_string('nodefinitions', constants::M_COMPONENT), 3, 'main');
+        $showaddwordlinks = $mod->can_manage();
+        if ($showaddwordlinks) {
+            $displaytext .= \html_writer::div(get_string('letsaddwords', constants::M_COMPONENT), '', array());
+            $displaytext .= $this->output->single_button(new \moodle_url(constants::M_URL . '/managewords.php',
+                array('id' => $mod->get_cmid())), get_string('addwords', constants::M_COMPONENT));
+        }
+        $displaytext .= $this->output->box_end();
+        $ret= \html_writer::div($displaytext,'');
+        return $ret;
     }
 
     private function make_json_string($definitions,$mod){

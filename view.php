@@ -84,7 +84,11 @@ if($hasopenclosedates){
 echo $renderer->navigation($mod, $currentstate);
 
 $definitions = $mod->get_terms();
-$data = $renderer->definitions_page_data($mod,$definitions);
-$data['isstepsmode'] = 1;
-echo $renderer->render_from_template('mod_wordcards/definitions_page', $data);
+if (empty($definitions)) {
+    echo $renderer->no_definitions_yet($mod);
+}else {
+    $data = $renderer->definitions_page_data($mod, $definitions);
+    $data['isstepsmode'] = 1;
+    echo $renderer->render_from_template('mod_wordcards/definitions_page', $data);
+}
 echo $renderer->footer();
