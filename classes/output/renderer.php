@@ -21,10 +21,8 @@ use mod_wordcards\constants;
 
 class renderer extends \plugin_renderer_base {
 
-    public function definitions_page_data(\mod_wordcards_module $mod) {
+    public function definitions_page_data(\mod_wordcards_module $mod, $definitions) {
         global $USER;
-
-        $definitions = $mod->get_terms();
 
         if (empty($definitions)) {
 
@@ -83,6 +81,7 @@ class renderer extends \plugin_renderer_base {
         //config
         $config = get_config('mod_wordcards');
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
+        $journeymode= $mod->get_mod()->journeymode; //get_config(constants::M_COMPONENT, 'journeymode');
 
         $data = [
             'uniqid'=> \html_writer::random_id('wordcards'),
@@ -114,7 +113,8 @@ class renderer extends \plugin_renderer_base {
             'region'=>$config->awsregion,
             'owner'=>hash('md5',$USER->username),
             'cmid' => $mod->get_cmid(),
-            'freemodeavailable' => get_config(constants::M_COMPONENT, 'journeymode') == constants::MODE_FREE
+            'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attempts>0),
+            'stepsmodeavailable' => $journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE
         ];
 
         $data['optshtml'] = \html_writer::tag('input', '', array('id' => $data['uniqid'], 'type' => 'hidden', 'value' => json_encode($data)));

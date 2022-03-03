@@ -486,7 +486,8 @@ class utils{
     }
 
     public static function get_journeymode_options() {
-        $options = array(constants::MODE_SEQUENTIAL => get_string("mode_sequential", constants::M_COMPONENT),
+        $options = array( constants::MODE_STEPSTHENFREE => get_string("mode_freeaftersteps", constants::M_COMPONENT),
+            constants::MODE_STEPS => get_string("mode_steps", constants::M_COMPONENT),
             constants::MODE_FREE => get_string("mode_free", constants::M_COMPONENT));
         return $options;
     }

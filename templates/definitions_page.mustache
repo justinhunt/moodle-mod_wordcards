@@ -19,6 +19,14 @@
             </a>
         {{/isfreemode}}
     {{/freemodeavailable}}
+    {{#stepsmodeavailable}}
+        {{^isstepsmode}}
+            <a href="{{config.wwwroot}}/mod/wordcards/view.php?id={{cmid}}" class="btn btn-outline-primary pull-right">
+            <i class='fa fa-random mr-1'></i>
+            {{#str}}stepsmode, mod_wordcards{{/str}}
+            </a>
+        {{/isstepsmode}}
+    {{/stepsmodeavailable}}
     <h3>{{{introheading}}}</h3>
     <div class="mod_wordcards_instructions">
         {{#introstrings}}
@@ -114,12 +122,13 @@
           <!--end --->
        </div>
        <div class="page-footer">
+        {{#isstepsmode}}
            {{#nexturl}}
                <button data-href="{{{nexturl}}}" data-action="{{nextaction}}" class="definitions-next btn btn-primary btn-lg btn-block">
                    {{nextbuttontext}}  <i class="fa fa-arrow-right"></i>
                </button>
            {{/nexturl}}
-          <small>{{noteaboutseenforteachers}}</small>
+        {{/isstepsmode}}
           <audio id="poodll_vocabplayer"></audio>
        </div>
     </div>

@@ -64,6 +64,7 @@ class freemode implements \renderable, \templatable {
         $data->wordpool = $this->wordpool;
         $practicetypeoptions = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
         $data->introactive = !$this->practicetype;
+        $data->defsurl = new \moodle_url('/mod/wordcards/freemode.php', ['id' => $this->cm->id, 'practicetype' => 0, 'wordpool' => $this->wordpool]);
         foreach ($practicetypeoptions as $id => $title) {
             $data->tabs[] = [
                 'id' => $id,
@@ -117,7 +118,7 @@ class freemode implements \renderable, \templatable {
         $data->showselectmenu = in_array($devicetype, [\core_useragent::DEVICETYPE_MOBILE, \core_useragent::DEVICETYPE_TABLET]);
 
         if ($data->selectedpoolhaswords) {
-            $definitions = $this->get_terms($this->wordpool, false);
+            $definitions = $this->get_terms($this->wordpool, false,$this->practicetype);
             switch ($this->practicetype){
                 case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
@@ -131,7 +132,7 @@ class freemode implements \renderable, \templatable {
                 default:
                     // Show the intro page and cards.
                     $data->isintropage = 1;
-                    $data->definitions = $renderer->definitions_page_data($this->mod);
+                    $data->definitions = $renderer->definitions_page_data($this->mod,$definitions);
                     $data->definitions['isfreemode'] = 1;
                     $data->definitions['nexturl'] = isset($data->tabs[0]['url']) ? $data->tabs[0]['url'] : '';
                     $data->definitions['introheading'] = get_string('freemode', 'mod_wordcards');
@@ -153,13 +154,21 @@ class freemode implements \renderable, \templatable {
         return $data;
     }
 
-    private function get_terms(int $wordpool, bool $countonly) {
+    private function get_terms(int $wordpool, bool $countonly, int $practicetype=0) {
         global $DB, $USER;
+
+        if($practicetype ==\mod_wordcards_module::PRACTICETYPE_NONE){
+            $maxwords=0;
+        }else{
+            $maxwords = get_config(constants::M_COMPONENT, 'def_wordstoshow');
+        }
+
+
         if ($wordpool == \mod_wordcards_module::WORDPOOL_MY_WORDS) {
             $wordpool = new \mod_wordcards\my_words_pool($this->course->id);
             return $countonly
                 ? $wordpool->word_count()
-                : $wordpool->get_words(get_config(constants::M_COMPONENT, 'def_wordstoshow'));
+                : $wordpool->get_words($maxwords);
         }
 
         $sql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
@@ -182,6 +191,10 @@ class freemode implements \renderable, \templatable {
         }
         $records = $DB->get_records_sql($sql, $params);
         shuffle($records);
-        return \mod_wordcards_module::insert_media_urls(array_slice($records, 0, get_config(constants::M_COMPONENT, 'def_wordstoshow')));
+        if($maxwords>0) {
+            return \mod_wordcards_module::insert_media_urls(array_slice($records, 0, $maxwords));
+        }else{
+            return \mod_wordcards_module::insert_media_urls($records);
+        }
     }
 }
