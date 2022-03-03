@@ -560,6 +560,12 @@ class utils{
         return $options;
     }
 
+    public static function fetch_options_reportstable() {
+        $options = array(constants::M_USE_DATATABLES => get_string("reporttableajax", constants::M_COMPONENT),
+            constants::M_USE_PAGEDTABLES => get_string("reporttablepaged", constants::M_COMPONENT));
+        return $options;
+    }
+
     public static function fetch_filemanager_opts($mediatype){
       global $CFG;
         $file_external = 1;
@@ -1095,10 +1101,10 @@ class utils{
                 $options);
         $mform->setDefault('ttslanguage',$config->ttslanguage);
 
-        $lexicala =  utils::get_rcdic_langs();// utils::get_lexicala_langs();
+        $deflangs =  utils::get_rcdic_langs();// utils::get_lexicala_langs();
         $options=[];
-        foreach($lexicala as $lexone){
-            $options[$lexone['code']]=$lexone['name'];
+        foreach($deflangs as $deflang){
+            $options[$deflang['code']]=$deflang['name'];
         }
         $mform->addElement('select', 'deflanguage', get_string('deflanguage', constants::M_COMPONENT),
             $options);
@@ -1236,7 +1242,7 @@ class utils{
         $langdefs[] = ['code'=>'ja','name'=>'Japanese'];
         $langdefs[] = ['code'=>'ko','name'=>'Korean'];
         $langdefs[] = ['code'=>'pt','name'=>'Portuguese'];
-        $langdefs[] = ['code'=>'ru','name'=>'Russian'];
+        $langdefs[] = ['code'=>'rus','name'=>'Russian'];
         $langdefs[] = ['code'=>'th','name'=>'Thai'];
         $langdefs[] = ['code'=>'vi','name'=>'Vietnamese'];
         $langdefs[] = ['code'=>'zh','name'=>'Chinese (simpl.)'];
@@ -1249,7 +1255,7 @@ class utils{
                 break;
             }
         }
-        if(!$default_set){$langdefs[10]['selected']=true;}
+        if(!$default_set){$langdefs[1]['selected']=true;}
         return $langdefs;
     }
 
@@ -1322,6 +1328,10 @@ class utils{
             if(empty($term->translations)){continue;}
             if(!self::is_json($term->translations)){continue;}
             $translations = json_decode($term->translations);
+            //english is a special case, lets support it
+            if($mod->get_mod()->deflanguage=='en') {
+                $translations->en=$term->sourcedef;
+            }
             if(!empty($translations) &&
                 isset($translations->{$mod->get_mod()->deflanguage})){
                 if(isset($translations->{$mod->get_mod()->deflanguage}->text)){

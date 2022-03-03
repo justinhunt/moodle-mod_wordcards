@@ -78,7 +78,8 @@ const TRANSCRIBER_NONE = 0;
 const TRANSCRIBER_AUTO = 1;
 const TRANSCRIBER_POODLL = 2;
 
-const M_USE_DATATABLES=true;
+const M_USE_DATATABLES=0;
+const M_USE_PAGEDTABLES=1;
 
 const M_NEURALVOICES = array("Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
         "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe", "Gabrielle", "Vicki", "Seoyeon","Takumi","lucia");

@@ -297,7 +297,7 @@ $string['memberdashboard'] = "Member Dashboard";
 $string['memberdashboard_desc'] = "";
 $string['fillcredentials']="Set API user and secret with existing credentials";
 $string['ww_words_instructions'] = " Wordcards will fetch a list of definitions for the words you entered.";
-$string['ww_words'] = "Enter Words";
+$string['ww_words'] = "Enter Words separated by commas, e.g cat,dog";
 $string['ww_words_fetch'] = "Fetch Definitions";
 $string['word_wizard'] = "Word Wizard";
 $string['wordwizard'] = "Word Wizard";
@@ -326,8 +326,6 @@ $string['mode_steps']="Steps mode";
 $string['mode_free']="Free mode";
 $string['mode_freeaftersteps']="Steps mode then Free mode";
 $string['journeymode']="Mode";
-
-// My words.
 $string['m'] = "m";
 $string['addtomywords'] = "Click to add to My Words";
 $string['removefrommywords'] = "Click to remove from My Words";
@@ -349,3 +347,8 @@ $string['selectwordstolearn'] = "Select words to learn";
 $string['freemodenotavailable'] = "The Site Administrator has not enabled free mode.";
 $string['def_wordstoshow'] = "Max words to show (free mode)";
 $string['def_wordstoshow_details'] = "How many words to show the user from the wordpool when in free mode.";
+$string['reportstable']="Reports Style";
+$string['reportstable_details']="Ajax tables are faster to use and can sort data. Paged tables load faster but are harder to navigate with.";
+$string['reporttableajax']="Ajax Tables";
+$string['reporttablepaged']="Paged Tables";
+
