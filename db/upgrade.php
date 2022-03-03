@@ -451,7 +451,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022021500, 'wordcards');
     }
 
-    if ($oldversion < 2022022200) {
+    if ($oldversion < 2022022701) {
 
         // Define table wordcards_my_words to be created.
         $table = new xmldb_table('wordcards_my_words');
@@ -473,7 +473,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
-        upgrade_mod_savepoint(true, 2022022200, 'wordcards');
+        upgrade_mod_savepoint(true, 2022022701, 'wordcards');
     }
 
     return true;
