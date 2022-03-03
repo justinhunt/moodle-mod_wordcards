@@ -29,7 +29,7 @@ $mod->register_module_viewed();
 $pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
 
 $PAGE->set_url('/mod/wordcards/view.php', ['id' => $cmid]);
-$PAGE->navbar->add($pagetitle, $PAGE->url);
+//$PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
 $PAGE->set_title($pagetitle);
 $PAGE->force_settings_menu(true);
@@ -44,7 +44,8 @@ if($config->enablesetuptab){
 
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
-
+$PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
+$PAGE->requires->css(new moodle_url('/mod/wordcards/freemode.css'));
 echo $renderer->header();
 echo $renderer->heading($pagetitle, 3, 'main');
 
@@ -80,9 +81,7 @@ if($hasopenclosedates){
     }
 }
 
-
 echo $renderer->navigation($mod, $currentstate);
-
-echo $renderer->definitions_page($mod);
-
+$data = $renderer->definitions_page_data($mod);
+echo $renderer->render_from_template('mod_wordcards/definitions_page', $data);
 echo $renderer->footer();

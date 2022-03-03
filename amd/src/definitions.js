@@ -67,13 +67,17 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 			check_next_level();
 			ef.click(function (d) {
 				d.preventDefault();
-				$('.definition_flashcards').show();
-				$('.definition_grid').hide();
+				$('.definition_flashcards').fadeIn();
+				$('.definition_grid').fadeOut();
+				ef.addClass('btn-primary').removeClass('btn-outline-primary')
+				eg.removeClass('btn-primary').addClass('btn-outline-primary')
 			});
 			eg.click(function (d) {
 				d.preventDefault();
-				$('.definition_flashcards').hide();
-				$('.definition_grid').show();
+				$('.definition_flashcards').fadeOut();
+				$('.definition_grid').fadeIn();
+				eg.addClass('btn-primary').removeClass('btn-outline-primary')
+				ef.removeClass('btn-primary').addClass('btn-outline-primary')
 			});
 
 			function check_prev_level() {
@@ -140,10 +144,6 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
        a4e.register_events();
        a4e.init_audio(props.token,props.region,props.owner);
 
-      function seenAll() {
-        return container.find('.term').length === container.find('.term.term-seen').length
-      }
-
       container.on('click', '.term-seen-action', function(e) {
         e.preventDefault();
 
@@ -173,16 +173,9 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
           .always(function() {
           	//remove loading from  node which loading was applied to
             termNode.removeClass('term-loading');
-            if (seenAll()) {
-              btn.prop('disabled', false);
-            }
+
           });
       });
-
-      // Teachers can jump to the next steps.
-      if (!seenAll() && !canmanage) {
-        btn.prop('disabled', true);
-      }
 
       btn.click(function(e) {
         e.preventDefault();

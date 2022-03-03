@@ -133,6 +133,7 @@ class utils{
             $grade = ROUND(($correct / $termcount) * 100, 0);
             $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade,array('id'=>$record->id));
         }
+
         return true;
     }
 

@@ -145,12 +145,14 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
-        echo $renderer->a4e_page($mod, $practicetype, $wordpool, $currentstep);
+        $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
+        echo $renderer->a4e_page($mod, $practicetype, $definitions, false, $currentstep);
         break;
 
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
-        echo $renderer->speechcards_page($mod, $wordpool,$currentstep);
+        $definitions = $mod->get_review_terms($mod->fetch_step_termcount($currentstep));
+        echo $renderer->speechcards_page($mod, $definitions, false, $currentstep);
         break;
     //no longer using this
     case mod_wordcards_module::PRACTICETYPE_SCATTER:
@@ -159,4 +161,12 @@ switch ($practicetype){
         echo $renderer->scatter_page($mod, $wordpool,$currentstep);
 }
 echo $renderer->cancel_attempt_button($mod);
+
+// Add the ids of all terms in my words pool to the page markup so that JS can see them.
+$mywordspool = new \mod_wordcards\my_words_pool($course->id);
+echo html_writer::div(
+    '','',
+    ['id' => "my-words-ids", 'data-my-words-term-ids' => json_encode(array_keys($mywordspool->get_words()))]
+);
+
 echo $renderer->footer();
