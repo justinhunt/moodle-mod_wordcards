@@ -173,14 +173,14 @@ class freemode implements \renderable, \templatable {
 
         $sql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
         $sql .= " FROM {wordcards_terms} t
-            LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid
-            WHERE t.deleted = 0 AND t.modid = :modid AND s.id IS ";
+            LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
+
         if ($wordpool == \mod_wordcards_module::WORDPOOL_LEARN) {
             // Words we have not seen before.
-            $sql .= "NULL";
+            $sql .= " WHERE t.deleted = 0 AND t.modid = :modid AND s.id IS NULL";
         } else if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             // Words we have seen before.
-            $sql .= "NOT NULL";
+            $sql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL";
         } else {
             throw new \invalid_parameter_exception('Wordpool not known ' . $wordpool);
         }
