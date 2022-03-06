@@ -51,8 +51,6 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
         $module->skipreview = 0;
     }
 
-    $module->finishedstepmsg = $module->finishedstepmsg_editor['text'];
-    $module->completedmsg = $module->completedmsg_editor['text'];
     $module->id = $DB->insert_record('wordcards', $module);
 
 
@@ -78,9 +76,6 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
     if (empty($module->skipreview)) {
         $module->skipreview = 0;
     }
-
-    $module->finishedstepmsg = $module->finishedstepmsg_editor['text'];
-    $module->completedmsg = $module->completedmsg_editor['text'];
 
     $success = $DB->update_record('wordcards', $module);
 

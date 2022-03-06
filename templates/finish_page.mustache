@@ -1,6 +1,11 @@
 <div id="finish-page-{{uniqid}}">
 
-    <h1 class="text-center">{{#str}}totalscore, mod_wordcards{{/str}} {{total}}%</h1>
+    {{#hasscore}}
+        <h1 class="text-center">{{#str}}totalscore, mod_wordcards{{/str}} {{total}}%</h1>
+    {{/hasscore}}
+    {{^hasscore}}
+        <h1 class="text-center">{{#str}}congratsitsover, mod_wordcards{{/str}}</h1>
+    {{/hasscore}}
     <hr>
 
     {{#ratingitems}}

@@ -249,7 +249,7 @@ class renderer extends \plugin_renderer_base {
             'modid' => $mod->get_id(),
             'courseurl'=>$CFG->wwwroot . '/course/view.php?id=' . $this->page->course->id,
             'freemodeurl'=>$CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $mod->get_cmid(),
-            'canfreemode'=>$mod->get_mod()->journeymode==constants::MODE_STEPS
+            'canfreemode'=>$mod->can_free_mode()
         ];
 
         //attempt info
@@ -259,10 +259,12 @@ class renderer extends \plugin_renderer_base {
         }
 
         //if we have a latest attempt, we need STARS!!!
+        //teachers attempts are not saved, so they have no score when they get to the finished page
         $latestattempt = $mod->get_latest_attempt();
         if($latestattempt){
 
             ///final score
+            $data['hasscore'] = true;
             $data['total'] = $latestattempt->totalgrade;
 
             //total rating
@@ -286,7 +288,6 @@ class renderer extends \plugin_renderer_base {
                 }
             }
             $data['ratingitems']=$ratingitems;
-
         }
 
 
@@ -436,7 +437,6 @@ class renderer extends \plugin_renderer_base {
                 'congrats' => get_string('congrats', 'mod_wordcards'),
                 'definitionsjson' => json_encode(array_values($definitions)),
                 'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
-                'finishedstepmsg' => $mod->get_finishedstepmsg(),
                 'modid' => $mod->get_id(),
                 'isglobalcompleted' => $state == \mod_wordcards_module::STATE_END,
                 'hascontinue' => $state != \mod_wordcards_module::STATE_END,

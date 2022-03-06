@@ -19,7 +19,7 @@ $course = $mod->get_course();
 $cm = $mod->get_cm();
 require_login($course, true, $cm);
 
-if (get_config(constants::M_COMPONENT, 'journeymode') != constants::MODE_FREE) {
+if (!$mod->can_free_mode()) {
     redirect(
         new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]),
         get_string('freemodenotavailable', constants::M_COMPONENT),
@@ -38,6 +38,14 @@ $wordpools = mod_wordcards_module::get_wordpools();
 if (!in_array($wordpool, $wordpools)) {
     throw new invalid_parameter_exception('Invalid wordpool');
 }
+
+//if there are no learn terms and its set to wordpoodl learn, lets set it to review
+$learnterms = $mod->get_terms();
+if(empty($learnterms)){
+    $wordpool=mod_wordcards_module::WORDPOOL_REVIEW;
+}
+
+
 $PAGE->set_url('/mod/wordcards/freemode.php', ['id' => $cmid, 'practicetype' => $practicetype, 'wordpool' => $wordpool]);
 $mod->require_view();
 

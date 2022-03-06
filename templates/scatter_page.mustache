@@ -2,7 +2,7 @@
     <div class="wordcards_timer">00:00:00</div>
     <div id="wordcards" class="wordcards">
         <div class="congrats">
-          <div class="wordcards_congrats">{{{finishedstepmsg}}}</div>
+          <div class="wordcards_congrats">Congratulations</div>
           {{#hascontinue}}
               <button data-href="{{{nexturl}}}" class="btn btn-primary wordcards-continue-button">{{continue}}</button>
           {{/hascontinue}}
@@ -23,9 +23,6 @@
         var inst = new Cards(cards, {{{definitionsjson}}});
 
         function displayfinishmessage() {
-            // replace [[time]] by <span class="wordcards_timer_time">00:00:00</span>
-            var convertedfinishedstepmsg = $('.wordcards_congrats').text().replace("[[time]]", "<span class=\"wordcards_timer_time\">00:00:00</span>");
-            $('.wordcards_congrats').html(convertedfinishedstepmsg);
 
             $('.wordcards_timer_time').text(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
             $('.wordcards_timer').css('display', 'none');

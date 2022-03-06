@@ -438,8 +438,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_TABLE);
 
         $fields=[];
-        $fields[] = new xmldb_field('journeymode', XMLDB_TYPE_INTEGER, 4, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
-
+        $fields[] = new xmldb_field('journeymode', XMLDB_TYPE_INTEGER, 4, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 2);
 
         // Add fields
         foreach ($fields as $field) {

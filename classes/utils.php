@@ -1202,17 +1202,11 @@ class utils{
 
         $mform->addElement('hidden', 'skipreview',0);
         $mform->setType('skipreview',PARAM_INT);
-        // $mform->addElement('checkbox', 'skipreview', get_string('skipreview', constants::M_COMPONENT));
-        // $mform->setDefault('skipreview', 1);
-        // $mform->addHelpButton('skipreview', 'skipreview', constants::M_COMPONENT);
 
-        $mform->addElement('editor', 'finishedstepmsg_editor', get_string('finishedstepmsg', constants::M_COMPONENT));
-        $mform->setDefault('finishedstepmsg_editor', array('text' => get_string('finishscatterin', constants::M_COMPONENT)));
-        $mform->addHelpButton('finishedstepmsg_editor', 'finishedstepmsg', constants::M_COMPONENT);
-
-        $mform->addElement('editor', 'completedmsg_editor', get_string('completedmsg', constants::M_COMPONENT));
-        $mform->setDefault('completedmsg_editor', array('text' => get_string('congratsitsover', constants::M_COMPONENT)));
-        $mform->addHelpButton('completedmsg_editor', 'completedmsg', constants::M_COMPONENT);
+        $mform->addElement('hidden', 'finishedstepmsg','');
+        $mform->addElement('hidden', 'completedstepmsg','');
+        $mform->setType('finishedstepmsg',PARAM_TEXT);
+        $mform->setType('completedstepmsg',PARAM_TEXT);
 
         //Show images on task flip screen
         $mform->addElement('selectyesno', 'showimageflip', get_string('showimagesonflipscreen', constants::M_COMPONENT));
@@ -1242,13 +1236,6 @@ class utils{
         $mform->addHelpButton($name, $name, constants::M_COMPONENT);
     } //end of add_mform_elements
 
-    public static function prepare_file_and_json_stuff($moduleinstance, $modulecontext){
-        $moduleinstance['finishedstepmsg_editor']['text'] = $moduleinstance['finishedstepmsg'];
-        $moduleinstance['completedmsg_editor']['text'] = $moduleinstance['completedmsg'];
-
-        return $moduleinstance;
-
-    }//end of prepare_file_and_json_stuff
 
     //What multi-attempt grading approach
     public static function get_grade_options() {

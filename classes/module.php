@@ -178,14 +178,6 @@ class mod_wordcards_module {
         return [$state];
     }
 
-    public function get_finishedstepmsg() {
-        return $this->mod->finishedstepmsg;
-    }
-
-    public function get_completedmsg() {
-        return $this->mod->completedmsg;
-    }
-
     public function get_cm() {
         return $this->cm;
     }
@@ -390,6 +382,31 @@ class mod_wordcards_module {
             return false;
         }else{
             return array_shift($records);
+        }
+    }
+
+    //can they use free mode
+    public function can_free_mode(){
+
+        switch($this->mod->journeymode){
+            //steps mode, no
+            case constants::MODE_STEPS:
+                return false;
+
+            //steps then free, if they have a completed attempt they can
+            case constants::MODE_STEPSTHENFREE:
+                //if no attempts, we can attempt
+                $attempts=$this->get_attempts();
+                if($attempts){
+                    return true;
+                }else{
+                    return false;
+                }
+
+            //free mode, or otherwise (there is no otherwise..) they can
+            case constants::MODE_FREE:
+            default:
+                return true;
         }
     }
 

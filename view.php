@@ -19,6 +19,12 @@ $cm = $mod->get_cm();
 $currentstate = mod_wordcards_module::STATE_TERMS;
 
 require_login($course, true, $cm);
+
+//if free mode then lets do that
+if($mod->get_mod()->journeymode==constants::MODE_FREE){
+    redirect('/mod/wordcards/freemode.php?id=' . $cmid);
+}
+
 $mod->require_view();
 $mod->resume_progress($currentstate);
 $moduleinstance = $mod->get_mod();
@@ -46,6 +52,7 @@ if($config->enablesetuptab){
 $renderer = $PAGE->get_renderer('mod_wordcards');
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
 $PAGE->requires->css(new moodle_url('/mod/wordcards/freemode.css'));
+
 echo $renderer->header();
 echo $renderer->heading($pagetitle, 3, 'main');
 
@@ -82,7 +89,7 @@ if($hasopenclosedates){
 }
 
 echo $renderer->navigation($mod, $currentstate);
-
+//get definitions
 $definitions = $mod->get_terms();
 if (empty($definitions)) {
     echo $renderer->no_definitions_yet($mod);
