@@ -242,21 +242,55 @@ class renderer extends \plugin_renderer_base {
     }
 
     public function finish_page(\mod_wordcards_module $mod) {
-
-        $finishmsg = $mod->get_finishedstepmsg();
-        $latestattempt = $mod->get_latest_attempt();
-        if($latestattempt){
-            $finishmsg = str_replace('[[totalgrade]]', $latestattempt->totalgrade, $finishmsg);
-        }else{
-            $finishmsg = str_replace('[[totalgrade]]', '[students grade]', $finishmsg);
-        }
-
+     global $CFG;
 
         $data = [
             'canmanage' => $mod->can_manage(),
-            'finishtext' => $finishmsg .  ' <br/> ' . $mod->get_completedmsg(),
             'modid' => $mod->get_id(),
+            'courseurl'=>$CFG->wwwroot . '/course/view.php?id=' . $this->page->course->id,
+            'freemodeurl'=>$CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $mod->get_cmid(),
+            'canfreemode'=>$mod->get_mod()->journeymode==constants::MODE_STEPS
         ];
+
+        //attempt info
+        $canattempt=$mod->can_attempt();
+        if($canattempt){
+            $data['reattempturl']=$CFG->wwwroot . '/mod/wordcards/view.php?id=' . $mod->get_cmid();
+        }
+
+        //if we have a latest attempt, we need STARS!!!
+        $latestattempt = $mod->get_latest_attempt();
+        if($latestattempt){
+
+            ///final score
+            $data['total'] = $latestattempt->totalgrade;
+
+            //total rating
+            [$totalyellowstars,$totalgraystars] = utils::get_stars($latestattempt->totalgrade);
+            $data['totalyellowstars'] = $totalyellowstars;
+            $data['totalgraystars'] = $totalgraystars;
+
+            //each steps rating
+            $ratingitems=[];
+            for($x=1;$x<6;$x++){
+                $practicetype = $mod->get_mod()->{'step' . $x .'practicetype'};
+                if((int)$practicetype!==\mod_wordcards_module::PRACTICETYPE_NONE){
+                    $ratingitem=new \stdClass();
+                    $ratingitem->grade=$latestattempt->{"grade" . $x};
+                    $ratingitem->icon= utils::fetch_activity_tabicon($practicetype);
+                    $ratingitem->title= utils::get_practicetype_label($practicetype);
+                    [$yellowstars,$graystars] = utils::get_stars($ratingitem->grade);
+                    $ratingitem->yellowstars = $yellowstars;
+                    $ratingitem->graystars = $graystars;
+                    $ratingitems[]=$ratingitem;
+                }
+            }
+            $data['ratingitems']=$ratingitems;
+
+        }
+
+
+
         return $this->render_from_template('mod_wordcards/finish_page', $data);
     }
 

@@ -351,4 +351,7 @@ $string['reportstable']="Reports Style";
 $string['reportstable_details']="Ajax tables are faster to use and can sort data. Paged tables load faster but are harder to navigate with.";
 $string['reporttableajax']="Ajax Tables";
 $string['reporttablepaged']="Paged Tables";
+$string['totalscore']="Total Score";
+$string['backtocourse']="Back to Course";
+$string['morepractice']="More Practice";
 

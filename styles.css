@@ -1018,3 +1018,23 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 .mod_wordcards_freemode #results-inner .wordcards-my-words-action.btn.btn-outline-primary {
     margin-top: 3px;
 }
+.mod_wordcards_item_rating {
+
+    margin-top:12px;
+}
+
+.wordcards_actionbutton a.btn {
+    min-width: 150px;
+    margin-top:8px;
+}
+
+@media screen and (max-width:480px) {
+    .mod_wordcards_step_rating img {
+        max-width: 100%;
+    }
+}
+@media screen and (max-width:922px){
+    .mod_wordcards_step_rating img {
+        max-width: 16px;
+    }
+}

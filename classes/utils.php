@@ -825,6 +825,54 @@ class utils{
         }
     }
 
+    public static function get_stars($grade){
+        // Every item stars.
+        if($grade==0){
+            $ystar_cnt=0;
+        }else if($grade<19) {
+            $ystar_cnt=1;
+        }else if($grade<39) {
+            $ystar_cnt=2;
+        }else if($grade<59) {
+            $ystar_cnt=3;
+        }else if($grade<79) {
+            $ystar_cnt=4;
+        }else{
+            $ystar_cnt=5;
+        }
+        $yellowstars = array_fill(0, $ystar_cnt, true);
+        $gstar_cnt= 5 - $ystar_cnt;
+        $graystars = array_fill(0, $gstar_cnt, true);
+        return[$yellowstars,$graystars];
+    }
+
+    public static function get_practicetype_label($practicetype){
+        switch($practicetype) {
+            case \mod_wordcards_module::PRACTICETYPE_NONE:
+                return get_string('title_noactivity', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+                return get_string('title_matchselect', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+                return get_string('title_matchtype', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION:
+                return get_string('title_dictation', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+                return get_string('title_speechcards', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+                return get_string('title_listenchoose', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+                return get_string('title_matchselect_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+                return get_string('title_matchtype_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+                return get_string('title_dictation_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+                return get_string('title_speechcards_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+                return get_string('title_listenchoose_rev', constants::M_COMPONENT);
+        }
+    }
+
   public static function get_practicetype_options($wordpool=false){
       $none =  array(\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', constants::M_COMPONENT));
       $learnoptions = [

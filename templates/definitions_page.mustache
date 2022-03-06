@@ -72,17 +72,6 @@
     <div class="terms clearfix definition_flashcards" style="display:none;">
        <!--start --->
        <div class="df_fl">
-          <div class="wrapper_pr">
-             <ol class="ProgressBar">
-                {{#definitions}}
-                <li class="ProgressBar-step">
-                   <svg class="ProgressBar-icon">
-                      <use xlink:href="#checkmark-bold"/>
-                   </svg>
-                </li>
-                {{/definitions}}
-             </ol>
-          </div>
           <ul class="definition_flashcards_ul">
              {{#definitions}}
              <li>
@@ -115,8 +104,9 @@
              {{/definitions}}
           </ul>
           </div>
-          <div class="df_fl_control">
-             <button id="Prev"  title="Prev"> <i class="text-primary fa fa-angle-double-left" aria-hidden="true"></i> </button>
+          <div class="df_fl_control" style="text-align: center;">
+             <button id="Prev"  style="float: left;" title="Prev"> <i class="text-primary fa fa-angle-double-left" aria-hidden="true"></i> </button>
+              <span class="wc_cardsprogress"> -- / -- </span>
              <button id="Next" style="float: right;" title="Next"> <i class="text-primary fa fa-angle-double-right" aria-hidden="true"></i></button>
           </div>
           <!--end --->
