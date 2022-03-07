@@ -30,8 +30,13 @@ require_login($course, true, $cm);
 $mod->require_view();
 
 //create a new attempt and set it to STATE_TERMS (which should be bumped up to STATE_STEP1 shortly after)
-if($mod->can_attempt() && $reattempt){
-    $mod->create_reattempt();
+if($mod->can_attempt()){
+    if($reattempt) {
+        $mod->create_reattempt();
+    }else{
+        //if its a first attempt mark all terms as seen
+        $mod->mark_terms_as_seen();
+    }
 }
 
 //fetch current step
@@ -44,11 +49,14 @@ $isteacher = ($mod->can_manage() || $mod->can_viewreports());
 //must be not a reattempt (url fiddling by someone) and not on END or TERM. But a teacher is always on END so we let teachers through
 //because they may be in "switch role to student" mode
 // There is an issue currently, if a user is on their first attempt and "quits" their latest stare will be terms and since all terms are seen
-// they wil "resume" to step 1. First attempt users can not quit basically 2021-12-02
+// they wil "resume" to step 1. First attempt users can not quit basically 2021-12-02 -> see attempted fix below
 if(!$reattempt
     && $cancelattempt
-    && ($currentstate!==mod_wordcards_module::STATE_END  && $currentstate!== mod_wordcards_module::STATE_TERMS)
+    //&& ($currentstate!==mod_wordcards_module::STATE_END  && $currentstate!== mod_wordcards_module::STATE_TERMS)
+    //is this OK 2022.03.07?
+    && ($currentstate!==mod_wordcards_module::STATE_END)
     ){
+
     $mod->remove_attempt();
     redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
 }
@@ -74,7 +82,8 @@ if($currentstep==mod_wordcards_module::STATE_END) {
     redirect(new moodle_url('/mod/wordcards/finish.php', ['id' => $cm->id, 'sesskey'=>sesskey()]));
 }
 
-//redirect to finished if this state end
+
+//do we need this anymore?
 if($currentstep==mod_wordcards_module::STATE_TERMS) {
     redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
 }

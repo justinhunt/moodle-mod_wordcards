@@ -503,9 +503,25 @@ class mod_wordcards_module {
         return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $passmark;
     }
 
+    public function mark_terms_as_seen(){
+        global $DB, $USER;
+        $terms = self::get_terms();
+        foreach($terms as $term){
+            $params = ['userid' => $USER->id, 'termid' => $term->id];
+            if (!$DB->record_exists('wordcards_seen', $params)) {
+                $record = (object)$params;
+                $record->timecreated = time();
+                $DB->insert_record('wordcards_seen', $record);
+            }
+        }
+    }
+
+
     protected function has_seen_all_terms() {
         global $DB, $USER;
 
+
+        //TO DO remove this code, terms are always seen
         if (!$this->has_terms()) {
             return false;
         }
