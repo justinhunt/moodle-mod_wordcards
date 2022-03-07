@@ -97,7 +97,7 @@ class renderer extends \plugin_renderer_base {
             'region'=>$config->awsregion,
             'owner'=>hash('md5',$USER->username),
             'cmid' => $mod->get_cmid(),
-            'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attempts>0),
+            'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attemptcount>0),
             'stepsmodeavailable' => $journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE
         ];
 

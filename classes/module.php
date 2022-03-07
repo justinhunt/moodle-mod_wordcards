@@ -517,7 +517,7 @@ class mod_wordcards_module {
     }
 
 
-    protected function has_seen_all_terms() {
+    public function has_seen_all_terms() {
         global $DB, $USER;
 
 

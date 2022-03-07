@@ -179,7 +179,7 @@ class freemode implements \renderable, \templatable {
 
         if ($wordpool == \mod_wordcards_module::WORDPOOL_LEARN) {
             // Words we have not seen before.
-            $sql .= " WHERE t.deleted = 0 AND t.modid = :modid AND s.id IS NULL";
+            $sql .= " WHERE t.deleted = 0 AND t.modid = :modid";
         } else if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             // Words we have seen before.
             $sql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL";

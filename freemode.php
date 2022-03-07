@@ -43,6 +43,11 @@ if (!in_array($wordpool, $wordpools)) {
 $learnterms = $mod->get_terms();
 if(empty($learnterms)){
     $wordpool=mod_wordcards_module::WORDPOOL_REVIEW;
+}else{
+    //mark all terms as seen, if its the first view
+    if(!$mod->has_seen_all_terms()) {
+        $mod->mark_terms_as_seen();
+    }
 }
 
 
