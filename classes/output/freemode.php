@@ -64,6 +64,8 @@ class freemode implements \renderable, \templatable {
         $data->wordpool = $this->wordpool;
         $practicetypeoptions = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
         $data->introactive = !$this->practicetype;
+        $journeymode =  $this->mod->get_mod()->journeymode;
+        $data->stepsmodeavailable = ($journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE);
         $data->defsurl = new \moodle_url('/mod/wordcards/freemode.php', ['id' => $this->cm->id, 'practicetype' => 0, 'wordpool' => $this->wordpool]);
         foreach ($practicetypeoptions as $id => $title) {
             $data->tabs[] = [

@@ -22,7 +22,7 @@ require_login($course, true, $cm);
 
 //if free mode then lets do that
 if($mod->get_mod()->journeymode==constants::MODE_FREE){
-    redirect('/mod/wordcards/freemode.php?id=' . $cmid);
+    redirect($CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $cmid);
 }
 
 $mod->require_view();
