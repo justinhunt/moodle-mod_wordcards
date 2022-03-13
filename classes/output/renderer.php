@@ -537,9 +537,12 @@ class renderer extends \plugin_renderer_base {
      */
     public function page_heading(int $practicetype, int $wordpool): string {
         // First practice type.
-        $practicetypeoptions = utils::get_practicetype_options();
-        $pagetitle = isset($practicetypeoptions[$practicetype]) ? $practicetypeoptions[$practicetype] : '';
-
+        if($practicetype !== \mod_wordcards_module::PRACTICETYPE_NONE) {
+            $practicetypeoptions = utils::get_practicetype_options();
+            $pagetitle = isset($practicetypeoptions[$practicetype]) ? $practicetypeoptions[$practicetype] : '';
+        }else{
+            $pagetitle = get_string('introduction',constants::M_COMPONENT);
+        }
         // Then wordpool.
         $wordpoolstring = $this->get_wordpool_string($wordpool);
         if ($wordpoolstring) {
