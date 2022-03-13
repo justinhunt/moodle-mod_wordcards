@@ -10,11 +10,13 @@
 .path-mod-wordcards .term-wrapper {
     width: 32%;
     display: inline-block;
-    border: 1px solid #eee;
+    border: 1px solid #ccc;
     margin-right: 1%;
     border-radius: 3px;
     margin-bottom: 10px;
     float: left;
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 5px;
 }
 
 /* Remove the margin at the end of each 'row'. */
@@ -921,7 +923,7 @@
 }
 
 ul.definition_flashcards_ul {
-    border: 2px solid #546f1f;
+   /*border: 2px solid #546f1f; */
     padding: 8px;
 }
 .df_fl_control button:focus {

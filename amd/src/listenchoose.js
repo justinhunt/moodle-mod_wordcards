@@ -27,6 +27,7 @@ define([
       this.dryRun = props.dryRun;
       this.nexturl = props.nexturl;
       this.modid = props.modid;
+      this.lcoptions=props.lcoptions;
       this.isFreeMode = props.isfreemode;
       var configcontrol = $(theid).get(0);
       if (configcontrol) {
@@ -254,7 +255,14 @@ define([
       $.each(distractors, function(i, o) {
         var is_correct = o['term'] == answer;
         var term_id = o['id'];
-        options.push('<li data-id="' + term_id + '" data-correct="' + is_correct.toString() + '" class="list-group-item a4e-distractor a4e-noselect">' + o['term'] + '</li>');
+        //depending on options  show option label as term or def
+        if(app.lcoptions==="0"){
+          var label= o['term'];
+        }else{
+         var label= o['definition'];
+        }
+        //
+        options.push('<li data-id="' + term_id + '" data-correct="' + is_correct.toString() + '" class="list-group-item a4e-distractor a4e-noselect">' + label + '</li>');
       });
       var code = '<ul class="list-group a4e-distractors">' + options.join('') + '</ul>';
       return code;

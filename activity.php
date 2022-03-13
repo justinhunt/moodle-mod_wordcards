@@ -128,7 +128,7 @@ if($config->enablesetuptab){
 }
 
 //load glide
-$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
+//$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
 //load google font never works ... why?
 //$PAGE->requires->css(new moodle_url('https//fonts.googleapis.com/css2',array('family'=>'Orbitron','display'=>'swap')));
 
@@ -144,6 +144,29 @@ if (!empty($mod->get_mod()->intro)) {
 }
 
 echo $renderer->navigation($mod, $currentstep);
+//get wordpool
+switch ($practicetype){
+
+    case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+    case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+    case mod_wordcards_module::PRACTICETYPE_DICTATION:
+    case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+    case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+    case mod_wordcards_module::PRACTICETYPE_SCATTER:
+        $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
+        break;
+
+    case mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+    case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+    case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+    case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+    case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+    case mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
+    default:
+        $definitions = $mod->get_review_terms($mod->fetch_step_termcount($currentstep));
+        break;
+
+}
 switch ($practicetype){
 
     case mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
@@ -154,13 +177,11 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
-        $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
         echo $renderer->a4e_page($mod, $practicetype, $definitions, false, $currentstep);
         break;
 
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
-        $definitions = $mod->get_review_terms($mod->fetch_step_termcount($currentstep));
         echo $renderer->speechcards_page($mod, $definitions, false, $currentstep);
         break;
     //no longer using this

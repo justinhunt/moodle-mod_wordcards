@@ -900,6 +900,11 @@ class utils{
       return $options;
   }
 
+    public static function fetch_options_listenchoose(){
+        return array(
+            constants::M_LC_TERMTERM=> get_string('lc_termterm', constants::M_COMPONENT),
+            constants::M_LC_TERMDEF => get_string('lc_termdef', constants::M_COMPONENT));
+    }
   public static function fetch_options_fontfaceflip(){
       return array(
               constants::M_FRONTFACEFLIP_TERM=> get_string('term', constants::M_COMPONENT),
@@ -1215,6 +1220,10 @@ class utils{
         $frontfaceoptions = self::fetch_options_fontfaceflip();
         $mform->addElement('select', 'frontfaceflip', get_string('frontfaceflip', constants::M_COMPONENT),
                 $frontfaceoptions, $config->frontfaceflip);
+
+        $lcoptions = self::fetch_options_listenchoose();
+        $mform->addElement('select', 'lcoptions', get_string('lcoptions', constants::M_COMPONENT),
+            $lcoptions, $config->lcoptions);
 
   // show activity open closes
    $dateoptions = array('optional' => true);

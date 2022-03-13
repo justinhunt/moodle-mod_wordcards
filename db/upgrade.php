@@ -475,5 +475,19 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022022701, 'wordcards');
     }
 
+    if ($oldversion < 2022031300) {
+        $table = new xmldb_table(constants::M_TABLE);
+        $fields=[];
+        $fields[] = new xmldb_field('lcoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_LC_TERMDEF);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2022031300, 'wordcards');
+    }
+
     return true;
 }

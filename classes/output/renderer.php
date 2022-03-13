@@ -228,6 +228,7 @@ class renderer extends \plugin_renderer_base {
                 break;
             case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
             case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+                $opts['lcoptions']=$mod->get_mod()->lcoptions;
                 $this->page->requires->js_call_amd("mod_wordcards/listenchoose", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/listenchoose_page', $data);
                 break;
@@ -247,7 +248,7 @@ class renderer extends \plugin_renderer_base {
         $data = [
             'canmanage' => $mod->can_manage(),
             'modid' => $mod->get_id(),
-            'courseurl'=>$CFG->wwwroot . '/course/view.php?id=' . $this->page->course->id,
+            'courseurl'=>$CFG->wwwroot . '/course/view.php?id=' . $this->page->course->id . '#section-'. $mod->get_cm()->sectionnum,
             'freemodeurl'=>$CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $mod->get_cmid(),
             'canfreemode'=>$mod->can_free_mode()
         ];

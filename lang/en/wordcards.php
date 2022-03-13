@@ -354,4 +354,7 @@ $string['reporttablepaged']="Paged Tables";
 $string['totalscore']="Total Score";
 $string['backtocourse']="Back to Course";
 $string['morepractice']="More Practice";
-
+$string['lc_termterm']="Audio: term, Options: terms";
+$string['lc_termdef']="Audio: term, Options: definitions";
+$string['lcoptions']="Listen and Choose options";
+$string['lcoptions_details']="Display multi-choice options as word terms , or word definitions";

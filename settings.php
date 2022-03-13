@@ -155,6 +155,15 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
             $label, $details, $default, $options));
 
+    //Listen and Choose
+    $name = 'lcoptions';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = constants::M_LC_TERMDEF;
+    $options = utils::fetch_options_listenchoose();
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
+
     // In free mode, how many items max to show to users.
     $name = 'def_wordstoshow';
     $label = get_string($name, constants::M_COMPONENT);
