@@ -82,5 +82,11 @@ $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/freemode", 'init', []);
 
 echo $renderer->header();
+//if admin we show a heading in free mode (otherwise they would not be able to add definitions)
+if($isteacher && $mod->get_mod()->journeymode==constants::MODE_FREE) {
+    //this is a bit hacky, TO DO make a new state "FREEMODE"
+    $currentstate = mod_wordcards_module::STATE_TERMS;
+    echo $renderer->navigation($mod, $currentstate);
+}
 echo $renderer->render_from_template('mod_wordcards/freemode', $templatedata);
 echo $renderer->footer();
