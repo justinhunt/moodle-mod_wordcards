@@ -67,6 +67,7 @@ $templatedata = $templateable->export_for_template($renderer);
 $PAGE->navbar->add($templatedata->pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true));
 $PAGE->set_title($templatedata->pagetitle);
+$PAGE->force_settings_menu(true);
 
 $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab){
