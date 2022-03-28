@@ -178,14 +178,25 @@ class freemode implements \renderable, \templatable {
         }
 
         //wordpool :: REVIEW WORDS
-        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
-            if ($countonly) {
+        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW){
+            //in this case we want ALL the words returned
+            if ($countonly || $practicetype ==\mod_wordcards_module::PRACTICETYPE_NONE) {
                 $reviewsql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
                 $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
                 $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
                 $reviewsql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL AND w.course = :courseid";
-                return $DB->get_field_sql($reviewsql, $params);
+                if($countonly) {
+                    return $DB->get_field_sql($reviewsql, $params);
+                }else{
+                    $records = $DB->get_records_sql($reviewsql, $params);
+                    if (!$records) {
+                        return [];
+                    }
+                    shuffle($records);
+                    return \mod_wordcards_module::insert_media_urls($records);
+                }
             } else {
+                //in this case we want words to practice returned
                 return $this->mod->get_review_terms($maxwords);
             }
         }
