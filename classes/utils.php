@@ -964,7 +964,7 @@ class utils{
                constants::M_LANG_SVSE => get_string('sv-se', constants::M_COMPONENT),
                constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
                constants::M_LANG_EUES => get_string('eu-es',constants::M_COMPONENT),
-               constants::M_LANG_FIFI => get_string('fi-FI',constants::M_COMPONENT),
+               constants::M_LANG_FIFI => get_string('fi-fi',constants::M_COMPONENT),
                constants::M_LANG_HUHU => get_string('hu-hu',constants::M_COMPONENT)
        );
    }
