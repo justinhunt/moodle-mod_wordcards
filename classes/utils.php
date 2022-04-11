@@ -710,7 +710,7 @@ class utils{
           //constants::M_LANG_TAIN => [],
           //constants::M_LANG_TEIN => [],
               constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
-              constants::M_LANG_ZHCN => ['Zhiyu'],
+              constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
 
           constants::M_LANG_NBNO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g'],
           constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
@@ -728,15 +728,15 @@ class utils{
 
           //add current language first
           foreach($alllang[$langcode] as $v=>$thevoice){
-              $neuraltag = in_array($thevoice,constants::M_NEURALVOICES) ? ' (+)' : '';
-              $usearray[$thevoice] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+              $neuraltag = in_array($v,constants::M_NEURALVOICES) ? ' (+)' : '';
+              $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
           }
           //then all the rest
           foreach($alllang as $lang=>$voices){
               if($lang==$langcode){continue;}
               foreach($voices as $v=>$thevoice){
-                  $neuraltag = in_array($thevoice,constants::M_NEURALVOICES) ? ' (+)' : '';
-                  $usearray[$thevoice] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+                  $neuraltag = in_array($v,constants::M_NEURALVOICES) ? ' (+)' : '';
+                  $usearray[$v] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
               }
           }
           return $usearray;
