@@ -671,7 +671,7 @@ class utils{
   public static function fetch_auto_voice($langcode){
         $voices = self::get_tts_voices($langcode);
         $autoindex = array_rand($voices);
-        return $voices[$autoindex];
+        return $autoindex;
   }
 
   public static function get_tts_voices($langcode, $showall=false){
