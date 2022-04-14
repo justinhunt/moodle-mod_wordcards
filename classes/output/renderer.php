@@ -359,9 +359,9 @@ class renderer extends \plugin_renderer_base {
 
         if($mod->get_mod()->transcriber == constants::TRANSCRIBER_POODLL){
             //this will force browser recognition to use Poodll (not chrome or other browser speech)
-            $opts['ds_only'] = true;
+            $opts['stt_guided'] = true;
         }else {
-            $opts['ds_only'] = false;
+            $opts['stt_guided'] = false;
         }
 
         $this->page->requires->js_call_amd("mod_wordcards/speechcards", 'init', array($opts));
