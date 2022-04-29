@@ -1,5 +1,6 @@
 1.3.37(Build 2022041800)
 - Removed JQuery UI which was breaking Moodle 4.0 dock
+- Fixed issue with activity being closed if open date set, but close data not set
 
 1.3.36 (Build 2022041300)
 - Fixed logging issue
