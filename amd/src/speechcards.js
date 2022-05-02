@@ -47,7 +47,7 @@ define([
 
     //anim
      var animopts = {};
-     animopts.useanimatecss=true;
+     animopts.useanimatecss=props.useanimatecss;
      anim.init(animopts);
 
       app.jsondata = jsondata;
@@ -93,10 +93,10 @@ define([
         switch(direction){
             case '<':
                 app.set_pointer(app.pointer - 1);
-                anim.do_animate(app.controls.slider,'flipOutY','out').then(
+                anim.do_animate(app.controls.slider,'zoomOut animate__faster','out').then(
                     function(){
                         app.controls.slider.text(app.terms[app.pointer - 1].term);
-                        anim.do_animate(app.controls.slider,'flipInY','in');
+                        anim.do_animate(app.controls.slider,'zoomIn animate__faster','in');
                     }
                 );
            /*
