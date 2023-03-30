@@ -76,8 +76,13 @@ if($config->enablesetuptab){
     $PAGE->set_pagelayout('course');
 }
 
-//load glide
-//$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
+//load animate css
+////this library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/)
+//which is high minded but not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
+if($config->animations==constants::M_ANIM_FANCY) {
+    $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
+}
+
 $PAGE->requires->css(new moodle_url('/mod/wordcards/freemode.css'));
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/freemode", 'init', []);

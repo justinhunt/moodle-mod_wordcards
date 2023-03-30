@@ -3,7 +3,7 @@
  *
  * @package mod_wordcards
  * @author  Justin Hunt - poodll.com
- * * (based on Paul Raine's APPs 4 EFL)
+ *
  */
 
 define([
