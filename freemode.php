@@ -76,8 +76,7 @@ if($config->enablesetuptab){
     $PAGE->set_pagelayout('course');
 }
 
-//load glide
-//$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
+//load free mode (why seperate CSS?)
 $PAGE->requires->css(new moodle_url('/mod/wordcards/freemode.css'));
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/freemode", 'init', []);
