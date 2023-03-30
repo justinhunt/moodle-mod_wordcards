@@ -140,6 +140,12 @@ switch ($practicetype) {
     default:
 }
 
+////this library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/)
+//which is high minded but not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
+if($config->animations==constants::M_ANIM_FANCY) {
+    $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
+}
+
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
 echo $renderer->header();
