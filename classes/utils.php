@@ -1441,6 +1441,7 @@ class utils{
 
     //can speak neural?
     public static function can_speak_neural($voice,$region){
+
         //check if the region is supported
         switch($region){
             case "useast1":

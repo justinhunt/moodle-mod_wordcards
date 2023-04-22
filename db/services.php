@@ -70,12 +70,13 @@ $functions = array(
     ),
     'mod_wordcards_search_dictionary' => array(
         'classname'   => 'mod_wordcards_external',
-        'methodname'  => 'search_dictionary',
-        'description' => 'search dictionary term in the db',
+        'methodname'  => 'search_english_dictionary',
+        'description' => 'search dictionary (english) term in the db',
         'capabilities'=> 'mod/wordcards:manage',
         'type'        => 'read',
         'ajax'        => true,
     ),
+
     'mod_wordcards_set_my_words' => array(
         'classname'   => 'mod_wordcards_external',
         'methodname'  => 'set_my_words',

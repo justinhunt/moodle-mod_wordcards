@@ -388,6 +388,7 @@ class mod_wordcards_external extends external_api {
         );
     }
 
+
     public static function set_my_words_parameters(){
         return new external_function_parameters(
             array(

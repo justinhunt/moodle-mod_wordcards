@@ -14,10 +14,11 @@
 {{^element.frozen}}
     {{#js}}
 //<script>
-        require(['jquery','core/log','core/templates','core/ajax'],function($,log, templates, ajax) {
+        require(['jquery','core/log','core/templates','mod_wordcards/dictlookup'],function($,log, templates, dictlookup) {
 
             //get words from text area and fetch definitions
             var resultscont = $("#{{uniqid}}_resultscont");
+            dictlookup.init('{{cmid}}','{{modid}}');
 
             $("#{{uniqid}}_fetchbtn").on("click", async function() {
 
@@ -30,154 +31,20 @@
                 if (allwords.trim() === '') {
                     return;
                 }
-                var wordsarray = allwords.split(',');
-                var promises = await ajax.call([
-                    {methodname: 'mod_wordcards_search_dictionary', args: {terms: allwords, cmid: {{cmid}}, sourcelang: '{{langterm}}', targetlangs: langdef }},
-                ]);
-
-                promises[0].done(function (response) {
-                    //if return code=0, disaster, log and die
-                    if(response.success===0){
-                        log.debug(response.payload);
-                        return;
-                    }
-
-                    var terms=JSON.parse(response.payload);
-                        for(var i=0; i < terms.length;i++){
-                            var theterm = terms[i];
-                            //if a word search failed show an editable area
-                            if(theterm.count===0){
-                                var senses=[];
-                                senses.push({definition: '',sourcedefinition: 'No def. available',
-                                    modelsentence: '', senseindex: 0, translations: '{}'})
-                                var tdata = {term: theterm.term, senses: senses, modid: {{modid}} };
-                                templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
-                                        function(html,js){
-                                            resultscont.append(html);
-                                            templates.runTemplateJS(js);
-                                        }
-                                );
-                            }else{
-                                var tdata = {term: theterm.term, senses: [], modid: {{modid}} };
-                                 for(var sindex in theterm.results){
-                                     var sense = theterm.results[sindex];
-                                     //by default its term:English def:English
-                                    var sourcedefinition = sense.definition;
-                                    var alltrans={};
-                                    for(var ti=0;ti<langs.length;ti++){
-                                        alltrans[langs[ti]] = sense['lang_' + langs[ti]];
-                                    }
-                                    var translations = JSON.stringify(alltrans);
-                                    var definition = sourcedefinition;
-                                    //if its NOT term:english and def:english, we need to pull the definition from the translation
-                                    if(langdef!=="{{langterm}}"){
-                                        if(sense.hasOwnProperty('lang_' + langdef)){
-                                            definition = sense['lang_' + langdef];
-                                        }else if(langdef==='en'){
-                                            definition = sense.meaning;
-                                        }else{
-                                            definition = 'No translation available';
-                                        }
-                                    }
-
-                                    //model sentence is only in english (for now)
-                                    if('{{langterm}}'==='en'){
-                                        var modelsentence = sense.example;
-                                    }else{
-                                        var modelsentence = '';
-                                    }
-
-                                    tdata.senses.push({definition: definition,sourcedefinition: sourcedefinition,
-                                        modelsentence: modelsentence, senseindex: sindex, translations: translations});
-                                 }//end of results loop
-                                templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
-                                        function(html,js){
-                                            resultscont.append(html);
-                                            templates.runTemplateJS(js);
-                                        }
-                                );
+                var alldata = dictlookup.getwords(allwords);
+                for(var i = 0; i < alldata.length; i++)
+                {
+                    var tdata = alldata[i];
+                    templates.render('mod_wordcards/word_wizard_oneresult', tdata).then(
+                            function (html, js) {
+                                resultscont.append(html);
+                                templates.runTemplateJS(js);
                             }
-                        }
-                });
+                    );
+                }
             });
 
-            //this was the older lexicala code. TODO remove
-            $("xxxxx#{{uniqid}}_fetchbtn").on("click", async function() {
-                var langdef = $("#{{uniqid}}_ww_langdef").val();
-                var allwords = $("#{{uniqid}}_ww_words").val();
-                if(allwords.trim()===''){return;}
-                var wordsarray = allwords.split(',');
-                var analyzed=false;
 
-                //choose dictionary (global has more entries, but passport has more en -> otherlangs
-                //For now FORCING password
-                var global_en_translations = ['br','dk','es','fr','ja','no','sv'];
-              //  if('{{langterm}}' == 'en' && !global_en_translations.includes(langdef)){
-                if(true){
-                    var dictionary="password";
-                    analyzed=true;
-                }else{
-                    var dictionary="global";
-                }
-
-                for (var i=0;i<wordsarray.length && i>-1;i++){
-                   await $.ajax({
-                        type: "GET",
-                        url: "https://dictapi.lexicala.com/search-entries",
-                        headers: {
-                        "Authorization": "Basic " + btoa("{{lexicalauser}}" + ":" + "{{lexicalapass}}")
-                        },
-                        data: {source: dictionary,language: "{{langterm}}", text: wordsarray[i], analyzed: analyzed},
-                        success: function (ret){
-
-                            //if no results
-                            if(ret.results.length===0){
-                                var senses=[];
-                                senses.push({definition: '',sourcedefinition: 'No def. available',
-                                    modelsentence: '', senseindex: 0, translations: {}})
-                                var tdata = {term: wordsarray[i], senses: senses, modid: {{modid}} };
-                                templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
-                                        function(html,js){
-                                            resultscont.append(html);
-                                            templates.runTemplateJS(js);
-                                        }
-                                );
-                            }
-                            //if results
-                            for(var rindex = 0;rindex < ret.results.length; rindex++ ){
-                                var currentresult = ret.results[rindex];
-                                var tdata = {term: currentresult.headword.text, senses: [], modid: {{modid}} };
-                                for(var sindex = 0;sindex < currentresult.senses.length; sindex++ ){
-                                    if(currentresult.senses[sindex].hasOwnProperty('examples') &&
-                                        currentresult.senses[sindex].examples.length>0){
-                                        var modelsentence = currentresult.senses[sindex].examples[0].text;
-                                    }else{
-                                        var modelsentence = '';
-                                    }
-                                    var sourcedefinition = currentresult.senses[sindex].definition;
-                                    var translations = JSON.stringify(currentresult.senses[sindex].translations);
-                                    var definition = sourcedefinition;
-                                    if(langdef!=="{{langterm}}"){
-                                        if(currentresult.senses[sindex].translations.hasOwnProperty(langdef)){
-                                            definition = currentresult.senses[sindex].translations[langdef].text;
-                                        }else{
-                                            definition = 'No translation available';
-                                        }
-                                    }
-                                    tdata.senses.push({definition: definition,sourcedefinition: sourcedefinition,
-                                            modelsentence: modelsentence, senseindex: sindex, translations: translations });
-                                }//end of results loop
-                                templates.render('mod_wordcards/word_wizard_oneresult',tdata).then(
-                                    function(html,js){
-                                        resultscont.append(html);
-                                        templates.runTemplateJS(js);
-                                    }
-                                );
-                            }
-                        }
-                    });
-                }//end of for loop
-            });//end of fetchbtn
         });//end of require
     {{/js}}
 {{/element.frozen}}
