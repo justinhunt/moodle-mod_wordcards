@@ -14,11 +14,11 @@
 {{^element.frozen}}
     {{#js}}
 //<script>
-        require(['jquery','core/log','core/templates','mod_wordcards/dictlookup'],function($,log, templates, dictlookup) {
+        require(['jquery','core/log','mod_wordcards/dictlookup'],function($,log,  dictlookup) {
 
             //get words from text area and fetch definitions
             var resultscont = $("#{{uniqid}}_resultscont");
-            dictlookup.init('{{cmid}}','{{modid}}');
+            dictlookup.init('{{cmid}}','{{modid}}',resultscont);
 
             $("#{{uniqid}}_fetchbtn").on("click", async function() {
 
@@ -31,17 +31,8 @@
                 if (allwords.trim() === '') {
                     return;
                 }
-                var alldata = dictlookup.getwords(allwords);
-                for(var i = 0; i < alldata.length; i++)
-                {
-                    var tdata = alldata[i];
-                    templates.render('mod_wordcards/word_wizard_oneresult', tdata).then(
-                            function (html, js) {
-                                resultscont.append(html);
-                                templates.runTemplateJS(js);
-                            }
-                    );
-                }
+                 dictlookup.getwords(allwords,'{{langterm}}',langdef);
+
             });
 
 
