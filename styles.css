@@ -967,8 +967,8 @@ ul.definition_flashcards_ul {
 }
 .mod_wordcards_ww_label {
     display: inline-block;
-    width: 50px;
-    text-align: right;
+    /* width: 50px;*/
+    /* text-align: right; */
 }
 .mod_wordcards_ww_onesense {
     border: 1px solid grey;
