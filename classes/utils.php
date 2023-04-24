@@ -1430,6 +1430,10 @@ class utils{
                 if(isset($translations->{$mod->get_mod()->deflanguage}->text)){
                     //lexicala
                     $newdef = $translations->{$mod->get_mod()->deflanguage}->text;
+                    if(is_array($newdef)){
+                        //something is wrong here, we cant really trust the data
+                        continue;
+                    }
                 }else{
                     //r and c db
                     $newdef = $translations->{$mod->get_mod()->deflanguage};
