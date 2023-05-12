@@ -508,7 +508,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022060500, 'wordcards');
     }
 
-    if ($oldversion < 2023051200) {
+    if ($oldversion < 2023051201) {
         $table = new xmldb_table('wordcards');
         // Define field foriframe to be added to wordcards
         $fields=[];
@@ -518,11 +518,11 @@ function xmldb_wordcards_upgrade($oldversion) {
 
         // Alter fields
         foreach ($fields as $field) {
-            if (!$dbman->field_exists($table, $field)) {
+            if ($dbman->field_exists($table, $field)) {
                 $dbman->change_field_notnull($table, $field);
             }
         }
-        upgrade_mod_savepoint(true, 2023051200, 'wordcards');
+        upgrade_mod_savepoint(true, 2023051201, 'wordcards');
     }
 
     return true;
