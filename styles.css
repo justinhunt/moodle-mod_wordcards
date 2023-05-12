@@ -1040,3 +1040,17 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
         max-width: 16px;
     }
 }
+
+.mod_wordcards_skeleton_box {
+    background-color: #DDDBDD;
+    color: grey;
+    -webkit-mask: linear-gradient(-60deg,#000 30%,#0005,#000 70%) right/300% 100%;
+    background-repeat: no-repeat;
+    animation: wordcardsshimmer 2.5s infinite;
+    width: 100%;
+    height: 100px;
+
+}
+@keyframes wordcardsshimmer {
+    100% {-webkit-mask-position:left}
+}

@@ -23,6 +23,7 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
         update_page: function(alldata){
             //update the page
             var that = this;
+            that.resultscont.empty();
             for(var i = 0; i < alldata.length; i++)
             {
                 var tdata = alldata[i];

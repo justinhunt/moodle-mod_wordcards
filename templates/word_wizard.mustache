@@ -14,7 +14,7 @@
 {{^element.frozen}}
     {{#js}}
 //<script>
-        require(['jquery','core/log','mod_wordcards/dictlookup'],function($,log,  dictlookup) {
+        require(['jquery','core/log','core/templates','mod_wordcards/dictlookup'],function($,log,templates,  dictlookup) {
 
             //get words from text area and fetch definitions
             var resultscont = $("#{{uniqid}}_resultscont");
@@ -25,12 +25,23 @@
                 //clear any old results
                 resultscont.empty();
 
+
                 var langs = ['ar','id','zh','zh_tw','ja','ko','pt','es','th','vi','fr','rus'];
                 var langdef = $("#{{uniqid}}_ww_langdef").val();
                 var allwords = $("#{{uniqid}}_ww_words").val();
                 if (allwords.trim() === '') {
                     return;
                 }
+
+                //add placeholders for each word
+                var tdata = {'terms': allwords.split(',')};
+                log.debug(tdata);
+                templates.render('mod_wordcards/ww_skeletons',tdata).done(function(html, js) {
+                    resultscont.html(html);
+                }).fail(function(ex) {
+                    log.error(ex);
+                });
+
                  dictlookup.getwords(allwords,'{{langterm}}',langdef);
 
             });
