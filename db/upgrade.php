@@ -515,6 +515,9 @@ function xmldb_wordcards_upgrade($oldversion) {
         $fields[] = new xmldb_field('deflanguage', XMLDB_TYPE_CHAR, 255, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'en');
         $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,XMLDB_NOTNULL, null, 0);
         $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $DB->set_field('wordcards','deflanguage','en',['deflanguage'=>null]);
+        $DB->set_field('wordcards','viewstart',0,['viewstart'=>null]);
+        $DB->set_field('wordcards','viewend',0,['viewend'=>null]);
 
         // Alter fields
         foreach ($fields as $field) {
