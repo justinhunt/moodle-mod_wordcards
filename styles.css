@@ -1054,3 +1054,7 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 @keyframes wordcardsshimmer {
     100% {-webkit-mask-position:left}
 }
+
+.mod_wordcards_activity_header .pull-right, .term-wrapper .pull-right {
+    float: right;
+}
