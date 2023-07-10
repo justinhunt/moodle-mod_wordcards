@@ -1,34 +1,24 @@
 /**
- * Module to watch my words buttons for clicks and report to back end.
+ * Module to manage actions on a card in learn mode in mod_wordcards.
  *
  * @package mod_wordcards
- * @author David Watson - evolutioncode.uk
+ * @author Justin Hunt - justin@poodll.com
  */
-define(['jquery', 'core/ajax', 'core/str', 'core/log'], function($, ajax, str,log) {
+define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish'], function($, ajax, str,log, youglish) {
     const SELECTOR = {
         CARD: '.definition_flashcards .wc-faces',
-        DETAILSFACE: '[data-face="one"]',
-        TERMFACE: '[data-face="two"]',
-        YOUGLISHFACE: '[data-face="three"]',
+        FRONTFACE: '[data-face="term"]',
+        BACKFACE: '[data-face="details"]',
+        YOUGLISH_HOLDER: '.term-video',
+        YOUGLISH_WIDGET: '#mod_wordcardsyouglish-widget',
+        YOUGLISH_PLACEHOLDER: '.youglish-placeholder',
     }
 
-    const CLASS = {
-        BTN_IN_MY_WORDS: 'btn-primary'
-    }
 
     const EVENT = {
         CLICK: 'click'
     }
 
-
-    const FACES = {
-        DETAILS: 'one',
-        TERM: 'two',
-        YOUGLISH: 'three',
-    }
-
-    var youglish_template='<a id="yg-widget-0" class="youglish-widget" data-query="@@DATA-QUERY@@" data-lang="english" data-zones="all,us,uk,aus" data-components="8412" data-bkg-color="theme_light"  rel="nofollow" href="https://youglish.com">Visit YouGlish.com</a>\n' +
-        '<script async src="https://youglish.com/public/emb/widget.js" charset="utf-8"></script>';
 
     var stringStore = {};
 
@@ -42,44 +32,59 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log'], function($, ajax, str,lo
                 callback();
             }
         });
+    };
+
+    const initYouGlish = function() {
+        $.getScript('https://youglish.com/public/emb/widget.js', function(){
+            log.debug('youglish script loaded');
+        });
+    };
+
+    const clearYouGlish = function(currentface) {
+        log.debug('clearYouGlish');
+        var youglishwidget = $(SELECTOR.YOUGLISH_WIDGET);
+        var youglishplaceholder = currentface.find(SELECTOR.YOUGLISH_PLACEHOLDER);
+        youglishplaceholder.show();
+        youglishwidget.hide();
+        youglish.clear();
     }
+    const loadYouGlish = function(currentface) {
+        log.debug('loadYouGlish');
+        var youglishholder = currentface.find(SELECTOR.YOUGLISH_HOLDER);
+        var youglishplaceholder = currentface.find(SELECTOR.YOUGLISH_PLACEHOLDER);
+        youglish.load(youglishplaceholder.data('term'),youglishholder);
+    }
+
 
     const initButtonListeners = function() {
-        log.debug('button listeners inited');
         $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
-            log.debug('click event happened');
-            // There are two buttons for each term (one in grid and one in flashcards).
-            const currTar = $(e.currentTarget);
 
-            var facedetails = currTar.find(SELECTOR.DETAILSFACE);
-            var faceterm = currTar.find(SELECTOR.TERMFACE);
-            var faceyouglish = currTar.find(SELECTOR.YOUGLISHFACE);
-            if(facedetails.is(":visible")){
-                log.debug('facedetails is visible');
-                facedetails.hide();
-                faceterm.show();
-            }else if(faceterm.is(":visible")){
-                log.debug('faceterm is visible');
-                faceterm.hide();
-                var theterm=facedetails.find('.term-title').text();
-                log.debug(theterm)
-                var widget= youglish_template.replace('@@DATA-QUERY@@', theterm);
-                faceyouglish.html(widget);
-                faceyouglish.show();
-            }else if(faceyouglish.is(":visible")){
-                log.debug('faceyouglish is visible');
-                faceyouglish.html('');
-                faceyouglish.hide();
-                facedetails.show();
+            const currTar = $(e.currentTarget);
+            const faceback = currTar.find(SELECTOR.BACKFACE);
+            const facefront = currTar.find(SELECTOR.FRONTFACE);
+            if(faceback.is(":visible")){
+                faceback.hide();
+                facefront.show();
+                clearYouGlish(faceback);
+            }else if(facefront.is(":visible")){
+                facefront.hide();
+                faceback.show();
             }
-        })
-    }
+        });
+
+        $(SELECTOR.YOUGLISH_PLACEHOLDER).on(EVENT.CLICK, function(e) {
+            e.stopPropagation();
+            const currTar = $(e.currentTarget);
+            loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
+        });
+    };
 
     return {
         init: function () {
             $(document).ready(function() {
                 initStrings();
                 initButtonListeners();
+                initYouGlish();
             })
         }
     }

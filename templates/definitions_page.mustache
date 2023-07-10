@@ -77,46 +77,43 @@
              {{#definitions}}
              <li>
                 <div class="wc-faces">
-                    <!-- face 1 -->
-                    <div data-face="one">
+                      <!-- face 1 -->
+                     <div data-face="term" style="border: 1px solid grey; ">
+                        <div class="term" data-termid="{{id}}">
+                            <div class="term-title">{{term}} FACE 2</div>
+                             {{#model_sentence}}
+                               <div class="term-modelsentence">
+                                  <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
+                               </div>
+                             {{/model_sentence}}
+                        </div>
+                     </div>
+                    <!-- back face -->
+                    <div data-face="details" style="display:none;">
                         <div class="row">
-                           {{#image}}
-                           <div class="col-md-6">
-                              <img src="{{image}}" class="flash_img" alt=""/>
-                           </div>
-                           {{/image}}
-                           <div class="{{#image}}col-md-6{{/image}} {{^image}}col-md-12{{/image}}">
+                           <div class="col-md-12">
                               <div class="term-wrapper {{#image}}add_wraper_handle_im{{/image}} {{^image}}add_wraper_handle{{/image}}">
                                  <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
                                     <div class="term-header">
                                         {{>mod_wordcards/my_words_button}}
                                        <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i></div>
-                                       {{#model_sentence}}
-                                       <div class="term-modelsentence">
-                                          <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
+                                       <div class="term-body">
+                                           {{{definition}}}
                                        </div>
-                                       {{/model_sentence}}
                                     </div>
-                                    <div class="term-body">
-                                        {{{definition}}}
-                                    </div>
+                                    {{#image}}
+                                       <div class="term-image">
+                                          <img src="{{image}}" class="flash_img" alt=""/>
+                                       </div>
+                                    {{/image}}
+                                       <div class="term-video">
+                                           {{>mod_wordcards/youglish}}
+                                       </div>
                                  </div>
                               </div>
                            </div>
                         </div>
                     </div>
-                     <!-- face 2 -->
-                     <div data-face="two" style="border: 1px solid grey; display:none;">
-                        <div class="term" data-termid="{{id}}">
-                            <div class="term-title">{{term}} FACE 2</div>
-                        </div>
-                     </div>
-                     <!-- face 3 -->
-                     <div data-face="three" style="border: 1px solid grey; display:none;">
-                        <div class="term" data-termid="{{id}}" >
-                             <div class="term-title">{{term}} FACE 3</div>
-                        </div>
-                     </div>
                  </div>
              </li>
              {{/definitions}}
