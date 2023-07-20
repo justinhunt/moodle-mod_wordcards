@@ -75,28 +75,28 @@
        <div class="df_fl">
           <ul class="definition_flashcards_ul">
              {{#definitions}}
-             <li class="flip-card">
-                <div class="wc-faces flip-card-inner">
-                      <!-- front face -->
-                     <div class="flip-card-front" data-face="term">
+             <li>
+                <div class="wc-faces">
+                      <!-- face 1 -->
+                     <div data-face="term" style="border: 1px solid grey; ">
                         <div class="term" data-termid="{{id}}">
                             <div class="term-title">{{term}}</div>
                              {{#model_sentence}}
                                <div class="term-modelsentence">
-                                  <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
+                                  <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
                                </div>
                              {{/model_sentence}}
                         </div>
                      </div>
                     <!-- back face -->
-                    <div class="flip-card-back" data-face="details">
+                    <div data-face="details" style="display:none;">
                         <div class="row">
                            <div class="col-md-12">
                               <div class="term-wrapper {{#image}}add_wraper_handle_im{{/image}} {{^image}}add_wraper_handle{{/image}}">
                                  <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
                                     <div class="term-header">
                                         {{>mod_wordcards/my_words_button}}
-                                       <div class="term-title">{{term}} <i  data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i></div>
+                                       <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i></div>
                                        <div class="term-body">
                                            {{{definition}}}
                                        </div>
