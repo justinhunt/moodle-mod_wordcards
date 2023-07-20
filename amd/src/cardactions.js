@@ -6,7 +6,8 @@
  */
 define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish'], function($, ajax, str,log, youglish) {
     const SELECTOR = {
-        CARD: '.definition_flashcards .wc-faces',
+        CARDCONTAINER: '.flip-card',
+        CARD: '.definition_flashcards .wc-faces.flip-card-inner',
         FRONTFACE: '[data-face="term"]',
         BACKFACE: '[data-face="details"]',
         YOUGLISH_HOLDER: '.term-video',
@@ -16,7 +17,9 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
 
 
     const EVENT = {
-        CLICK: 'click'
+        CLICK: 'click',
+        HOVERIN: 'mouseover',
+        HOVEROUT: 'mouseout'
     }
 
 
@@ -57,18 +60,30 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
 
 
     const initButtonListeners = function() {
-        $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
+        $(SELECTOR.CARDCONTAINER).on(EVENT.HOVERIN, function(e) {
+            console.log("Card flips");
+            $(SELECTOR.CARD).css("transform", "rotateY(180deg)");
+        });
 
+        $(SELECTOR.CARDCONTAINER).on(EVENT.HOVEROUT, function(e) {
+            console.log("Card flips");
+            $(SELECTOR.CARD).css("transform", "rotateY(0deg)");
+        });
+
+        $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
+            console.log("Card clicked");
             const currTar = $(e.currentTarget);
             const faceback = currTar.find(SELECTOR.BACKFACE);
             const facefront = currTar.find(SELECTOR.FRONTFACE);
             if(faceback.is(":visible")){
-                faceback.hide();
-                facefront.show();
+                /*faceback.hide();
+                facefront.show();*/
+                console.log("hello from Wordcards");
                 clearYouGlish(faceback);
             }else if(facefront.is(":visible")){
-                facefront.hide();
-                faceback.show();
+                /*facefront.hide();
+                faceback.show();*/
+                console.log("hi from Wordcards");
             }
         });
 
