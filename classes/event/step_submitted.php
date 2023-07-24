@@ -85,7 +85,7 @@ class step_submitted extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' has submitted step '".$this->other['stepindex']."' the attempt with id '$this->objectid' for the " .
+        return "The user with id '$this->userid' has submitted step '".$this->other['stepindex']."' the attempt with id '$this->objectid' for the " .
             "wordcards with course module id '$this->contextinstanceid'.";
     }
 
