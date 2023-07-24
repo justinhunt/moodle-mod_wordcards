@@ -375,3 +375,5 @@ $string['animations']="Animations";
 $string['animations_details']="Transitions between item subtypes are animated. If fancy animation causes trouble, choose plain.";
 $string['anim_fancy']="Fancy animation";
 $string['anim_plain']="Plain animation";
+$string['eventwordcardsstepsubmitted'] = 'Wordcards step submitted';
+$string['eventwordcardsattemptsubmitted'] = 'Wordcards attempt submitted';

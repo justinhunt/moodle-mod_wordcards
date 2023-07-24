@@ -716,14 +716,22 @@ class mod_wordcards_module {
             $DB->update_record(constants::M_ATTEMPTSTABLE, $record);
         } else {
             $record->timecreated = time();
-            $DB->insert_record(constants::M_ATTEMPTSTABLE, $record);
+            $record->id = $DB->insert_record(constants::M_ATTEMPTSTABLE, $record);
+            //lazy, just fetch back the record so we have all the fields, and later triggered events have all they need
+            $record = $DB->get_record(constants::M_ATTEMPTSTABLE, ['id' => $record->id]);
         }
+        //raise step submitted event
+        \mod_wordcards\event\step_submitted::create_from_attempt($record, $this->context, $state)->trigger();
 
         // The user finished the activity, notify the completion API.
-        if ($state == self::STATE_END && $this->is_completion_enabled()) {
-            $completion = new completion_info($this->get_course());
-            if ($completion->is_enabled($this->get_cm())) {
-                $completion->update_state($this->get_cm(), COMPLETION_COMPLETE);
+        if ($state == self::STATE_END){
+            //raise attempt submitted event
+            \mod_wordcards\event\attempt_submitted::create_from_attempt($record, $this->context)->trigger();
+            if($this->is_completion_enabled()){
+                $completion = new completion_info($this->get_course());
+                if ($completion->is_enabled($this->get_cm())) {
+                    $completion->update_state($this->get_cm(), COMPLETION_COMPLETE);
+                }
             }
         }
     }
