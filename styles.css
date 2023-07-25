@@ -1,10 +1,20 @@
 /* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
 .flip-card {
     background-color: transparent;
-    width: 300px;
-    height: 200px;
-    border: 1px solid #f1f1f1;
+    width: 240px;
+    height: 320px;
     perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    cursor: pointer;
+  }
+
+  .show-back-side {
+    transform: rotateY(180deg);
+  }
+
+  .testing-event-click {
+    height: 40px;
+    width: 40px;
+    background-color: #9c282e;
   }
   
   /* This container is needed to position the front and back side */
@@ -15,7 +25,6 @@
     text-align: center;
     transition: transform 0.8s;
     transform-style: preserve-3d;
-    border: 1px solid tomato;
   }
   
   /* Do an horizontal flip when you move the mouse over the flip box container */
@@ -36,15 +45,21 @@
   
   /* Style the front side (fallback if image is missing) */
   .flip-card-front {
-    background-color: #008000;
-    color: black;
+    border-radius: 4px;
+    background: #FFF;
+    box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
+    color: #604EB1;
+    font-size: 22px;
   }
   
   /* Style the back side */
   .flip-card-back {
     background-color: #7e0ef6;
-    color: white;
+    color: black;
     transform: rotateY(180deg);
+    border-radius: 4px;
+    background: #FFF;
+    box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
   }
 
 
@@ -54,7 +69,9 @@
 
 .path-mod-wordcards .terms {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Each term is defined by a .term-wrapper. */
@@ -975,8 +992,13 @@
 }
 
 ul.definition_flashcards_ul {
-   /*border: 2px solid #546f1f; */
-    padding: 8px;
+    /*border: 2px solid #546f1f; */
+    /*padding: 8px; */
+    display: flex;
+    align-content: center;
+    justify-items: center;
+    margin: 0;
+    padding: 0;
 }
 .df_fl_control button:focus {
     outline: unset !important;
@@ -999,7 +1021,11 @@ ul.definition_flashcards_ul {
 
  .df_fl{
    width: 100%;
-   margin: 0 auto;
+   display: flex;
+   background-image: url([[pix:mod_wordcards|slider-bckg]]);
+   justify-content: center;
+   align-items: center;
+   background-size: 60% 100%;
    }
 }
 

@@ -80,12 +80,16 @@
                       <!-- front face -->
                      <div class="flip-card-front" data-face="term">
                         <div class="term" data-termid="{{id}}">
-                            <div class="term-title">{{term}}</div>
-                             {{#model_sentence}}
-                               <div class="term-modelsentence">
-                                  <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
-                               </div>
-                             {{/model_sentence}}
+                           <div class="term-title">{{term}}</div>
+                           <i id="card-audio" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                           {{#image}}
+                              <div class="term-image">
+                                 <img src="{{image}}" class="flash_img" alt=""/>
+                              </div>
+                           {{/image}}
+                           <!--div class="testing-event-click">
+                                  
+                           </div-->
                         </div>
                      </div>
                     <!-- back face -->
@@ -96,19 +100,14 @@
                                  <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
                                     <div class="term-header">
                                         {{>mod_wordcards/my_words_button}}
-                                       <div class="term-title">{{term}} <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i></div>
+                                       
                                        <div class="term-body">
                                            {{{definition}}}
                                        </div>
                                     </div>
-                                    {{#image}}
-                                       <div class="term-image">
-                                          <img src="{{image}}" class="flash_img" alt=""/>
-                                       </div>
-                                    {{/image}}
-                                       <div class="term-video">
-                                           {{>mod_wordcards/youglish}}
-                                       </div>
+                                    <div class="term-video">
+                                          {{>mod_wordcards/youglish}}
+                                    </div>
                                  </div>
                               </div>
                            </div>

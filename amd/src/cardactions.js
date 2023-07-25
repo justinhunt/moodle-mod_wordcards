@@ -13,6 +13,7 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
         YOUGLISH_HOLDER: '.term-video',
         YOUGLISH_WIDGET: '#mod_wordcardsyouglish-widget',
         YOUGLISH_PLACEHOLDER: '.youglish-placeholder',
+        TESTING: '.testing-event-click'
     }
 
 
@@ -60,33 +61,51 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
 
 
     const initButtonListeners = function() {
-        $(SELECTOR.CARDCONTAINER).on(EVENT.HOVERIN, function(e) {
+        
+        $(SELECTOR.CARDCONTAINER).on(EVENT.CLICK, function(e) {
             console.log("Card flips");
-            $(SELECTOR.CARD).css("transform", "rotateY(180deg)");
-        });
-
-        $(SELECTOR.CARDCONTAINER).on(EVENT.HOVEROUT, function(e) {
-            console.log("Card flips");
-            $(SELECTOR.CARD).css("transform", "rotateY(0deg)");
-        });
-
-        $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
-            console.log("Card clicked");
             const currTar = $(e.currentTarget);
+            const actualTar = currTar.children();
+            console.log(actualTar);
+            if (actualTar.hasClass("show-back-side")) {
+                actualTar.removeClass("show-back-side");
+            } else {
+                actualTar.addClass("show-back-side")
+            }
+            //actualTar.addClass("show-back-side");
+            //actualTar.css("transform", "rotateY(180deg)");
+        });
+       /*
+        $("#card-audio").on(EVENT.CLICK, function(e) {
+            e.stopPropagation();
+            $(SELECTOR.CARDCONTAINER).css("pointer-events","none");
+
+            console.log("Audio sounds");
+        });
+        */
+
+/*
+        $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
+            const currTar = $(e.currentTarget);
+            const cardContainer = currTar.find(SELECTOR.CARD);
+            currTar.css("transform", "rotateY(180deg)");
+            console.log(cardContainer);
             const faceback = currTar.find(SELECTOR.BACKFACE);
             const facefront = currTar.find(SELECTOR.FRONTFACE);
+            
+
             if(faceback.is(":visible")){
-                /*faceback.hide();
-                facefront.show();*/
+                faceback.hide();
+                facefront.show();
                 console.log("hello from Wordcards");
                 clearYouGlish(faceback);
             }else if(facefront.is(":visible")){
-                /*facefront.hide();
-                faceback.show();*/
+                facefront.hide();
+                faceback.show();
                 console.log("hi from Wordcards");
             }
         });
-
+*/
         $(SELECTOR.YOUGLISH_PLACEHOLDER).on(EVENT.CLICK, function(e) {
             e.stopPropagation();
             const currTar = $(e.currentTarget);
