@@ -27,12 +27,57 @@
     transform-style: preserve-3d;
   }
   
-  /* Do an horizontal flip when you move the mouse over the flip box container */
-    /*
-    .flip-card:hover .flip-card-inner {
-        transform: rotateY(180deg);
+    .slide-is-leaving {
+        animation-name: slideIsLeavingAnimation;
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
     }
-    */
+
+    @keyframes slideIsLeavingAnimation {
+        from {
+            transform: translate(100px);
+            opacity: 1;
+        }
+        to {
+            transform: translate(-200px);
+            opacity: 0;
+        }
+    }
+
+    .slide-is-coming {
+        animation-name: slideIsComingAnimation;
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes slideIsComingAnimation {
+        0% {
+            transform: translate(200px);
+            opacity: 0;
+        }
+        50% {
+            transform: translate(200px);
+            opacity: 0;
+        }
+        100% {
+            transform: translate(-100px);
+            opacity: 1;
+        }
+    }
+
+    .slide-is-hidden {
+        display: none;
+    }
+
+    .slide-is-visible {
+        display: block;
+    }
+
+  .flip-card.launch-slider-transition {
+    transform: translateX(-200px);
+    opacity: 0;
+    transition: transform ease-in-out 1s, ease-in-out 1s;
+  }
   
   /* Position the front and back side */
   .flip-card-front, .flip-card-back {
@@ -970,6 +1015,7 @@
  .definition_flashcards_ul li {
    list-style: none;
    }
+   /*
    .df_fl{
    width: 60%;
    margin: 0 auto;
@@ -978,6 +1024,7 @@
    width: 60%;
    margin: 0 auto;
    }	
+   */
    .df_fl_control a {
    font-size: 35px;
    color: #e2510c;

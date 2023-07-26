@@ -31,12 +31,14 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 			var eg = $(".event_grid");
 
 			var totalcards = $('.definition_flashcards_ul li').length;
-			$(".definition_flashcards_ul li:gt(0)").hide();
+			$(".definition_flashcards_ul li:gt(0)").addClass('slide-is-hidden');
             //set the first card as is_current
-            $(".definition_flashcards_ul li:first").addClass('is-current');
+            $(".definition_flashcards_ul li:first").addClass('is-current slide-is-visible');
 			set_progress_info(1,totalcards);
 
-			ef.click(function (d) {
+			
+      /*
+      ef.click(function (d) {
 				d.preventDefault();
 				$('.definition_flashcards').fadeIn();
 				$('.definition_grid').fadeOut();
@@ -50,16 +52,30 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 				eg.addClass('btn-primary').removeClass('btn-outline-primary')
 				ef.removeClass('btn-primary').addClass('btn-outline-primary')
 			});
+      */
 
 
 
 			$('#Next').click(function () {
+
+
+
 				var cr_index = $(".is-current").index() + 1;
-                if(cr_index > (totalcards-1)){cr_index=0;}
-				$('.definition_flashcards_ul li').slideUp(300);
-                $('.definition_flashcards_ul li').removeClass("is-current");
-                $('.definition_flashcards_ul li:eq(' + cr_index + ')').addClass("is-current");
-				$('.definition_flashcards_ul li:eq(' + cr_index + ')').slideDown(300);
+        if(cr_index > (totalcards-1)){cr_index=0;}
+        
+        $('.definition_flashcards_ul li').addClass("slide-is-leaving"); 
+        function afterLeaving() {
+          $('.definition_flashcards_ul li').removeClass("is-current slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
+        }
+
+        $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible slide-is-coming");			
+        function afterComing() {
+          $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden slide-is-coming").addClass("slide-is-visible is-current");
+        }
+
+        setTimeout(afterLeaving, 1000);
+        setTimeout(afterComing, 1000);
+				//$('.definition_flashcards_ul li:eq(' + cr_index + ')').css({"display":"block"});
 
 				//var curr_level_card = $('.curr_level_card').html();
 				//$('.curr_level_card').html(parseInt(curr_level_card) + 1);
