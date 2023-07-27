@@ -1,9 +1,9 @@
-/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+/* The flip card container */
 .flip-card {
     background-color: transparent;
     width: 240px;
     height: 320px;
-    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+    perspective: 1000px;
     cursor: pointer;
   }
 
@@ -11,12 +11,6 @@
     transform: rotateY(180deg);
   }
 
-  .testing-event-click {
-    height: 40px;
-    width: 40px;
-    background-color: #9c282e;
-  }
-  
   /* This container is needed to position the front and back side */
   .flip-card-inner {
     position: relative;
@@ -27,13 +21,13 @@
     transform-style: preserve-3d;
   }
   
-    .slide-is-leaving {
-        animation-name: slideIsLeavingAnimation;
-        animation-duration: 1s;
+    .next-slide-is-leaving {
+        animation-name: nextSlideIsLeavingAnimation;
+        animation-duration: .5s;
         animation-timing-function: ease-in-out;
     }
 
-    @keyframes slideIsLeavingAnimation {
+    @keyframes nextSlideIsLeavingAnimation {
         from {
             transform: translate(100px);
             opacity: 1;
@@ -44,13 +38,52 @@
         }
     }
 
-    .slide-is-coming {
-        animation-name: slideIsComingAnimation;
-        animation-duration: 1s;
+    .next-slide-is-coming {
+        animation-name: nextSlideIsComingAnimation;
+        animation-duration: .5s;
         animation-timing-function: ease-in-out;
     }
 
-    @keyframes slideIsComingAnimation {
+    @keyframes nextSlideIsComingAnimation {
+        0% {
+            transform: translate(200px);
+            opacity: 0;
+        }
+        50% {
+            transform: translate(200px);
+            opacity: 0;
+        }
+        100% {
+            transform: translate(-100px);
+            opacity: 1;
+        }
+    }
+
+
+    .prev-slide-is-leaving {
+        animation-name: prevSlideIsLeavingAnimation;
+        animation-duration: .5s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes prevSlideIsLeavingAnimation {
+        from {
+            transform: translate(100px);
+            opacity: 1;
+        }
+        to {
+            transform: translate(-200px);
+            opacity: 0;
+        }
+    }
+
+    .prev-slide-is-coming {
+        animation-name: prevSlideIsComingAnimation;
+        animation-duration: .5s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes prevSlideIsComingAnimation {
         0% {
             transform: translate(200px);
             opacity: 0;
@@ -73,12 +106,25 @@
         display: block;
     }
 
-  .flip-card.launch-slider-transition {
-    transform: translateX(-200px);
-    opacity: 0;
-    transition: transform ease-in-out 1s, ease-in-out 1s;
-  }
-  
+    /*
+    .flip-card.launch-slider-transition {
+        transform: translateX(-200px);
+        opacity: 0;
+        transition: transform ease-in-out 1s, ease-in-out 1s;
+    }
+    */
+
+#card-audio {
+    content: " ";
+    height: 48px;
+    width: 48px;
+    background-color: antiquewhite;
+}
+#card-audio.fa-volume-up:before {
+    display: none;
+}
+
+
   /* Position the front and back side */
   .flip-card-front, .flip-card-back {
     position: absolute;
@@ -95,6 +141,10 @@
     box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
     color: #604EB1;
     font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
   }
   
   /* Style the back side */
@@ -117,6 +167,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 /* Each term is defined by a .term-wrapper. */
@@ -146,9 +197,9 @@
 
 /* Another term div, in case the wrapper wasn't enough. */
 
-.path-mod-wordcards .term {
+.path-mod-wordcards .flip-card .term {
     display: block;
-    padding: 5px;
+    margin-top: 36px;
 }
 
 /* The term header, where the title and tick will be. */
@@ -1012,39 +1063,80 @@
   /* margin: 4em auto; */
   font-size: 16px;
 }
- .definition_flashcards_ul li {
+ 
+.definition_flashcards_ul li {
    list-style: none;
-   }
-   /*
-   .df_fl{
-   width: 60%;
-   margin: 0 auto;
-   }
-   .df_fl_control{
-   width: 60%;
-   margin: 0 auto;
-   }	
-   */
-   .df_fl_control a {
-   font-size: 35px;
-   color: #e2510c;
-   cursor: pointer;
-   }
-   .df_fl_control button {
-    border: unset !important;
-    background-color: unset;
 }
-.df_fl_control .fa {
-    font-size: 30px;
+   
+.df_fl_control{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 42%;
+}	
+   
+.df_fl_control a {
+    font-size: 35px;
+    color: #e2510c;
+    cursor: pointer;
 }
 
-ul.definition_flashcards_ul {
-    /*border: 2px solid #546f1f; */
-    /*padding: 8px; */
+
+.df_fl_control button#Prev {
+    height: 32px;
+    width: 32px;
+    background-image: url([[pix:mod_wordcards|arrow-left]]);
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #DADBEC;
+    border-radius: 100%;
     display: flex;
     align-content: center;
     justify-items: center;
-    margin: 0;
+}
+
+.df_fl_control button#Next {
+    height: 32px;
+    width: 32px;
+    background-image: url([[pix:mod_wordcards|arrow-right]]);
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #DADBEC;
+    border-radius: 100%;
+    display: flex;
+    align-content: center;
+    justify-items: center;
+}
+
+.df_fl_control button#Prev:hover,
+.df_fl_control button#Next:hover {
+    background-color: #f7f8fe;
+}
+
+.wc_cardsprogress {
+    width: 48px;
+    height: 24px;
+    border-radius: 3px;
+    border: 1px solid #D8DCFA;
+    color: #494B6D;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}
+
+ul.definition_flashcards_ul {
+    display: flex;
+    align-content: center;
+    justify-items: center;
+    margin-top: -48px;
     padding: 0;
 }
 .df_fl_control button:focus {
@@ -1067,12 +1159,16 @@ ul.definition_flashcards_ul {
 @media only screen and (max-width: 750px) {
 
  .df_fl{
-   width: 100%;
-   display: flex;
-   background-image: url([[pix:mod_wordcards|slider-bckg]]);
-   justify-content: center;
-   align-items: center;
-   background-size: 60% 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-image: url([[pix:mod_wordcards|slider-bckg]]);
+    background-repeat: no-repeat;
+    background-size: cover;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 36px;
+    margin-top: 72px;
    }
 }
 
@@ -1118,6 +1214,12 @@ ul.definition_flashcards_ul {
     margin: 20px;
     padding: 10px;
 }
+
+a.wordcards-my-words-action {
+    position: absolute;  
+    right: 0;  
+}
+
 a.wordcards-my-words-action.btn-outline-primary i.fa-check,
 a.wordcards-my-words-action.disabled i.fa-check {
     /*If the btn-outline-primary class is applied so the button is in the "Add" state (show plus icon only). */
@@ -1128,6 +1230,17 @@ a.wordcards-my-words-action.disabled i.fa-plus {
     /*In this case the btn-outline-primary class is applied so the button is in the "Remove" state (show check icon only). */
     display: none;
 }
+
+
+#my-words .fa-plus::before {
+    content: "" !important;
+    background-color: aliceblue;
+    height: 12px;
+    width: 12px;
+    display: block;
+}
+
+
 a.wordcards-my-words-action i.fa-spinner {
     display: none;
 }

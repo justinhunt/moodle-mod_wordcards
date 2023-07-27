@@ -68,10 +68,12 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
                             buttons.addClass(CLASS.BTN_IN_MY_WORDS);
                             buttons.removeClass(CLASS.BTN_NOT_IN_MY_WORDS);
                             buttons.attr('title', stringStore[1]);
+                            //buttons.attr('id', 'my-words');
                         } else {
                             buttons.removeClass(CLASS.BTN_IN_MY_WORDS);
                             buttons.addClass(CLASS.BTN_NOT_IN_MY_WORDS);
                             buttons.attr('title', stringStore[0]);
+                            //buttons.attr('id', 'my-words');
                         }
                     }
                 }).fail(function() {

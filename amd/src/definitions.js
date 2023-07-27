@@ -57,49 +57,60 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 
 
 			$('#Next').click(function () {
-
-
-
 				var cr_index = $(".is-current").index() + 1;
         if(cr_index > (totalcards-1)){cr_index=0;}
         
-        $('.definition_flashcards_ul li').addClass("slide-is-leaving"); 
+        $('.definition_flashcards_ul li').addClass("next-slide-is-leaving"); 
         function afterLeaving() {
-          $('.definition_flashcards_ul li').removeClass("is-current slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
+          $('.definition_flashcards_ul li').removeClass("is-current next-slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
         }
 
-        $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible slide-is-coming");			
+        $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible next-slide-is-coming");			
         function afterComing() {
-          $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden slide-is-coming").addClass("slide-is-visible is-current");
+          $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden next-slide-is-coming").addClass("slide-is-visible is-current");
         }
 
-        setTimeout(afterLeaving, 1000);
-        setTimeout(afterComing, 1000);
-				//$('.definition_flashcards_ul li:eq(' + cr_index + ')').css({"display":"block"});
-
-				//var curr_level_card = $('.curr_level_card').html();
-				//$('.curr_level_card').html(parseInt(curr_level_card) + 1);
+        setTimeout(afterLeaving, 500);
+        setTimeout(afterComing, 500);
 
 				set_progress_info(cr_index + 1,totalcards);
 
+        if (cr_index + 1 === totalcards) {
+          $('#Next').css({"pointer-events" : "none", "opacity" : "0.5"})
+        } else {
+          $('#Next').css({"pointer-events" : "auto", "opacity" : "1"})
+        }
+        
 			});
 
 			$('#Prev').click(function () {
 				var cr_index = $(".is-current").index() - 1;
-                if(cr_index <0){cr_index=(totalcards-1);}
-				$('.definition_flashcards_ul li').slideUp(300);
-                $('.definition_flashcards_ul li').removeClass("is-current");
-                $('.definition_flashcards_ul li:eq(' + cr_index + ')').addClass("is-current");
-				$('.definition_flashcards_ul li:eq(' + cr_index + ')').slideDown(300);
+        if(cr_index <0){cr_index=(totalcards-1);}
+				$('.definition_flashcards_ul li').addClass("prev-slide-is-leaving"); 
+        function afterLeaving() {
+          $('.definition_flashcards_ul li').removeClass("is-current prev-slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
+        }
+         
+				$('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible prev-slide-is-coming");			
+        function afterComing() {
+          $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden prev-slide-is-coming").addClass("slide-is-visible is-current");
+        }
+
 				var curr_level_card = $('.curr_level_card').html();
 				$('.curr_level_card').html(parseInt(curr_level_card) - 1);
 				set_progress_info(cr_index + 1 ,totalcards);
 
+        setTimeout(afterLeaving, 500);
+        setTimeout(afterComing, 500);
+
 			});
+
+
 
 			function set_progress_info(index,total) {
 				$(".definition_flashcards .wc_cardsprogress").text(index + ' / ' + total);
 			}
+
 
 			/* flashcards code end */
       var container = $('#definitions-page-' + opts['widgetid']),
