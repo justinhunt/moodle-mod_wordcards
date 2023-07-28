@@ -46,32 +46,6 @@
         </span>
 </div-->
 
-<div id="definitions-page-{{uniqid}}" class="definitions-container">
-    <div class="mt-3">
-    <div class="terms clearfix definition_grid">
-       {{#definitions}}
-       <div class="term-wrapper">
-          <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
-             <div class="term-header">
-                 {{>mod_wordcards/my_words_button}}
-                <div class="term-title">
-                    {{term}}
-                    <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
-                </div>
-                {{#model_sentence}}
-                <div class="term-modelsentence">
-                   <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
-                </div>
-                {{/model_sentence}}
-             </div>
-             <div class="term-body">
-                {{{definition}}}
-             </div>
-          </div>
-
-       </div>
-       {{/definitions}}
-    </div>
     <div class="terms clearfix definition_flashcards">
       <!--start --->
       <div class="df_fl">
@@ -103,7 +77,7 @@
                         <div class="term-title">
                            {{{definition}}}
                         </div>
-                        <div class="blackbox"></div>
+                        <!--div class="blackbox"></div-->
                         <div class="term-video">
                            {{>mod_wordcards/youglish}}
                         </div>
@@ -118,6 +92,34 @@
 
           <!--end --->
        </div>
+
+       <div id="definitions-page-{{uniqid}}" class="definitions-container">
+    <div class="mt-3">
+    <div class="terms clearfix definition_grid">
+       {{#definitions}}
+       <div class="term-wrapper">
+          <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
+             <div class="term-header">
+                 {{>mod_wordcards/my_words_button}}
+                <div class="term-title">
+                    {{term}}
+                    <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                </div>
+                {{#model_sentence}}
+                <div class="term-modelsentence">
+                   <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
+                </div>
+                {{/model_sentence}}
+             </div>
+             <div class="term-body">
+                {{{definition}}}
+             </div>
+          </div>
+
+       </div>
+       {{/definitions}}
+    </div>
+    
        <div class="page-footer">
         {{#isstepsmode}}
            {{#nexturl}}

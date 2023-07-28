@@ -202,6 +202,8 @@
 
 
 
+
+
 /* Global div encapsulating all the terms. */
 
 .path-mod-wordcards .terms {
@@ -244,6 +246,10 @@
     height: 388px;
     overflow: hidden;
     padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 
@@ -272,6 +278,37 @@
     margin-bottom: 18px;
 }
 
+.youglish-placeholder {
+    height: 42px;
+    width: 42px;
+    border-radius: 100%;
+    background: linear-gradient(157deg, #9582F2 0%, #6F58DE 100%);
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.15);
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.youglish-placeholder:hover {
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0);
+}
+
+.youglish-placeholder:active {
+    background: linear-gradient(157deg, #7c69da 0%, #624ec6 100%);
+}
+
+.youglish-placeholder:after {
+    content: "";
+    display: block;
+    height: 14px;
+    width: 12px;
+    background-image: url([[pix:mod_wordcards|video-icon]]);
+    background-size: 12px 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 14px;
+    left: 16px;
+}
 
 .path-mod-wordcards .flip-card .term-image {
     padding: 12px;
