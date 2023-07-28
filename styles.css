@@ -2,7 +2,7 @@
 .flip-card {
     background-color: transparent;
     width: 240px;
-    height: 320px;
+    height: 420px;
     perspective: 1000px;
     cursor: pointer;
   }
@@ -116,15 +116,53 @@
 
 #card-audio {
     content: " ";
-    height: 48px;
-    width: 48px;
-    background-color: antiquewhite;
+    height: 42px;
+    width: 42px;
+    border-radius: 100%;
+    background: linear-gradient(157deg, #9582F2 0%, #6F58DE 100%);
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.15);
+    position: relative;
+    margin-top: 18px;
+    margin-bottom: 18px;
 }
+
+#card-audio:hover {
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0);
+}
+
+#card-audio:active {
+    background: linear-gradient(157deg, #7c69da 0%, #624ec6 100%);
+}
+
+#card-audio.fa-volume-up:after {
+    content: "";
+    display: block;
+    height: 16px;
+    width: 18px;
+    background-image: url([[pix:mod_wordcards|audio-icon]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 13px;
+    left: 12px;
+}
+
 #card-audio.fa-volume-up:before {
     display: none;
 }
 
-
+/*
+.blackbox {
+    width: 100vw;
+    height: 3000px;
+    background-color: green;
+    position: fixed;
+    top: -1500px;
+    left: 0px;
+    overflow:hidden;
+}
+*/
   /* Position the front and back side */
   .flip-card-front, .flip-card-back {
     position: absolute;
@@ -139,22 +177,26 @@
     border-radius: 4px;
     background: #FFF;
     box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
-    color: #604EB1;
+    color: #362A6C;
     font-size: 22px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   }
   
   /* Style the back side */
   .flip-card-back {
-    background-color: #7e0ef6;
-    color: black;
     transform: rotateY(180deg);
     border-radius: 4px;
     background: #FFF;
     box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
+    color: #362A6C;
+    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
 
@@ -197,10 +239,13 @@
 
 /* Another term div, in case the wrapper wasn't enough. */
 
-.path-mod-wordcards .flip-card .term {
+.path-mod-wordcards .flip-card-back .term {
     display: block;
-    margin-top: 36px;
+    height: 388px;
+    overflow: hidden;
+    padding: 12px;
 }
+
 
 /* The term header, where the title and tick will be. */
 
@@ -221,6 +266,18 @@
 .dir-rtl.path-mod-wordcards .term-header .term-title {
     padding-right: 0;
     padding-left: 25px;
+}
+
+.path-mod-wordcards .flip-card .flip-card-back .term-title {
+    margin-bottom: 18px;
+}
+
+
+.path-mod-wordcards .flip-card .term-image {
+    padding: 12px;
+    height: 160px;
+    width: 100%;
+    margin-bottom: -42px;
 }
 
 /* The term tick, absolutely positioned to the right. */
@@ -1172,10 +1229,10 @@ ul.definition_flashcards_ul {
    }
 }
 
-.flash_img{
-    max-width: 100%;
-	width: auto;
-	height: 180px;
+.flash_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .wordcards_importintro {
@@ -1217,7 +1274,15 @@ ul.definition_flashcards_ul {
 
 a.wordcards-my-words-action {
     position: absolute;  
-    right: 0;  
+    top: -1px;  
+}
+
+.flip-card-front a.wordcards-my-words-action {
+    right: 0;
+}
+
+.flip-card-back a.wordcards-my-words-action {
+    left: 0;
 }
 
 a.wordcards-my-words-action.btn-outline-primary i.fa-check,
@@ -1232,12 +1297,66 @@ a.wordcards-my-words-action.disabled i.fa-plus {
 }
 
 
+#my-words .fa-plus {
+    position: relative;
+}
+
 #my-words .fa-plus::before {
-    content: "" !important;
-    background-color: aliceblue;
-    height: 12px;
-    width: 12px;
+    content: "";
+    height: 27px;
+    width: 19px;
     display: block;
+    background-image: url([[pix:mod_wordcards|bookmark-empty]]);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#my-words .fa-plus::after {
+    content: "";
+    height: 10px;
+    width: 9px;
+    display: block;
+    background-image: url([[pix:mod_wordcards|add-word-plus]]);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 7px;
+    left: 5px;
+}
+
+#my-words:hover .fa-plus::after {
+    transform: scale(1.2);
+}
+
+#my-words .fa-check::before {
+    content: "";
+    height: 27px;
+    width: 19px;
+    display: block;
+    background-image: url([[pix:mod_wordcards|bookmark-filled]]);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#my-words.btn-primary,
+#my-words.btn-outline-primary {
+    color: transparent;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+#my-words.btn-outline-primary:focus, 
+#my-words.btn-outline-primary.focus,
+#my-words.btn-primary:focus, 
+#my-words.btn-primary.focus {
+    outline: 0.2rem solid transparent;
+    box-shadow: inset 0 0 0 2px transparent;
+}
+
+#my-words.btn-outline-primary:not(:disabled):not(.disabled):active, 
+#my-words.btn-outline-primary:not(:disabled):not(.disabled).active, 
+.show>#my-words.btn-outline-primary.dropdown-toggle {
+    background-color: transparent;
 }
 
 
