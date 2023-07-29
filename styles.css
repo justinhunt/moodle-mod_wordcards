@@ -223,15 +223,52 @@
 
 /* Each term is defined by a .term-wrapper. */
 
+.path-mod-wordcards .definitions-container a.wordcards-my-words-action {
+    position: relative;  
+    top: -2px;  
+    align-self: flex-start;
+}
+
+.path-mod-wordcards .definitions-container .term-title {
+    color: #281D5B;
+    font-size: 18px;
+}
+
+.path-mod-wordcards .definitions-container .text_to_html {
+    color: #281D5B;
+    font-size: 18px;
+    font-style: italic;
+}
+
 .path-mod-wordcards .definitions-container .terms {
     width: 100%;
     box-shadow: 0px 2px 14px 0px rgba(14, 18, 61, 0.22);
+}
+
+.path-mod-wordcards .definitions-container .term {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .term {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
 }
 
 .path-mod-wordcards .term-wrapper {
     width: 100%;
     padding: 6px;
     border-bottom: 1px solid #D7D9FF;
+}
+
+.path-mod-wordcards .definitions-container .term-image {
+    height: 80px;
+    width: 140px;
 }
 
 .path-mod-wordcards .term-wrapper:last-of-type {
@@ -326,7 +363,7 @@
     left: 16px;
 }
 
-.path-mod-wordcards .flip-card .term-image {
+.path-mod-wordcards .definition_flashcards .flip-card .term-image {
     padding: 12px;
     height: 180px;
     width: 100%;
@@ -334,7 +371,7 @@
 }
 
 @media screen and (min-width:600px) {
-    .path-mod-wordcards .flip-card .term-image {
+    .path-mod-wordcards .definition_flashcards .flip-card .term-image {
         height: 250px;
         margin-top: -100px;
     }
@@ -1372,7 +1409,7 @@ ul.definition_flashcards_ul {
     padding: 10px;
 }
 
-a.wordcards-my-words-action {
+.definition_flashcards a.wordcards-my-words-action {
     position: absolute;  
     top: -2px;  
 }
