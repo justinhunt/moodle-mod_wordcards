@@ -223,16 +223,21 @@
 
 /* Each term is defined by a .term-wrapper. */
 
+.path-mod-wordcards .definitions-container .terms {
+    width: 100%;
+    box-shadow: 0px 2px 14px 0px rgba(14, 18, 61, 0.22);
+}
+
 .path-mod-wordcards .term-wrapper {
-    width: 32%;
-    display: inline-block;
-    border: 1px solid #ccc;
-    margin-right: 1%;
-    border-radius: 3px;
-    margin-bottom: 10px;
-    float: left;
-    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    padding: 5px;
+    width: 100%;
+    padding: 6px;
+    border-bottom: 1px solid #D7D9FF;
+}
+
+.path-mod-wordcards .term-wrapper:last-of-type {
+    width: 100%;
+    padding: 6px;
+    border-bottom: none;
 }
 
 /* Remove the margin at the end of each 'row'. */
@@ -593,7 +598,7 @@
 }
 
 /* Simple media query to reduce the number of terms to two on the width. */
-
+/*
 @media (max-width: 767px) {
     .path-mod-wordcards .term-wrapper {
         width: 49%;
@@ -616,9 +621,9 @@
         margin-left: 0;
     }
 }
-
+*/
 /* Simple media query for terms to go full width. */
-
+/*
 @media (max-width: 500px) {
     .path-mod-wordcards .term-wrapper {
         width: 100%;
@@ -626,6 +631,7 @@
         margin-left: 0;
     }
 }
+*/
 
 /* ACTIVITY CSS */
 

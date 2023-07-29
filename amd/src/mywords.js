@@ -45,6 +45,7 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
 
     const initButtonListeners = function() {
         $(SELECTOR.DATA_SET).on(EVENT.CLICK, function(e) {
+            e.stopPropagation();
             // There are two buttons for each term (one in grid and one in flashcards).
             const currTar = $(e.currentTarget);
             const buttons = $(SELECTOR.MY_WORDS_ACTION_BTN_ID + currTar.attr(DATA.TERM_ID));
@@ -68,12 +69,10 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
                             buttons.addClass(CLASS.BTN_IN_MY_WORDS);
                             buttons.removeClass(CLASS.BTN_NOT_IN_MY_WORDS);
                             buttons.attr('title', stringStore[1]);
-                            //buttons.attr('id', 'my-words');
                         } else {
                             buttons.removeClass(CLASS.BTN_IN_MY_WORDS);
                             buttons.addClass(CLASS.BTN_NOT_IN_MY_WORDS);
                             buttons.attr('title', stringStore[0]);
-                            //buttons.attr('id', 'my-words');
                         }
                     }
                 }).fail(function() {

@@ -63,24 +63,22 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
     const initButtonListeners = function() {
         
         $(SELECTOR.CARDCONTAINER).on(EVENT.CLICK, function(e) {
-            console.log("Card flips");
             const currTar = $(e.currentTarget);
             const actualTar = currTar.children();
-            console.log(actualTar);
             if (actualTar.hasClass("show-back-side")) {
                 actualTar.removeClass("show-back-side");
             } else {
                 actualTar.addClass("show-back-side")
             }
-            //actualTar.addClass("show-back-side");
-            //actualTar.css("transform", "rotateY(180deg)");
         });
+
        /*
         $("#card-audio").on(EVENT.CLICK, function(e) {
-            e.stopPropagation();
-            $(SELECTOR.CARDCONTAINER).css("pointer-events","none");
+            
+            //$(SELECTOR.CARDCONTAINER).css("pointer-events","none");
 
             console.log("Audio sounds");
+            e.stopPropagation();
         });
         */
 

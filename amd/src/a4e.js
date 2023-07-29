@@ -36,19 +36,11 @@ define([
             theplayer[0].play();
         };
 
-
-        $("#card-audio").on('mouseover'),function(e) {
-          e.stopPropagation();
-          console.log("poniter events none");
-          $(".flip-card").css("pointer-events","none");
-          
-        }
-
         //register button event handler to play audio
-        $(document.body).on('click','.a4e-flashcards-container .play-tts, span.model-sentence-play-tts,.definitions-container .definition-play-tts ',function(e) {
+        
+        $('.a4e-flashcards-container .play-tts, span.model-sentence-play-tts, #card-audio').on('click', function(e) {
             e.stopPropagation();
             
-            console.log("playing");
             var theplayer = $("#poodll_vocabplayer");
 
             //if we have model audio use that, otherwise TTS
