@@ -5,7 +5,20 @@
     height: 420px;
     perspective: 1000px;
     cursor: pointer;
-  }
+}
+
+@media screen and (min-width:400px) {
+    .flip-card {
+        width: 280px;
+    }
+}
+
+@media screen and (min-width:600px) {
+    .flip-card {
+        width: 380px;
+        height: 500px;
+    }
+}
 
   .show-back-side {
     transform: rotateY(180deg);
@@ -106,13 +119,7 @@
         display: block;
     }
 
-    /*
-    .flip-card.launch-slider-transition {
-        transform: translateX(-200px);
-        opacity: 0;
-        transition: transform ease-in-out 1s, ease-in-out 1s;
-    }
-    */
+
 
 #card-audio {
     content: " ";
@@ -152,17 +159,7 @@
     display: none;
 }
 
-/*
-.blackbox {
-    width: 100vw;
-    height: 3000px;
-    background-color: green;
-    position: fixed;
-    top: -1500px;
-    left: 0px;
-    overflow:hidden;
-}
-*/
+
   /* Position the front and back side */
   .flip-card-front, .flip-card-back {
     position: absolute;
@@ -182,7 +179,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+  }
+
+  @media screen and (min-width:480px) {
+    .flip-card-front {
+        font-size: 26px;
+    }
   }
   
   /* Style the back side */
@@ -199,7 +202,11 @@
     justify-content: center;
   }
 
-
+  @media screen and (min-width:480px) {
+    .flip-card-back {
+        font-size: 26px;
+    }
+  }
 
 
 
@@ -274,9 +281,13 @@
     padding-left: 25px;
 }
 
+
+
+
 .path-mod-wordcards .flip-card .flip-card-back .term-title {
     margin-bottom: 18px;
 }
+
 
 .youglish-placeholder {
     height: 42px;
@@ -312,9 +323,16 @@
 
 .path-mod-wordcards .flip-card .term-image {
     padding: 12px;
-    height: 160px;
+    height: 180px;
     width: 100%;
-    margin-bottom: -42px;
+    margin-top: -48px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .flip-card .term-image {
+        height: 250px;
+        margin-top: -100px;
+    }
 }
 
 /* The term tick, absolutely positioned to the right. */
@@ -1162,14 +1180,20 @@
    list-style: none;
 }
    
-.df_fl_control{
+.df_fl_control {
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
     position: absolute;
     top: 42%;
-}	
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control{
+        top: 50%;
+    }
+}
    
 .df_fl_control a {
     font-size: 35px;
@@ -1192,6 +1216,15 @@
     justify-items: center;
 }
 
+@media screen and (min-width:480px) {
+    .df_fl_control button#Prev {
+        height: 48px;
+        width: 48px;
+        margin-left: 32px;
+        background-size: 22px 18px;
+    }
+}
+
 .df_fl_control button#Next {
     height: 32px;
     width: 32px;
@@ -1204,6 +1237,15 @@
     display: flex;
     align-content: center;
     justify-items: center;
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control button#Next {
+        height: 48px;
+        width: 48px;
+        margin-right: 32px;
+        background-size: 22px 18px;
+    }
 }
 
 .df_fl_control button#Prev:hover,
@@ -1224,6 +1266,16 @@
     justify-content: center;
     align-items: center;
     margin-top: 12px;
+}
+
+@media screen and (min-width:480px) {
+    .wc_cardsprogress {
+        width: 78px;
+        height: 40px;
+        font-size: 14px;
+        border-radius: 6px;
+        margin-top: 18px;
+    }
 }
 
 ul.definition_flashcards_ul {
@@ -1250,9 +1302,9 @@ ul.definition_flashcards_ul {
 .add_wraper_handle{
 	width: 100% !important;
 }
-@media only screen and (max-width: 750px) {
 
- .df_fl{
+
+.df_fl {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -1263,7 +1315,12 @@ ul.definition_flashcards_ul {
     align-items: center;
     padding-bottom: 36px;
     margin-top: 72px;
-   }
+}
+
+@media screen and (min-width:480px) {
+    .df_fl {
+        border-radius: 30px;
+    }
 }
 
 .flash_img {
@@ -1311,15 +1368,15 @@ ul.definition_flashcards_ul {
 
 a.wordcards-my-words-action {
     position: absolute;  
-    top: -1px;  
+    top: -2px;  
 }
 
 .flip-card-front a.wordcards-my-words-action {
-    right: 0;
+    right: 5px;
 }
 
 .flip-card-back a.wordcards-my-words-action {
-    left: 0;
+    left: 5px;
 }
 
 a.wordcards-my-words-action.btn-outline-primary i.fa-check,
@@ -1348,6 +1405,14 @@ a.wordcards-my-words-action.disabled i.fa-plus {
     background-repeat: no-repeat;
 }
 
+@media screen and (min-width:600px) {
+    #my-words .fa-plus::before {
+        height: 34px;
+        width: 24px;
+    }
+}
+
+
 #my-words .fa-plus::after {
     content: "";
     height: 10px;
@@ -1359,6 +1424,15 @@ a.wordcards-my-words-action.disabled i.fa-plus {
     position: absolute;
     top: 7px;
     left: 5px;
+}
+
+@media screen and (min-width:600px) {
+    #my-words .fa-plus::after {
+        height: 12px;
+        width: 11px;
+        top: 9px;
+        left: 6px;
+    }
 }
 
 #my-words:hover .fa-plus::after {
@@ -1373,6 +1447,13 @@ a.wordcards-my-words-action.disabled i.fa-plus {
     background-image: url([[pix:mod_wordcards|bookmark-filled]]);
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+@media screen and (min-width:600px) {
+    #my-words .fa-check::before {
+        height: 34px;
+        width: 24px;
+    }
 }
 
 #my-words.btn-primary,
@@ -1451,4 +1532,14 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 
 .mod_wordcards_activity_header .pull-right, .term-wrapper .pull-right {
     float: right;
+}
+
+/* Limit page width following Moodle4 default heading sizes */
+
+#page-mod-wordcards-view #page-content /*, 
+ #page-mod-solo-view #page-content,  */
+/* #page-mod-solo-reports .mod_solo_report_card */ {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
