@@ -223,22 +223,83 @@
 
 /* Each term is defined by a .term-wrapper. */
 
+.path-mod-wordcards .definitions-container {
+    margin-top: 48px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container {
+        margin-top: 72px;
+    }
+}
+
 .path-mod-wordcards .definitions-container a.wordcards-my-words-action {
-    position: relative;  
-    top: -2px;  
-    align-self: flex-start;
+    position: absolute;  
+    top: -8px;
+    left: 11px;
+    align-self: flex-end;
+}
+
+@media screen and (min-width:480px) {
+    .path-mod-wordcards .definitions-container a.wordcards-my-words-action {
+        right: auto;
+        left: -5px;
+        align-self: flex-start;
+    }
 }
 
 .path-mod-wordcards .definitions-container .term-title {
     color: #281D5B;
     font-size: 18px;
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+    margin-left: 12px;
+}
+
+#audio-small {
+    height: 28px;
+    width: 28px;
+    border-radius: 100%;
+    position: relative;
+    border: 1px solid #BABFE7;
+    background-color: #fff;
+    margin-left: 12px;
+}
+
+#audio-small:hover {
+    background-color: #eff1fd;
+}
+
+#audio-small:active {
+    background-color: #c7cbf0;
+}
+
+#audio-small.fa-volume-up:after {
+    content: "";
+    display: block;
+    height: 16px;
+    width: 18px;
+    background-image: url([[pix:mod_wordcards|audio-icon-mini]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+#audio-small.fa-volume-up:before {
+    display: none;
 }
 
 .path-mod-wordcards .definitions-container .text_to_html {
     color: #281D5B;
     font-size: 18px;
     font-style: italic;
+    margin-top: 18px;
 }
+
 
 .path-mod-wordcards .definitions-container .terms {
     width: 100%;
@@ -251,9 +312,10 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    min-height: 80px;
 }
 
-@media screen and (min-width:600px) {
+@media screen and (min-width:480px) {
     .path-mod-wordcards .definitions-container .term {
         flex-direction: row;
         justify-content: flex-start;
@@ -269,12 +331,71 @@
 .path-mod-wordcards .definitions-container .term-image {
     height: 80px;
     width: 140px;
+    margin-top: 18px;
 }
 
 .path-mod-wordcards .term-wrapper:last-of-type {
     width: 100%;
     padding: 6px;
     border-bottom: none;
+}
+
+.learned-status {
+    color: #5560F3;
+    font-size: 12px;
+    font-style: italic;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-end;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    margin-right: 19px;
+}
+
+@media screen and (min-width:480px) {
+    .learned-status {
+        display: flex;
+        flex-direction: column;
+        align-self: auto;
+        max-width: 64px;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-right: 0;
+    }
+}
+
+.learned-status-icon {
+    height: 18px;
+    width: 18px;
+    background-size: 18px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: 6px;
+}
+
+@media screen and (min-width:480px) {
+    .learned-status-icon {
+        margin-left: 0;
+    }
+}
+
+.learned-status.learned .learned-status-icon {
+    background-image: url([[pix:mod_wordcards|learned-icon]]);
+}
+
+.learned-status.not-learned .learned-status-icon {
+    background-image: url([[pix:mod_wordcards|not-learned-icon]]);
+}
+
+.learned-status.learned .learned-status-text::before {
+    content: "Learned";
+}
+
+.learned-status.not-learned .learned-status-text::before {
+    content: "Not yet learned";
 }
 
 /* Remove the margin at the end of each 'row'. */
@@ -1370,6 +1491,7 @@ ul.definition_flashcards_ul {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 6px;
 }
 
 .wordcards_importintro {
@@ -1449,7 +1571,7 @@ a.wordcards-my-words-action.disabled i.fa-plus {
 }
 
 @media screen and (min-width:600px) {
-    #my-words .fa-plus::before {
+    .definition_flashcards #my-words .fa-plus::before {
         height: 34px;
         width: 24px;
     }
@@ -1470,7 +1592,7 @@ a.wordcards-my-words-action.disabled i.fa-plus {
 }
 
 @media screen and (min-width:600px) {
-    #my-words .fa-plus::after {
+    .definition_flashcards #my-words .fa-plus::after {
         height: 12px;
         width: 11px;
         top: 9px;
@@ -1493,7 +1615,7 @@ a.wordcards-my-words-action.disabled i.fa-plus {
 }
 
 @media screen and (min-width:600px) {
-    #my-words .fa-check::before {
+    .definition_flashcards #my-words .fa-check::before {
         height: 34px;
         width: 24px;
     }
@@ -1586,3 +1708,4 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
     margin-left: auto;
     margin-right: auto;
 }
+

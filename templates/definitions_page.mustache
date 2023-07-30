@@ -91,7 +91,7 @@
                   {{>mod_wordcards/my_words_button}}
                   <div class="term-title">
                      {{term}}
-                     <i style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                     <i id="audio-small" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
                   </div>
                   {{#model_sentence}}
                   <div class="term-modelsentence">
@@ -104,6 +104,10 @@
                         <img src="{{image}}" class="flash_img" alt=""/>
                      </div>
                   {{/image}}
+                  <div class="learned-status">
+                     <div class="learned-status-icon"></div>
+                     <div class="learned-status-text"></div>   
+                  </div>
             </div>
          </div>
          {{/definitions}}
@@ -121,3 +125,24 @@
        </div>
     </div>
 </div>
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery'],function($) {
+            const learnedStatus = $(".learned-status");
+            const learnedStatusIcon = $(".learned-status-icon");
+            const learnedStatusText = $(".learned-status-text");
+            
+            learnedStatus.each(function(  ) {
+               let randomNumber = Math.floor(Math.random() * 10);
+
+               if (randomNumber >=4) {
+                  $(this).addClass("learned");
+               } else {
+                  $(this).addClass("not-learned");
+               }
+               
+            });
+            
+        });
+    {{/js}}
+{{/element.frozen}}
