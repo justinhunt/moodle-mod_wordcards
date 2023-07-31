@@ -240,7 +240,7 @@
     align-self: flex-end;
 }
 
-@media screen and (min-width:480px) {
+@media screen and (min-width:600px) {
     .path-mod-wordcards .definitions-container a.wordcards-my-words-action {
         right: auto;
         left: -5px;
@@ -251,10 +251,18 @@
 .path-mod-wordcards .definitions-container .term-title {
     color: #281D5B;
     font-size: 18px;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    margin-top: 24px;
+    margin-top: 48px;
     margin-left: 12px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .term-title {
+        margin-top: 0; 
+        margin-left: 36px;
+    }
 }
 
 #audio-small {
@@ -300,6 +308,15 @@
     margin-top: 18px;
 }
 
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .text_to_html {
+        border-left: 1px solid #D7D9FF;
+        padding-left: 12px;
+        margin-left: 12px;
+        margin-top: 0;
+    }
+}
+
 
 .path-mod-wordcards .definitions-container .terms {
     width: 100%;
@@ -315,7 +332,7 @@
     min-height: 80px;
 }
 
-@media screen and (min-width:480px) {
+@media screen and (min-width:600px) {
     .path-mod-wordcards .definitions-container .term {
         flex-direction: row;
         justify-content: flex-start;
@@ -334,6 +351,13 @@
     margin-top: 18px;
 }
 
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .term-image {
+        margin-top: 0;
+        padding-left: 24px;
+    }
+}
+
 .path-mod-wordcards .term-wrapper:last-of-type {
     width: 100%;
     padding: 6px;
@@ -346,7 +370,7 @@
     font-style: italic;
     display: flex;
     flex-direction: row-reverse;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     align-self: flex-end;
     margin-top: 18px;
@@ -354,16 +378,19 @@
     margin-right: 19px;
 }
 
-@media screen and (min-width:480px) {
+@media screen and (min-width:600px) {
     .learned-status {
         display: flex;
         flex-direction: column;
         align-self: auto;
-        max-width: 64px;
+        max-width: 46px;
         text-align: center;
+        align-items: center;
         margin-top: 0;
         margin-bottom: 0;
-        margin-right: 0;
+        margin-right: 12px;
+        margin-left: auto;
+        line-height: 1.2;
     }
 }
 
@@ -376,7 +403,7 @@
     margin-left: 6px;
 }
 
-@media screen and (min-width:480px) {
+@media screen and (min-width:600px) {
     .learned-status-icon {
         margin-left: 0;
     }
@@ -388,6 +415,11 @@
 
 .learned-status.not-learned .learned-status-icon {
     background-image: url([[pix:mod_wordcards|not-learned-icon]]);
+}
+
+.learned-status .learned-status-text::before {
+    margin-top: 6px;
+    display: block;
 }
 
 .learned-status.learned .learned-status-text::before {
