@@ -10,7 +10,7 @@
 </div>
 }}
 {{{optshtml}}}
-<div class="mt-3 mod_wordcards_activity_header">
+<div class="mod_wordcards_activity_header">
     {{#freemodeavailable}}
         {{^isfreemode}}
             <a href="{{config.wwwroot}}/mod/wordcards/freemode.php?id={{cmid}}" class="btn btn-outline-primary pull-right">
@@ -82,8 +82,8 @@
           <!--end --->
        </div>
 
+      <h3 class="list-of-words">{{#str}}listofwords, mod_wordcards{{/str}}</h3>
       <div id="definitions-page-{{uniqid}}" class="definitions-container">
-      <div class="mt-3">
       <div class="terms clearfix definition_grid">
          {{#definitions}}
          <div class="term-wrapper">
@@ -112,21 +112,20 @@
          </div>
          {{/definitions}}
       </div>
-
-       <div class="page-footer">
-        {{#isstepsmode}}
-           {{#nexturl}}
-               <button data-href="{{{nexturl}}}" data-action="{{nextaction}}" class="definitions-next btn btn-primary btn-lg btn-block">
-                   {{nextbuttontext}}  <i class="fa fa-arrow-right"></i>
-               </button>
-           {{/nexturl}}
-        {{/isstepsmode}}
-          <audio id="poodll_vocabplayer"></audio>
-       </div>
-    </div>
+      <div class="page-footer">
+      {{#isstepsmode}}
+         {{#nexturl}}
+            <button data-href="{{{nexturl}}}" data-action="{{nextaction}}" class="definitions-next btn">
+                  {{nextbuttontext}}  <i class="fa fa-arrow-right"></i>
+            </button>
+         {{/nexturl}}
+      {{/isstepsmode}}
+         <audio id="poodll_vocabplayer"></audio>
+      </div>
 </div>
 {{^element.frozen}}
     {{#js}}
+      /* This is dummy code which only intent is to generate a fake set of 'learned' values for demostration purposes. It simply assigns randomly the value of 'learned' or 'not learned' just to show  visual styles for both states. It's not meant to be used anymore once the 'learned' status logic is implemented. */
         require(['jquery'],function($) {
             const learnedStatus = $(".learned-status");
             const learnedStatusIcon = $(".learned-status-icon");
@@ -136,8 +135,10 @@
                let randomNumber = Math.floor(Math.random() * 10);
 
                if (randomNumber >=4) {
+                  // We assign the visual class "learned".
                   $(this).addClass("learned");
                } else {
+                  // We assign the visual class "not-learned".
                   $(this).addClass("not-learned");
                }
                

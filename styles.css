@@ -209,7 +209,23 @@
   }
 
 
+/* Definitions container subsection */
 
+h3.list-of-words {
+    font-size: 19px;
+    margin-bottom: 36px;
+    color: #2D225D;
+    margin-top: 64px;
+}
+
+@media screen and (min-width:600px) {
+    h3.list-of-words {
+        font-size: 24px;
+        margin-bottom: 64px;
+        color: #2D225D;
+        margin-top: 96px;
+    }
+}
 
 /* Global div encapsulating all the terms. */
 
@@ -224,12 +240,12 @@
 /* Each term is defined by a .term-wrapper. */
 
 .path-mod-wordcards .definitions-container {
-    margin-top: 48px;
+    margin-top: 36px;
 }
 
 @media screen and (min-width:600px) {
     .path-mod-wordcards .definitions-container {
-        margin-top: 72px;
+        margin-top: 48px;
     }
 }
 
@@ -321,7 +337,15 @@
 .path-mod-wordcards .definitions-container .terms {
     width: 100%;
     box-shadow: 0px 2px 14px 0px rgba(14, 18, 61, 0.22);
+    margin-bottom: 64px;
 }
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .terms {
+        margin-bottom: 72px;
+    }
+}
+
 
 .path-mod-wordcards .definitions-container .term {
     display: flex;
@@ -505,15 +529,15 @@
 .youglish-placeholder:after {
     content: "";
     display: block;
-    height: 14px;
-    width: 12px;
+    height: 12px;
+    width: 20px;
     background-image: url([[pix:mod_wordcards|video-icon]]);
-    background-size: 12px 14px;
+    background-size: 20px 12px;
     background-position: center;
     background-repeat: no-repeat;
     position: absolute;
-    top: 14px;
-    left: 16px;
+    top: 15px;
+    left: 12px;
 }
 
 .path-mod-wordcards .definition_flashcards .flip-card .term-image {
@@ -581,6 +605,9 @@
 
 .path-mod-wordcards .page-footer {
     margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .path-mod-wordcards .page-footer p {
@@ -1165,24 +1192,32 @@
     margin: 10px;
 }
 
-.mod_wordcards_instructions {
-    text-align: center;
-    margin: auto;
-    font-style: italic;
-    padding: 5px;
-    max-width: 650px;
-}
+
 
 .mod_wordcards_activity_header {
-    text-align: center;
-    margin: auto;
-    padding: 10px;
-    border: 1px solid darkgray;
-    border-radius: 5px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    color: #281D5B;
+}
+
+@media screen and (min-width:600px) {
+    .mod_wordcards_activity_header {
+        margin-top: 48px;
+        margin-bottom: 48px;
+    }
 }
 
 .mod_wordcards_activity_header h3 {
-    text-align: center;
+    font-size: 19px;
+    margin-bottom: 24px;
+    color: #2D225D;
+}
+
+@media screen and (min-width:600px) {
+    .mod_wordcards_activity_header h3 {
+        font-size: 22px;
+        margin-bottom: 36px;
+    }
 }
 
 /* PROGRESS DOTS */
@@ -1741,3 +1776,31 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
     margin-right: auto;
 }
 
+button.definitions-next.btn {
+    font-weight: 500;
+    font-size: 16px;
+    color: #FFF;
+    background: #6F58DE;
+    box-shadow: 0 4px 14px rgba(0,0,0,.15);
+    border-radius: 6px;
+    padding: 14px 36px;
+}
+
+
+button.definitions-next.btn .fa-arrow-right:after {
+    content: "";
+    display: block;
+    height: 16px;
+    width: 18px;
+    background-image: url([[pix:mod_wordcards|next-page-arrow]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    top: 3px;
+    left: 4px;
+}
+
+button.definitions-next.btn .fa-arrow-right:before {
+    display: none;
+}
