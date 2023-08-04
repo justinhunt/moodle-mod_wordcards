@@ -106,9 +106,38 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
 */
         $(SELECTOR.YOUGLISH_PLACEHOLDER).on(EVENT.CLICK, function(e) {
             e.stopPropagation();
+            if($(".term-image")){
+                $(".term-image").css('display', 'none');
+                $(".retrieve-image").css('display', 'block');
+            }
             const currTar = $(e.currentTarget);
             loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
+
+            if($(".retrieve-image")){
+                $(".retrieve-image").on(EVENT.CLICK, function(e) {
+                    e.stopPropagation();
+                    $(".term-video").css('display', 'none');
+                    $(".retrieve-image").css('display', 'none');
+                    $(".term-image").css('display', 'block');
+                    $(".retrieve-video").css('display', 'block');
+                })
+            }
+
+            if($(".retrieve-video")){
+                $(".retrieve-video").on(EVENT.CLICK, function(e) {
+                    e.stopPropagation();
+                    $(".term-video").css('display', 'block');
+                    $(".retrieve-image").css('display', 'block');
+                    $(".term-image").css('display', 'none');
+                    $(".retrieve-video").css('display', 'none');
+                    const currTar = $(e.currentTarget);
+                    loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
+                })
+            }
         });
+
+
+     
     };
 
     return {

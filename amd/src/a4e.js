@@ -40,7 +40,7 @@ define([
         
         $('.a4e-flashcards-container .play-tts, span.model-sentence-play-tts, #card-audio').on('click', function(e) {
             e.stopPropagation();
-            
+
             var theplayer = $("#poodll_vocabplayer");
 
             //if we have model audio use that, otherwise TTS

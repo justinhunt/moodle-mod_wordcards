@@ -544,13 +544,11 @@ h3.list-of-words {
     padding: 12px;
     height: 180px;
     width: 100%;
-    margin-top: -48px;
 }
 
 @media screen and (min-width:600px) {
     .path-mod-wordcards .definition_flashcards .flip-card .term-image {
         height: 250px;
-        margin-top: -100px;
     }
 }
 
@@ -1470,6 +1468,15 @@ h3.list-of-words {
     justify-items: center;
 }
 
+.df_fl_control button#Prev.isFirst {
+    visibility: hidden;
+}
+
+.df_fl_control button#Next.isLast {
+    background-image: url([[pix:mod_wordcards|restart-carousel-icon]]);
+    background-color: transparent;
+}
+
 @media screen and (min-width:480px) {
     .df_fl_control button#Next {
         height: 48px;
@@ -1802,5 +1809,38 @@ button.definitions-next.btn .fa-arrow-right:after {
 }
 
 button.definitions-next.btn .fa-arrow-right:before {
+    display: none;
+}
+
+.retrieval-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 232px;
+}
+
+.retrieve-image {
+    height: 30px;
+    width: 38px;
+    background-image: url([[pix:mod_wordcards|retrieve-image-icon]]);
+    background-size: 30px 38px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: auto;
+}
+
+.retrieve-video {
+    height: 30px;
+    width: 38px;
+    background-image: url([[pix:mod_wordcards|retrieve-video-icon]]);
+    background-size: 30px 38px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: auto;
+}
+
+.retrieve-image.btn,
+.retrieve-video.btn {
     display: none;
 }

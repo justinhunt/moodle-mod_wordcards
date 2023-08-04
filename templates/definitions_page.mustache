@@ -40,7 +40,7 @@
       <!--start --->
       <div class="df_fl">
          <div class="df_fl_control" style="text-align: center;">
-             <button id="Prev"  style="float: left;" title="Prev"></button>
+             <button id="Prev" class="isFirst" style="float: left;" title="Prev"></button>
              <button id="Next" style="float: right;" title="Next"></button>
          </div>
          <ul class="definition_flashcards_ul">
@@ -54,11 +54,6 @@
                         <div class="term-title">{{term}}</div>
                         <i id="card-audio" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
                      </div>
-                     {{#image}}
-                        <div class="term-image">
-                           <img src="{{image}}" class="flash_img" alt=""/>
-                        </div>
-                     {{/image}}
                   </div>
                   <!-- back face -->
                   <div class="flip-card-back" data-face="details">
@@ -67,9 +62,18 @@
                         <div class="term-title">
                            {{{definition}}}
                         </div>
+                        <div class="retrieval-buttons">
+                           <button class="retrieve-image btn">
+                           <button class="retrieve-video btn">
+                        </div>
                         <div class="term-video">
                            {{>mod_wordcards/youglish}}
                         </div>
+                     {{#image}}
+                        <div class="term-image">
+                           <img src="{{image}}" class="flash_img" alt=""/>
+                        </div>
+                     {{/image}}
                      </div>
                   </div>
                </div>

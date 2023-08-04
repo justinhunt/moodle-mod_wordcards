@@ -75,13 +75,15 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 
 				set_progress_info(cr_index + 1,totalcards);
 
-        /* Temporary hack for demo purposes only - if user reaches last card in the carousel, the next button becomes nuanced and unresponsive to events. This shoud be implemented properly in the actual logic of the component. */
+        
+      
         if (cr_index + 1 === totalcards) {
-          $('#Next').css({"pointer-events" : "none", "opacity" : "0.5"})
-        } else {
-          $('#Next').css({"pointer-events" : "auto", "opacity" : "1"})
+          $('#Next').addClass("isLast");
         }
         
+        if (cr_index + 1 >= 1) {
+          $('#Prev').removeClass("isFirst");
+        }
 			});
 
 			$('#Prev').click(function () {
@@ -103,6 +105,10 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 
         setTimeout(afterLeaving, 500);
         setTimeout(afterComing, 500);
+
+        if (cr_index + 1 === 0) {
+          $('#Prev').addClass("isFirst");
+        }
 
 			});
 
