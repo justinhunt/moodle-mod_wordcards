@@ -1,8 +1,8 @@
 /* The flip card container */
 .flip-card {
     background-color: transparent;
-    width: 240px;
-    height: 420px;
+    width: 260px;
+    height: 480px;
     perspective: 1000px;
     cursor: pointer;
 }
@@ -470,7 +470,6 @@ h3.list-of-words {
 .path-mod-wordcards .flip-card-back .term {
     display: block;
     height: 388px;
-    overflow: hidden;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -502,11 +501,11 @@ h3.list-of-words {
 
 
 
-
+/*
 .path-mod-wordcards .flip-card .flip-card-back .term-title {
     margin-bottom: 18px;
 }
-
+*/
 
 .youglish-placeholder {
     height: 42px;
@@ -1475,6 +1474,15 @@ h3.list-of-words {
 .df_fl_control button#Next.isLast {
     background-image: url([[pix:mod_wordcards|restart-carousel-icon]]);
     background-color: transparent;
+    border-color: transparent;
+    border-radius: 8px;
+    background-size: 16px;
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control button#Next.isLast {
+        background-size: 22px;
+    }
 }
 
 @media screen and (min-width:480px) {
@@ -1818,13 +1826,21 @@ button.definitions-next.btn .fa-arrow-right:before {
     align-items: center;
     justify-content: space-between;
     width: 232px;
+    margin-bottom: 12px;
+    margin-top: 6px;
+}
+
+@media screen and (min-width:600px) {
+    .retrieval-buttons {
+        width: 356px;   
+    }
 }
 
 .retrieve-image {
     height: 30px;
     width: 38px;
     background-image: url([[pix:mod_wordcards|retrieve-image-icon]]);
-    background-size: 30px 38px;
+    background-size: 38px 30px;
     background-position: center;
     background-repeat: no-repeat;
     margin-left: auto;
@@ -1834,7 +1850,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     height: 30px;
     width: 38px;
     background-image: url([[pix:mod_wordcards|retrieve-video-icon]]);
-    background-size: 30px 38px;
+    background-size: 38px 30px;
     background-position: center;
     background-repeat: no-repeat;
     margin-left: auto;
@@ -1843,4 +1859,5 @@ button.definitions-next.btn .fa-arrow-right:before {
 .retrieve-image.btn,
 .retrieve-video.btn {
     display: none;
+    border-radius: 0;
 }
