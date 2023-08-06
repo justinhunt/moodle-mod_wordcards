@@ -53,6 +53,18 @@
                      <div class="term" data-termid="{{id}}">
                         <div class="term-title">{{term}}</div>
                         <i id="card-audio" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                        {{#model_sentence}}
+                           <div class="term-modelsentence">
+                              <h5>Model sentence</h5>
+                              <div class="term-modelsentence-container">
+                                 <span>{{model_sentence}}</span>
+                                 <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts term-modelsentence-small"  style="cursor:pointer;"></span>
+                              </div>
+                           </div>
+
+
+
+                        {{/model_sentence}}
                      </div>
                   </div>
                   <!-- back face -->
@@ -97,12 +109,14 @@
                      {{term}}
                      <i id="audio-small" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
                   </div>
+                  {{{definition}}}
                   {{#model_sentence}}
                   <div class="term-modelsentence">
-                     <span style="cursor:pointer;" data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts"> {{model_sentence}}</span>
+                     <span>{{model_sentence}}</span>
+                     <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts term-modelsentence-small" style="cursor:pointer;">
+                     </span>
                   </div>
                   {{/model_sentence}}
-                  {{{definition}}}
                   {{#image}}
                      <div class="term-image">
                         <img src="{{image}}" class="flash_img" alt=""/>
