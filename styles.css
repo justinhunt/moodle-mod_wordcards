@@ -34,13 +34,15 @@
     transform-style: preserve-3d;
   }
   
-    .next-slide-is-leaving {
-        animation-name: nextSlideIsLeavingAnimation;
+/* CSS flashcards animations */
+
+    .next-button-slide-is-leaving {
+        animation-name: nextButtonSlideIsLeavingAnimation;
         animation-duration: .5s;
         animation-timing-function: ease-in-out;
     }
 
-    @keyframes nextSlideIsLeavingAnimation {
+    @keyframes nextButtonSlideIsLeavingAnimation {
         from {
             transform: translate(100px);
             opacity: 1;
@@ -51,13 +53,13 @@
         }
     }
 
-    .next-slide-is-coming {
-        animation-name: nextSlideIsComingAnimation;
+    .next-button-slide-is-coming {
+        animation-name: nextButtonSlideIsComingAnimation;
         animation-duration: .5s;
         animation-timing-function: ease-in-out;
     }
 
-    @keyframes nextSlideIsComingAnimation {
+    @keyframes nextButtonSlideIsComingAnimation {
         0% {
             transform: translate(200px);
             opacity: 0;
@@ -73,40 +75,40 @@
     }
 
 
-    .prev-slide-is-leaving {
-        animation-name: prevSlideIsLeavingAnimation;
+    .prev-button-slide-is-leaving {
+        animation-name: prevButtonSlideIsLeavingAnimation;
         animation-duration: .5s;
         animation-timing-function: ease-in-out;
     }
 
-    @keyframes prevSlideIsLeavingAnimation {
+    @keyframes prevButtonSlideIsLeavingAnimation {
         from {
-            transform: translate(100px);
+            transform: translate(0px);
             opacity: 1;
         }
         to {
-            transform: translate(-200px);
+            transform: translate(200px);
             opacity: 0;
         }
     }
 
-    .prev-slide-is-coming {
-        animation-name: prevSlideIsComingAnimation;
+    .prev-button-slide-is-coming {
+        animation-name: prevButtonSlideIsComingAnimation;
         animation-duration: .5s;
         animation-timing-function: ease-in-out;
     }
 
-    @keyframes prevSlideIsComingAnimation {
+    @keyframes prevButtonSlideIsComingAnimation {
         0% {
-            transform: translate(200px);
+            transform: translate(-200px);
             opacity: 0;
         }
         50% {
-            transform: translate(200px);
+            transform: translate(-200px);
             opacity: 0;
         }
         100% {
-            transform: translate(-100px);
+            transform: translate(100px);
             opacity: 1;
         }
     }
@@ -119,7 +121,7 @@
         display: block;
     }
 
-
+/* /End CSS flashcards animations */
 
 #card-audio {
     content: " ";
