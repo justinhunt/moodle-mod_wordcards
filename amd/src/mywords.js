@@ -45,6 +45,7 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
 
     const initButtonListeners = function() {
         $(SELECTOR.DATA_SET).on(EVENT.CLICK, function(e) {
+            e.stopPropagation();
             // There are two buttons for each term (one in grid and one in flashcards).
             const currTar = $(e.currentTarget);
             const buttons = $(SELECTOR.MY_WORDS_ACTION_BTN_ID + currTar.attr(DATA.TERM_ID));
