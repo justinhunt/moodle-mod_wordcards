@@ -6,17 +6,21 @@
  */
 define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish'], function($, ajax, str,log, youglish) {
     const SELECTOR = {
-        CARD: '.definition_flashcards .wc-faces',
+        CARDCONTAINER: '.flip-card',
+        CARD: '.definition_flashcards .wc-faces.flip-card-inner',
         FRONTFACE: '[data-face="term"]',
         BACKFACE: '[data-face="details"]',
         YOUGLISH_HOLDER: '.term-video',
         YOUGLISH_WIDGET: '#mod_wordcardsyouglish-widget',
         YOUGLISH_PLACEHOLDER: '.youglish-placeholder',
+        TESTING: '.testing-event-click'
     }
 
 
     const EVENT = {
-        CLICK: 'click'
+        CLICK: 'click',
+        HOVERIN: 'mouseover',
+        HOVEROUT: 'mouseout'
     }
 
 
@@ -57,26 +61,83 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
 
 
     const initButtonListeners = function() {
-        $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
-
+        
+        $(SELECTOR.CARDCONTAINER).on(EVENT.CLICK, function(e) {
             const currTar = $(e.currentTarget);
+            const actualTar = currTar.children();
+            if (actualTar.hasClass("show-back-side")) {
+                actualTar.removeClass("show-back-side");
+            } else {
+                actualTar.addClass("show-back-side")
+            }
+        });
+
+       /*
+        $("#card-audio").on(EVENT.CLICK, function(e) {
+            
+            //$(SELECTOR.CARDCONTAINER).css("pointer-events","none");
+
+            console.log("Audio sounds");
+            e.stopPropagation();
+        });
+        */
+
+/*
+        $(SELECTOR.CARD).on(EVENT.CLICK, function(e) {
+            const currTar = $(e.currentTarget);
+            const cardContainer = currTar.find(SELECTOR.CARD);
+            currTar.css("transform", "rotateY(180deg)");
+            console.log(cardContainer);
             const faceback = currTar.find(SELECTOR.BACKFACE);
             const facefront = currTar.find(SELECTOR.FRONTFACE);
+            
+
             if(faceback.is(":visible")){
                 faceback.hide();
                 facefront.show();
+                console.log("hello from Wordcards");
                 clearYouGlish(faceback);
             }else if(facefront.is(":visible")){
                 facefront.hide();
                 faceback.show();
+                console.log("hi from Wordcards");
+            }
+        });
+*/
+        $(SELECTOR.YOUGLISH_PLACEHOLDER).on(EVENT.CLICK, function(e) {
+            e.stopPropagation();
+            if($(".term-image")){
+                $(".term-image").css('display', 'none');
+                $(".retrieve-image").css('display', 'block');
+            }
+            const currTar = $(e.currentTarget);
+            loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
+
+            if($(".retrieve-image")){
+                $(".retrieve-image").on(EVENT.CLICK, function(e) {
+                    e.stopPropagation();
+                    $(".term-video").css('display', 'none');
+                    $(".retrieve-image").css('display', 'none');
+                    $(".term-image").css('display', 'block');
+                    $(".retrieve-video").css('display', 'block');
+                })
+            }
+
+            if($(".retrieve-video")){
+                $(".retrieve-video").on(EVENT.CLICK, function(e) {
+                    e.stopPropagation();
+                    $(".term-video").css('display', 'block');
+                    $(".retrieve-image").css('display', 'block');
+                    $(".term-image").css('display', 'none');
+                    $(".retrieve-video").css('display', 'none');
+                    const currTar = $(e.currentTarget);
+                    loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
+                })
             }
         });
 
-        $(SELECTOR.YOUGLISH_PLACEHOLDER).on(EVENT.CLICK, function(e) {
-            e.stopPropagation();
-            const currTar = $(e.currentTarget);
-            loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
-        });
+
+     
     };
 
     return {
