@@ -18,6 +18,7 @@ const M_MODNAME='wordcards';
 const M_URL='/mod/wordcards';
 const M_CLASS='mod_wordcards';
 const M_TABLE='wordcards';
+const M_TERMSTABLE='wordcards_terms';
 const M_ATTEMPTSTABLE='wordcards_progress';
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingwordcards';
 

@@ -624,6 +624,57 @@ class utils{
         }
     }
 
+    public static function export_terms_to_csv($modid){
+        global $DB;
+        $terms = $DB->get_records(constants::M_TERMSTABLE,array('modid'=>$modid));
+
+        //echo header row
+        $name = 'wordcards_terms';
+        $quote = '"';
+        $delim = ",";//"\t";
+        $newline = "\r\n";
+
+        header("Content-Disposition: attachment; filename=$name.csv");
+        header("Content-Type: text/comma-separated-values");
+
+        //echo header
+        $head = array('term','ar','es','fr','th','vi','ja','ko','pt','ru','zh','zh_tw','id');
+        $heading = "";
+        foreach ($head as $headfield) {
+            $heading .= $quote . $headfield . $quote . $delim;
+        }
+        echo $heading . $newline;
+
+
+        //echo data rows
+        $quote = '"';
+        $delim = ",";//"\t";
+        $newline = "\r\n";
+        $handle = fopen('php://output', 'w+');
+
+        foreach($terms as $term){
+            $translations = json_decode($term->translations);
+            $rowarray=[];
+            $rowarray[]=$term->term;
+            $rowarray[]=isset($translations->ar)?$translations->ar:'';
+            $rowarray[]=isset($translations->es)?$translations->es:'';
+            $rowarray[]=isset($translations->fr)?$translations->fr:'';
+            $rowarray[]=isset($translations->th)?$translations->th:'';
+            $rowarray[]=isset($translations->vi)?$translations->vi:'';
+            $rowarray[]=isset($translations->ja)?$translations->ja:'';
+            $rowarray[]=isset($translations->ko)?$translations->ko:'';
+            $rowarray[]=isset($translations->pt)?$translations->pt:'';
+            $rowarray[]=isset($translations->rus)?$translations->rus:'';
+            $rowarray[]=isset($translations->zh)?$translations->zh:'';
+            $rowarray[]=isset($translations->zh_tw)?$translations->zh_tw:'';
+            $rowarray[]=isset($translations->id)?$translations->id:'';
+            fputcsv($handle, $rowarray,$delim,$quote);
+        }
+        fclose($handle);
+        //After file is created, die
+        die();
+    }
+
     //fetch the dictionary entries from cloud poodll
     public static function fetch_dictionary_entries($terms,$sourcelang, $targetlangs) {
         global $USER;
@@ -1316,7 +1367,7 @@ class utils{
         $insertdata->sourcedef = trim($sourcedef);
         $insertdata->model_sentence = trim($modelsentence);
         $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
-        $ret = $DB->insert_record('wordcards_terms', $insertdata);
+        $ret = $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
         if($ret && !empty($insertdata->model_sentence)){
             $DB->update_record('wordcards', array('id' => $modid, 'hashisold' => 1));
         }
@@ -1415,7 +1466,7 @@ class utils{
 
     public static function update_deflanguage($mod){
         global $DB;
-        $terms = $DB->get_records('wordcards_terms',array('modid'=>$mod->get_mod()->id));
+        $terms = $DB->get_records(constants::M_TERMSTABLE,array('modid'=>$mod->get_mod()->id));
         if(!$terms){return;}
         foreach($terms as $term){
             if(empty($term->translations)){continue;}
@@ -1438,7 +1489,7 @@ class utils{
                     //r and c db
                     $newdef = $translations->{$mod->get_mod()->deflanguage};
                 }
-                $DB->update_record('wordcards_terms', ['id'=>$term->id,'definition'=>$newdef]);
+                $DB->update_record(constants::M_TERMSTABLE, ['id'=>$term->id,'definition'=>$newdef]);
             }
         }
     }

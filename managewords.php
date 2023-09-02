@@ -56,7 +56,10 @@ if ($action == 'delete') {
     // Adding those parameters ensures that we confirm that the term belongs to the right module after submission.
     $formurl->param('action', 'edit');
     $formurl->param('termid', 'termid');
-    $term = $DB->get_record('wordcards_terms', ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
+    $term = $DB->get_record(constants::M_TERMSTABLE, ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
+}else if($action =='export') {
+    utils::export_terms_to_csv($modid);
+    exit;
 }
 
 $form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0,'ttslanguage'=>$mod->get_mod()->ttslanguage]);
