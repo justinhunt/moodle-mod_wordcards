@@ -66,6 +66,8 @@ class renderer extends \plugin_renderer_base {
         $config = get_config('mod_wordcards');
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
         $journeymode= $mod->get_mod()->journeymode; //get_config(constants::M_COMPONENT, 'journeymode');
+        //fetch the lang name and accent (if any) for youglish
+        $youglish = utils::get_youglish_langs($mod->get_mod()->ttslanguage);
 
         $data = [
             'uniqid'=> \html_writer::random_id('wordcards'),
@@ -78,6 +80,7 @@ class renderer extends \plugin_renderer_base {
             'isreattempt'=>$isreattempt,
             'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
+            'youglish'=>$youglish,
             'gotit' => get_string('gotit', 'mod_wordcards'),
             'loading' => get_string('loading', 'mod_wordcards'),
             'loadingurl' => $this->image_url('i/loading_small')->out(true),
@@ -232,6 +235,12 @@ class renderer extends \plugin_renderer_base {
                 $this->page->requires->js_call_amd("mod_wordcards/listenchoose", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/listenchoose_page', $data);
                 break;
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+                $this->page->requires->js_call_amd("mod_wordcards/spacegame", 'init', array($opts));
+                $activity_html = $this->render_from_template('mod_wordcards/spacegame_page', $data);
+                break;
+
             case \mod_wordcards_module::PRACTICETYPE_DICTATION:
             case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
             default:
@@ -300,6 +309,58 @@ class renderer extends \plugin_renderer_base {
         $data = [];
         return $this->render_from_template('mod_wordcards/pushrecorder', $data);
     }
+
+    /**
+     * Initialises the game and returns its HTML code
+     *
+     * @param stdClass $quizgame The quizgame to be added
+     * @param context $context The context
+     * @return string The HTML code of the game
+     */
+    public function spacegame_page(\mod_wordcards_module $mod, array $definitions, bool $isfreemode, $currentstep = ''){
+        global $PAGE,$USER;
+
+        //config
+        $config = get_config('mod_wordcards');
+
+        //get state
+        list($state) = $mod->get_state();
+
+        $widgetid = \html_writer::random_id();
+        $jsonstring=$this->make_json_string($definitions, $mod);
+        $opts_html = \html_writer::tag('input', '', array('id' => $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
+
+
+        if ($currentstep) {
+            $nextstep = $mod->get_next_step($currentstep);
+            $nexturl =  (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+        } else {
+            // In Freemode we will not have a next or current step, so we pass an empty next URL to JS.
+            $nexturl = '';
+        }
+
+        $token = utils::fetch_token($config->apiuser, $config->apisecret);
+
+        $opts=array('widgetid'=>$widgetid,
+            'dryRun'=> $mod->can_manage() && !$isfreemode, 'nexturl'=>$nexturl,
+            'token'=>$token,'owner'=>hash('md5',$USER->username),'modid'=>$mod->get_id(),
+            'isfreemode' => get_config(constants::M_COMPONENT, 'journeymode') == constants::MODE_FREE
+                && $PAGE->url->compare(new \moodle_url('/mod/wordcards/freemode.php'), URL_MATCH_BASE)
+        );
+
+        $this->page->requires->strings_for_js(array(
+            'score',
+            'emptyquiz',
+            'endofgame',
+            'spacetostart'
+        ), 'mod_wordcards');
+
+
+        $this->page->requires->js_call_amd('mod_wordcards/spacegame', 'init', array($opts));
+        $spacegame_html = $this->render_from_template('mod_wordcards/spacegame_page', []);
+        return $opts_html . $spacegame_html;
+    }
+
 
 
 

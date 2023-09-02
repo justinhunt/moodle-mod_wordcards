@@ -2002,4 +2002,32 @@ button.definitions-next.btn .fa-arrow-right:before {
 .definitions-container .term-modelsentence-small:active {
     background-color: #c7cbf0;
 }
-
+/*space game */
+.path-mod-wordcards div.fontloader {
+    visibility: hidden;
+    font-family: 'Audiowide', Sans;
+}
+.path-mod-wordcards #mod_wordcards_spacegame {
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+}
+.quizgame-scores {
+    text-align: center;
+}
+.floating-button-container {
+    background: #fff;
+    border: 0.5rem solid #fff;
+}
+.floating-game-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+}
+#page-mod-wordcards-view div[role="main"] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

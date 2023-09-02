@@ -51,7 +51,7 @@ if($config->enablesetuptab){
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
-$PAGE->requires->js_call_amd(constants::M_COMPONENT . "/cardactions", 'init', []);
+//$PAGE->requires->js_call_amd(constants::M_COMPONENT . "/cardactions", 'init', []);
 $PAGE->requires->css(new moodle_url('/mod/wordcards/freemode.css'));
 
 echo $renderer->header();

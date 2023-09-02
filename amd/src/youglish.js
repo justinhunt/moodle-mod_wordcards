@@ -80,10 +80,13 @@ define([
     },
 
 
-    load: function (term, element) {
+    load: function (lang,term,accent,element) {
       app.term=term;
       app.element=element;
 
+      if(!lang||lang==='false'){
+        return;
+      }
 
       log.debug('loading the term: '+ app.term);
       var thefunc = function () {
@@ -104,8 +107,12 @@ define([
             });
             // process the query
             $('#' + app.YG_ID).hide();
-            log.debug('fetching the term: '+ app.term);
-            app.widget.fetch(app.term);
+            log.debug('first fetch of the term: '+ app.term);
+            if(accent && accent!=='false') {
+              app.widget.fetch(app.term, lang, accent);
+            }else{
+              app.widget.fetch(app.term, lang);
+            }
       };
 
       if (typeof YG === 'undefined') {
@@ -116,8 +123,14 @@ define([
         log.debug('reusing the widget');
         $("#" + app.YG_ID).detach().appendTo(element);
         $('#' + app.YG_ID).hide();
-        log.debug('fetching the term: '+ app.term);
-        app.widget.fetch(app.term);
+        log.debug('close the previous widget');
+        app.widget.close();
+        log.debug('reuse fetch the term: '+ app.term);
+        if(accent && accent!=='false') {
+          app.widget.fetch(app.term, lang, accent);
+        }else{
+          app.widget.fetch(app.term, lang);
+        }
       }
     },
     clear: function () {

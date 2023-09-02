@@ -165,6 +165,7 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
     case mod_wordcards_module::PRACTICETYPE_DICTATION:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+    case mod_wordcards_module::PRACTICETYPE_SPACEGAME:
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
     case mod_wordcards_module::PRACTICETYPE_SCATTER:
         $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
@@ -174,6 +175,7 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+    case mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
     case mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
     default:
@@ -192,6 +194,10 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
         echo $renderer->a4e_page($mod, $practicetype, $definitions, false, $currentstep);
+        break;
+    case mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+    case mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+        echo $renderer->spacegame_page($mod, $definitions, false, $currentstep);
         break;
 
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:

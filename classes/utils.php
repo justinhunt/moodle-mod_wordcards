@@ -783,12 +783,14 @@ class utils{
           case \mod_wordcards_module::PRACTICETYPE_DICTATION:
           case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
           case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+          case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
               return get_string('practice',constants::M_COMPONENT) ;
           case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
           case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
           case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
           case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
           case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+          case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
               return get_string('review',constants::M_COMPONENT);
 
       }
@@ -829,6 +831,10 @@ class utils{
             case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
             case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
                 return 'fa-headphones';
+
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+                return 'fa-rocket';
 
             case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
             case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
@@ -874,6 +880,8 @@ class utils{
                 return get_string('title_speechcards', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
                 return get_string('title_listenchoose', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+                return get_string('title_spacegame', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
                 return get_string('title_matchselect_rev', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
@@ -884,6 +892,8 @@ class utils{
                 return get_string('title_speechcards_rev', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
                 return get_string('title_listenchoose_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+                return get_string('title_spacegame_rev', constants::M_COMPONENT);
         }
     }
 
@@ -894,7 +904,8 @@ class utils{
               \mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('title_matchtype', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('title_dictation', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', constants::M_COMPONENT),
-              \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE => get_string('title_listenchoose', constants::M_COMPONENT)
+              \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE => get_string('title_listenchoose', constants::M_COMPONENT),
+                \mod_wordcards_module::PRACTICETYPE_SPACEGAME => get_string('title_spacegame', constants::M_COMPONENT)
       ];
 
         $reviewoptions = [
@@ -902,7 +913,8 @@ class utils{
             \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV => get_string('title_matchtype_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_DICTATION_REV => get_string('title_dictation_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV => get_string('title_speechcards_rev', constants::M_COMPONENT),
-            \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV => get_string('title_listenchoose_rev', constants::M_COMPONENT)
+            \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV => get_string('title_listenchoose_rev', constants::M_COMPONENT),
+              \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV => get_string('title_spacegame_rev', constants::M_COMPONENT)
             ];
 
       if($wordpool===\mod_wordcards_module::WORDPOOL_LEARN){
@@ -1350,6 +1362,66 @@ class utils{
         }
         if(!$default_set){$langdefs[1]['selected']=true;}
         return $langdefs;
+    }
+
+    public static function get_youglish_langs($ttslang=''){
+
+            $langs= array(
+                constants::M_LANG_ARAE =>  ['lang'=>'Arabic','accent'=>'eg'],
+                constants::M_LANG_ARSA =>  ['lang'=>'Arabic','accent'=>'sa'],
+                constants::M_LANG_DEDE => ['lang'=>'German','accent'=>false],
+                constants::M_LANG_DECH => ['lang'=>'German','accent'=>false],
+                constants::M_LANG_DEAT => ['lang'=>'German','accent'=>false],
+                constants::M_LANG_ENUS =>  ['lang'=>'English','accent'=>'us'],
+                constants::M_LANG_ENGB => ['lang'=>'English','accent'=>'uk'],
+                constants::M_LANG_ENAU => ['lang'=>'English','accent'=>'aus'],
+                constants::M_LANG_ENIN =>  ['lang'=>'English','accent'=>'uk'],
+                constants::M_LANG_ENIE => ['lang'=>'English','accent'=>'ie'],
+                constants::M_LANG_ENWL =>  ['lang'=>'English','accent'=>'uk'],
+                constants::M_LANG_ENAB => ['lang'=>'English','accent'=>'sco'],
+                constants::M_LANG_ESUS => ['lang'=>'Spanish','accent'=>'la'],
+                constants::M_LANG_ESES => ['lang'=>'Spanish','accent'=>'es'],
+                constants::M_LANG_FAIR => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_FILPH => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_FRCA =>  ['lang'=>'French','accent'=>'qc'],
+                constants::M_LANG_FRFR => ['lang'=>'French','accent'=>'fr'],
+                constants::M_LANG_HIIN => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_HEIL => ['lang'=>'Hebrew','accent'=>false],
+                constants::M_LANG_IDID => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_ITIT => ['lang'=>'Italian','accent'=>false],
+                constants::M_LANG_JAJP => ['lang'=>'Japanese','accent'=>false],
+                constants::M_LANG_KOKR => ['lang'=>'Korean','accent'=>false],
+                constants::M_LANG_MSMY => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_NLNL => ['lang'=>'Dutch','accent'=>'nl'],
+                constants::M_LANG_NLBE => ['lang'=>'Dutch','accent'=>'be'],
+                constants::M_LANG_PTBR => ['lang'=>'Portuguese','accent'=>'br'],
+                constants::M_LANG_PTPT => ['lang'=>'Portuguese','accent'=>'pt'],
+                constants::M_LANG_RURU => ['lang'=>'Russian','accent'=>false],
+                constants::M_LANG_TAIN => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_TEIN => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_TRTR => ['lang'=>'Turkish','accent'=>false],
+                constants::M_LANG_ZHCN =>  ['lang'=>'Chinese','accent'=>'cn'],
+
+                constants::M_LANG_NBNO => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_PLPL => ['lang'=>'Polish','accent'=>false],
+                constants::M_LANG_RORO => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_SVSE => ['lang'=>'Swedish','accent'=>false],
+                constants::M_LANG_UKUA => ['lang'=>'Ukrainian','accent'=>false],
+                constants::M_LANG_EUES => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_FIFI => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_HUHU => ['lang'=>false,'accent'=>false],
+            );
+
+            //If we were not passed a lang, return all langs
+            if($ttslang==''){
+                return $langs;
+            //If we were passed a lang and it exists in the array, return it
+            }elseif(array_key_exists($ttslang,$langs)) {
+                return $langs[$ttslang];
+            //otherwise return false
+            }else{
+                return ['lang'=>false,'accent'=>false];
+            }
     }
 
     public static function get_lexicala_langs($selected='en'){

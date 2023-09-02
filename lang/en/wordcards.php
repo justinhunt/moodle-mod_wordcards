@@ -203,6 +203,7 @@ $string['title_dictation'] = 'Listen and Type';
 //$string['title_scatter'] = 'Match the Words';
 $string['title_speechcards'] = 'Say the Words';
 $string['title_listenchoose'] = 'Listen and Choose';
+$string['title_spacegame'] = 'Space Game';
 
 $string['review'] = 'Review';
 $string['practice'] = 'Practice';
@@ -214,6 +215,7 @@ $string['title_dictation_rev'] = 'Listen and Type (Review)';
 //$string['title_scatter_rev'] = 'Match the Words (Review)';
 $string['title_speechcards_rev'] = 'Say the Words (Review)';
 $string['title_listenchoose_rev'] = 'Listen and Choose (Review)';
+$string['title_spacegame_rev'] = 'Space Game (Review)';
 
 $string['title_vocablist'] = 'Get Ready';
 $string['instructions_matchselect'] = 'Tap the best match from the choices below for the highlighted word.';
@@ -378,3 +380,27 @@ $string['anim_plain']="Plain animation";
 $string['eventwordcardsstepsubmitted'] = 'Wordcards step submitted';
 $string['eventwordcardsattemptsubmitted'] = 'Wordcards attempt submitted';
 $string['listofwords']="List of words";
+
+//spacegame
+$string['removescores'] = 'Remove all user scores';
+$string['score'] = 'Score: {$a->score} Lives: {$a->lives}';
+$string['scoreheader'] = 'Score';
+$string['points'] = 'Points';
+$string['scoreslink'] = 'View all attempts';
+$string['scoreslinkhelp'] = 'View all player attempts and scores';
+$string['spacetostart'] = 'Press space or click to start';
+$string['sound'] = 'Sound';
+$string['playerscores'] = 'Player scores';
+$string['notyetplayed'] = 'Not yet played';
+$string['achievedhighscoreof'] = 'Achieved a high score of {$a}';
+$string['playedxtimeswithhighscore'] = 'Played {$a->times} times. The last game ended with a high score of {$a->score}';
+$string['fullscreen'] = 'Fullscreen';
+$string['howtoplay'] = 'How to play';
+$string['endofgame'] = 'Your score was: {$a}. Press space or click to restart.';
+$string['emptyquiz'] = 'There are no multiple choice questions in the selected category.';
+$string['howtoplay_help'] = 'You can move the ship by using the arrow keys, or by dragging it with the mouse.
+
+
+Press the spacebar or click the mouse button to shoot, or tap with two fingers anywhere on the game.
+
+Clear as many questions as possible by shooting the correct answer.  Good Luck!';

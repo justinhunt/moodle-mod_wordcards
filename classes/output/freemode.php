@@ -131,6 +131,9 @@ class freemode implements \renderable, \templatable {
                 case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
                     $data->mainhtml = $renderer->speechcards_page($this->mod, $definitions, true);
                     break;
+                case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+                    $data->mainhtml = $renderer->spacegame_page($this->mod, $definitions, true);
+                    break;
                 default:
                     // Show the intro page and cards.
                     $data->isintropage = 1;

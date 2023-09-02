@@ -1,5 +1,5 @@
-define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/str','core/modal_events', 'mod_wordcards/a4e'],
-    function($, Ajax, Notification,ModalFactory, str, ModalEvents, a4e) {
+define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/str','core/modal_events', 'mod_wordcards/a4e', 'mod_wordcards/cardactions'],
+    function($, Ajax, Notification,ModalFactory, str, ModalEvents, a4e, cardactions) {
   "use strict"; // jshint ;_;
 
   return {
@@ -26,7 +26,7 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
             return;
         }
 
-/* flashcards code start */
+            /* flashcards code start */
 			var ef = $(".event_flashcards");
 			var eg = $(".event_grid");
 
@@ -56,72 +56,72 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 
 
 
-			$('#Next').click(function () {
-				var cr_index = $(".is-current").index() + 1;
-        if(cr_index > (totalcards-1)){cr_index=0;}
-        
-        /* When user clicks the #Next button, we add to the current card a class (".next-button-slide-is-leaving", referring to 'the current slide is leaving after pressing the Next button') which triggers the move to the left and vanish CSS animation effect. */
-        $('.definition_flashcards_ul li').addClass("next-button-slide-is-leaving"); 
+        $('#Next').click(function (e) {
+            var cr_index = $(".is-current").index() + 1;
+            if(cr_index > (totalcards-1)){cr_index=0;}
 
-        /* After the CSS animation has executed, we manage all the state-related behavior for that card by executing the "afterLeaving" function via an event delegation setTimeout of .5 seconds to get sure the CSS animation could run. Also removes the CSS class recently added for the animation.*/
-        function afterLeaving() {
-          $('.definition_flashcards_ul li').removeClass("is-current next-button-slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
-        }
-        /* We do apply same process to the next slide which is entering */
-        $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible next-button-slide-is-coming");			
+            /* When user clicks the #Next button, we add to the current card a class (".next-button-slide-is-leaving", referring to 'the current slide is leaving after pressing the Next button') which triggers the move to the left and vanish CSS animation effect. */
+            $('.definition_flashcards_ul li').addClass("next-button-slide-is-leaving");
 
-        function afterComing() {
-          $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden next-button-slide-is-coming").addClass("slide-is-visible is-current");
-        }
+            /* After the CSS animation has executed, we manage all the state-related behavior for that card by executing the "afterLeaving" function via an event delegation setTimeout of .5 seconds to get sure the CSS animation could run. Also removes the CSS class recently added for the animation.*/
+            function afterLeaving() {
+              $('.definition_flashcards_ul li').removeClass("is-current next-button-slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
+            }
+            /* We do apply same process to the next slide which is entering */
+            $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible next-button-slide-is-coming");
 
-        setTimeout(afterLeaving, 500);
-        setTimeout(afterComing, 500);
+            function afterComing() {
+              $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden next-button-slide-is-coming").addClass("slide-is-visible is-current");
+            }
 
-				set_progress_info(cr_index + 1,totalcards);
+            setTimeout(afterLeaving, 500);
+            setTimeout(afterComing, 500);
+            set_progress_info(cr_index + 1,totalcards);
+            cardactions.clearYouGlish();
 
-        
-        /* Sketchy code for demo purposes only - show the restart button instead of the left arrow one, by adding a special class. */
-        if (cr_index + 1 === totalcards) {
-          $('#Next').addClass("isLast");
-        }
-        /* Sketchy code for demo purposes only - hide the left arrow in the first slide, by adding a special class. */
-        if (cr_index + 1 >= 1) {
-          $('#Prev').removeClass("isFirst");
-        }
-			});
+
+            /* Sketchy code for demo purposes only - show the restart button instead of the left arrow one, by adding a special class. */
+            if (cr_index + 1 === totalcards) {
+              $('#Next').addClass("isLast");
+            }
+            /* Sketchy code for demo purposes only - hide the left arrow in the first slide, by adding a special class. */
+            if (cr_index + 1 >= 1) {
+              $('#Prev').removeClass("isFirst");
+            }
+        });
 
       /* Same mechanics applied to the #Next button, but in reverse. */
-			$('#Prev').click(function () {
-				var cr_index = $(".is-current").index() - 1;
-        if(cr_index <0){cr_index=(totalcards-1);}
-				$('.definition_flashcards_ul li').addClass("prev-button-slide-is-leaving"); 
-        function afterLeaving() {
-          $('.definition_flashcards_ul li').removeClass("is-current prev-button-slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
+        $('#Prev').click(function () {
+            var cr_index = $(".is-current").index() - 1;
+            if(cr_index <0){cr_index=(totalcards-1);}
+            $('.definition_flashcards_ul li').addClass("prev-button-slide-is-leaving");
+            function afterLeaving() {
+              $('.definition_flashcards_ul li').removeClass("is-current prev-button-slide-is-leaving slide-is-visible").addClass("slide-is-hidden");
+            }
+
+                    $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible prev-button-slide-is-coming");
+            function afterComing() {
+              $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden prev-button-slide-is-coming").addClass("slide-is-visible is-current");
+            }
+
+            var curr_level_card = $('.curr_level_card').html();
+            $('.curr_level_card').html(parseInt(curr_level_card) - 1);
+            set_progress_info(cr_index + 1 ,totalcards);
+
+            setTimeout(afterLeaving, 500);
+            setTimeout(afterComing, 500);
+            cardactions.clearYouGlish();
+
+            if (cr_index + 1 === 0) {
+              $('#Prev').addClass("isFirst");
+            }
+        });
+
+
+
+        function set_progress_info(index,total) {
+            $(".definition_flashcards .wc_cardsprogress").text(index + ' / ' + total);
         }
-         
-				$('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden").addClass("slide-is-visible prev-button-slide-is-coming");			
-        function afterComing() {
-          $('.definition_flashcards_ul li:eq(' + cr_index + ')').removeClass("slide-is-hidden prev-button-slide-is-coming").addClass("slide-is-visible is-current");
-        }
-
-				var curr_level_card = $('.curr_level_card').html();
-				$('.curr_level_card').html(parseInt(curr_level_card) - 1);
-				set_progress_info(cr_index + 1 ,totalcards);
-
-        setTimeout(afterLeaving, 500);
-        setTimeout(afterComing, 500);
-
-        if (cr_index + 1 === 0) {
-          $('#Prev').addClass("isFirst");
-        }
-
-			});
-
-
-
-			function set_progress_info(index,total) {
-				$(".definition_flashcards .wc_cardsprogress").text(index + ' / ' + total);
-			}
 
 
 			/* flashcards code end */
@@ -134,6 +134,9 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
        //set up audio
        a4e.register_events();
        a4e.init_audio(props.token,props.region,props.owner);
+
+       //set up card actions
+        cardactions.init();
 
       container.on('click', '.term-seen-action', function(e) {
         e.preventDefault();

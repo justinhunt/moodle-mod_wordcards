@@ -1,0 +1,32 @@
+<div id='wordcards-vocab-list'>
+  {{> mod_wordcards/vocablist_header}}
+  <div id="vocab-list-inner">{{> mod_wordcards/loading}}</div>
+</div>
+
+<div id='wordcards-gameboard'>
+
+<div>{{#str}}howtoplay, mod_wordcards{{/str}}</div>
+<canvas id="mod_wordcards_spacegame"></canvas>
+<audio id="mod_wordcards_sound_laser" preload="auto">
+  <source src="sound/Laser.wav" type="audio/wav" />
+</audio>
+<audio id="mod_wordcards_sound_explosion" preload="auto">
+  <source src="sound/Explosion.wav" type="audio/wav" />
+</audio>
+<audio id="mod_wordcards_sound_deflect" preload="auto">
+  <source src="sound/Deflect.wav" type="audio/wav" />
+</audio>
+<audio id="mod_wordcards_sound_enemylaser" preload="auto">
+  <source src="sound/EnemyLaser.wav" type="audio/wav" />
+</audio>
+<div id="button_container">
+  <input id="mod_wordcards_spacegame_fullscreen_button" class= "btn btn-secondary" type="button" value="{{#str}} fullscreen , mod_wordcards{{/str}}"/>
+  <input type="checkbox" name="mod_wordcards_spacegame_sound_on" value="0" id="mod_wordcards_spacegame_sound_on" data-initial-value="0" />
+  {{#str}} sound , mod_wordcards{{/str}}
+</div>
+
+</div>
+
+<div id='wordcards-results'>
+  <div id='results-inner'>{{> mod_wordcards/loading}}</div>
+</div>

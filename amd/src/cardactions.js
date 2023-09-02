@@ -44,23 +44,23 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
         });
     };
 
-    const clearYouGlish = function(currentface) {
+    const clearYouGlish = function() {
         log.debug('clearYouGlish');
-        var youglishwidget = $(SELECTOR.YOUGLISH_WIDGET);
-        var youglishplaceholder = currentface.find(SELECTOR.YOUGLISH_PLACEHOLDER);
-        youglishplaceholder.show();
-        youglishwidget.hide();
         youglish.clear();
     }
     const loadYouGlish = function(currentface) {
         log.debug('loadYouGlish');
         var youglishholder = currentface.find(SELECTOR.YOUGLISH_HOLDER);
         var youglishplaceholder = currentface.find(SELECTOR.YOUGLISH_PLACEHOLDER);
-        youglish.load(youglishplaceholder.data('term'),youglishholder);
+        youglish.load(youglishplaceholder.data('lang'),
+            youglishplaceholder.data('term'),
+            youglishplaceholder.data('accent'),
+            youglishholder);
     }
 
 
     const initButtonListeners = function() {
+        var that = this;
         
         $(SELECTOR.CARDCONTAINER).on(EVENT.CLICK, function(e) {
             const currTar = $(e.currentTarget);
@@ -120,6 +120,7 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
                     $(".retrieve-image").css('display', 'none');
                     $(".term-image").css('display', 'block');
                     $(".retrieve-video").css('display', 'block');
+                    clearYouGlish();
                 })
             }
 
@@ -130,7 +131,8 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
                     $(".retrieve-image").css('display', 'block');
                     $(".term-image").css('display', 'none');
                     $(".retrieve-video").css('display', 'none');
-                    const currTar = $(e.currentTarget);
+                    //this will be different to the currentTarget above
+                    const localCurrTar = $(e.currentTarget);
                     loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
                 })
             }
@@ -147,6 +149,7 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
                 initButtonListeners();
                 initYouGlish();
             })
-        }
+        },
+        clearYouGlish: clearYouGlish,
     }
 });
