@@ -1225,6 +1225,10 @@ class utils{
         $mform->setDefault('deflanguage',$config->deflanguage);
         $mform->addHelpButton('deflanguage', 'deflanguage', constants::M_COMPONENT);
 
+        $videooptions =  [0=>get_string('no'),1=>get_string('yes')];
+        $mform->addElement('select', 'videoexamples', get_string('videoexamples', constants::M_COMPONENT),
+            $videooptions, $config->videoexamples);
+
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');
 
@@ -1285,6 +1289,7 @@ class utils{
         $lcoptions = self::fetch_options_listenchoose();
         $mform->addElement('select', 'lcoptions', get_string('lcoptions', constants::M_COMPONENT),
             $lcoptions, $config->lcoptions);
+
 
   // show activity open closes
    $dateoptions = array('optional' => true);

@@ -32,6 +32,7 @@ class renderer extends \plugin_renderer_base {
                 $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
 
+
             // Add flag to show if it's in "My words" or not.
             $def->isinmywords = $mywordspool->has_term($def->id);
 
@@ -66,8 +67,15 @@ class renderer extends \plugin_renderer_base {
         $config = get_config('mod_wordcards');
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
         $journeymode= $mod->get_mod()->journeymode; //get_config(constants::M_COMPONENT, 'journeymode');
-        //fetch the lang name and accent (if any) for youglish
-        $youglish = utils::get_youglish_langs($mod->get_mod()->ttslanguage);
+
+        //video examples (or not)
+        if($mod->get_mod()->videoexamples){
+            //fetch the lang name and accent (if any) for youglish
+            $youglish = utils::get_youglish_langs($mod->get_mod()->ttslanguage);
+        }else{
+            $youglish = false;
+        }
+
 
         $data = [
             'uniqid'=> \html_writer::random_id('wordcards'),

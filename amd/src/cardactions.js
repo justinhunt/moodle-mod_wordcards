@@ -44,10 +44,32 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
         });
     };
 
-    const clearYouGlish = function() {
-        log.debug('clearYouGlish');
+    const clearYouGlish = function(e) {
+        if(e!==undefined) {
+            const localCurrTar = $(e.currentTarget);
+            var termid = localCurrTar.data('termid');
+            var termvideo = $('div.term-video-' + termid);
+            var termimage = $('div.term-image-' + termid);
+
+            termvideo.hide();
+            termimage.show();
+            localCurrTar.removeClass("isselected video-selected");
+        }else{
+            var termvideo = $('div.term-video');
+            var termimage = $('div.term-image');
+            termvideo.hide();
+            termimage.show();
+            $(".btn.retrieve-video").removeClass("isselected video-selected");
+        }
         youglish.clear();
-    }
+    };
+
+    const restoreCards = function() {
+        const allcards = $(SELECTOR.CARD);
+        allcards.removeClass("show-back-side");
+    };
+
+
     const loadYouGlish = function(currentface) {
         log.debug('loadYouGlish');
         var youglishholder = currentface.find(SELECTOR.YOUGLISH_HOLDER);
@@ -56,11 +78,31 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
             youglishplaceholder.data('term'),
             youglishplaceholder.data('accent'),
             youglishholder);
-    }
+    };
 
 
     const initButtonListeners = function() {
         var that = this;
+
+        var showVideoPlayer = function(e) {
+            const localCurrTar = $(e.currentTarget);
+            var termid = localCurrTar.data('termid');
+            var termvideo = $('div.term-video-' + termid);
+            var termimage = $('div.term-image-' + termid);
+
+            termvideo.show();
+            termimage.hide();
+            if(termimage.length>0){
+                localCurrTar.addClass("isselected video-selected");
+            }else{
+                localCurrTar.addClass("isselected");
+            }
+            loadYouGlish(localCurrTar.closest(SELECTOR.BACKFACE));
+        }
+
+        var hideVideoPlayer = function(e) {
+            clearYouGlish(e)
+        }
         
         $(SELECTOR.CARDCONTAINER).on(EVENT.CLICK, function(e) {
             const currTar = $(e.currentTarget);
@@ -106,36 +148,6 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
 */
 
 
-
-        var showVideoPlayer = function(e) {
-            const localCurrTar = $(e.currentTarget);
-            var termid = localCurrTar.data('termid');
-            var termvideo = $('div.term-video-' + termid);
-            var termimage = $('div.term-image-' + termid);
-
-            termvideo.show();
-            termimage.hide();
-            if(termimage.length>0){
-                localCurrTar.addClass("isselected video-selected");
-            }else{
-                localCurrTar.addClass("isselected");
-            }
-            loadYouGlish(localCurrTar.closest(SELECTOR.BACKFACE));
-        }
-
-        var hideVideoPlayer = function(e) {
-            const localCurrTar = $(e.currentTarget);
-            var termid = localCurrTar.data('termid');
-            var termvideo = $('div.term-video-' + termid);
-            var termimage = $('div.term-image-' + termid);
-
-            termvideo.hide();
-            termimage.show();
-            localCurrTar.removeClass("isselected video-selected");
-            clearYouGlish();
-        }
-
-
         if($(".retrieve-video")){
             $(".retrieve-video").on(EVENT.CLICK, function(e) {
                 e.stopPropagation();
@@ -160,5 +172,6 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
             })
         },
         clearYouGlish: clearYouGlish,
+        restoreCards: restoreCards
     }
 });

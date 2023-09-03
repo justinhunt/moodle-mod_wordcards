@@ -407,3 +407,7 @@ $string['howtoplay_help'] = 'You can move the ship by using the arrow keys, or b
 Press the spacebar or click the mouse button to shoot, or tap with two fingers anywhere on the game.
 
 Clear as many questions as possible by shooting the correct answer.  Good Luck!';
+
+//Video Examples
+$string['videoexamples'] = 'Video Examples';
+$string['videoexamples_details'] = 'In learn mode, the automated video examples can be shown on the back face of the card.';

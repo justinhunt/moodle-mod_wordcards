@@ -78,6 +78,8 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
             setTimeout(afterComing, 500);
             set_progress_info(cr_index + 1,totalcards);
             cardactions.clearYouGlish();
+            cardactions.restoreCards();
+
 
 
             /* Sketchy code for demo purposes only - show the restart button instead of the left arrow one, by adding a special class. */
@@ -111,6 +113,7 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
             setTimeout(afterLeaving, 500);
             setTimeout(afterComing, 500);
             cardactions.clearYouGlish();
+            cardactions.restoreCards();
 
             if (cr_index + 1 === 0) {
               $('#Prev').addClass("isFirst");
