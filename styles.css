@@ -508,7 +508,7 @@ h3.list-of-words {
     margin-bottom: 18px;
 }
 */
-
+/*
 .youglish-placeholder {
     height: 42px;
     width: 42px;
@@ -540,6 +540,8 @@ h3.list-of-words {
     top: 15px;
     left: 12px;
 }
+
+ */
 
 .path-mod-wordcards .definition_flashcards .flip-card .term-image {
     padding: 12px;
@@ -1838,16 +1840,6 @@ button.definitions-next.btn .fa-arrow-right:before {
     }
 }
 
-.retrieve-image {
-    height: 30px;
-    width: 38px;
-    background-image: url([[pix:mod_wordcards|retrieve-image-icon]]);
-    background-size: 38px 30px;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin-left: auto;
-}
-
 .retrieve-video {
     height: 30px;
     width: 38px;
@@ -1856,11 +1848,18 @@ button.definitions-next.btn .fa-arrow-right:before {
     background-position: center;
     background-repeat: no-repeat;
     margin-left: auto;
+    margin-right: auto;
 }
 
-.retrieve-image.btn,
+.retrieve-video.isselected {
+    background-color: #CCCCCC;
+}
+.retrieve-video.isselected.video-selected {
+    background-color: unset;
+    background-image: url([[pix:mod_wordcards|retrieve-image-icon]]);
+}
+
 .retrieve-video.btn {
-    display: none;
     border-radius: 0;
 }
 

@@ -75,16 +75,15 @@
                            {{{definition}}}
                         </div>
                         <div class="retrieval-buttons">
-                           <button class="retrieve-image btn">
-                           <button class="retrieve-video btn">
+                            {{#youglish.lang}} <button class="retrieve-video btn" data-termid="{{id}}"> {{/youglish.lang}}
                         </div>
                          {{#youglish.lang}}
-                        <div class="term-video">
+                        <div class="term-video term-video-{{id}}">
                            {{>mod_wordcards/youglish}}
                         </div>
                          {{/youglish.lang}}
                      {{#image}}
-                        <div class="term-image">
+                        <div class="term-image  term-image-{{id}}">
                            <img src="{{image}}" class="flash_img" alt=""/>
                         </div>
                      {{/image}}

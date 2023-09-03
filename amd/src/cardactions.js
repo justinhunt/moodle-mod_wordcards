@@ -104,39 +104,48 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
             }
         });
 */
-        $(SELECTOR.YOUGLISH_PLACEHOLDER).on(EVENT.CLICK, function(e) {
-            e.stopPropagation();
-            if($(".term-image")){
-                $(".term-image").css('display', 'none');
-                $(".retrieve-image").css('display', 'block');
-            }
-            const currTar = $(e.currentTarget);
-            loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
 
-            if($(".retrieve-image")){
-                $(".retrieve-image").on(EVENT.CLICK, function(e) {
-                    e.stopPropagation();
-                    $(".term-video").css('display', 'none');
-                    $(".retrieve-image").css('display', 'none');
-                    $(".term-image").css('display', 'block');
-                    $(".retrieve-video").css('display', 'block');
-                    clearYouGlish();
-                })
-            }
 
-            if($(".retrieve-video")){
-                $(".retrieve-video").on(EVENT.CLICK, function(e) {
-                    e.stopPropagation();
-                    $(".term-video").css('display', 'block');
-                    $(".retrieve-image").css('display', 'block');
-                    $(".term-image").css('display', 'none');
-                    $(".retrieve-video").css('display', 'none');
-                    //this will be different to the currentTarget above
-                    const localCurrTar = $(e.currentTarget);
-                    loadYouGlish(currTar.closest(SELECTOR.BACKFACE));
-                })
+
+        var showVideoPlayer = function(e) {
+            const localCurrTar = $(e.currentTarget);
+            var termid = localCurrTar.data('termid');
+            var termvideo = $('div.term-video-' + termid);
+            var termimage = $('div.term-image-' + termid);
+
+            termvideo.show();
+            termimage.hide();
+            if(termimage.length>0){
+                localCurrTar.addClass("isselected video-selected");
+            }else{
+                localCurrTar.addClass("isselected");
             }
-        });
+            loadYouGlish(localCurrTar.closest(SELECTOR.BACKFACE));
+        }
+
+        var hideVideoPlayer = function(e) {
+            const localCurrTar = $(e.currentTarget);
+            var termid = localCurrTar.data('termid');
+            var termvideo = $('div.term-video-' + termid);
+            var termimage = $('div.term-image-' + termid);
+
+            termvideo.hide();
+            termimage.show();
+            localCurrTar.removeClass("isselected video-selected");
+            clearYouGlish();
+        }
+
+
+        if($(".retrieve-video")){
+            $(".retrieve-video").on(EVENT.CLICK, function(e) {
+                e.stopPropagation();
+                if($(e.currentTarget).hasClass('isselected')){
+                    hideVideoPlayer(e);
+                }else{
+                    showVideoPlayer(e);
+                }
+            })
+        }
 
 
      

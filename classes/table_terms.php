@@ -29,7 +29,10 @@ class mod_wordcards_table_terms extends table_sql {
     public function __construct($uniqueid, $mod) {
         parent::__construct($uniqueid);
         $this->mod = $mod;
-        $this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
+        //this prevents the user changing the ttslanguage eg en-US => en-GB .. the selected voices will not match
+        //$this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
+        $showall=true;
+        $this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage,$showall);
 
         // Define columns.
         $this->define_columns(array(
