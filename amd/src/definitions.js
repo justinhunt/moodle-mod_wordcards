@@ -33,23 +33,6 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 			var totalcards = $('.definition_flashcards_ul li').length;
 			set_progress_info(1,totalcards);
 
-			
-      /*
-      ef.click(function (d) {
-				d.preventDefault();
-				$('.definition_flashcards').fadeIn();
-				$('.definition_grid').fadeOut();
-				ef.addClass('btn-primary').removeClass('btn-outline-primary')
-				eg.removeClass('btn-primary').addClass('btn-outline-primary')
-			});
-			eg.click(function (d) {
-				d.preventDefault();
-				$('.definition_flashcards').fadeOut();
-				$('.definition_grid').fadeIn();
-				eg.addClass('btn-primary').removeClass('btn-outline-primary')
-				ef.removeClass('btn-primary').addClass('btn-outline-primary')
-			});
-      */
 
 
 
@@ -136,7 +119,7 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
        a4e.init_audio(props.token,props.region,props.owner);
 
        //set up card actions
-        cardactions.init();
+        cardactions.init(props.youglish);
 
       container.on('click', '.term-seen-action', function(e) {
         e.preventDefault();

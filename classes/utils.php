@@ -37,7 +37,7 @@ use \mod_wordcards\constants;
 class utils{
 
     //const CLOUDPOODLL = 'http://localhost/moodle';
-    //const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
+   // const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
     const CLOUDPOODLL = 'https://cloud.poodll.com';
 
     //are we willing and able to transcribe submissions?
@@ -619,6 +619,57 @@ class utils{
         } else if ($payloadobject->returnCode === 0) {
             $pollyurl = $payloadobject->returnMessage;
             return $pollyurl;
+        } else {
+            return false;
+        }
+    }
+
+    //fetch the dictionary entries from cloud poodll
+    public static function fetch_youglish_token() {
+        global $USER;
+
+        //if we already have a token just use that
+        $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
+        $youglishtoken = $cache->get('youglishtoken');
+        if($youglishtoken){
+            return $youglishtoken;
+        }
+
+        //If we dont have a youglish token we need a poodlltoken to make the API call to get one
+        $poodlltoken=false;
+        $conf= get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
+            $poodlltoken = self::fetch_token($conf->apiuser, $conf->apisecret);
+        }
+        if(!$poodlltoken || empty($poodlltoken)){
+            return false;
+        }
+
+
+        //The REST API we are calling
+        $functionname = 'local_cpapi_fetch_youglish_token';
+
+        //log.debug(params);
+        $params = array();
+        $params['wstoken'] = $poodlltoken;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['appid'] = constants::M_COMPONENT;
+        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+
+        //returnCode > 0  indicates an error
+        if ($payloadobject->returnCode > 0) {
+            return false;
+            //if all good, then lets do the embed
+        } else if ($payloadobject->returnCode === 0) {
+            $youglishtoken = $payloadobject->returnMessage;
+            $cache->set('youglishtoken', $youglishtoken);
+            return $youglishtoken;
         } else {
             return false;
         }
@@ -1375,7 +1426,7 @@ class utils{
         return $langdefs;
     }
 
-    public static function get_youglish_langs($ttslang=''){
+    public static function get_youglish_config($ttslang){
 
             $langs= array(
                 constants::M_LANG_ARAE =>  ['lang'=>'Arabic','accent'=>'eg'],
@@ -1423,16 +1474,13 @@ class utils{
                 constants::M_LANG_HUHU => ['lang'=>false,'accent'=>false],
             );
 
-            //If we were not passed a lang, return all langs
-            if($ttslang==''){
-                return $langs;
-            //If we were passed a lang and it exists in the array, return it
-            }elseif(array_key_exists($ttslang,$langs)) {
-                return $langs[$ttslang];
-            //otherwise return false
+            if(array_key_exists($ttslang,$langs)) {
+                $youglish= $langs[$ttslang];
+                $youglish['token'] = self::fetch_youglish_token();
             }else{
-                return ['lang'=>false,'accent'=>false];
+                $youglish= ['lang'=>false,'accent'=>false,'token'=>false];
             }
+            return $youglish;
     }
 
     public static function get_lexicala_langs($selected='en'){

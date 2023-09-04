@@ -38,9 +38,9 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
         });
     };
 
-    const initYouGlish = function() {
+    const initYouGlish = function(youglishprops) {
         $.getScript('https://youglish.com/public/emb/widget.js', function(){
-            log.debug('youglish script loaded');
+            YG.setParnterKey(youglishprops.token);
         });
     };
 
@@ -164,11 +164,13 @@ define(['jquery', 'core/ajax', 'core/str', 'core/log', 'mod_wordcards/youglish']
     };
 
     return {
-        init: function () {
+        init: function (youglish) {
             $(document).ready(function() {
                 initStrings();
                 initButtonListeners();
-                initYouGlish();
+                if(youglish) {
+                    initYouGlish(youglish);
+                }
             })
         },
         clearYouGlish: clearYouGlish,

@@ -77,7 +77,7 @@ class renderer extends \plugin_renderer_base {
         //video examples (or not)
         if($mod->get_mod()->videoexamples){
             //fetch the lang name and accent (if any) for youglish
-            $youglish = utils::get_youglish_langs($mod->get_mod()->ttslanguage);
+            $youglish = utils::get_youglish_config($mod->get_mod()->ttslanguage);
         }else{
             $youglish = false;
         }
