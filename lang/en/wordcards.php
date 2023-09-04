@@ -411,3 +411,8 @@ Clear as many questions as possible by shooting the correct answer.  Good Luck!'
 //Video Examples
 $string['videoexamples'] = 'Video Examples';
 $string['videoexamples_details'] = 'In learn mode, the automated video examples can be shown on the back face of the card.';
+
+$string['learnpoint'] = 'Learned Point';
+$string['learnpoint_details'] = 'The number of correct associations during practice or review at which to consider the word as learned.';
+$string['learned'] = 'Learned';
+$string['notlearned'] = 'Not yet learned';

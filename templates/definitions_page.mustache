@@ -45,7 +45,7 @@
          </div>
          <ul class="definition_flashcards_ul">
             {{#definitions}}
-            <li class="flip-card">
+            <li class="flip-card {{#isfirstcard}}is-current slide-is-visible{{/isfirstcard}} {{^isfirstcard}}slide-is-hidden{{/isfirstcard}}">
                <div class="wc-faces flip-card-inner">
                   <!-- front face -->
                   <div class="flip-card-front" data-face="term">
@@ -99,6 +99,16 @@
           <!--end --->
        </div>
 
+        {{#isstepsmode}}
+            {{#nexturl}}
+            <div class="nextactionbtncontainer">
+                <button data-href="{{{nexturl}}}" data-action="{{nextaction}}" class="definitions-next btn">
+                    {{nextbuttontext}}  <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+            {{/nexturl}}
+        {{/isstepsmode}}
+
       <h3 class="list-of-words">{{#str}}listofwords, mod_wordcards{{/str}}</h3>
       <div id="definitions-page-{{uniqid}}" class="definitions-container">
       <div class="terms clearfix definition_grid">
@@ -123,9 +133,9 @@
                         <img src="{{image}}" class="flash_img" alt=""/>
                      </div>
                   {{/image}}
-                  <div class="learned-status">
+                  <div class="learned-status {{#learned}}learned{{/learned}} {{^learned}}not-learned{{/learned}}">
                      <div class="learned-status-icon"></div>
-                     <div class="learned-status-text"></div>   
+                     <div class="learned-status-text">{{#learned}}{{#str}}learned, mod_wordcards{{/str}}{{/learned}} {{^learned}}{{#str}}notlearned, mod_wordcards{{/str}}{{/learned}}</div>
                   </div>
             </div>
          </div>
@@ -142,27 +152,3 @@
          <audio id="poodll_vocabplayer"></audio>
       </div>
 </div>
-{{^element.frozen}}
-    {{#js}}
-      /* This is dummy code which only intent is to generate a fake set of 'learned' values for demostration purposes. It simply assigns randomly the value of 'learned' or 'not learned' just to show  visual styles for both states. It's not meant to be used anymore once the 'learned' status logic is implemented. */
-        require(['jquery'],function($) {
-            const learnedStatus = $(".learned-status");
-            const learnedStatusIcon = $(".learned-status-icon");
-            const learnedStatusText = $(".learned-status-text");
-            
-            learnedStatus.each(function(  ) {
-               let randomNumber = Math.floor(Math.random() * 10);
-
-               if (randomNumber >=4) {
-                  // We assign the visual class "learned".
-                  $(this).addClass("learned");
-               } else {
-                  // We assign the visual class "not-learned".
-                  $(this).addClass("not-learned");
-               }
-               
-            });
-            
-        });
-    {{/js}}
-{{/element.frozen}}

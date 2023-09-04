@@ -417,6 +417,7 @@ h3.list-of-words {
         margin-right: 12px;
         margin-left: auto;
         line-height: 1.2;
+        padding-left: 5px
     }
 }
 
@@ -446,14 +447,6 @@ h3.list-of-words {
 .learned-status .learned-status-text::before {
     margin-top: 6px;
     display: block;
-}
-
-.learned-status.learned .learned-status-text::before {
-    content: "Learned";
-}
-
-.learned-status.not-learned .learned-status-text::before {
-    content: "Not yet learned";
 }
 
 /* Remove the margin at the end of each 'row'. */
@@ -605,6 +598,13 @@ h3.list-of-words {
 }
 
 .path-mod-wordcards .page-footer {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.path-mod-wordcards .nextactionbtncontainer {
     margin-top: 20px;
     display: flex;
     align-items: center;

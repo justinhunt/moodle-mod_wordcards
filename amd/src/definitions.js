@@ -31,9 +31,6 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 			var eg = $(".event_grid");
 
 			var totalcards = $('.definition_flashcards_ul li').length;
-			$(".definition_flashcards_ul li:gt(0)").addClass('slide-is-hidden');
-            //set the first card as is_current
-            $(".definition_flashcards_ul li:first").addClass('is-current slide-is-visible');
 			set_progress_info(1,totalcards);
 
 			
@@ -127,12 +124,12 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
         }
 
 
-			/* flashcards code end */
-      var container = $('#definitions-page-' + opts['widgetid']),
-        modid = props.modid,
-        canmanage = props.canmanage,
-        canattempt = props.canattempt,
-        btn = container.find('.definitions-next');
+		/* Definitions list and next buttons*/
+        var container = $('#definitions-page-' + opts['widgetid']);
+        var modid = props.modid;
+        var canmanage = props.canmanage;
+        var canattempt = props.canattempt;
+        var btn = $('.definitions-next');
 
        //set up audio
        a4e.register_events();

@@ -834,7 +834,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             tdata['results'] = app.results;
             tdata['total'] = app.definitions.terms.length;
             tdata['totalcorrect'] = a4e.calc_total_points(app.results);
-            tdata['gamescore'] = app.score;
+            tdata['gamescore'] = Math.round(app.score);
             var total_time = app.timer.count;
             if (total_time == 0) {
                 tdata['prettytime'] = '00:00';

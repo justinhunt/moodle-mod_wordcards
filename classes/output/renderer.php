@@ -26,17 +26,23 @@ class renderer extends \plugin_renderer_base {
 
         $mywordspool = new my_words_pool($mod->get_course()->id);
 
+        $firstcardset = false;
         foreach($definitions as $def){
+            //we cheat here , and add an index to avoid flicker before we apply the show/hide to flashcards
+            if(!$firstcardset) {
+                $def->isfirstcard = true;
+                $firstcardset = true;
+            }
             //make sure each definition has a voice
             if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
                 $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
-
-
             // Add flag to show if it's in "My words" or not.
             $def->isinmywords = $mywordspool->has_term($def->id);
-
         }
+
+        //is this word learned?
+        $definitions = $mod->insert_learned_state($definitions);
 
         //attempt info
         $canattempt=$mod->can_attempt();

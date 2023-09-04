@@ -1229,6 +1229,10 @@ class utils{
         $mform->addElement('select', 'videoexamples', get_string('videoexamples', constants::M_COMPONENT),
             $videooptions, $config->videoexamples);
 
+        $mform->addElement('text', 'learnpoint', get_string('learnpoint', constants::M_COMPONENT), array('size'=>'4'));
+        $mform->setDefault('learnpoint',$config->learnpoint);
+        $mform->setType('learnpoint', PARAM_INT);
+
         $mform->addElement('header', 'hdrappearance', get_string('appearance'));
         $mform->setExpanded('hdrappearance');
 

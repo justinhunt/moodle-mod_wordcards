@@ -244,6 +244,33 @@ class mod_wordcards_module {
         }
     }
 
+    public function insert_learned_state($terms) {
+        global $DB,$USER;
+
+        $learnpoint=$this->mod->learnpoint;
+
+        $sql = "SELECT t.id, a.successcount
+                  FROM {wordcards_terms} t
+                  JOIN {wordcards_associations} a
+                    ON a.termid = t.id
+                 WHERE a.userid = ?
+                   AND t.modid = ?
+                   AND t.deleted = 0";
+
+        $result = $DB->get_records_sql($sql, [$USER->id, $this->get_id()]);
+        if($result) {
+            foreach ($terms as $term) {
+                if (isset($result[$term->id]) && $result[$term->id]->successcount >= $learnpoint) {
+                    $term->learned = $result[$term->id];
+                } else {
+                    $term->learned = 0;
+                }
+            }
+        }
+        return $terms;
+
+    }
+
     public static function insert_media_urls($terms) {
         global $CFG;
         foreach($terms as $term){
@@ -283,7 +310,10 @@ class mod_wordcards_module {
     public static function format_defs($terms){
         global $CFG;
         foreach($terms as $def){
-            $def->definition = format_text($def->definition);
+            //lets not double up
+            if(strpos($def->definition, '<div class="text_to_html">')!==0) {
+                $def->definition = format_text($def->definition);
+            }
         }
         return $terms;
     }
@@ -547,6 +577,15 @@ class mod_wordcards_module {
                 $record->timecreated = time();
                 $DB->insert_record('wordcards_seen', $record);
             }
+        }
+    }
+
+    public function mark_terms_as_unseen(){
+        global $DB, $USER;
+        $terms = self::get_terms();
+        foreach($terms as $term){
+            $params = ['userid' => $USER->id, 'termid' => $term->id];
+            $DB->delete_records('wordcards_seen', $params);
         }
     }
 

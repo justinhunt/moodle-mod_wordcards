@@ -48,18 +48,20 @@ $isteacher = ($mod->can_manage() || $mod->can_viewreports());
 //cancel attempt?
 //must be not a reattempt (url fiddling by someone) and not on END or TERM. But a teacher is always on END so we let teachers through
 //because they may be in "switch role to student" mode
-// There is an issue currently, if a user is on their first attempt and "quits" their latest stare will be terms and since all terms are seen
-// they wil "resume" to step 1. First attempt users can not quit basically 2021-12-02 -> see attempted fix below
-if(!$reattempt
-    && $cancelattempt
-    //&& ($currentstate!==mod_wordcards_module::STATE_END  && $currentstate!== mod_wordcards_module::STATE_TERMS)
-    //is this OK 2022.03.07?
-    && ($currentstate!==mod_wordcards_module::STATE_END)
-    ){
+if(!$reattempt && $cancelattempt){
 
-    $mod->remove_attempt();
-    redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
+    if($currentstate!==mod_wordcards_module::STATE_END){
+            $mod->remove_attempt();
+            //if there is no attempt, then when view calls "resume_progress" it will create a new attempt because all the terms are seen
+            //so in that case we mark them as unseen
+            if($mod->get_latest_attempt() === false){
+                $mod->mark_terms_as_unseen();
+            }
+            redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
+    }
 }
+
+
 
 //we use the suggested step if they are finished or a teacher
 //otherwsie we use their currentstate (the step they are up to)
