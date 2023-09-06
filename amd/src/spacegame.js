@@ -211,7 +211,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
     }
 
     class Enemy extends GameObject {
-        constructor(src, x, y, text, itempoints) {
+        constructor(src, x, y, text, itempoints, termid) {
             super(src,x,y);
             this.xspeed = app.enemySpeed;
             this.yspeed = app.enemySpeed * (2 + Math.random()) / 4;
@@ -224,6 +224,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             this.shotFrequency = 80;
             this.shotClock = (1 + Math.random()) * this.shotFrequency;
             this.level = app.level;
+            this.termid = termid;
 
         }
         update(bounds) {
@@ -290,6 +291,9 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
             // Adjust Score.
             app.score += this.itempoints * 1000;
+
+            //report the positive association
+            app.reportSuccess(this.termid);
 
             // Kill off the ship.
             app.playSound("explosion");
@@ -402,9 +406,8 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
     class MultiEnemy extends Enemy {
         constructor(x, y, text, itempoints, single,termid) {
-            super("pix/enemy.png", x, y, text, itempoints);
+            super("pix/enemy.png", x, y, text, itempoints, termid);
             this.single = single;
-            this.termid = termid;
         }
 
         die() {
@@ -421,9 +424,13 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         }
 
         gotShot(shot) {
-            if (this.itempoints >= 1 || (this.itempoints > 0 && !this.single)) {
+            if (this.itempoints > 0) {
                 shot.die();
                 this.die();
+
+                //report the positive association
+                app.reportSuccess(this.termid);
+
             } else {
                 app.score += (this.itempoints - 0.5) * 600;
 
@@ -439,15 +446,14 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         constructor(x, y, text, itempoints, pairid, stem, termid  ) {
 
             if (stem) {
-                super("pix/enemystem.png", x, y, text, itempoints);
+                super("pix/enemystem.png", x, y, text, itempoints, termid);
             } else {
-                super("pix/enemychoice.png", x, y, text, itempoints);
+                super("pix/enemychoice.png", x, y, text, itempoints, termid);
             }
             this.stem = stem ? true : false;
             this.pairid = pairid;
             this.shotFrequency = 160;
             this.hightlighted = false;
-            this.termid=termid;
         }
 
         die() {
@@ -468,6 +474,9 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
                     //store the result for later processing
                     app.storeResult(this.termid, this.itempoints);
+
+                    //report the positive association
+                    app.reportSuccess(this.termid);
 
 
                     shot.die();
@@ -764,6 +773,35 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
            app.results.push(result);
        }
    },
+
+    reportSuccess: function(termid) {
+        if (this.dryRun) {
+            return;
+        }
+
+        Ajax.call([{
+            methodname: 'mod_wordcards_report_successful_association',
+            args: {
+                termid: termid,
+                isfreemode: app.isFreeMode
+            }
+        }]);
+    },
+
+    reportFailure: function(term1id, term2id) {
+        if (this.dryRun) {
+            return;
+        }
+
+        Ajax.call([{
+            methodname: 'mod_wordcards_report_failed_association',
+            args: {
+                term1id: term1id,
+                term2id: term2id,
+                isfreemode: app.isFreeMode
+            }
+        }]);
+    },
 
     /**
      * Helper function to handle JS Events.
