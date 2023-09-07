@@ -627,6 +627,16 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
      */
     smallscreen: function() {
         this.inFullscreen = false;
+
+        if (document.exitFullscreen) {
+            document.exitFullscreen().then(() => console.log("Document Exited from Full screen mode"))
+                .catch((err) => console.error(err));
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+
         this.stage.removeAttribute("width");
         this.stage.removeAttribute("height");
         this.stage.removeAttribute("style");
@@ -862,6 +872,15 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
      * Helper function process game-over.
      */
     endGame: function() {
+
+
+        //clear full screen
+        if (app.inFullscreen) {
+            log.debug("quitting full screen");
+            app.inFullscreen = false;
+            app.smallscreen();
+        }
+
             clearInterval(app.timer.interval);
             $("#wordcards-gameboard, #wordcards-start-button").hide();
             $("#wordcards-results").show();
@@ -915,6 +934,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                 }]);
 
          */
+
 
 
         //we use wordcards end screen so we dont do menuevents,
@@ -1447,7 +1467,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
         window.stage = app.stage;
         app.player.mouse.x = x;
-        app.player.mouse.y = y;
+        app.player.mouse.y = y + (app.player.height / 2);
 
         if (e.target === app.stage) {
             e.preventDefault();
