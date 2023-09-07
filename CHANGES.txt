@@ -1,3 +1,7 @@
+1.3.47 (Build 2023090300)
+- added SpaceGame
+- added VideoExamples
+
 1.3.46 (Build 2023072400)
 - added attempt submitted and step submitted events
 

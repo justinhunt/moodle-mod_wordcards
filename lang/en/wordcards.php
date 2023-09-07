@@ -110,6 +110,8 @@ $string['en-us'] = 'English (US)';
 $string['en-gb'] = 'English (GB)';
 $string['en-au'] = 'English (AU)';
 $string['en-in'] = 'English (IN)';
+$string['en-nz'] = 'English (NZ)';
+$string['en-za'] = 'English (ZA)';
 $string['es-es'] = 'Spanish (ES)';
 $string['es-us'] = 'Spanish (US)';
 $string['fr-fr'] = 'French (FR.)';
@@ -118,6 +120,7 @@ $string['fil-ph'] = 'Filipino';
 $string['ko-kr'] = 'Korean(KR)';
 $string['pt-br'] = 'Portuguese (BR)';
 $string['it-it'] = 'Italian(IT)';
+$string['da-dk'] = 'Danish';
 $string['de-de'] = 'German (DE)';
 $string['de-at'] = 'German (AT)';
 $string['de-ch'] = 'German (CH)';
@@ -203,6 +206,7 @@ $string['title_dictation'] = 'Listen and Type';
 //$string['title_scatter'] = 'Match the Words';
 $string['title_speechcards'] = 'Say the Words';
 $string['title_listenchoose'] = 'Listen and Choose';
+$string['title_spacegame'] = 'Space Game';
 
 $string['review'] = 'Review';
 $string['practice'] = 'Practice';
@@ -214,6 +218,7 @@ $string['title_dictation_rev'] = 'Listen and Type (Review)';
 //$string['title_scatter_rev'] = 'Match the Words (Review)';
 $string['title_speechcards_rev'] = 'Say the Words (Review)';
 $string['title_listenchoose_rev'] = 'Listen and Choose (Review)';
+$string['title_spacegame_rev'] = 'Space Game (Review)';
 
 $string['title_vocablist'] = 'Get Ready';
 $string['instructions_matchselect'] = 'Tap the best match from the choices below for the highlighted word.';
@@ -350,10 +355,10 @@ $string['mywords'] = "My words";
 $string['empty'] = "empty";
 $string['words'] = "Words";
 $string['practicetype'] = "Practice type";
-$string['freemodeintropara1'] = "Choose the words and practice type from the menu. Practice as often as you wish, your scores are not recorded. Tap the [+m] button to add a word to your 'my words' set.";
+$string['freemodeintropara1'] = "Choose the words and practice type from the menu. Practice as often as you wish, your scores are not recorded. Tap the + button to add a word to your 'my words' set.";
 $string['seenwords'] = "Seen words";
 $string['selectedpoolhasnowords'] = "The selected set of words is empty. Please add words, or choose another set of words";
-$string['startintropara1'] = "Review the words below. When you are ready press the continue button to practice the words. You must finish each practice step to complete the activity. Tap the [+m] button to add a word to your 'my words' set.";
+$string['startintropara1'] = "Review the words below. When you are ready press the continue button to practice the words. You must finish each practice step to complete the activity. Tap the + button to add a word to your 'my words' set.";
 $string['flashcards'] = "Flashcards";
 $string['grid'] = "Grid";
 $string['selectwordstolearn'] = "Select words to learn";
@@ -377,3 +382,39 @@ $string['anim_fancy']="Fancy animation";
 $string['anim_plain']="Plain animation";
 $string['eventwordcardsstepsubmitted'] = 'Wordcards step submitted';
 $string['eventwordcardsattemptsubmitted'] = 'Wordcards attempt submitted';
+$string['listofwords']="List of words";
+
+//spacegame
+$string['removescores'] = 'Remove all user scores';
+$string['score'] = 'Score: {$a->score} Lives: {$a->lives}';
+$string['scoreheader'] = 'Score';
+$string['points'] = 'Points';
+$string['scoreslink'] = 'View all attempts';
+$string['scoreslinkhelp'] = 'View all player attempts and scores';
+$string['spacetostart'] = 'Press space or click to start';
+$string['sound'] = 'Sound';
+$string['playerscores'] = 'Player scores';
+$string['notyetplayed'] = 'Not yet played';
+$string['achievedhighscoreof'] = 'Achieved a high score of {$a}';
+$string['playedxtimeswithhighscore'] = 'Played {$a->times} times. The last game ended with a high score of {$a->score}';
+$string['fullscreen'] = 'Fullscreen';
+$string['howtoplay'] = 'How to play';
+$string['endofgame'] = 'Your score was: {$a}. Press space or click to restart.';
+$string['emptyquiz'] = 'There are no multiple choice questions in the selected category.';
+$string['howtoplay_help'] = 'You can move the ship by using the arrow keys, or by dragging it with the mouse.
+
+
+Press the spacebar or click the mouse button to shoot, or tap with two fingers anywhere on the game.
+
+Clear as many questions as possible by shooting the correct answer.  Good Luck!';
+
+//Video Examples
+$string['videoexamples'] = 'Video Examples';
+$string['videoexamples_details'] = 'In definitions/start mode automatically generated video examples can be shown on the back face of the card.';
+$string['videoexamples_help'] = 'In definitions/start mode automatically generated video examples can be shown on the back face of the card.';
+
+$string['learnpoint'] = 'Learned Point';
+$string['learnpoint_details'] = 'The number of correct associations during practice or review at which to consider the word as learned.';
+$string['learnpoint_help'] = 'The number of correct associations during practice or review at which to consider the word as learned.';
+$string['learned'] = 'Learned';
+$string['notlearned'] = 'Not yet learned';

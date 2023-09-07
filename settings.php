@@ -45,7 +45,7 @@ if ($ADMIN->fulltree) {
     }else{
         $amddata=['apppath'=>$CFG->wwwroot . '/' .constants::M_URL];
         $cp_components=['filter_poodll','qtype_cloudpoodll','mod_readaloud','mod_solo','mod_minilesson','mod_englishcentral','mod_pchat',
-            'atto_cloudpoodll','tinymce_cloudpoodll', 'assignsubmission_cloudpoodll','assignfeedback_cloudpoodll'];
+            'atto_cloudpoodll','tinymce_cloudpoodll', 'assignsubmission_cloudpoodll','assignfeedback_cloudpoodll','tiny_poodll'];
         foreach($cp_components as $cp_component){
             switch($cp_component){
                 case 'filter_poodll':
@@ -180,4 +180,21 @@ if ($ADMIN->fulltree) {
     $options = utils::fetch_options_animations();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
+
+    //Video Examples
+    $name = 'videoexamples';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = 1;
+    $options = [0=>get_string('no'),1=>get_string('yes')];
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
+
+    // Set the number of associations from which to consider the term learned
+    $name = 'learnpoint';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = 3;
+    $settings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, PARAM_INT));
 }

@@ -183,7 +183,10 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
                 var that = this;
 
                 this.controls.recordercontainer.click(function(){
-                    that.toggleRecording();
+                    //disable click events if we are recognizing
+                    if (!that.audio.isRecognizing) {
+                        that.toggleRecording();
+                    }
                 });
 
                 this.audio_updated=function() {

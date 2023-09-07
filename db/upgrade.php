@@ -528,5 +528,22 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023051201, 'wordcards');
     }
 
+    if ($oldversion < 2023090301) {
+        $table = new xmldb_table('wordcards');
+        // Define field foriframe to be added to wordcards
+        $fields=[];
+        $fields[] = new xmldb_field('videoexamples', XMLDB_TYPE_INTEGER, 2,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('learnpoint', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 1);
+
+
+        // Alter fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2023090301, 'wordcards');
+    }
+
     return true;
 }

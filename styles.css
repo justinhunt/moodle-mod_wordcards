@@ -1,22 +1,452 @@
+/* The flip card container */
+.flip-card {
+    background-color: transparent;
+    width: 260px;
+    height: 480px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+@media screen and (min-width:400px) {
+    .flip-card {
+        width: 280px;
+    }
+}
+
+@media screen and (min-width:600px) {
+    .flip-card {
+        width: 380px;
+        height: 500px;
+    }
+}
+
+  .show-back-side {
+    transform: rotateY(180deg);
+  }
+
+  /* This container is needed to position the front and back side */
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  
+/* CSS flashcards animations */
+
+    .next-button-slide-is-leaving {
+        animation-name: nextButtonSlideIsLeavingAnimation;
+        animation-duration: .5s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes nextButtonSlideIsLeavingAnimation {
+        from {
+            transform: translate(100px);
+            opacity: 1;
+        }
+        to {
+            transform: translate(-200px);
+            opacity: 0;
+        }
+    }
+
+    .next-button-slide-is-coming {
+        animation-name: nextButtonSlideIsComingAnimation;
+        animation-duration: .5s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes nextButtonSlideIsComingAnimation {
+        0% {
+            transform: translate(200px);
+            opacity: 0;
+        }
+        50% {
+            transform: translate(200px);
+            opacity: 0;
+        }
+        100% {
+            transform: translate(-100px);
+            opacity: 1;
+        }
+    }
+
+
+    .prev-button-slide-is-leaving {
+        animation-name: prevButtonSlideIsLeavingAnimation;
+        animation-duration: .5s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes prevButtonSlideIsLeavingAnimation {
+        from {
+            transform: translate(0px);
+            opacity: 1;
+        }
+        to {
+            transform: translate(200px);
+            opacity: 0;
+        }
+    }
+
+    .prev-button-slide-is-coming {
+        animation-name: prevButtonSlideIsComingAnimation;
+        animation-duration: .5s;
+        animation-timing-function: ease-in-out;
+    }
+
+    @keyframes prevButtonSlideIsComingAnimation {
+        0% {
+            transform: translate(-200px);
+            opacity: 0;
+        }
+        50% {
+            transform: translate(-200px);
+            opacity: 0;
+        }
+        100% {
+            transform: translate(100px);
+            opacity: 1;
+        }
+    }
+
+    .slide-is-hidden {
+        display: none;
+    }
+
+    .slide-is-visible {
+        display: block;
+    }
+
+/* /End CSS flashcards animations */
+
+#card-audio {
+    content: " ";
+    height: 42px;
+    width: 42px;
+    border-radius: 100%;
+    background: linear-gradient(157deg, #9582F2 0%, #6F58DE 100%);
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.15);
+    position: relative;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+#card-audio:hover {
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0);
+}
+
+#card-audio:active {
+    background: linear-gradient(157deg, #7c69da 0%, #624ec6 100%);
+}
+
+#card-audio.fa-volume-up:after {
+    content: "";
+    display: block;
+    height: 16px;
+    width: 18px;
+    background-image: url([[pix:mod_wordcards|audio-icon]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 13px;
+    left: 12px;
+}
+
+#card-audio.fa-volume-up:before {
+    display: none;
+}
+
+
+  /* Position the front and back side */
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+  }
+  
+  /* Style the front side (fallback if image is missing) */
+  .flip-card-front {
+    border-radius: 4px;
+    background: #FFF;
+    box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
+    color: #362A6C;
+    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-around;
+  }
+
+  @media screen and (min-width:480px) {
+    .flip-card-front {
+        font-size: 26px;
+    }
+  }
+  
+  /* Style the back side */
+  .flip-card-back {
+    transform: rotateY(180deg);
+    border-radius: 4px;
+    background: #FFF;
+    box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
+    color: #362A6C;
+    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media screen and (min-width:480px) {
+    .flip-card-back {
+        font-size: 26px;
+    }
+  }
+
+
+/* Definitions container subsection */
+
+h3.list-of-words {
+    font-size: 19px;
+    margin-bottom: 36px;
+    color: #2D225D;
+    margin-top: 64px;
+}
+
+@media screen and (min-width:600px) {
+    h3.list-of-words {
+        font-size: 24px;
+        margin-bottom: 64px;
+        color: #2D225D;
+        margin-top: 96px;
+    }
+}
+
 /* Global div encapsulating all the terms. */
 
 .path-mod-wordcards .terms {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 /* Each term is defined by a .term-wrapper. */
 
+.path-mod-wordcards .definitions-container {
+    margin-top: 36px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container {
+        margin-top: 48px;
+    }
+}
+
+.path-mod-wordcards .definitions-container a.wordcards-my-words-action {
+    position: absolute;  
+    top: -8px;
+    left: 11px;
+    align-self: flex-end;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container a.wordcards-my-words-action {
+        right: auto;
+        left: -5px;
+        align-self: flex-start;
+    }
+}
+
+.path-mod-wordcards .definitions-container .term-title {
+    color: #281D5B;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    margin-top: 48px;
+    margin-left: 12px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .term-title {
+        margin-top: 0; 
+        margin-left: 36px;
+    }
+}
+
+#audio-small {
+    height: 28px;
+    width: 28px;
+    border-radius: 100%;
+    position: relative;
+    border: 1px solid #BABFE7;
+    background-color: #fff;
+    margin-left: 12px;
+}
+
+#audio-small:hover {
+    background-color: #eff1fd;
+}
+
+#audio-small:active {
+    background-color: #c7cbf0;
+}
+
+#audio-small.fa-volume-up:after {
+    content: "";
+    display: block;
+    height: 16px;
+    width: 18px;
+    background-image: url([[pix:mod_wordcards|audio-icon-mini]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+#audio-small.fa-volume-up:before {
+    display: none;
+}
+
+.path-mod-wordcards .definitions-container .text_to_html {
+    color: #281D5B;
+    font-size: 18px;
+    font-style: italic;
+    margin-top: 18px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .text_to_html {
+        border-left: 1px solid #D7D9FF;
+        padding-left: 12px;
+        margin-left: 12px;
+        margin-top: 0;
+    }
+}
+
+
+.path-mod-wordcards .definitions-container .terms {
+    width: 100%;
+    box-shadow: 0px 2px 14px 0px rgba(14, 18, 61, 0.22);
+    margin-bottom: 64px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .terms {
+        margin-bottom: 72px;
+    }
+}
+
+
+.path-mod-wordcards .definitions-container .term {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 80px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .term {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}
+
 .path-mod-wordcards .term-wrapper {
-    width: 32%;
-    display: inline-block;
-    border: 1px solid #ccc;
-    margin-right: 1%;
-    border-radius: 3px;
-    margin-bottom: 10px;
-    float: left;
-    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    padding: 5px;
+    width: 100%;
+    padding: 6px;
+    border-bottom: 1px solid #D7D9FF;
+}
+
+.path-mod-wordcards .definitions-container .term-image {
+    height: 80px;
+    width: 140px;
+    margin-top: 18px;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definitions-container .term-image {
+        margin-top: 0;
+        padding-left: 24px;
+    }
+}
+
+.path-mod-wordcards .term-wrapper:last-of-type {
+    width: 100%;
+    padding: 6px;
+    border-bottom: none;
+}
+
+.learned-status {
+    color: #5560F3;
+    font-size: 12px;
+    font-style: italic;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    justify-content: center;
+    align-self: flex-end;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    margin-right: 19px;
+}
+
+@media screen and (min-width:600px) {
+    .learned-status {
+        display: flex;
+        flex-direction: column;
+        align-self: auto;
+        max-width: 46px;
+        text-align: center;
+        align-items: center;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-right: 12px;
+        margin-left: auto;
+        line-height: 1.2;
+        padding-left: 5px
+    }
+}
+
+.learned-status-icon {
+    height: 18px;
+    width: 18px;
+    background-size: 18px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: 6px;
+}
+
+@media screen and (min-width:600px) {
+    .learned-status-icon {
+        margin-left: 0;
+    }
+}
+
+.learned-status.learned .learned-status-icon {
+    background-image: url([[pix:mod_wordcards|learned-icon]]);
+}
+
+.learned-status.not-learned .learned-status-icon {
+    background-image: url([[pix:mod_wordcards|not-learned-icon]]);
+}
+
+.learned-status .learned-status-text::before {
+    margin-top: 6px;
+    display: block;
 }
 
 /* Remove the margin at the end of each 'row'. */
@@ -32,10 +462,16 @@
 
 /* Another term div, in case the wrapper wasn't enough. */
 
-.path-mod-wordcards .term {
+.path-mod-wordcards .flip-card-back .term {
     display: block;
-    padding: 5px;
+    height: 388px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
 
 /* The term header, where the title and tick will be. */
 
@@ -56,6 +492,60 @@
 .dir-rtl.path-mod-wordcards .term-header .term-title {
     padding-right: 0;
     padding-left: 25px;
+}
+
+
+
+/*
+.path-mod-wordcards .flip-card .flip-card-back .term-title {
+    margin-bottom: 18px;
+}
+*/
+/*
+.youglish-placeholder {
+    height: 42px;
+    width: 42px;
+    border-radius: 100%;
+    background: linear-gradient(157deg, #9582F2 0%, #6F58DE 100%);
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.15);
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.youglish-placeholder:hover {
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0);
+}
+
+.youglish-placeholder:active {
+    background: linear-gradient(157deg, #7c69da 0%, #624ec6 100%);
+}
+
+.youglish-placeholder:after {
+    content: "";
+    display: block;
+    height: 12px;
+    width: 20px;
+    background-image: url([[pix:mod_wordcards|video-icon]]);
+    background-size: 20px 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 15px;
+    left: 12px;
+}
+
+ */
+
+.path-mod-wordcards .definition_flashcards .flip-card .term-image {
+    padding: 12px;
+    height: 180px;
+    width: 100%;
+}
+
+@media screen and (min-width:600px) {
+    .path-mod-wordcards .definition_flashcards .flip-card .term-image {
+        height: 250px;
+    }
 }
 
 /* The term tick, absolutely positioned to the right. */
@@ -109,6 +599,16 @@
 
 .path-mod-wordcards .page-footer {
     margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.path-mod-wordcards .nextactionbtncontainer {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .path-mod-wordcards .page-footer p {
@@ -316,7 +816,7 @@
 }
 
 /* Simple media query to reduce the number of terms to two on the width. */
-
+/*
 @media (max-width: 767px) {
     .path-mod-wordcards .term-wrapper {
         width: 49%;
@@ -339,9 +839,9 @@
         margin-left: 0;
     }
 }
-
+*/
 /* Simple media query for terms to go full width. */
-
+/*
 @media (max-width: 500px) {
     .path-mod-wordcards .term-wrapper {
         width: 100%;
@@ -349,6 +849,7 @@
         margin-left: 0;
     }
 }
+*/
 
 /* ACTIVITY CSS */
 
@@ -692,24 +1193,32 @@
     margin: 10px;
 }
 
-.mod_wordcards_instructions {
-    text-align: center;
-    margin: auto;
-    font-style: italic;
-    padding: 5px;
-    max-width: 650px;
-}
+
 
 .mod_wordcards_activity_header {
-    text-align: center;
-    margin: auto;
-    padding: 10px;
-    border: 1px solid darkgray;
-    border-radius: 5px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    color: #281D5B;
+}
+
+@media screen and (min-width:600px) {
+    .mod_wordcards_activity_header {
+        margin-top: 48px;
+        margin-bottom: 48px;
+    }
 }
 
 .mod_wordcards_activity_header h3 {
-    text-align: center;
+    font-size: 19px;
+    margin-bottom: 24px;
+    color: #2D225D;
+}
+
+@media screen and (min-width:600px) {
+    .mod_wordcards_activity_header h3 {
+        font-size: 22px;
+        margin-bottom: 36px;
+    }
 }
 
 /* PROGRESS DOTS */
@@ -898,33 +1407,133 @@
   /* margin: 4em auto; */
   font-size: 16px;
 }
- .definition_flashcards_ul li {
+ 
+.definition_flashcards_ul li {
    list-style: none;
-   }
-   .df_fl{
-   width: 60%;
-   margin: 0 auto;
-   }
-   .df_fl_control{
-   width: 60%;
-   margin: 0 auto;
-   }	
-   .df_fl_control a {
-   font-size: 35px;
-   color: #e2510c;
-   cursor: pointer;
-   }
-   .df_fl_control button {
-    border: unset !important;
-    background-color: unset;
 }
-.df_fl_control .fa {
-    font-size: 30px;
+   
+.df_fl_control {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 42%;
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control{
+        top: 50%;
+    }
+}
+   
+.df_fl_control a {
+    font-size: 35px;
+    color: #e2510c;
+    cursor: pointer;
+}
+
+
+.df_fl_control button#Prev {
+    height: 32px;
+    width: 32px;
+    background-image: url([[pix:mod_wordcards|arrow-left]]);
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #DADBEC;
+    border-radius: 100%;
+    display: flex;
+    align-content: center;
+    justify-items: center;
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control button#Prev {
+        height: 48px;
+        width: 48px;
+        margin-left: 32px;
+        background-size: 22px 18px;
+    }
+}
+
+.df_fl_control button#Next {
+    height: 32px;
+    width: 32px;
+    background-image: url([[pix:mod_wordcards|arrow-right]]);
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid #DADBEC;
+    border-radius: 100%;
+    display: flex;
+    align-content: center;
+    justify-items: center;
+}
+
+.df_fl_control button#Prev.isFirst {
+    visibility: hidden;
+}
+
+.df_fl_control button#Next.isLast {
+    background-image: url([[pix:mod_wordcards|restart-carousel-icon]]);
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 8px;
+    background-size: 16px;
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control button#Next.isLast {
+        background-size: 22px;
+    }
+}
+
+@media screen and (min-width:480px) {
+    .df_fl_control button#Next {
+        height: 48px;
+        width: 48px;
+        margin-right: 32px;
+        background-size: 22px 18px;
+    }
+}
+
+.df_fl_control button#Prev:hover,
+.df_fl_control button#Next:hover {
+    background-color: #f7f8fe;
+}
+
+.wc_cardsprogress {
+    width: 48px;
+    height: 24px;
+    border-radius: 3px;
+    border: 1px solid #D8DCFA;
+    color: #494B6D;
+    font-size: 12px;
+    font-weight: 500;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}
+
+@media screen and (min-width:480px) {
+    .wc_cardsprogress {
+        width: 78px;
+        height: 40px;
+        font-size: 14px;
+        border-radius: 6px;
+        margin-top: 18px;
+    }
 }
 
 ul.definition_flashcards_ul {
-   /*border: 2px solid #546f1f; */
-    padding: 8px;
+    display: flex;
+    align-content: center;
+    justify-items: center;
+    margin-top: -48px;
+    padding: 0;
 }
 .df_fl_control button:focus {
     outline: unset !important;
@@ -943,18 +1552,32 @@ ul.definition_flashcards_ul {
 .add_wraper_handle{
 	width: 100% !important;
 }
-@media only screen and (max-width: 750px) {
 
- .df_fl{
-   width: 100%;
-   margin: 0 auto;
-   }
+
+.df_fl {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-image: url([[pix:mod_wordcards|slider-bckg]]);
+    background-repeat: no-repeat;
+    background-size: cover;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 36px;
+    margin-top: 72px;
 }
 
-.flash_img{
-    max-width: 100%;
-	width: auto;
-	height: 180px;
+@media screen and (min-width:480px) {
+    .df_fl {
+        border-radius: 30px;
+    }
+}
+
+.flash_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
 }
 
 .wordcards_importintro {
@@ -993,6 +1616,20 @@ ul.definition_flashcards_ul {
     margin: 20px;
     padding: 10px;
 }
+
+.definition_flashcards a.wordcards-my-words-action {
+    position: absolute;  
+    top: -2px;  
+}
+
+.flip-card-front a.wordcards-my-words-action {
+    right: 5px;
+}
+
+.flip-card-back a.wordcards-my-words-action {
+    left: 5px;
+}
+
 a.wordcards-my-words-action.btn-outline-primary i.fa-check,
 a.wordcards-my-words-action.disabled i.fa-check {
     /*If the btn-outline-primary class is applied so the button is in the "Add" state (show plus icon only). */
@@ -1003,6 +1640,95 @@ a.wordcards-my-words-action.disabled i.fa-plus {
     /*In this case the btn-outline-primary class is applied so the button is in the "Remove" state (show check icon only). */
     display: none;
 }
+
+
+#my-words .fa-plus {
+    position: relative;
+}
+
+#my-words .fa-plus::before {
+    content: "";
+    height: 27px;
+    width: 19px;
+    display: block;
+    background-image: url([[pix:mod_wordcards|bookmark-empty]]);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+@media screen and (min-width:600px) {
+    .definition_flashcards #my-words .fa-plus::before {
+        height: 34px;
+        width: 24px;
+    }
+}
+
+
+#my-words .fa-plus::after {
+    content: "";
+    height: 10px;
+    width: 9px;
+    display: block;
+    background-image: url([[pix:mod_wordcards|add-word-plus]]);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 7px;
+    left: 5px;
+}
+
+@media screen and (min-width:600px) {
+    .definition_flashcards #my-words .fa-plus::after {
+        height: 12px;
+        width: 11px;
+        top: 9px;
+        left: 6px;
+    }
+}
+
+#my-words:hover .fa-plus::after {
+    transform: scale(1.2);
+}
+
+#my-words .fa-check::before {
+    content: "";
+    height: 27px;
+    width: 19px;
+    display: block;
+    background-image: url([[pix:mod_wordcards|bookmark-filled]]);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+@media screen and (min-width:600px) {
+    .definition_flashcards #my-words .fa-check::before {
+        height: 34px;
+        width: 24px;
+    }
+}
+
+#my-words.btn-primary,
+#my-words.btn-outline-primary {
+    color: transparent;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+#my-words.btn-outline-primary:focus, 
+#my-words.btn-outline-primary.focus,
+#my-words.btn-primary:focus, 
+#my-words.btn-primary.focus {
+    outline: 0.2rem solid transparent;
+    box-shadow: inset 0 0 0 2px transparent;
+}
+
+#my-words.btn-outline-primary:not(:disabled):not(.disabled):active, 
+#my-words.btn-outline-primary:not(:disabled):not(.disabled).active, 
+.show>#my-words.btn-outline-primary.dropdown-toggle {
+    background-color: transparent;
+}
+
+
 a.wordcards-my-words-action i.fa-spinner {
     display: none;
 }
@@ -1057,4 +1783,250 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 
 .mod_wordcards_activity_header .pull-right, .term-wrapper .pull-right {
     float: right;
+}
+
+/* Limit page width following Moodle4 default heading sizes */
+
+#page-mod-wordcards-view #page-content /*, 
+ #page-mod-solo-view #page-content,  */
+/* #page-mod-solo-reports .mod_solo_report_card */ {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button.definitions-next.btn {
+    font-weight: 500;
+    font-size: 16px;
+    color: #FFF;
+    background: #6F58DE;
+    box-shadow: 0 4px 14px rgba(0,0,0,.15);
+    border-radius: 6px;
+    padding: 14px 36px;
+}
+
+
+button.definitions-next.btn .fa-arrow-right:after {
+    content: "";
+    display: block;
+    height: 16px;
+    width: 18px;
+    background-image: url([[pix:mod_wordcards|next-page-arrow]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    top: 3px;
+    left: 4px;
+}
+
+button.definitions-next.btn .fa-arrow-right:before {
+    display: none;
+}
+
+.retrieval-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 232px;
+    margin-bottom: 12px;
+    margin-top: 6px;
+}
+
+@media screen and (min-width:600px) {
+    .retrieval-buttons {
+        width: 356px;   
+    }
+}
+
+.retrieve-video {
+    height: 30px;
+    width: 38px;
+    background-image: url([[pix:mod_wordcards|retrieve-video-icon]]);
+    background-size: 38px 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.retrieve-video.isselected {
+    background-color: #CCCCCC;
+}
+.retrieve-video.isselected.video-selected {
+    background-color: unset;
+    background-image: url([[pix:mod_wordcards|retrieve-image-icon]]);
+}
+
+.retrieve-video.btn {
+    border-radius: 0;
+}
+
+
+/* Model sentence for flashcards section*/
+
+.definition_flashcards .term-modelsentence {
+    background-color: #F7F5FE;
+    font-size: 16px;
+    padding: 24px;
+    line-height: 1.4;
+    margin-top: 48px;
+    margin-left: 18px;
+    margin-right: 18px;
+    border-radius: 8px;
+    position: relative;
+}
+
+@media screen and (min-width:600px) {
+    .definition_flashcards .term-modelsentence {
+        font-size: 18px;
+        padding: 36px;
+    }
+}
+
+.definition_flashcards .term-modelsentence h5 {
+    color: #745EE3;
+    text-transform: uppercase;
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.54px;
+    margin-bottom: 18px;
+    margin-top: -4px;
+}
+
+@media screen and (min-width:600px) {
+    .definition_flashcards .term-modelsentence h5 {
+        font-size: 10px;
+        margin-bottom: 24px;
+        margin-top: -10px;
+    }
+}
+
+.definition_flashcards .term-modelsentence-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.definition_flashcards .term-modelsentence-small {
+    height: 32px;
+    width: 32px;
+    border-radius: 100%;
+    border: 1px solid #6F58DE;
+    margin-top: 12px;
+    background-image: url([[pix:mod_wordcards|audio-icon-negative]]);
+    background-size: 14px 10px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.definition_flashcards .term-modelsentence-small:hover {
+    background-color: #eae8f7;
+}
+
+.definition_flashcards .term-modelsentence-small:active {
+    background-color: #eae8f7;
+}
+
+/* Model sentence for definitions section*/
+
+.definitions-container .term-modelsentence {
+    font-size: 16px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 18px;
+    max-width: 80%;
+    text-align: center;
+    color: #8388b8;
+}
+
+@media screen and (min-width:600px) {
+    .definitions-container .term-modelsentence {
+        margin-left: 18px;
+        flex-direction: row;
+        margin-top: 0;
+        max-width: none;
+        text-align: left;
+    }
+}
+
+.definitions-container .term-modelsentence::before {
+    content: '';
+    display: block;
+    height: 28px;
+    width: 18px;
+    border-left: 1px solid #D7D9FF;
+    flex-shrink: 0;
+    display: none;
+}
+
+@media screen and (min-width:600px) {
+    .definitions-container .term-modelsentence::before {
+        display: block;
+    }
+}
+
+
+.definitions-container .term-modelsentence-small {
+    height: 28px;
+    width: 28px;
+    border-radius: 100%;
+    position: relative;
+    border: 1px solid #BABFE7;
+    background-color: #fff;
+    margin-left: 12px;
+    margin-right: 12px;
+    margin-top: 6px;
+    background-image: url([[pix:mod_wordcards|audio-icon-mini]]);
+    background-size: 16px 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+}
+
+@media screen and (min-width:600px) {
+    .definitions-container .term-modelsentence-small {
+        margin-top: 0;
+    }
+}
+
+.definitions-container .term-modelsentence-small:hover {
+    background-color: #eff1fd;
+}
+
+.definitions-container .term-modelsentence-small:active {
+    background-color: #c7cbf0;
+}
+/*space game */
+.path-mod-wordcards div.fontloader {
+    visibility: hidden;
+    font-family: 'Audiowide', Sans;
+}
+.path-mod-wordcards #mod_wordcards_spacegame {
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+}
+.quizgame-scores {
+    text-align: center;
+}
+.floating-button-container {
+    background: #fff;
+    border: 0.5rem solid #fff;
+}
+.floating-game-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+}
+#page-mod-wordcards-view div[role="main"] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
