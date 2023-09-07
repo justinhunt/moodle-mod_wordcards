@@ -1467,7 +1467,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
         window.stage = app.stage;
         app.player.mouse.x = x;
-        app.player.mouse.y = y + (app.player.image.height / 2);
+        app.player.mouse.y = y - (app.player.image.height / 2);
 
         if (e.target === app.stage) {
             e.preventDefault();
