@@ -602,7 +602,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
          document.onmousemove = this.mousemove;
          document.ontouchstart = this.touchstart;
          document.ontouchend = this.touchend;
-         document.ontouchmove = this.touchmove;
+         document.addEventListener('touchmove',this.touchmove, {passive: false});
          window.onresize = this.orientationChange;
 
          document.addEventListener("gesturestart", this.cancelled, false);
