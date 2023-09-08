@@ -2030,3 +2030,9 @@ button.definitions-next.btn .fa-arrow-right:before {
     -ms-user-select: none;
     user-select: none;
 }
+@media (min-width: 768px) {
+    /* on ipad air 75% would cause main area to wrap .. 74% seems to work */
+    .col-md-9.wordcards-freemode-mainstage {
+        max-width: 74%;
+    }
+}
