@@ -135,7 +135,9 @@
                   {{/image}}
                   <div class="learned-status {{#learned}}learned{{/learned}} {{^learned}}not-learned{{/learned}}">
                      <div class="learned-status-icon"></div>
-                     <div class="learned-status-text">{{#learned}}{{#str}}learned, mod_wordcards{{/str}}{{/learned}} {{^learned}}{{#str}}notlearned, mod_wordcards{{/str}}{{/learned}}</div>
+                     <div class="learned-status-text">{{#learned}}{{#str}}learned, mod_wordcards{{/str}}{{/learned}}
+                         {{^learned}}<div class="learned-progress-bar" data-progress="{{learned_progress}}" title="{{#str}}notlearned, mod_wordcards{{/str}} ({{learned_progress}}%)"></div>{{/learned}}
+                     </div>
                   </div>
             </div>
          </div>
