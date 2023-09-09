@@ -194,7 +194,7 @@ if ($ADMIN->fulltree) {
     $name = 'learnpoint';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = 3;
+    $default = 4;
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
         $label, $details, $default, PARAM_INT));
 }
