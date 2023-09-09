@@ -418,3 +418,7 @@ $string['learnpoint_details'] = 'The number of correct associations during pract
 $string['learnpoint_help'] = 'The number of correct associations during practice or review at which to consider the word as learned.';
 $string['learned'] = 'Learned';
 $string['notlearned'] = 'Not yet learned';
+$string['termslearned'] = 'Terms Learned';
+$string['learnedheading'] = 'Terms Learned';
+$string['learnedreport'] = 'Terms Learned';
+$string['learned_p'] = "Learned(%)";

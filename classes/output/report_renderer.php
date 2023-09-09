@@ -27,8 +27,11 @@ class report_renderer extends \plugin_renderer_base {
                 get_string('attemptsreport', constants::M_COMPONENT), 'get');
         $reports[]=$this->render($attempts);
 
-
-
+        $learned = new \single_button(
+            new \moodle_url(constants::M_URL . '/reports.php',
+                array('report' => 'learned', 'id' => $cm->id, 'n' => $moduleinstance->id)),
+            get_string('learnedreport', constants::M_COMPONENT), 'get');
+        $reports[]=$this->render($learned);
 
 
         $ret = \html_writer::div(implode('<br />',$reports), constants::M_CLASS . '_listbuttons');

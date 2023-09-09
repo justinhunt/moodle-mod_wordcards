@@ -146,6 +146,15 @@ switch ($showreport) {
         $formdata->groupmenu = true;
         break;
 
+    case 'learned':
+        $report = new \mod_wordcards\local\report\learned();
+        $formdata = new stdClass();
+
+        $formdata->modid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupmenu = true;
+        break;
+
     case 'userattempts':
         if (!groups_user_groups_visible($course, $userid, $cm)) {
             throw new moodle_exception('nopermissiontoshow');
