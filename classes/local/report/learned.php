@@ -104,7 +104,7 @@ class learned extends basereport {
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }else{
 
-            $allsql= "SELECT a.userid,t.modid,COUNT((CASE WHEN a.successcount >  $moduleinstance->learnpoint  THEN 1 END)) as termslearned, $totalterms as totalterms 
+            $allsql= "SELECT a.userid,t.modid,COUNT((CASE WHEN a.successcount >=  $moduleinstance->learnpoint  THEN 1 END)) as termslearned, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
                     ON a.termid = t.id
