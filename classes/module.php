@@ -260,21 +260,15 @@ class mod_wordcards_module {
         $result = $DB->get_records_sql($sql, [$USER->id, $this->get_id()]);
         if($result) {
             foreach ($terms as $term) {
-                $successcount=0;
-                if (isset($result[$term->id]) && $result[$term->id]->successcount >= $learnpoint) {
-                    $successcount=$result[$term->id]->successcount;
-                    $term->learned = $result[$term->id];
-                } else {
-                    $term->learned = 0;
-                }
-                //calc the learned progress. Learnpoint should always be greater than 0 but just in case
-                if($learnpoint>0) {
-                    $term->learned_progress = round($successcount / $learnpoint * 100);
-                    if($term->learned_progress>100){
-                        $term->learned_progress=100;
+                $term->learned = 0;
+                $term->learned_progress = 0;
+                if (isset($result[$term->id])){
+                    if($result[$term->id]->successcount >= $learnpoint) {
+                        $term->learned = $result[$term->id];
+                        $term->learned_progress = 100;
+                    }else{
+                        $term->learned_progress = round($result[$term->id]->successcount  / $learnpoint * 100);
                     }
-                }else{
-                    $term->learned_progress = 0;
                 }
             }
         }

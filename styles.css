@@ -2045,11 +2045,9 @@ button.definitions-next.btn .fa-arrow-right:before {
     margin-top: 3px;
 }
 
-.learned-progress-bar::before {
-    content: '';
-    position: absolute;
+.learned-progress-fill {
+    width: 0;
     height: 100%;
-    width: attr(data-progress); /* Use the data-progress attribute to determine the width */
     background-color: #5560F3; /* Set the color of the progress */
     transition: width 0.3s ease; /* Add a smooth transition effect */
 }

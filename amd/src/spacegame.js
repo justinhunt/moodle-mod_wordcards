@@ -1510,8 +1510,10 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
         //multichoice questions
         //split into groups(ie "levels") of 5 terms (a single of mc of more than 5 terms is too much)
-        var mc_levels = this.split_array(terms, 5);
-        //for each level build a set of 5 questions with 1 correct and 4 distractors
+        var chunkSize = 5;
+        if(terms.length) {chunkSize = terms.length;}
+        var mc_levels = this.split_array(terms, chunkSize);
+        //for each level build a set of chunksize questions with 1 correct and chunksize -1  distractors
         for (var thelevel=0;thelevel<mc_levels.length;thelevel++) {
             var level = mc_levels[thelevel];
             //multiple choice questions
@@ -1533,7 +1535,8 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
         //matching questions
         //split into groups(ie "levels") of 3 terms (even 4 terms = 8 items to shoot, its quite hard)
-        var matching_levels = this.split_array(terms, 3);
+        chunkSize=3;
+        var matching_levels = this.split_array(terms, chunkSize);
         for (var thelevel=0;thelevel<matching_levels.length;thelevel++) {
             var level = matching_levels[thelevel];
             var subquestions = [];
