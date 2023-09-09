@@ -244,10 +244,13 @@ class mod_wordcards_module {
         }
     }
 
-    public function insert_learned_state($terms) {
+    public function insert_learned_state($terms,$userid=null) {
         global $DB,$USER;
 
         $learnpoint=$this->mod->learnpoint;
+        if($userid==null){
+            $userid=$USER->id;
+        }
 
         $sql = "SELECT t.id, a.successcount
                   FROM {wordcards_terms} t
@@ -257,7 +260,7 @@ class mod_wordcards_module {
                    AND t.modid = ?
                    AND t.deleted = 0";
 
-        $result = $DB->get_records_sql($sql, [$USER->id, $this->get_id()]);
+        $result = $DB->get_records_sql($sql, [$userid, $this->get_id()]);
         if($result) {
             foreach ($terms as $term) {
                 $term->learned = 0;
@@ -273,7 +276,6 @@ class mod_wordcards_module {
             }
         }
         return $terms;
-
     }
 
     public static function insert_media_urls($terms) {

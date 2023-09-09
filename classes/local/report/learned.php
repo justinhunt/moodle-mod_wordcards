@@ -27,7 +27,14 @@ class learned extends basereport {
 
             case 'username':
                 $user = $this->fetch_cache('user', $record->userid);
-                $ret = fullname($user);
+                $usersname = fullname($user);
+                if ($withlinks) {
+                    $url = new \moodle_url(constants::M_URL . '/reports.php',
+                        array('report' => 'userlearned', 'n' => $record->modid, 'userid'=>$record->userid));
+                    $ret = "<a href='" . $url->out() . "'>". $usersname . "</a>" ;
+                }else{
+                    $ret =  $usersname;
+                }
                 break;
 
             case 'termslearned':
@@ -83,7 +90,7 @@ class learned extends basereport {
 
              list($groupswhere, $allparams) = $DB->get_in_or_equal($formdata->groupid);
 
-            $allsql= "SELECT a.userid,COUNT((CASE WHEN a.successcount >= $moduleinstance->learnpoint THEN 1 END)) as termslearned, $totalterms as totalterms 
+            $allsql= "SELECT a.userid,t.modid,COUNT((CASE WHEN a.successcount >= $moduleinstance->learnpoint THEN 1 END)) as termslearned, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
                     ON a.termid = t.id
@@ -97,7 +104,7 @@ class learned extends basereport {
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }else{
 
-            $allsql= "SELECT a.userid,COUNT((CASE WHEN a.successcount >  $moduleinstance->learnpoint  THEN 1 END)) as termslearned, $totalterms as totalterms 
+            $allsql= "SELECT a.userid,t.modid,COUNT((CASE WHEN a.successcount >  $moduleinstance->learnpoint  THEN 1 END)) as termslearned, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
                     ON a.termid = t.id
