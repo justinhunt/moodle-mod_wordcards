@@ -100,7 +100,7 @@ class learned extends basereport {
                     WHERE gm.groupid $groupswhere
                     GROUP BY a.userid";
 
-            $allparams[]=$formdata->modid;
+            array_unshift($allparams,$formdata->modid);
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }else{
 
