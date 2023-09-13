@@ -149,7 +149,7 @@ define([
       if(app.terms[app.pointer].image){
         code+="<img class='a4e-prompt-img' src='" + app.terms[app.pointer].image + "'>";
       }
-      code+="<strong>" + app.terms[app.pointer].definition + "</strong>"
+      code+="<div class='definition-as-header'>" + app.terms[app.pointer].definition + "</div>"
       $("#wordcards-question").html(code);
 
       $("#wordcards-input").html(app.get_distractors());
