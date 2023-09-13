@@ -20,23 +20,27 @@ class report_renderer extends \plugin_renderer_base {
                         array('report' => 'grades', 'id' => $cm->id, 'n' => $moduleinstance->id)),
                 get_string('gradesreport', constants::M_COMPONENT), 'get');
         $reports[]=$this->render($grades);
+        $reports[] = array('button'=>$this->render($grades),
+            'text'=>get_string('gradesreport_explanation', constants::M_COMPONENT));
 
         $attempts = new \single_button(
                 new \moodle_url(constants::M_URL . '/reports.php',
                         array('report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id)),
                 get_string('attemptsreport', constants::M_COMPONENT), 'get');
         $reports[]=$this->render($attempts);
+        $reports[] = array('button'=>$this->render($attempts),
+            'text'=>get_string('attemptsreport_explanation', constants::M_COMPONENT));
 
         $learned = new \single_button(
             new \moodle_url(constants::M_URL . '/reports.php',
                 array('report' => 'learned', 'id' => $cm->id, 'n' => $moduleinstance->id)),
             get_string('learnedreport', constants::M_COMPONENT), 'get');
         $reports[]=$this->render($learned);
+        $reports[] = array('button'=>$this->render($learned),
+            'text'=>get_string('learnedreport_explanation', constants::M_COMPONENT));
 
-
-        $ret = \html_writer::div(implode('<br />',$reports), constants::M_CLASS . '_listbuttons');
-
-        //
+        $data=['reports' => $reports];
+        $ret= $this->render_from_template('mod_wordcards/reportsmenu', $data);
 
         //This shows button that pushes all updated machine grades to gradebook
         $ret .= $this->show_pushalltogradebook($moduleinstance);

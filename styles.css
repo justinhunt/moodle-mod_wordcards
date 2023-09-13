@@ -2051,7 +2051,23 @@ button.definitions-next.btn .fa-arrow-right:before {
     background-color: #5560F3; /* Set the color of the progress */
     transition: width 0.3s ease; /* Add a smooth transition effect */
 }
+
 .definition_as_header {
     font-weight: bolder;
     z-index: 1;
+}
+
+.wordcards_reportsmenu_box {
+    text-align: center;
+    display: flex;
+}
+
+.wordcards_reportsmenu_item {
+    width: 150px;
+    margin: 10px;
+}
+
+.wordcards_reportsmenu_itembutton button{
+    height: 80px;
+    width: 150px;
 }
