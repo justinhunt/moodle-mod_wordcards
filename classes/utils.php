@@ -816,7 +816,7 @@ class utils{
               constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
               constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
 
-          constants::M_LANG_NBNO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g'],
+          constants::M_LANG_NONO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g','nb-NO-Wavenet-A'=>'Hedda_g','nb-NO-Wavenet-D'=>'Anders_g'],
           constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
           constants::M_LANG_RORO => ['Carmen'=>'Carmen','ro-RO-Wavenet-A'=>'Sorina_g'],
           constants::M_LANG_SVSE => ['Astrid'=>'Astrid'],
@@ -1081,8 +1081,8 @@ class utils{
                constants::M_LANG_TEIN => get_string('te-in', constants::M_COMPONENT),
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT),
-
-               constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
+               constants::M_LANG_NONO => get_string('no-no', constants::M_COMPONENT),
+               //constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
                constants::M_LANG_PLPL => get_string('pl-pl', constants::M_COMPONENT),
                constants::M_LANG_RORO => get_string('ro-ro', constants::M_COMPONENT),
                constants::M_LANG_SVSE => get_string('sv-se', constants::M_COMPONENT),
@@ -1514,8 +1514,8 @@ class utils{
                 constants::M_LANG_TEIN => ['lang'=>false,'accent'=>false],
                 constants::M_LANG_TRTR => ['lang'=>'Turkish','accent'=>false],
                 constants::M_LANG_ZHCN =>  ['lang'=>'Chinese','accent'=>'cn'],
-
-                constants::M_LANG_NBNO => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_NONO => ['lang'=>false,'accent'=>false],
+                //constants::M_LANG_NBNO => ['lang'=>false,'accent'=>false],
                 constants::M_LANG_PLPL => ['lang'=>'Polish','accent'=>false],
                 constants::M_LANG_RORO => ['lang'=>false,'accent'=>false],
                 constants::M_LANG_SVSE => ['lang'=>'Swedish','accent'=>false],

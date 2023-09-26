@@ -545,5 +545,11 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023090301, 'wordcards');
     }
 
+    if($oldversion < 2023092600){
+        //The norwegian language-locale code nb-no is not supported by all STT engines in Poodll, and no-no is. So updating
+        $DB->set_field(constants::M_TABLE,'ttslanguage',constants::M_LANG_NONO,['ttslanguage'=>constants::M_LANG_NBNO]);
+        upgrade_mod_savepoint(true, 2023092600, 'wordcards');
+    }
+
     return true;
 }

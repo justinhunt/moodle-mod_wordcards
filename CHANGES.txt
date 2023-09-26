@@ -1,3 +1,6 @@
+1.3.49 (Build 2023092600)
+- fix for incorrect language-locale for Norwegian
+
 1.3.48 (Build 2023090900)
 - Fixed an issue with SpaceGame and the number of items in the practice pool
 - Added Learned reports to the reports page
