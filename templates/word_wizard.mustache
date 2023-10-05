@@ -32,6 +32,10 @@
                 if (allwords.trim() === '') {
                     return;
                 }
+                //if the langdef is other then we can not fetch definitions then we can not get definitions
+                if (langdef.trim() === 'zz') {
+                    return;
+                }
 
                 //add placeholders for each word
                 var tdata = {'terms': allwords.split(/[\n,]/)};

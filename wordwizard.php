@@ -45,7 +45,7 @@ $renderer = $PAGE->get_renderer('mod_wordcards');
 echo $renderer->header();
 echo $renderer->heading($pagetitle);
 echo $renderer->navigation($mod, 'word_wizard');
-echo $renderer->box(get_string('wizardinstructions',constants::M_COMPONENT), 'generalbox wordcards_wizardintro', 'intro');
+echo $renderer->box(get_string('wizardinstructions',constants::M_COMPONENT,utils::get_lang_name($mod->get_mod()->deflanguage)), 'generalbox wordcards_wizardintro', 'intro');
 echo $renderer->word_wizard($mod,$cm);
 
 
