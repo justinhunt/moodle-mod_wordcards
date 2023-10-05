@@ -95,7 +95,7 @@ define([
             app.element.append('<div id="'+app.YG_ID+'" class="'+app.YG_ID+'"></div>');
             app.widget = new YG.Widget(app.YG_ID, {
               width: 480,
-              components: app.YGC.captions | app.YGC.dictionary,
+              components: app.YGC.captions | app.YGC.dictionary | app.YGC.controlbuttons | app.YGC.toggleui | app.YGC.togglelight | app.YGC.togglethumbnails,
               autoStart: 1,
               events: {
                 'onFetchDone': app.onFetchDone,
