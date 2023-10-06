@@ -1348,6 +1348,7 @@ class utils{
         foreach($deflangs as $deflang){
             $options[$deflang['code']]=$deflang['name'];
         }
+
         $mform->addElement('select', 'deflanguage', get_string('deflanguage', constants::M_COMPONENT),
             $options);
         $mform->setDefault('deflanguage',$config->deflanguage);
@@ -1477,20 +1478,21 @@ class utils{
     public static function get_rcdic_langs($selected='en'){
 
         $langdefs=[];
-        $langdefs[] = ['code'=>'ar','name'=>'Arabic'];
-      //  $langdefs[] = ['code'=>'de','name'=>'German'];
-        $langdefs[] = ['code'=>'en','name'=>'English'];
-        $langdefs[] = ['code'=>'es','name'=>'Spanish'];
-        $langdefs[] = ['code'=>'fr','name'=>'French'];
-        $langdefs[] = ['code'=>'id','name'=>'Bahasa Indonesia'];
-        $langdefs[] = ['code'=>'ja','name'=>'Japanese'];
-        $langdefs[] = ['code'=>'ko','name'=>'Korean'];
-        $langdefs[] = ['code'=>'pt','name'=>'Portuguese'];
-        $langdefs[] = ['code'=>'rus','name'=>'Russian'];
-        $langdefs[] = ['code'=>'th','name'=>'Thai'];
-        $langdefs[] = ['code'=>'vi','name'=>'Vietnamese'];
-        $langdefs[] = ['code'=>'zh','name'=>'Chinese (simpl.)'];
-        $langdefs[] = ['code'=>'zh_tw','name'=>'Chinese (trad.)'];
+        $langdefs[] = ['code'=>'ar', 'name'=>self::get_lang_name('ar')];
+      //  $langdefs[] = ['code'=>'de','name'=>self::get_lang_name('de')];
+        $langdefs[] = ['code'=>'en','name'=>self::get_lang_name('en')];
+        $langdefs[] = ['code'=>'es','name'=>self::get_lang_name('es')];
+        $langdefs[] = ['code'=>'fr','name'=>self::get_lang_name('fr')];
+        $langdefs[] = ['code'=>'id','name'=>self::get_lang_name('id')];
+        $langdefs[] = ['code'=>'ja','name'=>self::get_lang_name('ja')];
+        $langdefs[] = ['code'=>'ko','name'=>self::get_lang_name('ko')];
+        $langdefs[] = ['code'=>'pt','name'=>self::get_lang_name('pt')];
+        $langdefs[] = ['code'=>'rus','name'=>self::get_lang_name('rus')];
+        $langdefs[] = ['code'=>'th','name'=>self::get_lang_name('th')];
+        $langdefs[] = ['code'=>'vi','name'=>self::get_lang_name('vi')];
+        $langdefs[] = ['code'=>'zh','name'=>self::get_lang_name('zh')];
+        $langdefs[] = ['code'=>'zh_tw','name'=>self::get_lang_name('zh_tw')];
+        $langdefs[] = ['code'=>constants::M_DEFLANG_OTHER,'name'=>self::get_lang_name(constants::M_DEFLANG_OTHER)];
         $default_set = false;
         for($i=0;$i<count($langdefs);$i++){
             if($langdefs[$i]['code']==$selected){
@@ -1621,10 +1623,32 @@ class utils{
         return $langdefs;
     }
 
+    public static function get_lang_name($langcode){
+        switch($langcode){
+            case 'ar': return 'Arabic';
+            case 'en': return 'English';
+            case 'es': return 'Spanish';
+            case 'fr': return 'French';
+            case 'id': return 'Bahasa Indonesia';
+            case 'ja': return 'Japanese';
+            case 'ko': return 'Korean';
+            case 'pt': return 'Portuguese';
+            case 'rus': return 'Russian';
+            case 'th': return 'Thai';
+            case 'vi': return 'Vietnamese';
+            case 'zh': return 'Chinese (simpl.)';
+            case 'zh_tw': return 'Chinese (trad.)';
+            case constants::M_DEFLANG_OTHER:
+                return get_string('deflang_other',constants::M_COMPONENT);
+        }
+    }
+
     public static function update_deflanguage($mod){
         global $DB;
         $terms = $DB->get_records(constants::M_TERMSTABLE,array('modid'=>$mod->get_mod()->id));
         if(!$terms){return;}
+        //if the definitions language is other, we can not translate it
+        if($mod->get_mod()->deflanguage==constants::M_DEFLANG_OTHER){return;}
         foreach($terms as $term){
             if(empty($term->translations)){continue;}
             if(!self::is_json($term->translations)){continue;}

@@ -117,9 +117,12 @@ class mod_wordcards_helper {
                 new moodle_url('/mod/wordcards/import.php', ['id' => $cmid]),
                 get_string('tabimport', constants::M_COMPONENT), '', true);
 
+            //if we have a language that is in the dictionary, we show the word wizard
+            if($mod->get_mod()->deflanguage!==constants::M_DEFLANG_OTHER) {
                 $tabs[] = new tabobject('wordwizard',
                     new moodle_url('/mod/wordcards/wordwizard.php', ['id' => $cmid]),
                     get_string('wordwizard', constants::M_COMPONENT), '', true);
+            }
         }
 
 
