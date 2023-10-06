@@ -823,7 +823,20 @@ class utils{
           constants::M_LANG_UKUA => ['uk-UA-Wavenet-A'=>'Katya_g'],
           constants::M_LANG_FILPH => ['fil-PH-Wavenet-A'=>'Darna_g','fil-PH-Wavenet-B'=>'Reyna_g','fil-PH-Wavenet-C'=>'Bayani_g','fil-PH-Wavenet-D'=>'Ernesto_g'],
           constants::M_LANG_FIFI => ['Suvi'=>'Suvi','fi-FI-Wavenet-A'=>'Kaarina_g'],
-          constants::M_LANG_HUHU => ['hu-HU-Wavenet-A'=>'Eszter_g']
+          constants::M_LANG_HUHU => ['hu-HU-Wavenet-A'=>'Eszter_g'],
+
+          constants::M_LANG_BGBG => array('bg-BG-Standard-A' => 'Mila_g'),//nikolai
+          constants::M_LANG_CSCZ => array('cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g'),
+          constants::M_LANG_ELGR => array('el-GR-Wavenet-A' => 'Sophia_g', 'el-GR-Standard-A' => 'Isabella_g'),
+          // constants::M_LANG_HRHR => array('A' => 'Ivana', 'B' => 'Marko'),
+          constants::M_LANG_LVLV => array('lv-LV-Standard-A' => 'Janis_g'),
+          constants::M_LANG_LTLT => array('lt-LT-Standard-A' => 'Matas_g'),
+          constants::M_LANG_SKSK => array('sk-SK-Wavenet-A' => 'Laura_g', 'sk-SK-Standard-A' => 'Natalia_g'),
+          //   constants::M_LANG_SLSI => array('A' => 'Pia', 'B' => 'Vid'),
+          constants::M_LANG_ISIS => array('Dora' => 'Dora', 'Karl' => 'Karl'),
+          //    constants::M_LANG_MKMK => array('A' => 'Marija', 'B' => 'Trajko'),
+          constants::M_LANG_SRRS => array('sr-RS-Standard-A' => 'Milena_g'),
+
       );
       if(array_key_exists($langcode,$alllang)&& !$showall) {
           return $alllang[$langcode];
@@ -1071,6 +1084,7 @@ class utils{
                constants::M_LANG_ITIT => get_string('it-it', constants::M_COMPONENT),
                constants::M_LANG_JAJP => get_string('ja-jp', constants::M_COMPONENT),
                constants::M_LANG_KOKR => get_string('ko-kr', constants::M_COMPONENT),
+               constants::M_LANG_MINZ => get_string('mi-nz', constants::M_COMPONENT),
                constants::M_LANG_MSMY => get_string('ms-my', constants::M_COMPONENT),
                constants::M_LANG_NLNL => get_string('nl-nl', constants::M_COMPONENT),
                constants::M_LANG_NLBE => get_string('nl-be', constants::M_COMPONENT),
@@ -1089,7 +1103,19 @@ class utils{
                constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
                constants::M_LANG_EUES => get_string('eu-es',constants::M_COMPONENT),
                constants::M_LANG_FIFI => get_string('fi-fi',constants::M_COMPONENT),
-               constants::M_LANG_HUHU => get_string('hu-hu',constants::M_COMPONENT)
+               constants::M_LANG_HUHU => get_string('hu-hu',constants::M_COMPONENT),
+
+               constants::M_LANG_BGBG => get_string('bg-bg', constants::M_COMPONENT),
+               constants::M_LANG_CSCZ => get_string('cs-cz', constants::M_COMPONENT),
+               constants::M_LANG_ELGR => get_string('el-gr', constants::M_COMPONENT),
+               constants::M_LANG_HRHR => get_string('hr-hr', constants::M_COMPONENT),
+               constants::M_LANG_LTLT => get_string('lt-lt', constants::M_COMPONENT),
+               constants::M_LANG_LVLV => get_string('lv-lv', constants::M_COMPONENT),
+               constants::M_LANG_SKSK => get_string('sk-sk', constants::M_COMPONENT),
+               constants::M_LANG_SLSI => get_string('sl-si', constants::M_COMPONENT),
+               constants::M_LANG_ISIS => get_string('is-is', constants::M_COMPONENT),
+               constants::M_LANG_MKMK => get_string('mk-mk', constants::M_COMPONENT),
+               constants::M_LANG_SRRS => get_string('sr-rs', constants::M_COMPONENT)
        );
    }
 
