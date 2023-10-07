@@ -1598,6 +1598,10 @@ class utils{
     }
 
     public static function get_lang_name($langcode){
+        if(mb_strlen($langcode)>2){
+            $langcode = mb_substr($langcode,0,2);
+        }
+
         switch($langcode){
             case 'ar': return 'Arabic';
             case 'en': return 'English';
