@@ -9,6 +9,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/tablelib.php');
 
+use core\output\checkbox_toggleall;
 use \mod_wordcards\utils;
 use \mod_wordcards\constants;
 
@@ -21,12 +22,19 @@ use \mod_wordcards\constants;
 class mod_wordcards_table_terms extends table_sql {
 
     /**
+     *
+     * @var mod_wordcards\output\renderer
+     */
+    protected $renderer;
+
+    /**
      * Constructor.
      *
      * @param string $uniqueid Unique ID.
      * @param object $mod The module.
      */
     public function __construct($uniqueid, $mod) {
+        global $PAGE;
         parent::__construct($uniqueid);
         $this->mod = $mod;
         //this prevents the user changing the ttslanguage eg en-US => en-GB .. the selected voices will not match
@@ -36,6 +44,7 @@ class mod_wordcards_table_terms extends table_sql {
 
         // Define columns.
         $this->define_columns(array(
+            'bulkselect',
             'term',
             'definition',
             'audio',
@@ -44,7 +53,16 @@ class mod_wordcards_table_terms extends table_sql {
             'model_sentence',
             'actions'
         ));
+        $this->renderer = $PAGE->get_renderer('mod_wordcards');
+        $mastercheckbox = new checkbox_toggleall('delete-term', true, [
+            'id' => 'select-all-term',
+            'name' => 'select-all-term',
+            'label' => get_string('selectall'),
+            'selectall' => get_string('selectall'),
+            'deselectall' => get_string('deselectall'),
+        ]);
         $this->define_headers(array(
+            $this->renderer->render($mastercheckbox),
             get_string('term', constants::M_COMPONENT),
             get_string('definition', constants::M_COMPONENT),
                 get_string('audiofile', constants::M_COMPONENT),
@@ -72,6 +90,7 @@ class mod_wordcards_table_terms extends table_sql {
         // Define various table settings.
         $this->sortable(true, 'term', SORT_ASC);
         $this->no_sorting('actions');
+        $this->no_sorting('bulkselect');
         $this->collapsible(false);
     }
 
@@ -122,6 +141,13 @@ class mod_wordcards_table_terms extends table_sql {
         $actions[] = $actionlink;
 
         return implode(' ', $actions);
+    }
+
+    protected function col_bulkselect($row) {
+        $checkbox = new checkbox_toggleall('delete-term', false, [
+            'value' => $row->id, 'class' => 'bulkselectcol', 'name' => 'termdeleteid[]'
+        ]);
+        return $this->renderer->render($checkbox);
     }
 
     /**

@@ -14,6 +14,7 @@ use \mod_wordcards\constants;
 $cmid = required_param('id', PARAM_INT);
 $termid = optional_param('termid', null, PARAM_INT);
 $action = optional_param('action', null, PARAM_ALPHA);
+$termdeleteids = optional_param_array('termdeleteid', [], PARAM_INT);
 
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
@@ -60,6 +61,14 @@ if ($action == 'delete') {
 }else if($action =='export') {
     utils::export_terms_to_csv($modid);
     exit;
+} else if ($action == 'bulkdelete') {
+    confirm_sesskey();
+    if (!empty($termdeleteids)) {
+        foreach ($termdeleteids as $termdeleteid) {
+            $mod->delete_term($termdeleteid);
+        }
+    }
+    redirect($baseurl);
 }
 
 $form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0,'ttslanguage'=>$mod->get_mod()->ttslanguage]);
@@ -177,13 +186,32 @@ echo $output->navigation($mod, 'managewords');
 echo $output->box(get_string('managewordsinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
 
 // $form->display();
+
+echo html_writer::start_tag('form', array('method' => 'POST', 'id' => 'bulkdeleteform'));
+
 echo html_writer::link('#',get_string('addnewterm',constants::M_COMPONENT),
         array('class'=>'btn btn-primary mod_wordcards_item_row_addlink','data-id'=>0,'data-type'=>"add"));
+
+echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+
+$confirmation = new confirm_action(get_string('reallybulkdelete', 'mod_wordcards'));
+$confirmationcontext = $confirmation->export_for_template($OUTPUT);
+$confirmationcontext->id = 'deleteconfirmation';
+echo $OUTPUT->render_from_template('core/actions', ['actions' => [$confirmationcontext]]);
+echo html_writer::tag('button', get_string('bulkdelete', 'mod_wordcards'), [
+        'type' => 'submit',
+        'name' => 'action',
+        'value' => 'bulkdelete',
+        'id' => 'deleteconfirmation',
+        'class' => 'btn btn-primary ml-2 d-none',
+]);
 
 $table = new mod_wordcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);
 $table->out(25, false);
+echo html_writer::end_tag('form');
 
 $props=array('contextid'=>$modulecontext->id);
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/managewordshelper', 'init', array($props));
+$PAGE->requires->js_call_amd(constants::M_COMPONENT . '/bulkselect');
 echo $output->footer();

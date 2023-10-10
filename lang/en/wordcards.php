@@ -445,3 +445,5 @@ $string['learnedreport_explanation'] = 'A list of the number of terms learned by
 $string['gradesreport_explanation'] = 'The grades for each user in this activity.';
 $string['attemptsreport_explanation'] = 'A summary of WordCards attempts per user in this activity.';
 $string['deflang_other'] = "Other";
+$string['bulkdelete'] = 'Delete selected';
+$string['reallybulkdelete'] = 'Are you sure you want to delete the selected term ?';
