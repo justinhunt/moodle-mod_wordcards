@@ -34,6 +34,7 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
             usebrowserrec: false,
             currentTime: 0,
             stt_guided: false,
+            currentPrompt: false,
 
             //for making multiple instances
             clone: function () {
@@ -313,6 +314,10 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
                     bodyFormData.append('strictmode', 'false');
                 }else{
                     bodyFormData.append('strictmode', 'true');
+                }
+                //prompt is used by whisper and other transcibers down the line
+                if(this.currentPrompt!==false){
+                    bodyFormData.append('prompt', this.currentPrompt);
                 }
 
                 var oReq = new XMLHttpRequest();

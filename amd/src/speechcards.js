@@ -25,6 +25,7 @@ define([
     dryRun: false,
     controls: {},
     region: 'useast1',
+    ttrec: null, //a handle on the tt recorder
 
     init: function(props) {
 
@@ -96,6 +97,7 @@ define([
                 anim.do_animate(app.controls.slider,'zoomOut animate__faster','out').then(
                     function(){
                         app.controls.slider.text(app.terms[app.pointer - 1].term);
+                        app.ttrec.currentPrompt=app.terms[app.pointer - 1].term;
                         anim.do_animate(app.controls.slider,'zoomIn animate__faster','in');
                     }
                 );
@@ -115,6 +117,7 @@ define([
                 anim.do_animate(app.controls.slider,'zoomOut animate__faster','out').then(
                     function(){
                         app.controls.slider.text(app.terms[app.pointer - 1].term);
+                        app.ttrec.currentPrompt=app.terms[app.pointer - 1].term;
                         anim.do_animate(app.controls.slider,'zoomIn animate__faster','in');
                     }
                 );
@@ -174,6 +177,7 @@ define([
 
     initCards: function() {
         app.controls.slider.text(app.terms[app.pointer - 1].term);
+        app.ttrec.currentPrompt=app.terms[app.pointer - 1].term;
     },
 
     initComponents: function() {
@@ -234,9 +238,11 @@ define([
         opts.uniqueid = recid;
         opts.stt_guided = that.props.stt_guided;
         opts.callback = theCallback;
-        ttrecorder.clone().init(opts);
-
-
+        app.ttrec = ttrecorder.clone();
+        app.ttrec.init(opts);
+        //init prompt for first card
+        //in some cases ttrecorder wants to know the target
+        app.ttrec.currentPrompt=app.terms[app.pointer - 1]['term'];
     },
 
     showStarRating: function(similarity){

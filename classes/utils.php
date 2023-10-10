@@ -840,7 +840,7 @@ class utils{
       );
       if(array_key_exists($langcode,$alllang)&& !$showall) {
           return $alllang[$langcode];
-      }elseif($showall) {
+      }elseif($showall && array_key_exists($langcode,$alllang)) {
           $usearray =[];
 
           //add current language first
