@@ -103,7 +103,11 @@ class mod_wordcards_table_terms extends table_sql {
     protected function col_ttsvoice($row)
     {
         global $OUTPUT;
-        return $this->voices[$row->ttsvoice];
+        if(array_key_exists($row->ttsvoice,$this->voices)){
+            return $this->voices[$row->ttsvoice];
+        }else{
+            return get_string('invalidvoice',constants::M_COMPONENT);
+        }
 
     }
 

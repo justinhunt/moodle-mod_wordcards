@@ -1,3 +1,10 @@
+1.3.50 (Build 2023101000)
+- Added more languages incl. Maori
+- Better behaviour for languages with no dictionary support
+- Better behaviour for languages with no TTS support
+- Bulk delete for words admin page
+- Enabled more features for YouGlish player
+
 1.3.49 (Build 2023092600)
 - fix for incorrect language-locale for Norwegian
 

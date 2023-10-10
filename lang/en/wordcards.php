@@ -169,6 +169,7 @@ $string['no-no'] = 'Norwegian';
 $string['nb-no'] = 'Norwegian'; //unused
 $string['pl-pl'] = 'Polish';
 $string['ro-ro'] = 'Romanian';
+$string['xx-xx'] = 'Other'; // Other
 
 $string['awsregion']='AWS Region';
 //$string['region']='AWS Region';
@@ -447,3 +448,5 @@ $string['attemptsreport_explanation'] = 'A summary of WordCards attempts per use
 $string['deflang_other'] = "Other";
 $string['bulkdelete'] = 'Delete selected';
 $string['reallybulkdelete'] = 'Are you sure you want to delete the selected term ?';
+$string['notts'] = "No TTS";
+$string['invalidvoice'] = "Invalid Voice";

@@ -19,6 +19,9 @@ define(['jquery', 'core/log'], function ($, log) {
 
         fetch_polly_url: function(speaktext,texttype, voice) {
 
+                //if we have no TTS voice, do not even try
+                if(voice==='none'){return '#';}
+
                 //The REST API we are calling
                 var functionname = 'local_cpapi_fetch_polly_url';
 

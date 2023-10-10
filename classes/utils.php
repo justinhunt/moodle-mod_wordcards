@@ -590,6 +590,9 @@ class utils{
     public static function fetch_polly_url($token,$region,$speaktext,$texttype, $voice) {
         global $USER;
 
+        //If this is the "notts" voice, then we just return false
+        if($voice=constants::M_NO_TTS){return false;}
+
         //The REST API we are calling
         $functionname = 'local_cpapi_fetch_polly_url';
 
@@ -836,28 +839,34 @@ class utils{
           constants::M_LANG_ISIS => array('Dora' => 'Dora', 'Karl' => 'Karl'),
           //    constants::M_LANG_MKMK => array('A' => 'Marija', 'B' => 'Trajko'),
           constants::M_LANG_SRRS => array('sr-RS-Standard-A' => 'Milena_g'),
+          constants::M_LANG_OTHER=>array(constants::M_NO_TTS=>get_string('notts', constants::M_COMPONENT)),
 
       );
       if(array_key_exists($langcode,$alllang)&& !$showall) {
           return $alllang[$langcode];
       }elseif($showall && array_key_exists($langcode,$alllang)) {
-          $usearray =[];
+          $usearray = [];
 
           //add current language first
-          foreach($alllang[$langcode] as $v=>$thevoice){
-              $neuraltag = in_array($v,constants::M_NEURALVOICES) ? ' (+)' : '';
+          foreach ($alllang[$langcode] as $v => $thevoice) {
+              $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
               $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
           }
           //then all the rest
-          foreach($alllang as $lang=>$voices){
-              if($lang==$langcode){continue;}
-              foreach($voices as $v=>$thevoice){
-                  $neuraltag = in_array($v,constants::M_NEURALVOICES) ? ' (+)' : '';
+          foreach ($alllang as $lang => $voices) {
+              if ($lang == $langcode) {
+                  continue;
+              }
+              foreach ($voices as $v => $thevoice) {
+                  $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
                   $usearray[$v] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
               }
           }
           return $usearray;
+      }elseif(!array_key_exists($langcode,$alllang)){
+          return [constants::M_NO_TTS=>get_string('notts', constants::M_COMPONENT) ];
       }else{
+          //what could this be?
           return $alllang[constants::M_LANG_ENUS];
       }
     /*
@@ -1115,7 +1124,8 @@ class utils{
                constants::M_LANG_SLSI => get_string('sl-si', constants::M_COMPONENT),
                constants::M_LANG_ISIS => get_string('is-is', constants::M_COMPONENT),
                constants::M_LANG_MKMK => get_string('mk-mk', constants::M_COMPONENT),
-               constants::M_LANG_SRRS => get_string('sr-rs', constants::M_COMPONENT)
+               constants::M_LANG_SRRS => get_string('sr-rs', constants::M_COMPONENT),
+               constants::M_LANG_OTHER => get_string('xx-xx', constants::M_COMPONENT),
        );
    }
 
