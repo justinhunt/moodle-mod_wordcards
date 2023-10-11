@@ -1651,6 +1651,7 @@ class utils{
             case 'ko': return 'Korean';
             case 'pt': return 'Portuguese';
             case 'rus': return 'Russian';
+            case 'ru': return 'Russian';
             case 'th': return 'Thai';
             case 'vi': return 'Vietnamese';
             case 'zh': return 'Chinese (simpl.)';
