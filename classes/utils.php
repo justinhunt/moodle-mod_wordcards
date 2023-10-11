@@ -1485,24 +1485,27 @@ class utils{
         return $ret;
     }
 
-    public static function get_rcdic_langs($selected='en'){
+    public static function get_rcdic_langs($selected='en', $other=true)
+    {
 
-        $langdefs=[];
-        $langdefs[] = ['code'=>'ar', 'name'=>self::get_lang_name('ar')];
-      //  $langdefs[] = ['code'=>'de','name'=>self::get_lang_name('de')];
-        $langdefs[] = ['code'=>'en','name'=>self::get_lang_name('en')];
-        $langdefs[] = ['code'=>'es','name'=>self::get_lang_name('es')];
-        $langdefs[] = ['code'=>'fr','name'=>self::get_lang_name('fr')];
-        $langdefs[] = ['code'=>'id','name'=>self::get_lang_name('id')];
-        $langdefs[] = ['code'=>'ja','name'=>self::get_lang_name('ja')];
-        $langdefs[] = ['code'=>'ko','name'=>self::get_lang_name('ko')];
-        $langdefs[] = ['code'=>'pt','name'=>self::get_lang_name('pt')];
-        $langdefs[] = ['code'=>'rus','name'=>self::get_lang_name('rus')];
-        $langdefs[] = ['code'=>'th','name'=>self::get_lang_name('th')];
-        $langdefs[] = ['code'=>'vi','name'=>self::get_lang_name('vi')];
-        $langdefs[] = ['code'=>'zh','name'=>self::get_lang_name('zh')];
-        $langdefs[] = ['code'=>'zh_tw','name'=>self::get_lang_name('zh_tw')];
-        $langdefs[] = ['code'=>constants::M_DEFLANG_OTHER,'name'=>self::get_lang_name(constants::M_DEFLANG_OTHER)];
+        $langdefs = [];
+        $langdefs[] = ['code' => 'ar', 'name' => self::get_lang_name('ar')];
+        //  $langdefs[] = ['code'=>'de','name'=>self::get_lang_name('de')];
+        $langdefs[] = ['code' => 'en', 'name' => self::get_lang_name('en')];
+        $langdefs[] = ['code' => 'es', 'name' => self::get_lang_name('es')];
+        $langdefs[] = ['code' => 'fr', 'name' => self::get_lang_name('fr')];
+        $langdefs[] = ['code' => 'id', 'name' => self::get_lang_name('id')];
+        $langdefs[] = ['code' => 'ja', 'name' => self::get_lang_name('ja')];
+        $langdefs[] = ['code' => 'ko', 'name' => self::get_lang_name('ko')];
+        $langdefs[] = ['code' => 'pt', 'name' => self::get_lang_name('pt')];
+        $langdefs[] = ['code' => 'ru', 'name' => self::get_lang_name('ru')];
+        $langdefs[] = ['code' => 'th', 'name' => self::get_lang_name('th')];
+        $langdefs[] = ['code' => 'vi', 'name' => self::get_lang_name('vi')];
+        $langdefs[] = ['code' => 'zh', 'name' => self::get_lang_name('zh')];
+        $langdefs[] = ['code' => 'zh_tw', 'name' => self::get_lang_name('zh_tw')];
+        if ($other) {
+            $langdefs[] = ['code' => constants::M_DEFLANG_OTHER, 'name' => self::get_lang_name(constants::M_DEFLANG_OTHER)];
+        }
         $default_set = false;
         for($i=0;$i<count($langdefs);$i++){
             if($langdefs[$i]['code']==$selected){
