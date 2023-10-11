@@ -1498,7 +1498,7 @@ class utils{
         $langdefs[] = ['code' => 'ja', 'name' => self::get_lang_name('ja')];
         $langdefs[] = ['code' => 'ko', 'name' => self::get_lang_name('ko')];
         $langdefs[] = ['code' => 'pt', 'name' => self::get_lang_name('pt')];
-        $langdefs[] = ['code' => 'ru', 'name' => self::get_lang_name('ru')];
+        $langdefs[] = ['code' => 'rus', 'name' => self::get_lang_name('ru')];
         $langdefs[] = ['code' => 'th', 'name' => self::get_lang_name('th')];
         $langdefs[] = ['code' => 'vi', 'name' => self::get_lang_name('vi')];
         $langdefs[] = ['code' => 'zh', 'name' => self::get_lang_name('zh')];
