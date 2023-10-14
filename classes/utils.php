@@ -1636,12 +1636,14 @@ class utils{
         return $langdefs;
     }
 
-    public static function get_lang_name($langcode){
-        if(mb_strlen($langcode)>2){
-            $langcode = mb_substr($langcode,0,2);
+    public static function get_lang_name($fulllangcode){
+        if(mb_strlen($fulllangcode)>2){
+            $shortlangcode = mb_substr($fulllangcode,0,2);
+        }else{
+            $shortlangcode = $fulllangcode;
         }
 
-        switch($langcode){
+        switch($shortlangcode){
             case 'ar': return 'Arabic';
             case 'en': return 'English';
             case 'es': return 'Spanish';
@@ -1654,8 +1656,7 @@ class utils{
             case 'ru': return 'Russian';
             case 'th': return 'Thai';
             case 'vi': return 'Vietnamese';
-            case 'zh': return 'Chinese (simpl.)';
-            case 'zh_tw': return 'Chinese (trad.)';
+            case 'zh': return  $fulllangcode=="zh_tw" ? 'Chinese (trad.)' : 'Chinese (simpl.)';
             case constants::M_DEFLANG_OTHER:
                 return get_string('deflang_other',constants::M_COMPONENT);
         }
