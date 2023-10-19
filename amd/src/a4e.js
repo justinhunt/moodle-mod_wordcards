@@ -21,10 +21,12 @@ define([
     face: true,
 
     register_events: function() {
-      console.log("register_events within a4e.js");
+      log.debug("register_events within a4e.js");
     },
 
     init_audio: function(token, region, owner){
+
+      log.debug("a4e.js: initializing audio ");
 
         //Init Polly TTS
         polly.init(token, region, owner);
@@ -36,22 +38,26 @@ define([
             theplayer[0].play();
         };
 
-        //register button event handler to play audio
-        
-        $('.a4e-flashcards-container .play-tts, span.model-sentence-play-tts, #card-audio').on('click', function(e) {
-            e.stopPropagation();
+        var playonclick = function(e) {
+              e.stopPropagation();
 
-            var theplayer = $("#poodll_vocabplayer");
+              var theplayer = $("#poodll_vocabplayer");
 
-            //if we have model audio use that, otherwise TTS
-            var audiourl=$(this).attr('data-modelaudio');
-            if(audiourl && (audiourl.indexOf('http:')===0 ||audiourl.indexOf('https:')===0)){
+              //if we have model audio use that, otherwise TTS
+              var audiourl=$(this).attr('data-modelaudio');
+              if(audiourl && (audiourl.indexOf('http:')===0 ||audiourl.indexOf('https:')===0)){
                 theplayer.attr('src', audiourl);
                 theplayer[0].play();
-            }else{
+              }else{
                 polly.fetch_polly_url($(this).attr('data-tts'), 'text', $(this).attr('data-ttsvoice'));
+              }
             }
-        });
+
+        //register button event handler to play audio
+        //flip cards a4e
+      $(document.body).on('click','.a4e-flashcards-container .play-tts',playonclick);
+        //cards on learn page
+      $('span.model-sentence-play-tts, #card-audio').on('click',playonclick );
     },
 
     progress_dots: function(results, terms) {
