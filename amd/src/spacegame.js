@@ -166,7 +166,8 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
         Shoot() {
             app.playSound("laser");
-            app.gameObjects.unshift(new Laser( app.player.x, app.player.y, true, 24));
+            var shooter = this;
+            app.gameObjects.unshift(new Laser( app.player.x, app.player.y,shooter, true, 24));
             app.canShoot = false;
         }
 
@@ -251,7 +252,8 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             if (this.shotClock <= 0) {
                 if (this.y < bounds.height * 0.6) {
                     app.playSound("enemylaser");
-                    var laser = new Laser(this.x, this.y);
+                    var shooter=this;
+                    var laser = new Laser(this.x, this.y, shooter);
                     laser.direction.y = 1;
                     laser.friendly = false;
                     app.gameObjects.unshift(laser);
@@ -308,8 +310,10 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
     }
 
     class Laser extends GameObject {
-        constructor(x, y, friendly, laserSpeed) {
+        constructor(x, y, shooter, friendly, laserSpeed) {
+
             super(friendly ? "pix/laser.png" : "pix/enemylaser.png", x, y);
+            this.x = this.x + ((shooter.image.width - this.image.width) / 2);
             this.direction.y = -1;
             this.friendly = friendly ? 1 : 0;
             this.laserSpeed = laserSpeed || 12;
@@ -406,7 +410,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
     class MultiEnemy extends Enemy {
         constructor(x, y, text, itempoints, single,termid) {
-            super("pix/enemy.png", x, y, text, itempoints, termid);
+            super("pix/ship-enemy.png", x, y, text, itempoints, termid);
             this.single = single;
         }
 
@@ -543,6 +547,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             'pix/icon.gif',
             'pix/planet.png',
             'pix/ship.png',
+            'pix/ship-poodll.png',
             'pix/enemy.png',
             'pix/enemystem.png',
             'pix/enemychoice.png',
@@ -981,7 +986,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                     fail: notification.exception
                 }]);
         */
-        this.player = new Player("pix/ship.png", 0, 0);
+        this.player = new Player("pix/ship-poodll.png", 0, 0);
         this.player.x = this.displayRect.width / 2;
         this.player.y = this.displayRect.height / 2;
         this.gameObjects.push(this.player);
@@ -1269,7 +1274,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
                 line = word;
             } else {
-                // If it's shorted than the limit, just add the word to the line and move on.
+                // If it's shorter than the limit, just add the word to the line and move on.
                 line = tempLine;
             }
         });
@@ -1279,6 +1284,8 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             text: line,
             y: y += textHeight
         });
+
+        //the background board for the text
 
         // The offset the text was created.
         var yOffset = y - originalY;
@@ -1290,6 +1297,28 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
             context.fillText(drawLine.text, x, drawLine.y + modifier);
         });
+    },
+
+    drawRoundRect: function(context, width, height , x , y) {
+        var cornerRadius = 20;
+        var borderColor = 'red';
+        var fillColor = 'rgba(0, 0, 0, 0.5)';
+
+        // Draw rounded rectangle
+        context.beginPath();
+        context.moveTo(x + cornerRadius, y);
+        context.arcTo(x + width, y, x + width, y + height, cornerRadius);
+        context.arcTo(x + width, y + height, x, y + height, cornerRadius);
+        context.arcTo(x, y + height, x, y, cornerRadius);
+        context.arcTo(x, y, x + width, y, cornerRadius);
+        context.closePath();
+
+        // Apply styles and draw the rectangle
+        context.strokeStyle = borderColor;
+        context.fillStyle = fillColor;
+        context.lineWidth = 2;
+        context.stroke();
+        context.fill();
     },
 
     /**
