@@ -410,7 +410,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
     class MultiEnemy extends Enemy {
         constructor(x, y, text, itempoints, single,termid) {
-            super("pix/ship-enemy-yellow.png", x, y, text, itempoints, termid);
+            super("pix/ship-enemy-yellow-" + app.shipsize + ".png", x, y, text, itempoints, termid);
             this.single = single;
         }
 
@@ -450,10 +450,10 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         constructor(x, y, text, itempoints, pairid, stem, termid  ) {
 
             if (stem) {
-                super("pix/ship-enemy-green.png", x, y, text, itempoints, termid);
+                super("pix/ship-enemy-green-" + app.shipsize + ".png", x, y, text, itempoints, termid);
             } else {
-               // super("pix/ship-enemy-purple-noflame.png", x, y, text, itempoints, termid);
-                super("pix/ship-enemy-green.png", x, y, text, itempoints, termid);
+               // super("pix/ship-enemy-purple-64.png", x, y, text, itempoints, termid);
+                super("pix/ship-enemy-green-" + app.shipsize + ".png", x, y, text, itempoints, termid);
             }
             this.stem = stem ? true : false;
             this.pairid = pairid;
@@ -516,9 +516,9 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                 match.unhightlight();
             });
             if (this.stem) {
-                this.loadImage("pix/ship-enemy-yellow.png");
+                this.loadImage("pix/ship-enemy-blue-" + app.shipsize + ".png");
             } else {
-                this.loadImage("pix/ship-enemy-yellow.png");
+                this.loadImage("pix/ship-enemy-blue-" + app.shipsize + ".png");
             }
             this.hightlighted = true;
         };
@@ -526,9 +526,9 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         unhightlight() {
             if (this.hightlighted) {
                 if (this.stem) {
-                    this.loadImage("pix/ship-enemy-green.png");
+                    this.loadImage("pix/ship-enemy-green-" + app.shipsize + ".png");
                 } else {
-                    this.loadImage("pix/ship-enemy-green.png");
+                    this.loadImage("pix/ship-enemy-green-" + app.shipsize + ".png");
                 }
             }
             this.hightlighted = false;
@@ -544,14 +544,19 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         score: 0,
         particles: [],
         gameObjects: [],
+        shipsize: "48", //TO DO: make this a setting and refactor image loading to be not clunky
         images: [
             'pix/icon.gif',
             'pix/planet.png',
             'pix/ship.png',
-            'pix/ship-poodll.png',
-            'pix/ship-enemy-green.png',
-            'pix/ship-enemy-yellow.png',
-            'pix/ship-enemy-blue.png',
+            'pix/ship-poodll-64.png',
+            'pix/ship-enemy-green-64.png',
+            'pix/ship-enemy-yellow-64.png',
+            'pix/ship-enemy-blue-64.png',
+            'pix/ship-poodll-48.png',
+            'pix/ship-enemy-green-48.png',
+            'pix/ship-enemy-yellow-48.png',
+            'pix/ship-enemy-blue-48.png',
             'pix/space-bckg.png',
             'pix/enemy.png',
             'pix/enemystem.png',
@@ -993,7 +998,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                     fail: notification.exception
                 }]);
         */
-        this.player = new Player("pix/ship-poodll.png", 0, 0);
+        this.player = new Player("pix/ship-poodll-" + app.shipsize + ".png", 0, 0);
         this.player.x = this.displayRect.width / 2;
         this.player.y = this.displayRect.height / 2;
         this.gameObjects.push(this.player);
@@ -1613,7 +1618,8 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             for (var i = 0; i < level.length; i++) {
                 subquestions.push({question: level[i].term, answer: app.strip_html(level[i].definition),"termid": level[i].id});
             }
-            this.questions.push({"question": "matching", "stems": subquestions, "type": "matching"});
+            //show a --- in place of a real question, so the user knows its a matching question
+            this.questions.push({"question": "-------", "stems": subquestions, "type": "matching"});
         }
 
     },

@@ -55,7 +55,7 @@ define([
 
         //register button event handler to play audio
         //flip cards a4e
-      $(document.body).on('click','.a4e-flashcards-container .play-tts',playonclick);
+      $(document.body).on('click','.a4e-flashcards-container .play-tts,.definitions-container .definition-play-tts ',playonclick);
         //cards on learn page
       $('span.model-sentence-play-tts, #card-audio').on('click',playonclick );
     },
