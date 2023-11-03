@@ -281,7 +281,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
             super.draw(context);
             context.fillStyle = '#FFFFFF';
-            context.font = "15px Audiowide";
+            context.font = "20px Audiowide";
             context.textAlign = 'center';
 
             app.wrapText(context, this.text, true, 17, app.displayRect.width * 0.2, this.x + this.image.width / 2, this.y - 5);
@@ -410,7 +410,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
     class MultiEnemy extends Enemy {
         constructor(x, y, text, itempoints, single,termid) {
-            super("pix/ship-enemy.png", x, y, text, itempoints, termid);
+            super("pix/ship-enemy-yellow.png", x, y, text, itempoints, termid);
             this.single = single;
         }
 
@@ -450,9 +450,10 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         constructor(x, y, text, itempoints, pairid, stem, termid  ) {
 
             if (stem) {
-                super("pix/enemystem.png", x, y, text, itempoints, termid);
+                super("pix/ship-enemy-green.png", x, y, text, itempoints, termid);
             } else {
-                super("pix/enemychoice.png", x, y, text, itempoints, termid);
+               // super("pix/ship-enemy-purple-noflame.png", x, y, text, itempoints, termid);
+                super("pix/ship-enemy-green.png", x, y, text, itempoints, termid);
             }
             this.stem = stem ? true : false;
             this.pairid = pairid;
@@ -515,9 +516,9 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                 match.unhightlight();
             });
             if (this.stem) {
-                this.loadImage("pix/enemystemselected.png");
+                this.loadImage("pix/ship-enemy-yellow.png");
             } else {
-                this.loadImage("pix/enemychoiceselected.png");
+                this.loadImage("pix/ship-enemy-yellow.png");
             }
             this.hightlighted = true;
         };
@@ -525,9 +526,9 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         unhightlight() {
             if (this.hightlighted) {
                 if (this.stem) {
-                    this.loadImage("pix/enemystem.png");
+                    this.loadImage("pix/ship-enemy-green.png");
                 } else {
-                    this.loadImage("pix/enemychoice.png");
+                    this.loadImage("pix/ship-enemy-green.png");
                 }
             }
             this.hightlighted = false;
@@ -548,6 +549,10 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             'pix/planet.png',
             'pix/ship.png',
             'pix/ship-poodll.png',
+            'pix/ship-enemy-green.png',
+            'pix/ship-enemy-yellow.png',
+            'pix/ship-enemy-blue.png',
+            'pix/space-bckg.png',
             'pix/enemy.png',
             'pix/enemystem.png',
             'pix/enemychoice.png',
@@ -557,6 +562,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             'pix/enemylaser.png'
         ],
         imagesLoaded:  0,
+        loadedImages:[],
         loaded: false,
         player: null,
         planet: null,
@@ -861,6 +867,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                 var image = new Image();
                 image.src = src;
                 image.onload = function () {
+                    app.loadedImages[src] = image;
                     app.imagesLoaded++;
                     if (app.imagesLoaded >= app.images.length) {
                         app.gameLoaded();
@@ -1096,11 +1103,16 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
      */
     draw: function(context, displayRect, objects, particles, question) {
         context.clearRect(0, 0, displayRect.width, displayRect.height);
+        //draw the background
+        app.drawSpaceBackground(context,displayRect);
+
+        //draw particles
         var i = 0;
         for (i = 0; i < particles.length; i++) {
             particles[i].draw(context);
         }
 
+        //draw objects
         for (i = 0; i < objects.length; i++) {
             objects[i].draw(context);
         }
@@ -1258,15 +1270,22 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         var originalY = y;
         var words = input.split(' ');
         var line = '';
-
+        var maxTextWidth = 0;
         // Loops through the words, and preprocesses each line with the correct string value and y location.
         words.forEach(function (word) {
-            var tempLine = line + ' ' + word;
+            var tempLine ='';
+            if(line===''){
+                tempLine = line + ' ' + word;
+            }else{
+                tempLine = line + ' ' + word;
+            }
+
             var metrics = context.measureText(tempLine);
-            var testWidth = metrics.width;
+            var textWidth = metrics.width;
+            maxTextWidth = Math.max(maxTextWidth, textWidth);
 
             // If the line with the new word is too long, then push the current line without the new word to drawLines.
-            if (testWidth > maxLineWidth) {
+            if (textWidth > maxLineWidth) {
                 drawLines.push({
                     text: line,
                     y: y += textHeight
@@ -1285,11 +1304,18 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             y: y += textHeight
         });
 
-        //the background board for the text
-
         // The offset the text was created.
         var yOffset = y - originalY;
 
+        //box mods
+        var boxPadding = 20;
+        var boxmodifier = wrapUpwards ? -(yOffset + textHeight + boxPadding / 2) : -(textHeight + boxPadding / 2);
+
+        var borderColor = wrapUpwards ?'transparent':'white';
+        app.drawRoundRect(context, borderColor,maxTextWidth + boxPadding, textHeight * drawLines.length + boxPadding, x - (maxTextWidth + boxPadding) / 2, y + boxmodifier);
+
+
+        context.fillStyle="white";
         drawLines.forEach(function (drawLine) {
             // If it is suppose to wrap upwards (i.e. for enemy ships) it shifts all questions upwards the amount the
             // questions go down.
@@ -1299,26 +1325,41 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         });
     },
 
-    drawRoundRect: function(context, width, height , x , y) {
-        var cornerRadius = 20;
-        var borderColor = 'red';
-        var fillColor = 'rgba(0, 0, 0, 0.5)';
+    drawRoundRect: function(context, borderColor, width, height , x , y) {
+        var cornerRadius = 4;
+        var borderWidth = 4;
 
-        // Draw rounded rectangle
-        context.beginPath();
-        context.moveTo(x + cornerRadius, y);
-        context.arcTo(x + width, y, x + width, y + height, cornerRadius);
-        context.arcTo(x + width, y + height, x, y + height, cornerRadius);
-        context.arcTo(x, y + height, x, y, cornerRadius);
-        context.arcTo(x, y, x + width, y, cornerRadius);
-        context.closePath();
+        var fillColor = 'rgba(75, 71, 77, 0.5)';
+        //var borderColor = 'red';
+        if(borderColor !== 'white') {
+             borderColor = fillColor;
+        }
 
-        // Apply styles and draw the rectangle
-        context.strokeStyle = borderColor;
-        context.fillStyle = fillColor;
-        context.lineWidth = 2;
-        context.stroke();
-        context.fill();
+        // Draw the box with border
+        context.fillStyle = fillColor; // Box background color
+        context.fillRect(x,y, width, height); // Draw the box
+        context.strokeStyle = borderColor; // Border color
+        context.lineWidth = borderWidth; // Border width
+        context.strokeRect(x - borderWidth / 2, y - borderWidth  / 2, width + borderWidth, height + borderWidth); // Draw the border
+
+    },
+
+    drawSpaceBackground: function(context,displayRect) {
+
+        // Set the source of the image (URL of the background image)
+        var img = app.loadedImages['pix/space-bckg.png'];
+
+        // Calculate the number of tiles needed to cover the canvas
+        var tilesX = Math.ceil(displayRect.width / img.width);
+        var tilesY = Math.ceil(displayRect.height / img.height);
+
+        // Loop through and draw the image tiles to cover the canvas
+        for (var i = 0; i < tilesX; i++) {
+            for (var j = 0; j < tilesY; j++) {
+                context.drawImage(img, i * img.width, j * img.height, img.width, img.height);
+            }
+        }
+
     },
 
     /**
