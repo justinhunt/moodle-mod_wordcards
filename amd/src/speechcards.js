@@ -74,6 +74,7 @@ define([
       app.controls.next_button = $(".wordcards-speechcards_nextbutton");
       app.controls.standalonepushrecorder = $(".speechcards_standalonerecorder");
       app.controls.slider = $(".wordcards-poodllspeechcards_box");
+      app.controls.speakericon = $(".wordcards-speechcards-speaker-icon");
     },
     do_next: function() {
       a4e.progress_dots(app.results, app.terms);
@@ -96,8 +97,7 @@ define([
                 app.set_pointer(app.pointer - 1);
                 anim.do_animate(app.controls.slider,'zoomOut animate__faster','out').then(
                     function(){
-                        app.controls.slider.text(app.terms[app.pointer - 1].term);
-                        app.ttrec.currentPrompt=app.terms[app.pointer - 1].term;
+                        app.setCardData(app.terms[app.pointer - 1]);
                         anim.do_animate(app.controls.slider,'zoomIn animate__faster','in');
                     }
                 );
@@ -116,8 +116,7 @@ define([
                 app.set_pointer(app.pointer + 1);
                 anim.do_animate(app.controls.slider,'zoomOut animate__faster','out').then(
                     function(){
-                        app.controls.slider.text(app.terms[app.pointer - 1].term);
-                        app.ttrec.currentPrompt=app.terms[app.pointer - 1].term;
+                        app.setCardData(app.terms[app.pointer - 1]);
                         anim.do_animate(app.controls.slider,'zoomIn animate__faster','in');
                     }
                 );
@@ -157,6 +156,7 @@ define([
 
       $('body').on('click', '#wordcards-start-button', function() {
         app.start();
+        log.debug('start button clicked');
       });
 
     },
@@ -176,8 +176,18 @@ define([
     },
 
     initCards: function() {
-        app.controls.slider.text(app.terms[app.pointer - 1].term);
-        app.ttrec.currentPrompt=app.terms[app.pointer - 1].term;
+        var theterm = app.terms[app.pointer - 1];
+        app.setCardData(theterm);
+    },
+
+    setCardData: function(theterm) {
+        app.controls.slider.text(theterm.term);
+        app.ttrec.currentPrompt=theterm.term;
+
+        //set speaker icon attributes (a4e.js will play them if clicked)
+        app.controls.speakericon.attr('data-modelaudio',theterm.audio);
+        app.controls.speakericon.attr('data-tts',theterm.term);
+        app.controls.speakericon.attr('data-ttsvoice',theterm.ttsvoice);
     },
 
     initComponents: function() {
@@ -354,7 +364,7 @@ define([
         }
       }
       app.update_header();
-      this.initCards();
+      app.initCards();
     },
     quit: function() {
       clearInterval(app.timer.interval);

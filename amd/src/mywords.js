@@ -19,7 +19,8 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
     }
 
     const EVENT = {
-        CLICK: 'click'
+        CLICK: 'click',
+        KEYDOWN: 'keydown',
     }
 
     const DATA = {
@@ -44,8 +45,15 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
     }
 
     const initButtonListeners = function() {
-        $(SELECTOR.DATA_SET).on(EVENT.CLICK, function(e) {
+        var doMyWords = function(e) {
+
+            //if its a keydown event, only play if its enter or space
+            if(e.type==='keydown' && e.keyCode!==13 && e.keyCode!==32){
+                return;
+            }
+
             e.stopPropagation();
+
             // There are two buttons for each term (one in grid and one in flashcards).
             const currTar = $(e.currentTarget);
             const buttons = $(SELECTOR.MY_WORDS_ACTION_BTN_ID + currTar.attr(DATA.TERM_ID));
@@ -79,7 +87,9 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
                     buttons.removeClass(CLASS.DISABLED);
                 })
             }
-        })
+        };
+        $(SELECTOR.DATA_SET).on(EVENT.CLICK,doMyWords );
+        $(SELECTOR.DATA_SET).on(EVENT.KEYDOWN,doMyWords );
     }
 
     /**

@@ -2071,3 +2071,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     height: 80px;
     width: 150px;
 }
+
+.wordcards-speechcards-speaker-icon {
+    text-align: center;
+}

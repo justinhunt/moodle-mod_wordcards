@@ -52,13 +52,13 @@
                      {{>mod_wordcards/my_words_button}}
                      <div class="term" data-termid="{{id}}">
                         <div class="term-title">{{term}}</div>
-                        <i id="card-audio" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                        <i id="card-audio" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="fa fa-volume-up definition-play-tts"></i>
                         {{#model_sentence}}
                            <div class="term-modelsentence">
                               <h5>Model sentence</h5>
                               <div class="term-modelsentence-container">
                                  <span>{{model_sentence}}</span>
-                                 <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts term-modelsentence-small"  style="cursor:pointer;"></span>
+                                 <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="model-sentence-play-tts term-modelsentence-small"  style="cursor:pointer;"></span>
                               </div>
                            </div>
 
@@ -78,7 +78,7 @@
                             {{#youglish.lang}} <button class="retrieve-video btn" data-termid="{{id}}"> {{/youglish.lang}}
                         </div>
                          {{#youglish.lang}}
-                        <div class="term-video term-video-{{id}}">
+                        <div class="term-video term-video-{{id}}" tabindex="0">
                            {{>mod_wordcards/youglish}}
                         </div>
                          {{/youglish.lang}}
@@ -118,13 +118,13 @@
                   {{>mod_wordcards/my_words_button}}
                   <div class="term-title">
                      {{term}}
-                     <i id="audio-small" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}" class="fa fa-volume-up definition-play-tts"></i>
+                     <i id="audio-small" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="fa fa-volume-up definition-play-tts"></i>
                   </div>
                   {{{definition}}}
                   {{#model_sentence}}
                   <div class="term-modelsentence">
                      <span>{{model_sentence}}</span>
-                     <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}" class="model-sentence-play-tts term-modelsentence-small" style="cursor:pointer;">
+                     <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="model-sentence-play-tts term-modelsentence-small" style="cursor:pointer;">
                      </span>
                   </div>
                   {{/model_sentence}}

@@ -39,7 +39,13 @@ define([
         };
 
         var playonclick = function(e) {
-              e.stopPropagation();
+
+              //if its a keydown event, only play if its enter or space
+              if(e.type==='keydown' && e.keyCode!==13 && e.keyCode!==32){
+                return;
+              }
+
+              e.preventDefault();
 
               var theplayer = $("#poodll_vocabplayer");
 
@@ -53,11 +59,14 @@ define([
               }
             }
 
-        //register button event handler to play audio
-        //flip cards a4e
-      $(document.body).on('click','.a4e-flashcards-container .play-tts,.definitions-container .definition-play-tts ',playonclick);
+        //register button event handlers to play audio
+        //flip cards / icons on learn cards / icons in vocab list / icons in learn list / icons in speech cards
+      $(document.body).on('click','.a4e-flashcards-container .play-tts,.definitions-container .definition-play-tts, #speech-container .wordcards-speechcards-speaker-icon ',playonclick);
+      $(document.body).on('keydown','.a4e-flashcards-container .play-tts,.definitions-container .definition-play-tts, #speech-container .wordcards-speechcards-speaker-icon ',playonclick);
+
         //cards on learn page
       $('span.model-sentence-play-tts, #card-audio').on('click',playonclick );
+      $('span.model-sentence-play-tts, #card-audio').on('keydown',playonclick );
     },
 
     progress_dots: function(results, terms) {
