@@ -167,12 +167,15 @@ function copyAttempt($attempt,$assocs,$terms,  $user ){
 
     //get a set of random set of learned terms, and create an assoc for each, if the user does not already have one
     $learnedTermCount = round(rand(50,100) * 0.01 * count($terms));
+    if($learnedTermCount>count($assocs)){$learnedTermCount=count($assocs);}
     $someterms = getRandomSubset($terms, $learnedTermCount );
     foreach($someterms as $term){
 
         //create a new assoc for the term if the user does not already have one
         if(!$DB->record_exists(constants::M_ASSOCTABLE,['termid'=>$term->id,'userid'=>$user->id])){
+
             $newassoc = array_pop($assocs);
+            if(empty($newassoc)){continue;}
             unset($newassoc->id);
             $newassoc->termid = $term->id;
             $newassoc->userid = $user->id;
