@@ -112,7 +112,7 @@ switch ($action){
 
         }//end of user loop
         redirect(new \moodle_url(constants::M_URL . '/developer.php',
-            array('id' => $cm->id)),'Created Attempts:' . $created);
+            array('id' => $cm->id)),'Created Attempts:' . $created,5);
 
 		return;
 
@@ -165,8 +165,9 @@ function copyAttempt($attempt,$assocs,$terms,  $user ){
     $attemptid = $DB->insert_record(constants::M_ATTEMPTSTABLE,$newatt);
     if(!$attemptid){return false;}
 
-    //get a set of random terms, and create an assoc for each, if the user does not already have one
-    $someterms = getRandomSubset($terms,count($assocs));
+    //get a set of random set of learned terms, and create an assoc for each, if the user does not already have one
+    $learnedTermCount = round(rand(50,100) * 0.01 * count($terms));
+    $someterms = getRandomSubset($terms, $learnedTermCount );
     foreach($someterms as $term){
 
         //create a new assoc for the term if the user does not already have one
