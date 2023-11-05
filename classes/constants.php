@@ -20,6 +20,10 @@ const M_CLASS='mod_wordcards';
 const M_TABLE='wordcards';
 const M_TERMSTABLE='wordcards_terms';
 const M_ATTEMPTSTABLE='wordcards_progress';
+const M_ASSOCTABLE='wordcards_associations';
+const M_SEENTABLE='wordcards_seen';
+const M_MYWORDSTABLE='wordcards_my_words';
+
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingwordcards';
 const M_DEFLANG_OTHER = 'zz';
 

@@ -182,9 +182,9 @@ function wordcards_reset_userdata($data) {
         $terms = $DB->get_fieldset_select('wordcards_terms', 'id', 'modid ' . $termssql, $termsparams);
         list($sql, $params) = $DB->get_in_or_equal($terms, SQL_PARAMS_NAMED);
 
-        $DB->delete_records_select('wordcards_associations', 'termid ' . $sql, $params);
-        $DB->delete_records_list('wordcards_progress', 'modid', $wordcards);
-        $DB->delete_records_select('wordcards_seen', 'termid ' . $sql, $params);
+        $DB->delete_records_select(constants::M_ASSOCTABLE, 'termid ' . $sql, $params);
+        $DB->delete_records_list(constants::M_ATTEMPTSTABLE, 'modid', $wordcards);
+        $DB->delete_records_select(constants::M_SEENTABLE, 'termid ' . $sql, $params);
 
         $status[] = array('component' => $componentstr, 'item' => get_string('removeuserdata', 'wordcards'), 'error' => false);
     }

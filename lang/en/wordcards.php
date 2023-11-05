@@ -450,3 +450,4 @@ $string['bulkdelete'] = 'Delete selected';
 $string['reallybulkdelete'] = 'Are you sure you want to delete the selected term ?';
 $string['notts'] = "No TTS";
 $string['invalidvoice'] = "Invalid Voice";
+$string['developer'] = "Developer";

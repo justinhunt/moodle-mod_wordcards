@@ -18,10 +18,13 @@
  *
  * @package   mod_wordcards
  * @category  backup
- * @copyright 2019 Your Name <justin@poodll.com>
+ * @copyright 2019 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
+
+use \mod_wordcards\constants;
+
 /**
  * Define the complete wordcards structure for backup, with file and id annotations
  *
@@ -83,19 +86,19 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
         $term->set_source_sql('
             SELECT *
-              FROM {wordcards_terms}
+              FROM {'. constants::M_TERMSTABLE .'}
              WHERE modid = ?',
             array(backup::VAR_PARENTID));
 
         // All the rest of elements only happen if we are including user info
         if ($userinfo) {
-            $seen->set_source_table('wordcards_seen', array('termid' => '../../id'));
+            $seen->set_source_table(constants::M_SEENTABLE, array('termid' => '../../id'));
 
-            $association->set_source_table('wordcards_associations', array('termid' => '../../id'));
+            $association->set_source_table(constants::M_ASSOCTABLE, array('termid' => '../../id'));
 
             $progress->set_source_sql('
             SELECT *
-              FROM {wordcards_progress}
+              FROM {'. constants::M_ATTEMPTSTABLE .'}
              WHERE modid = ?',
             array(backup::VAR_PARENTID));
 
@@ -105,9 +108,9 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
                 'userid', 'termid', 'timecreated'));
             $term->add_child($mywords);
             $mywords->add_child($myword);
-            $myword->set_source_table('wordcards_my_words', array('courseid' => backup::VAR_COURSEID, 'termid' => '../../id'));
+            $myword->set_source_table(constants::M_MYWORDSTABLE, array('courseid' => backup::VAR_COURSEID, 'termid' => '../../id'));
             $myword->annotate_ids('user', 'userid');
-            $myword->annotate_ids('mod_wordcards_terms', 'termid');
+            $myword->annotate_ids(constants::M_TERMSTABLE, 'termid');
         }
 
         // If we were referring to other tables, we would annotate the relation
@@ -118,10 +121,10 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
 
         // Define file annotations (we do not use itemid in this example).
-        $wordcards->annotate_files('mod_wordcards', 'intro', null);
-        $term->annotate_files('mod_wordcards', 'image', 'id');
-        $term->annotate_files('mod_wordcards', 'audio', 'id');
-        $term->annotate_files('mod_wordcards', 'model_sentence_audio', 'id');
+        $wordcards->annotate_files(constants::M_COMPONENT, 'intro', null);
+        $term->annotate_files(constants::M_COMPONENT, 'image', 'id');
+        $term->annotate_files(constants::M_COMPONENT, 'audio', 'id');
+        $term->annotate_files(constants::M_COMPONENT, 'model_sentence_audio', 'id');
 
         // Return the root element (wordcards), wrapped into standard activity structure.
         return $this->prepare_activity_structure($wordcards);

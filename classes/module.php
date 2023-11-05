@@ -110,14 +110,14 @@ class mod_wordcards_module {
                               FROM {wordcards_terms} t
                              WHERE t.modid = ?
                             )', [$modid]);
-        $DB->delete_records('wordcards_terms', array('modid' => $modid));
-        $DB->delete_records('wordcards_progress', array('modid' => $modid));
+        $DB->delete_records(constants::M_TERMSTABLE, array('modid' => $modid));
+        $DB->delete_records(constants::M_ATTEMPTSTABLE, array('modid' => $modid));
         $DB->delete_records('wordcards', array('id' => $modid));
     }
 
     public function delete_term($termid) {
         global $DB;
-        $DB->set_field('wordcards_terms', 'deleted', 1, ['modid' => $this->get_id(), 'id' => $termid]);
+        $DB->set_field(constants::M_TERMSTABLE, 'deleted', 1, ['modid' => $this->get_id(), 'id' => $termid]);
     }
 
     public function fetch_step_termcount($step){
@@ -643,7 +643,7 @@ class mod_wordcards_module {
         }
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
-        if (!($record1 = $DB->get_record('wordcards_associations', $params))) {
+        if (!($record1 = $DB->get_record(constants::M_ASSOCTABLE, $params))) {
             $record1 = (object) $params;
             $record1->failcount = 0;
         }
@@ -651,23 +651,23 @@ class mod_wordcards_module {
         $record1->failcount += 1;
         $record1->lastfail = time();
         if (empty($record1->id)) {
-            $DB->insert_record('wordcards_associations', $record1);
+            $DB->insert_record(constants::M_ASSOCTABLE, $record1);
         } else {
-            $DB->update_record('wordcards_associations', $record1);
+            $DB->update_record(constants::M_ASSOCTABLE, $record1);
         }
 
         if($term2id>0) {
             $params = ['userid' => $USER->id, 'termid' => $term2id];
-            if (!($record2 = $DB->get_record('wordcards_associations', $params))) {
+            if (!($record2 = $DB->get_record(constants::M_ASSOCTABLE, $params))) {
                 $record2 = (object)$params;
                 $record2->failcount = 0;
             }
             $record2->failcount += 1;
             $record2->lastfail = time();
             if (empty($record2->id)) {
-                $DB->insert_record('wordcards_associations', $record2);
+                $DB->insert_record(constants::M_ASSOCTABLE, $record2);
             } else {
-                $DB->update_record('wordcards_associations', $record2);
+                $DB->update_record(constants::M_ASSOCTABLE, $record2);
             }
         }
     }
@@ -676,7 +676,7 @@ class mod_wordcards_module {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
-        if (!($record = $DB->get_record('wordcards_associations', $params))) {
+        if (!($record = $DB->get_record(constants::M_ASSOCTABLE, $params))) {
             $record = (object) $params;
             $record->successcount = 0;
         }
@@ -685,9 +685,9 @@ class mod_wordcards_module {
         $record->lastsuccess = time();
 
         if (empty($record->id)) {
-            $DB->insert_record('wordcards_associations', $record);
+            $DB->insert_record(constants::M_ASSOCTABLE, $record);
         } else {
-            $DB->update_record('wordcards_associations', $record);
+            $DB->update_record(constants::M_ASSOCTABLE, $record);
         }
     }
 

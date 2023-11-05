@@ -21,6 +21,9 @@
  * @copyright 2016 Your Name <your@email.address>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use \mod_wordcards\constants;
+
 /**
  * Structure step to restore one wordcards activity
  *
@@ -97,7 +100,7 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->timecreated = $this->apply_date_offset($data->timecreated);
 
-        $newitemid = $DB->insert_record('wordcards_seen', $data);
+        $newitemid = $DB->insert_record(constants::M_SEENTABLE, $data);
         // No need to save this mapping as far as nothing depend on it
         // (child paths, file areas nor links decoder)
     }
@@ -110,7 +113,7 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
         $data->termid = $this->get_new_parentid('wordcards_term');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
-        $newitemid = $DB->insert_record('wordcards_associations', $data);
+        $newitemid = $DB->insert_record(constants::M_ASSOCTABLE, $data);
         // No need to save this mapping as far as nothing depend on it
         // (child paths, file areas nor links decoder)
     }
@@ -124,7 +127,7 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
         $data->modid = $this->get_new_parentid('wordcards');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
-        $newitemid = $DB->insert_record('wordcards_progress', $data);
+        $newitemid = $DB->insert_record(constants::M_ATTEMPTSTABLE, $data);
         $this->set_mapping('wordcards_progress', $oldid, $newitemid);
     }
 
@@ -137,8 +140,8 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
         $data->courseid = $this->get_courseid();
         $data->timemodified = time();
 
-        if (!$DB->record_exists('wordcards_my_words', ['userid' => $data->userid, 'termid' => $data->termid, 'courseid' => $data->courseid])) {
-            $newitemid = $DB->insert_record('wordcards_my_words', $data);
+        if (!$DB->record_exists(constants::M_MYWORDSTABLE, ['userid' => $data->userid, 'termid' => $data->termid, 'courseid' => $data->courseid])) {
+            $newitemid = $DB->insert_record(constants::M_MYWORDSTABLE, $data);
             // No need to save this mapping as far as nothing depend on it
             // (child paths, file areas nor links decoder)
         }
@@ -149,10 +152,10 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
      */
     protected function after_execute() {
         // Add wordcards related files, no need to match by itemname (just internally handled context).
-        $this->add_related_files('mod_wordcards', 'intro', null);
-        $this->add_related_files('mod_wordcards', 'image', 'wordcards_term');
-        $this->add_related_files('mod_wordcards', 'audio', 'wordcards_term');
-        $this->add_related_files('mod_wordcards', 'model_sentence_audio', 'wordcards_term');
+        $this->add_related_files(constants::M_COMPONENT, 'intro', null);
+        $this->add_related_files(constants::M_COMPONENT, 'image', 'wordcards_term');
+        $this->add_related_files(constants::M_COMPONENT, 'audio', 'wordcards_term');
+        $this->add_related_files(constants::M_COMPONENT, 'model_sentence_audio', 'wordcards_term');
         
 
     }
