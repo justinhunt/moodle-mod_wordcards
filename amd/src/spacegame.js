@@ -1619,7 +1619,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
                 subquestions.push({question: level[i].term, answer: app.strip_html(level[i].definition),"termid": level[i].id});
             }
             //show a --- in place of a real question, so the user knows its a matching question
-            this.questions.push({"question": "-------", "stems": subquestions, "type": "matching"});
+            this.questions.push({"question": M.util.get_string('shootthepairs', 'mod_wordcards'), "stems": subquestions, "type": "matching"});
         }
 
     },

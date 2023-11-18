@@ -58,7 +58,9 @@ class renderer extends \plugin_renderer_base {
         if($isreattempt){
             $nextaction='reattempt';
             $reattempt=1;
-            $nextbuttontext=get_string('reattempt',constants::M_COMPONENT);
+           // $nextbuttontext=get_string('reattempt',constants::M_COMPONENT);
+            //some felt "try again" was confusing here ... not sure .. but ok justin 20231118
+            $nextbuttontext=get_string('continue',constants::M_COMPONENT);
         }elseif($attemptcount==0 || $canattempt){
             $nextaction='attempt';
             $reattempt=0;

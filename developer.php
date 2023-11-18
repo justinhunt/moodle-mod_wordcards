@@ -135,7 +135,7 @@ echo $renderer->footer();
 function getRandomSubset($array, $count)
 {
     //if our array is not big enough, bad ..
-    
+
     if(count($array)<$count){return $array;}
 
     $keys = array_rand($array, $count); // Get random keys from the original array

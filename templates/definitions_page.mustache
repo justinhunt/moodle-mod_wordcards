@@ -40,8 +40,8 @@
       <!--start --->
       <div class="df_fl">
          <div class="df_fl_control" style="text-align: center;">
-             <button id="Prev" class="isFirst" style="float: left;" title="Prev"></button>
-             <button id="Next" style="float: right;" title="Next"></button>
+             <button id="Prev" class="isFirst" style="float: left;" title="{{#str}}previous, mod_wordcards{{/str}}"></button>
+             <button id="Next" style="float: right;" title="{{#str}}next, mod_wordcards{{/str}}"></button>
          </div>
          <ul class="definition_flashcards_ul">
             {{#definitions}}
@@ -55,7 +55,7 @@
                         <i id="card-audio" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="fa fa-volume-up definition-play-tts"></i>
                         {{#model_sentence}}
                            <div class="term-modelsentence">
-                              <h5>Model sentence</h5>
+                              <h5>{{#str}}model_sentence, mod_wordcards{{/str}}</h5>
                               <div class="term-modelsentence-container">
                                  <span>{{model_sentence}}</span>
                                  <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="model-sentence-play-tts term-modelsentence-small"  style="cursor:pointer;"></span>
