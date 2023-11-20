@@ -368,7 +368,8 @@ class renderer extends \plugin_renderer_base {
             'score',
             'emptyquiz',
             'endofgame',
-            'spacetostart'
+            'spacetostart',
+            'shootthepairs',
         ), 'mod_wordcards');
 
 
