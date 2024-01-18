@@ -65,6 +65,13 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
     }
     wordcards_grade_item_update($module);
 
+    //add expected completion date
+    if (class_exists('\core_completion\api')) {
+        $completionexpected = (empty($module->completionexpected) ? null : $module->completionexpected);
+        \core_completion\api::update_completion_date_event($module->coursemodule, 'wordcards', $module->id,
+            $completionexpected);
+    }
+
     return $module->id;
 }
 
@@ -97,6 +104,13 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
     if(!$update_grades){ $update_grades = ($module->gradeoptions === $oldgradeoptionsfield ? false : true);}
     if ($update_grades) {
         wordcards_update_grades($module, 0, false);
+    }
+
+    //update expected completion date
+    if (class_exists('\core_completion\api')) {
+        $completionexpected = (empty($module->completionexpected) ? null : $module->completionexpected);
+        \core_completion\api::update_completion_date_event($module->coursemodule, 'wordcards', $module->id,
+            $completionexpected);
     }
 
     //If definitions language has changed update it
@@ -182,9 +196,11 @@ function wordcards_reset_userdata($data) {
         $terms = $DB->get_fieldset_select('wordcards_terms', 'id', 'modid ' . $termssql, $termsparams);
         list($sql, $params) = $DB->get_in_or_equal($terms, SQL_PARAMS_NAMED);
 
+
         $DB->delete_records_select(constants::M_ASSOCTABLE, 'termid ' . $sql, $params);
         $DB->delete_records_list(constants::M_ATTEMPTSTABLE, 'modid', $wordcards);
         $DB->delete_records_select(constants::M_SEENTABLE, 'termid ' . $sql, $params);
+        $DB->delete_records_select(constants::M_MYWORDSTABLE, 'termid ' . $sql, $params);
 
         $status[] = array('component' => $componentstr, 'item' => get_string('removeuserdata', 'wordcards'), 'error' => false);
     }
