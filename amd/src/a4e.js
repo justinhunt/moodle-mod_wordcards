@@ -46,6 +46,7 @@ define([
               }
 
               e.preventDefault();
+              e.stopPropagation();
 
               var theplayer = $("#poodll_vocabplayer");
 

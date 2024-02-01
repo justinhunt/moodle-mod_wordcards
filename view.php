@@ -10,6 +10,7 @@
 require_once(__DIR__ . '/../../config.php');
 
 use \mod_wordcards\constants;
+use \mod_wordcards\utils;
 
 $cmid = required_param('id', PARAM_INT);
 
@@ -28,8 +29,12 @@ if($mod->get_mod()->journeymode==constants::MODE_FREE){
 $mod->require_view();
 $mod->resume_progress($currentstate);
 $moduleinstance = $mod->get_mod();
+
 //trigger module viewed event
 $mod->register_module_viewed();
+
+//log usage
+utils::stage_remote_process_job($mod->get_mod()->ttslanguage);
 
 //$pagetitle = get_string('tabdefinitions', 'mod_wordcards');
 $pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());

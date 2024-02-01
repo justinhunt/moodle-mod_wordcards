@@ -47,7 +47,7 @@ define(['jquery', 'core/ajax', 'core/str'], function($, ajax, str) {
     const initButtonListeners = function() {
         var doMyWords = function(e) {
 
-            //if its a keydown event, only play if its enter or space
+            //if its a keydown event, only respond if its enter or space
             if(e.type==='keydown' && e.keyCode!==13 && e.keyCode!==32){
                 return;
             }
