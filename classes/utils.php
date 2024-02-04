@@ -730,7 +730,7 @@ class utils{
     }
 
     //stage remote processing job ..just logging really
-    public static function stage_remote_process_job($language) {
+    public static function stage_remote_process_job($language,$cmid) {
 
         global $CFG, $USER;
 
@@ -749,7 +749,7 @@ class utils{
         }
         //owner
         $owner = hash('md5',$USER->username);
-        $ownercomphash = hash('md5',$USER->username . constants::M_COMPONENT . date("Y-m-d"));
+        $ownercomphash = hash('md5',$USER->username . constants::M_COMPONENT . $cmid . date("Y-m-d"));
 
         //The REST API we are calling
         $functionname = 'local_cpapi_stage_remoteprocess_job';
@@ -771,7 +771,7 @@ class utils{
         $params['language'] = $language;
         $params['vocab'] = 'none';
         $params['s3path'] ='/';
-        $params['mediatype'] = 'none';
+        $params['mediatype'] = 'other';
         $params['notificationurl'] = 'none';
         $params['sourcemimetype'] = 'unknown';
 

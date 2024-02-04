@@ -34,7 +34,7 @@ $moduleinstance = $mod->get_mod();
 $mod->register_module_viewed();
 
 //log usage
-utils::stage_remote_process_job($mod->get_mod()->ttslanguage);
+utils::stage_remote_process_job($mod->get_mod()->ttslanguage, $cmid);
 
 //$pagetitle = get_string('tabdefinitions', 'mod_wordcards');
 $pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
