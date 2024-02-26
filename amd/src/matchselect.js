@@ -11,8 +11,9 @@ define([
   'core/ajax',
   'core/log',
   'mod_wordcards/a4e',
+  'mod_wordcards/textfit',
   'core/templates'
-], function($, Ajax, log, a4e, templates) {
+], function($, Ajax, log, a4e, textFit, templates) {
 
   var app = {
     dryRun: false,
@@ -144,13 +145,20 @@ define([
     next: function() {
       
       a4e.progress_dots(app.results, app.terms);
-      
-      var code="";
-      if(app.terms[app.pointer].image){
-        code+="<img class='a4e-prompt-img' src='" + app.terms[app.pointer].image + "'>";
-      }
-      code+="<div class='definition-as-header'>" + app.terms[app.pointer].definition + "</div>"
-      $("#wordcards-question").html(code);
+
+      templates.render('mod_wordcards/definition_as_header', app.terms[app.pointer]).then(
+          function(html, js) {
+            $("#wordcards-question").html(html);
+            //do text fit
+            var defheaders = $(".definition-as-header");
+            textFit(defheaders, {
+              multiLine: true,
+              maxFontSize: 50,
+              alignHoriz: true,
+              alignVert: true
+            });
+          }
+      );
 
       $("#wordcards-input").html(app.get_distractors());
 

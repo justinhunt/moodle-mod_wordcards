@@ -12,8 +12,9 @@ define([
   'core/log',
   'mod_wordcards/a4e',
   'mod_wordcards/keyboard',
+  'mod_wordcards/textfit',
   'core/templates'
-], function($, Ajax, log, a4e, keyboard, templates) {
+], function($, Ajax, log, a4e, keyboard, textFit, templates) {
 
   var app = {
     dryRun: false,
@@ -157,12 +158,20 @@ define([
         app.check(value);
       });
 
-      var code="";
-      if(app.terms[app.pointer].image){
-        code+="<img class='a4e-prompt-img' src='" + app.terms[app.pointer].image + "'>";
-      }
-      code+="<div class='definition-as-header'>" + app.terms[app.pointer].definition + "</div>"
-      $("#wordcards-question").html(code);
+      templates.render('mod_wordcards/definition_as_header', app.terms[app.pointer]).then(
+          function(html, js) {
+            $("#wordcards-question").html(html);
+            //do text fit
+            var defheaders = $(".definition-as-header");
+            textFit(defheaders, {
+              multiLine: true,
+              maxFontSize: 50,
+              alignHoriz: true,
+              alignVert: true
+            });
+          }
+      );
+
 
     },
 

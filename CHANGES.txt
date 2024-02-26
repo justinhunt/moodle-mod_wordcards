@@ -1,5 +1,7 @@
-1.3.56 (Build 202402XXXX)
+1.3.56 (Build 2024022500)
 - Update to CP usage logging
+- Implemented Privacy API
+- Better text display on match select and match type activities
 
 1.3.55 (Build 2024020100)
 - Fixed issue where audio button click flipped the card

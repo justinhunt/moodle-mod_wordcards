@@ -33,6 +33,22 @@ $string['wordcards:viewreports'] = 'View reports';
 $string['wordcards:manageattempts'] = 'Manage Attempts';
 $string['wordcards:manage'] = 'Manage';
 $string['reviewactivity'] = 'Review';
+
+$string['privacy:metadata:attemptid']='The unique identifier of a users Wordcards attempt.';
+$string['privacy:metadata:wordcardsid']='The unique identifier of a Wordcards activity instance.';
+$string['privacy:metadata:userid']='The user id for the Wordcards attempt';
+$string['privacy:metadata:grade1']='The score for the attempt on step 1 ';
+$string['privacy:metadata:grade2']='The score for the attempt on step 2 ';
+$string['privacy:metadata:grade3']='The score for the attempt on step 3 ';
+$string['privacy:metadata:grade4']='The score for the attempt on step 4 ';
+$string['privacy:metadata:grade5']='The score for the attempt on step 5 ';
+$string['privacy:metadata:totalgrade']='The total score for the attempt';
+$string['privacy:metadata:timecreated']='The that that the attempt was created';
+$string['privacy:metadata:timemodified']='The last time attempt was modified for the attempt';
+$string['privacy:metadata:attempttable']='Stores the scores and other user data associated with a WordCards attempt.';
+$string['privacy:metadata'] = 'The Poodll Wordcards plugin does store personal data.';
+$string['privacy:metadata:modid'] = 'The unique identifier of a Poodll Wordcards activity instance.';
+
 //$string['reviewactivityfinished'] = 'You finished the review session in {$a->seconds} seconds.';
 
 $string['gotit'] = 'Got it';

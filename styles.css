@@ -930,7 +930,7 @@ h3.list-of-words {
 }
 
 .a4e-prompt-img {
-    position: absolute;
+   /* position: absolute; */
     left: 10px;
     top: 10px;
     bottom: 0;
@@ -2074,4 +2074,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 
 .wordcards-speechcards-speaker-icon {
     text-align: center;
+}
+.definition-as-header {
+    flex: 1;
 }
