@@ -185,8 +185,6 @@ echo $output->heading($pagetitle);
 echo $output->navigation($mod, 'managewords');
 echo $output->box(get_string('managewordsinstructions',constants::M_COMPONENT), 'generalbox', 'intro');
 
-// $form->display();
-
 echo html_writer::start_tag('form', array('method' => 'POST', 'id' => 'bulkdeleteform'));
 
 echo html_writer::link('#',get_string('addnewterm',constants::M_COMPONENT),

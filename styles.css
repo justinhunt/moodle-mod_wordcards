@@ -2078,3 +2078,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 .definition-as-header {
     flex: 1;
 }
+#wordcards-export-delim {
+    margin-top: 10px;
+    max-width: 150px;
+}

@@ -18,6 +18,7 @@ $action = optional_param('action', null, PARAM_ALPHA);
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
+$modulecontext = context_module::instance($cm->id);
 
 require_login($course, true, $cm);
 $mod->require_manage();
@@ -119,9 +120,10 @@ echo $renderer->navigation($mod, 'import');
 echo $renderer->box(get_string('importinstructions',constants::M_COMPONENT), 'generalbox wordcards_importintro', 'intro');
 
 $form->display();
-/*
-$table = new mod_wordcards_table_terms('tblterms', $mod);
-$table->define_baseurl($PAGE->url);
-$table->out(25, false);
-*/
+
+$exporturls=[];
+$exporturls['delim_comma_url']= moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exportcomma', 0, "/", 'export.csv', true);
+$exporturls['delim_tab_url']= moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exporttab', 0, "/", 'export.csv', true);
+$exporturls['delim_pipe_url']= moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exportpipe', 0, "/", 'export.csv', true);
+echo $renderer->render_from_template('mod_wordcards/simpleexportform', $exporturls);
 echo $renderer->footer();

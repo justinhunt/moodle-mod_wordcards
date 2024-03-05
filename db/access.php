@@ -44,6 +44,16 @@ $capabilities = [
             'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
 
+    'mod/wordcards:export' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ],
+        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ],
+
     'mod/wordcards:manageattempts' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',
@@ -68,7 +78,7 @@ $capabilities = [
             'clonepermissionsfrom' => 'moodle/grade:viewall'
     ],
 
- 'mod/wordcards:preview' => array(
+        'mod/wordcards:preview' => array(
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_COURSE,
                 'archetypes' => array(

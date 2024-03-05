@@ -1,0 +1,31 @@
+<hr />
+<h5>{{#str}}exportallterms,mod_wordcards{{/str}}</h5>
+<div>{{#str}}exportterms_expl,mod_wordcards{{/str}}</div>
+<a href="{{{delim_pipe_url}}}" class="btn btn-primary wordcards-simple-export-btn" data-delim="pipe" >
+    <i class="fa fa-download"></i> {{#str}}exportallterms,mod_wordcards{{/str}}: {{#str}}delim_pipe,mod_wordcards{{/str}}
+</a>
+
+<a href="{{{delim_comma_url}}}" class="btn btn-primary wordcards-simple-export-btn" data-delim="comma" style="display: none">
+<i class="fa fa-download"></i> {{#str}}exportallterms,mod_wordcards{{/str}}: {{#str}}delim_comma,mod_wordcards{{/str}}
+</a>
+
+<a href="{{{delim_tab_url}}}" class="btn btn-primary wordcards-simple-export-btn" data-delim="tab" style="display: none">
+<i class="fa fa-download"></i> {{#str}}exportallterms,mod_wordcards{{/str}}: {{#str}}delim_tab,mod_wordcards{{/str}}
+</a>
+<br />
+<select id="wordcards-export-delim" class="form-control">
+<option value="pipe">{{#str}}delim_pipe,mod_wordcards{{/str}}</option>
+<option value="comma">{{#str}}delim_comma,mod_wordcards {{/str}}</option>
+<option value="tab">{{#str}}delim_tab,mod_wordcards{{/str}}</option>
+</select>
+
+        {{#js}}
+//<script>
+  require(['jquery'], function($) {
+    $('#wordcards-export-delim').change(function() {
+        var delim = $(this).val();
+        $('.wordcards-simple-export-btn').hide();
+        $('.wordcards-simple-export-btn[data-delim="' + delim + '"]').show();
+    });
+});
+{{/js}}

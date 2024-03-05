@@ -971,4 +971,23 @@ class mod_wordcards_module {
         $DB->update_record('wordcards', array('id'=>$this->get_mod()->id,'hashisold'=>0));
         return $this->get_mod()->passagehash;
     }
+
+    public function export_simple_terms_to_csv($delim = "\t"){
+        global $DB;
+        //fetch terms to return as csv
+        $terms = $DB->get_records('wordcards_terms',['modid' => $this->mod->id,'deleted'=>0 ], 'id ASC');
+        if(!$terms){return '';}
+
+
+        $ret = array();
+        foreach($terms as $term){
+            $terms_array= array($term->term,
+                $term->definition,
+                empty($term->ttsvoice)? '':$term->ttsvoice,
+                empty($term->modelsentence)? '':$term->modelsentence);
+            $ret[] = implode($delim,$terms_array);
+        }
+        $filecontent = implode("\r\n",$ret);
+        return $filecontent;
+    }
 }

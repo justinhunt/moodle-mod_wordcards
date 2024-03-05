@@ -285,6 +285,34 @@ function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $f
                 send_stored_file($file, null, 0, $forcedownload, $options);
             }
         }
+    } else if (strpos($filearea,'export')!==false) {
+
+        require_login($course, false, $cm);
+        require_capability('mod/wordcards:export', $context);
+
+        if(!$wordcards = mod_wordcards_module::get_by_cmid($cm->id)){
+            return false;
+        }
+        $name=$wordcards->get_mod()->name;
+        //make a nice filename
+        $filename = clean_filename(strip_tags(format_string($name)).'.csv');
+        $filename = preg_replace('/\s+/', '_', $filename);
+        //fetch the export content
+        switch($filearea){
+            case "exportcomma":
+                $filecontent = $wordcards->export_simple_terms_to_csv(',');
+                break;
+            case "exportpipe":
+                $filecontent = $wordcards->export_simple_terms_to_csv('|');
+                break;
+            case "exporttab":
+            default:
+                $filecontent = $wordcards->export_simple_terms_to_csv("\t");
+                break;
+
+        }
+        //return to the browser that called us
+        send_file($filecontent, $filename, 0, 0, true, true);
     }
     return false;
 }
