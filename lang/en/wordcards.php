@@ -470,3 +470,7 @@ $string['invalidvoice'] = "Invalid Voice";
 $string['developer'] = "Developer";
 $string['exportallterms'] = "Export Terms";
 $string['exportterms_expl'] = "Export all the terms in the current wordcards activity to a simple CSV file. This file can be used to import the terms into another wordcards activity. No image or audio files are exported.";
+$string['glossary'] = "Glossary";
+$string['importfromtext'] = "Import From Text";
+$string['importfromglossary'] = "Import From Glossary";
+$string['glossaryimportinstructions'] = "Select a glossary to import terms from. The terms will be imported into the current wordcards activity.";

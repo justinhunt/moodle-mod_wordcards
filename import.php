@@ -45,9 +45,32 @@ if($config->enablesetuptab){
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
-$form = new mod_wordcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);
+//if we have glossaries, prepare the glossary import form and import any glossary data if we are supposed to
+$glossaries=utils::fetch_glossaries_list($course->id);
+$glossariesform=false;
+$insertdatarows=[];
+$delimiter ="\t";
+if($glossaries && count($glossaries)>0) {
+    $glossariesform = new mod_wordcards_form_glossaryimport($formurl->out(false), ['glossaries' => $glossaries]);
+    if ($data = $glossariesform->get_data()) {
+        if (!empty($data->glossary)) {
+            $glossaryid = $data->glossary;
+            $glossary = $DB->get_record(constants::M_GLOSSARYTABLE, ['id' => $glossaryid, 'course' => $course->id], '*', IGNORE_MISSING);
+            if ($glossary) {
+                $entries = $DB->get_records(constants::M_GLOSSARYENTRIESTABLE, ['glossaryid' => $glossaryid], 'concept ASC', '*');
+                if ($entries) {
+                    foreach ($entries as $entry) {
+                        $insertdatarows[] = utils::prepare_import_data_row($entry->concept . $delimiter  . $entry->definition, $delimiter , $mod);
+                    }//end of for each entry
+                }//end of if entries
+            }//end of if glossary
+        }//end of if not empty data glossary
+    }//end of if form has data
+}//end of if glossaries in the course at all
 
-if ($data = $form->get_data()) {
+//prepare the import form and import any data if we are supposed to
+$importform = new mod_wordcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);
+if ($data = $importform->get_data()) {
     if (!empty($data->importdata)) {
     	
     	//get delimiter
@@ -62,65 +85,68 @@ if ($data = $form->get_data()) {
     	//get array of rows
     	$rawdata =trim($data->importdata);
     	$rows = explode(PHP_EOL, $rawdata);
-    	
-    	//prepare results fields
-    	$imported = 0;
-    	$failed = array();
-    	
-    	foreach($rows as $row){
-    		$cols = explode($delimiter,$row);
-    		if(count($cols)>=2 && !empty($cols[0]) && !empty($cols[1])){
-				$insertdata = new stdClass();
-				$insertdata->modid = $modid;
-				$insertdata->term = trim($cols[0]);
-				$insertdata->definition = trim($cols[1]);
-				//voices
-                $voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
-				if(!empty($cols[2]) && in_array(trim($cols[2]),$voices) && trim($cols[2])!='auto') {
-				    $voice = array_search(trim($cols[2]),$voices);
-                    $insertdata->ttsvoice = $voice;
-                }else{
-                    $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
-                }
-                if(!empty($cols[3])) {
-                    $insertdata->model_sentence = trim($cols[3]);
-                }
-				$DB->insert_record('wordcards_terms', $insertdata);
-				$imported++;
-        	}else{
-        		$failed[]=$row;
-        	}//end of if cols ok 
-        }//end of for each
 
-        //if successful update our passagehash update flag
-        if($imported > 0) {
-            $DB->update_record('wordcards', array('id' => $mod->get_mod()->id, 'hashisold' => 1));
+        //prepare each row for import
+    	foreach($rows as $rowdata) {
+            $insertdatarows[] = utils::prepare_import_data_row($rowdata, $delimiter, $mod);
         }
-
-
-        // Uncomment when migrating to 3.1.
-        // redirect($PAGE->url, get_string('termadded', 'mod_wordcards', $data->term));
-        $result=new stdClass();
-        $result->imported=$imported;
-        $result->failed=count($failed);
-        $message=get_string('importresults','mod_wordcards',$result);
-        
-        if(count($failed)>0){
-        	$leftover_rows = implode(PHP_EOL,$failed);
-        	$formurl->param('leftover_rows',$leftover_rows);
-        }
-        
-        redirect($formurl,$message);
     }
 }
 
+//if we have importdatarows from glossary or from import form, do it
+if(count($insertdatarows)>0) {
+    //prepare results fields
+    $imported = 0;
+    $failed = array();
+
+    //loop through each row and insert it
+    foreach ($insertdatarows as $insertdata) {
+        if ($insertdata) {
+            $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
+            $imported++;
+        } else {
+            $failed[] = $rowdata;
+        }
+    }//end of for each
+
+    //if successful update our passagehash update flag
+    if ($imported > 0) {
+        $DB->update_record(constants::M_TABLE, array('id' => $mod->get_mod()->id, 'hashisold' => 1));
+    }
+
+    //redirect to the import page with the results
+    $result = new stdClass();
+    $result->imported = $imported;
+    $result->failed = count($failed);
+    $message = get_string('importresults', 'mod_wordcards', $result);
+
+    //prepare the leftover rows to be displayed in the form
+    if (count($failed) > 0) {
+        $leftover_rows = implode(PHP_EOL, $failed);
+        $formurl->param('leftover_rows', $leftover_rows);
+    }
+    redirect($formurl, $message);
+}
+
+//display the page ... no form data to process
 echo $renderer->header();
 echo $renderer->heading($pagetitle);
 echo $renderer->navigation($mod, 'import');
+
+//display the import form
+echo "<h5>".get_string('importfromtext',constants::M_COMPONENT)."</h5>";
 echo $renderer->box(get_string('importinstructions',constants::M_COMPONENT), 'generalbox wordcards_importintro', 'intro');
+$importform->display();
 
-$form->display();
+//if we have glossaries, display the glossary import form
+if($glossariesform){
+    echo "<hr />";
+    echo "<h5>".get_string('importfromglossary',constants::M_COMPONENT)."</h5>";
+    echo $renderer->box(get_string('glossaryimportinstructions',constants::M_COMPONENT), 'generalbox wordcards_importintro', 'intro');
+    $glossariesform->display();
+}
 
+//display the export form
 $exporturls=[];
 $exporturls['delim_comma_url']= moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exportcomma', 0, "/", 'export.csv', true);
 $exporturls['delim_tab_url']= moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exporttab', 0, "/", 'export.csv', true);

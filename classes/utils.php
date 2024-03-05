@@ -1786,4 +1786,49 @@ class utils{
         }
     }
 
+    //Prepare the data for import
+    //a row will look like this: term|definition|voice|modelsentence
+    public static function prepare_import_data_row($rowdata, $delimiter,$mod){
+        $trimchars = " \t\n\r\0\x0B";
+        //we limit at 4 so any commas in the model answer will not be split on
+        $cols = explode($delimiter,$rowdata,4);
+        if(count($cols)>=2 && !empty($cols[0]) && !empty($cols[1])){
+            $insertdata = new \stdClass();
+            $insertdata->modid = $mod->get_mod()->id;
+            $insertdata->term = trim($cols[0], $trimchars);
+            $insertdata->definition = trim($cols[1], $trimchars);
+            //voices
+            $voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
+            $insertdata->ttsvoice='';
+            if(!empty($cols[2])){
+                $thevoice = trim($cols[2],$trimchars);
+                if(in_array($thevoice,$voices) && $thevoice!='auto') {
+                    $voice = array_search($thevoice, $voices);
+                    $insertdata->ttsvoice = $voice;
+                }
+            }
+            if(empty($insertdata->ttsvoice)) {
+                $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+            }
+
+            //model sentence
+            if(!empty($cols[3])) {
+                $insertdata->model_sentence = trim($cols[3], $trimchars);
+            }
+            return $insertdata;
+        }else{
+            return false;
+        }//end of if cols ok
+    }
+
+    public static function fetch_glossaries_list($courseid){
+        global $DB;
+        $glossaries = $DB->get_records(constants::M_GLOSSARYTABLE,array('course'=>$courseid));
+        $glossarylist = [];
+        foreach($glossaries as $glossary){
+            $glossarylist[$glossary->id] = $glossary->name;
+        }
+        return $glossarylist;
+    }
+
 }
