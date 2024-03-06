@@ -1568,6 +1568,10 @@ class utils{
         $langdefs[] = ['code' => 'vi', 'name' => self::get_lang_name('vi')];
         $langdefs[] = ['code' => 'zh', 'name' => self::get_lang_name('zh')];
         $langdefs[] = ['code' => 'zh_tw', 'name' => self::get_lang_name('zh_tw')];
+
+        //add ms dictionary languages
+        $langdefs = self::get_msdic_langs($langdefs);
+
         if ($other) {
             $langdefs[] = ['code' => constants::M_DEFLANG_OTHER, 'name' => self::get_lang_name(constants::M_DEFLANG_OTHER)];
         }
@@ -1580,6 +1584,48 @@ class utils{
             }
         }
         if(!$default_set){$langdefs[1]['selected']=true;}
+        return $langdefs;
+    }
+
+    public static function get_msdic_langs($langdefs){
+       // $langdefs = [];
+        $langdefs[] = ['code' => 'af', 'name' =>'Afrikaans'];
+        $langdefs[] = ['code' => 'bn', 'name' =>'Bangla'];
+        $langdefs[] = ['code' => 'bs', 'name' =>'Bosnian (Latin)'];
+        $langdefs[] = ['code' => 'bg', 'name' =>'Bulgarian'];
+        $langdefs[] = ['code' => 'ca', 'name' =>'Catalan'];
+        $langdefs[] = ['code' => 'hr', 'name' =>'Croatian'];
+        $langdefs[] = ['code' => 'cs', 'name' =>'Czech'];
+        $langdefs[] = ['code' => 'da', 'name' =>'Danish'];
+        $langdefs[] = ['code' => 'nl', 'name' =>'Dutch'];
+        $langdefs[] = ['code' => 'fi', 'name' =>'Finnish'];
+        $langdefs[] = ['code' => 'fr', 'name' =>'French'];
+        $langdefs[] = ['code' => 'de', 'name' =>'German'];
+        $langdefs[] = ['code' => 'el', 'name' =>'Greek'];
+        $langdefs[] = ['code' => 'ht', 'name' =>'Haitian Creole'];
+        $langdefs[] = ['code' => 'he', 'name' =>'Hebrew'];
+        $langdefs[] = ['code' => 'hi', 'name' =>'Hindi'];
+        $langdefs[] = ['code' => 'hu', 'name' =>'Hungarian'];
+        $langdefs[] = ['code' => 'is', 'name' =>'Icelandic'];
+        $langdefs[] = ['code' => 'it', 'name' =>'Italian'];
+        $langdefs[] = ['code' => 'lv', 'name' =>'Latvian'];
+        $langdefs[] = ['code' => 'lt', 'name' =>'Lithuanian'];
+        $langdefs[] = ['code' => 'ms', 'name' =>'Malay (Latin)'];
+        $langdefs[] = ['code' => 'mt', 'name' =>'Maltese'];
+        $langdefs[] = ['code' => 'nb', 'name' =>'Norwegian'];
+        $langdefs[] = ['code' => 'fa', 'name' =>'Persian'];
+        $langdefs[] = ['code' => 'pl', 'name' =>'Polish'];
+        $langdefs[] = ['code' => 'ro', 'name' =>'Romanian'];
+        $langdefs[] = ['code' => 'sr', 'name' =>'Serbian (Latin)'];
+        $langdefs[] = ['code' => 'sk', 'name' =>'Slovak'];
+        $langdefs[] = ['code' => 'sl', 'name' =>'Slovenian'];
+        $langdefs[] = ['code' => 'sw', 'name' =>'Swahili (Latin)'];
+        $langdefs[] = ['code' => 'sv', 'name' =>'Swedish'];
+        $langdefs[] = ['code' => 'ta', 'name' =>'Tamil'];
+        $langdefs[] = ['code' => 'tr', 'name' =>'Turkish'];
+        $langdefs[] = ['code' => 'uk', 'name' =>'Ukrainian'];
+        $langdefs[] = ['code' => 'ur', 'name' =>'Urdu'];
+        $langdefs[] = ['code' => 'cy', 'name' =>'Welsh'];
         return $langdefs;
     }
 
@@ -1720,6 +1766,7 @@ class utils{
             case 'rus': return 'Russian';
             case 'ru': return 'Russian';
             case 'th': return 'Thai';
+            case 'tr': return 'Turkish';
             case 'vi': return 'Vietnamese';
             case 'zh': return  $fulllangcode=="zh_tw" ? 'Chinese (trad.)' : 'Chinese (simpl.)';
             case constants::M_DEFLANG_OTHER:
