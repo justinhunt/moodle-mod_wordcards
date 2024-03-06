@@ -24,11 +24,16 @@ class mod_wordcards_form_glossaryimport extends moodleform {
 
    public function definition() {
         $mform = $this->_form;
+        //glossaries select
         $glossaries = $this->_customdata['glossaries'];
         $mform->addElement('select', 'glossary', get_string('glossary', constants::M_COMPONENT),$glossaries);
         $mform->setType('glossary', PARAM_NOTAGS);
         $mform->addRule('glossary', null, 'required', null, 'client');
-        $this->add_action_buttons(false);
+       //load then edit or not
+       $mform->addElement('advcheckbox', 'loadthensave', get_string('loadthensave',constants::M_COMPONENT));
+       $mform->setDefault('loadthensave', 1);
+
+       $this->add_action_buttons(false);
     }
 
 }

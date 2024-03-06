@@ -29,7 +29,7 @@ class mod_wordcards_form_import extends moodleform {
          );
         $mform->addElement('select', 'delimiter', get_string('delimiter', 'mod_wordcards'),$delimiter_options);
         $mform->setType('delimiter', PARAM_NOTAGS);
-        $mform->setDefault('delimiter', 'delim_comma');
+        $mform->setDefault('delimiter', 'delim_pipe');
         $mform->addRule('delimiter', null, 'required', null, 'client');
 
         
