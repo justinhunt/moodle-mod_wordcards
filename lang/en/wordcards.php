@@ -473,4 +473,5 @@ $string['exportterms_expl'] = "Export all the terms in the current wordcards act
 $string['glossary'] = "Glossary";
 $string['importfromtext'] = "Import From Text";
 $string['importfromglossary'] = "Import From Glossary";
+$string['importedglossaryentries'] = 'Imported {$a} glossary entries';
 $string['glossaryimportinstructions'] = "Select a glossary to import terms from. The terms will be imported into the current wordcards activity.";

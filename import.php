@@ -49,19 +49,35 @@ $renderer = $PAGE->get_renderer('mod_wordcards');
 $glossaries=utils::fetch_glossaries_list($course->id);
 $glossariesform=false;
 $insertdatarows=[];
+$editdatarows=[];
 $delimiter ="\t";
 if($glossaries && count($glossaries)>0) {
     $glossariesform = new mod_wordcards_form_glossaryimport($formurl->out(false), ['glossaries' => $glossaries]);
     if ($data = $glossariesform->get_data()) {
         if (!empty($data->glossary)) {
             $glossaryid = $data->glossary;
+            $edit_then_import=true;//optional_param('edit_then_import', false, PARAM_BOOL);
             $glossary = $DB->get_record(constants::M_GLOSSARYTABLE, ['id' => $glossaryid, 'course' => $course->id], '*', IGNORE_MISSING);
             if ($glossary) {
                 $entries = $DB->get_records(constants::M_GLOSSARYENTRIESTABLE, ['glossaryid' => $glossaryid], 'concept ASC', '*');
                 if ($entries) {
                     foreach ($entries as $entry) {
-                        $insertdatarows[] = utils::prepare_import_data_row($entry->concept . $delimiter  . $entry->definition, $delimiter , $mod);
+                        if($edit_then_import){
+                            $editdatarows[]=$entry->concept . $delimiter . $entry->definition;
+                        }else {
+                            $insertdatarows[] = utils::prepare_import_data_row($entry->concept . $delimiter . $entry->definition, $delimiter, $mod);
+                        }
                     }//end of for each entry
+
+                    //if edit->thenimport
+                    //prepare the leftover rows to be displayed in the form
+                    if (!empty($editdatarows)) {
+                        $leftover_rows = implode(PHP_EOL, $editdatarows);
+                        $formurl->param('leftover_rows', $leftover_rows);
+                        $message= get_string('importedglossaryentries', constants::M_COMPONENT, count($editdatarows));
+                        redirect($formurl, $message);
+                    }
+
                 }//end of if entries
             }//end of if glossary
         }//end of if not empty data glossary
