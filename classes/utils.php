@@ -1587,6 +1587,17 @@ class utils{
         return $langdefs;
     }
 
+    //in most cases the rcdic lang code is two letters, but for russian it is rus and for Chinese there is a zh_tw
+    //but we dont have an aws zh_tw so we use zh
+    public static function fetch_rcdic_lang($ttslang)
+    {
+       $langcode = utils::fetch_short_lang($ttslang);
+       if($langcode=='ru'){
+           $langcode = 'rus';
+       }
+       return $langcode;
+    }
+
     public static function get_msdic_langs($langdefs){
        // $langdefs = [];
         $langdefs[] = ['code' => 'af', 'name' =>'Afrikaans'];
@@ -1599,7 +1610,6 @@ class utils{
         $langdefs[] = ['code' => 'da', 'name' =>'Danish'];
         $langdefs[] = ['code' => 'nl', 'name' =>'Dutch'];
         $langdefs[] = ['code' => 'fi', 'name' =>'Finnish'];
-        $langdefs[] = ['code' => 'fr', 'name' =>'French'];
         $langdefs[] = ['code' => 'de', 'name' =>'German'];
         $langdefs[] = ['code' => 'el', 'name' =>'Greek'];
         $langdefs[] = ['code' => 'ht', 'name' =>'Haitian Creole'];

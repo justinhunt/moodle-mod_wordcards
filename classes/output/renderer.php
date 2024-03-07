@@ -592,10 +592,9 @@ class renderer extends \plugin_renderer_base {
      * Show error (but when?)
      */
     public function word_wizard($mod,$cm){
-        //lexicala uses 2 char lang codes
-        $langterm =  utils::fetch_short_lang($mod->get_mod()->ttslanguage);
+        $langterm =  utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
         $include_other=false;
-        $langdefs= utils::get_rcdic_langs($mod->get_mod()->deflanguage,$include_other);//utils::get_lexicala_langs($mod->get_mod()->deflanguage);
+        $langdefs= utils::get_rcdic_langs($mod->get_mod()->deflanguage,$include_other);
 
         $data = [
             'modid' =>$mod->get_mod()->id,

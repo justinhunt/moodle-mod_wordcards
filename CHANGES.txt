@@ -1,5 +1,7 @@
 1.3.57 (Build 2024030500)
 - Export to CSV for terms/defs from import page
+- Import from glossary feature
+- Better dictionary lookups for word wizard
 
 1.3.56 (Build 2024022500)
 - Update to CP usage logging
