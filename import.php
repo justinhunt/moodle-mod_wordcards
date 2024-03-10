@@ -45,43 +45,6 @@ if($config->enablesetuptab){
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
-//if we have glossaries, prepare the glossary import form and import any glossary data if we are supposed to
-$glossaries=utils::fetch_glossaries_list($course->id);
-$glossariesform=false;
-$insertdatarows=[];
-$editdatarows=[];
-$delimiter ="|";//"\t";
-if($glossaries && count($glossaries)>0) {
-    $glossariesform = new mod_wordcards_form_glossaryimport($formurl->out(false), ['glossaries' => $glossaries]);
-    if ($data = $glossariesform->get_data()) {
-        if (!empty($data->glossary)) {
-            $glossaryid = $data->glossary;
-            $glossary = $DB->get_record(constants::M_GLOSSARYTABLE, ['id' => $glossaryid, 'course' => $course->id], '*', IGNORE_MISSING);
-            if ($glossary) {
-                $entries = $DB->get_records(constants::M_GLOSSARYENTRIESTABLE, ['glossaryid' => $glossaryid], 'concept ASC', '*');
-                if ($entries) {
-                    foreach ($entries as $entry) {
-                        if($data->loadthensave){
-                            $editdatarows[]=$entry->concept . ' ' . $delimiter . ' '. $entry->definition;
-                        }else {
-                            $insertdatarows[] = utils::prepare_import_data_row($entry->concept . $delimiter . $entry->definition, $delimiter, $mod);
-                        }
-                    }//end of for each entry
-
-                    //if loadthensave
-                    //prepare the leftover rows to be displayed in the form
-                    if (!empty($editdatarows)) {
-                        $leftover_rows = implode(PHP_EOL, $editdatarows);
-                        $formurl->param('leftover_rows', $leftover_rows);
-                        $message= get_string('loadedglossaryentries', constants::M_COMPONENT, count($editdatarows));
-                        redirect($formurl, $message);
-                    }
-
-                }//end of if entries
-            }//end of if glossary
-        }//end of if not empty data glossary
-    }//end of if form has data
-}//end of if glossaries in the course at all
 
 //prepare the import form and import any data if we are supposed to
 $importform = new mod_wordcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);
@@ -107,6 +70,46 @@ if ($data = $importform->get_data()) {
         }
     }
 }
+
+//if we have glossaries, prepare the glossary import form and import any glossary data if we are supposed to
+$glossaries=utils::fetch_glossaries_list($course->id);
+$glossariesform=false;
+$insertdatarows=[];
+$editdatarows=[];
+$delimiter ="|";//"\t";
+if($glossaries && count($glossaries)>0) {
+    $glossariesform = new mod_wordcards_form_glossaryimport($formurl->out(false), ['glossaries' => $glossaries]);
+    if ($data = $glossariesform->get_data()) {
+        if (!empty($data->glossary)) {
+            $glossaryid = $data->glossary;
+            $glossary = $DB->get_record(constants::M_GLOSSARYTABLE, ['id' => $glossaryid, 'course' => $course->id], '*', IGNORE_MISSING);
+            if ($glossary) {
+                $entries = $DB->get_records(constants::M_GLOSSARYENTRIESTABLE, ['glossaryid' => $glossaryid], 'concept ASC', '*');
+                if ($entries) {
+                    foreach ($entries as $entry) {
+                        if($data->loadthensave){
+                            $editdatarows[]= strip_tags($entry->concept) . ' ' . $delimiter . ' '. strip_tags($entry->definition);
+                        }else {
+                            $insertdatarows[] = utils::prepare_import_data_row($entry->concept . $delimiter . $entry->definition, $delimiter, $mod);
+                        }
+                    }//end of for each entry
+
+                    //if loadthensave
+                    //we will load the rows up into the import form
+                    if (!empty($editdatarows)) {
+                        $import_rows = implode(PHP_EOL, $editdatarows);
+                        $importform->set_data(['importdata' => $import_rows]);
+                        //the code below worked well, but it was GET and so big data failed with an error
+                      //  $formurl->param('leftover_rows', $leftover_rows);
+                      //  $message= get_string('loadedglossaryentries', constants::M_COMPONENT, count($editdatarows));
+                      //  redirect($formurl, $message);
+                    }
+
+                }//end of if entries
+            }//end of if glossary
+        }//end of if not empty data glossary
+    }//end of if form has data
+}//end of if glossaries in the course at all
 
 //if we have importdatarows from glossary or from import form, do it
 if(count($insertdatarows)>0) {
