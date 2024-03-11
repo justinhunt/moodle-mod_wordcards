@@ -1,3 +1,6 @@
+1.3.58 (Build 2024031100)
+- Better import from Glossary
+
 1.3.57 (Build 2024030500)
 - Export to CSV for terms/defs from import page
 - Import from glossary feature
