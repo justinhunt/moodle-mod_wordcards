@@ -11,6 +11,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
+use \mod_wordcards\constants;
+use \mod_wordcards\utils;
+
 /**
  * Helper class.
  *
@@ -37,7 +40,7 @@ class mod_wordcards_form_import extends moodleform {
         $mform->setDefault('importdata', $leftover_rows);
         $mform->setType('importdata', PARAM_NOTAGS);
         $mform->addRule('importdata', null, 'required', null, 'client');
-        $this->add_action_buttons(false);
+        $this->add_action_buttons(false, get_string('importwords', constants::M_COMPONENT));
     }
 
 }

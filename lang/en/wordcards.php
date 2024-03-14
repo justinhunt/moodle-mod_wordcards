@@ -477,3 +477,4 @@ $string['importedglossaryentries'] = 'Imported {$a} glossary entries';
 $string['loadthensave'] = 'Confirm before importing';
 $string['loadedglossaryentries'] = 'Load {$a} glossary entries';
 $string['glossaryimportinstructions'] = "Select a glossary to import terms from. The terms will be imported into the current wordcards activity.";
+$string['importwords'] = 'Import Words';

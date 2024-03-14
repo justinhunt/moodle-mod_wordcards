@@ -1,3 +1,8 @@
+1.3.59 (Build 2024031400)
+- Fixed broken import from glossary after confirmation
+- Fixed issue where words added to activity after attempts were made, could prevent students re-attempting
+- Added some new en-US TTS voices (Tiffany, Ed, Ricky and Tammy)
+
 1.3.58 (Build 2024031100)
 - Better import from Glossary
 

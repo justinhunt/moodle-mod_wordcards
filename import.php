@@ -47,6 +47,7 @@ $renderer = $PAGE->get_renderer('mod_wordcards');
 
 
 //prepare the import form and import any data if we are supposed to
+$insertdatarows=[];
 $importform = new mod_wordcards_form_import($formurl->out(false),['leftover_rows'=>$leftover_rows]);
 if ($data = $importform->get_data()) {
     if (!empty($data->importdata)) {
@@ -74,7 +75,6 @@ if ($data = $importform->get_data()) {
 //if we have glossaries, prepare the glossary import form and import any glossary data if we are supposed to
 $glossaries=utils::fetch_glossaries_list($course->id);
 $glossariesform=false;
-$insertdatarows=[];
 $editdatarows=[];
 $delimiter ="|";//"\t";
 if($glossaries && count($glossaries)>0) {

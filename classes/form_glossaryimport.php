@@ -33,7 +33,7 @@ class mod_wordcards_form_glossaryimport extends moodleform {
        $mform->addElement('advcheckbox', 'loadthensave', get_string('loadthensave',constants::M_COMPONENT));
        $mform->setDefault('loadthensave', 1);
 
-       $this->add_action_buttons(false);
+       $this->add_action_buttons(false, get_string('importfromglossary', constants::M_COMPONENT));
     }
 
 }

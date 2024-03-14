@@ -31,11 +31,12 @@ $mod->require_view();
 
 //create a new attempt and set it to STATE_TERMS (which should be bumped up to STATE_STEP1 shortly after)
 if($mod->can_attempt()){
+    //mark all terms as seen
+    //we do this even on re-attempts, because terms may be inserted by sneaky teachers
+    $mod->mark_terms_as_seen();
+
     if($reattempt) {
         $mod->create_reattempt();
-    }else{
-        //if its a first attempt mark all terms as seen
-        $mod->mark_terms_as_seen();
     }
 }
 
