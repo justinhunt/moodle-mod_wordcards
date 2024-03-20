@@ -32,6 +32,7 @@ $string['wordcards:view'] = 'View the module';
 $string['wordcards:viewreports'] = 'View reports';
 $string['wordcards:manageattempts'] = 'Manage Attempts';
 $string['wordcards:manage'] = 'Manage';
+$string['wordcards:export'] = 'Export';
 $string['reviewactivity'] = 'Review';
 
 $string['privacy:metadata:attemptid']='The unique identifier of a users Wordcards attempt.';
