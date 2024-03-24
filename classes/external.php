@@ -11,9 +11,9 @@ require_once($CFG->libdir . '/externallib.php');
 
 use mod_wordcards\utils;
 use mod_wordcards\constants;
-use \external_api;
-use \external_function_parameters;
-use \external_value;
+use external_api;
+use external_function_parameters;
+use external_value;
 
 /**
  * External class.
@@ -21,7 +21,7 @@ use \external_value;
  * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_wordcards_external extends \external_api {
+class mod_wordcards_external extends external_api {
 
     public static function check_by_phonetic_parameters(){
         return new external_function_parameters(
