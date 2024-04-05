@@ -1,4 +1,4 @@
-1.3.59 (Build 2024040500)
+1.3.60 (Build 20240405xx)
 - Added missing lang string for export capability
 
 1.3.59 (Build 2024031400)
