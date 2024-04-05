@@ -1,3 +1,6 @@
+1.3.59 (Build 2024040500)
+- Added missing lang string for export capability
+
 1.3.59 (Build 2024031400)
 - Fixed broken import from glossary after confirmation
 - Fixed issue where words added to activity after attempts were made, could prevent students re-attempting
