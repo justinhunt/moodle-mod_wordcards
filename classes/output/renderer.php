@@ -103,7 +103,7 @@ class renderer extends \plugin_renderer_base {
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
             'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),
-                'state'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt]))->out(true),
+                'nextstep'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'definition_grid' => $this->image_url('grid', 'mod_wordcards')->out(true),
