@@ -24,8 +24,8 @@
  * @copyright  originally 2016 John Okely <john@moodle.com> , modified for Poodll 2023 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4e', 'core/log', 'core/templates','core/ajax'],
-    function($, Y, notification, ajax,a4e, log, templates,Ajax) {
+define(['jquery', 'core/notification', 'mod_wordcards/a4e', 'core/log', 'core/templates','core/ajax'],
+    function($,  notification,a4e, log, templates,Ajax) {
 
     class Rectangle {
         /**
@@ -538,6 +538,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
 
     var app = {
         isFreeMode:  false,
+        termAsAlien: "0",
         questions: [],
         quizgame: null,
         stage: null,
@@ -1595,10 +1596,18 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
             for (var i = 0; i < level.length; i++) {
                 var answers = [];
                 for (var j = 0; j < level.length; j++) {
-                    answers.push({"text": level[j].term,"itempoints": (i === j ? 1 : 0)});
+                    var answertext=app.strip_html(level[j].definition);
+                    if(app.sgoptions===app.termAsAlien){
+                        answertext = level[j].term;
+                    }
+                    answers.push({"text": answertext,"itempoints": (i === j ? 1 : 0)});
+                }
+                var questiontext=level[i].term;
+                if(app.sgoptions===app.termAsAlien){
+                    questiontext=app.strip_html(level[i].definition);
                 }
                 this.questions.push({
-                    "question": app.strip_html(level[i].definition),
+                    "question": questiontext,
                     "termid": level[i].id,
                     "answers": answers,
                     "type": "multichoice",
@@ -1673,6 +1682,7 @@ define(['jquery', 'core/yui', 'core/notification', 'core/ajax','mod_wordcards/a4
         this.nexturl = props.nexturl;
         this.modid = props.modid;
         this.isFreeMode = props.isfreemode;
+        this.sgoptions = props.sgoptions;
 
         var configcontrol = $(theid).get(0);
         if (configcontrol) {

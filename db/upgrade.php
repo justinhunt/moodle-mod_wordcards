@@ -478,7 +478,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if ($oldversion < 2022031300) {
         $table = new xmldb_table(constants::M_TABLE);
         $fields=[];
-        $fields[] = new xmldb_field('lcoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_LC_TERMDEF);
+        $fields[] = new xmldb_field('lcoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_LC_AUDIO_DEF);
 
         // Add fields
         foreach ($fields as $field) {
@@ -492,8 +492,6 @@ function xmldb_wordcards_upgrade($oldversion) {
     //add missing defaults on wordcards
     if ($oldversion < 2022060500) {
         $table = new xmldb_table(constants::M_TABLE);
-
-
 
         $vfields=[];
         $vfields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,null, null, 0);
@@ -549,6 +547,21 @@ function xmldb_wordcards_upgrade($oldversion) {
         //The norwegian language-locale code nb-no is not supported by all STT engines in Poodll, and no-no is. So updating
         $DB->set_field(constants::M_TABLE,'ttslanguage',constants::M_LANG_NONO,['ttslanguage'=>constants::M_LANG_NBNO]);
         upgrade_mod_savepoint(true, 2023092600, 'wordcards');
+    }
+
+    if ($oldversion < 2024042700) {
+        $table = new xmldb_table(constants::M_TABLE);
+        $fields=[];
+        $fields[] = new xmldb_field('msoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_MS_DEF_AT_TOP);
+        $fields[] = new xmldb_field('sgoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_SG_TERM_AS_ALIEN);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2024042700, 'wordcards');
     }
 
     return true;

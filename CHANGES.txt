@@ -1,6 +1,7 @@
-cd 1.3.60 (Build 20240405xx)
+1.3.60 (Build 2024042700)
 - Added missing lang string for export capability
 - Fixed incorrect param for activity page (state instead of nextstep)
+- Added options for using term or definition as the prompt/distractor in space-game and match-select
 
 1.3.59 (Build 2024031400)
 - Fixed broken import from glossary after confirmation

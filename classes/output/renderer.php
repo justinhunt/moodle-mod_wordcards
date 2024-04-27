@@ -237,6 +237,7 @@ class renderer extends \plugin_renderer_base {
         switch($practicetype){
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+                $opts['msoptions']=$mod->get_mod()->msoptions;
                 $this->page->requires->js_call_amd("mod_wordcards/matchselect", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/matchselect_page', $data);
                 break;
@@ -253,6 +254,7 @@ class renderer extends \plugin_renderer_base {
                 break;
             case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
             case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+                $opts['sgoptions']=$mod->get_mod()->sgoptions;
                 $this->page->requires->js_call_amd("mod_wordcards/spacegame", 'init', array($opts));
                 $activity_html = $this->render_from_template('mod_wordcards/spacegame_page', $data);
                 break;
@@ -372,7 +374,7 @@ class renderer extends \plugin_renderer_base {
             'shootthepairs',
         ), 'mod_wordcards');
 
-
+        $opts['sgoptions']=$mod->get_mod()->sgoptions;
         $this->page->requires->js_call_amd('mod_wordcards/spacegame', 'init', array($opts));
         $spacegame_html = $this->render_from_template('mod_wordcards/spacegame_page', []);
         return $opts_html . $spacegame_html;

@@ -17,6 +17,7 @@ define([
 
   var app = {
     dryRun: false,
+    termAtTop: "0",
     init: function(props) {
 
       //pick up opts from html
@@ -24,6 +25,7 @@ define([
       this.dryRun = props.dryRun;
       this.nexturl = props.nexturl;
       this.modid = props.modid;
+      this.msoptions=props.msoptions;
       this.isFreeMode = props.isfreemode;
       var configcontrol = $(theid).get(0);
       if (configcontrol) {
@@ -145,8 +147,11 @@ define([
     next: function() {
       
       a4e.progress_dots(app.results, app.terms);
-
-      templates.render('mod_wordcards/definition_as_header', app.terms[app.pointer]).then(
+      var templateopts=app.terms[app.pointer];
+      if(app.msoptions===app.termAtTop){
+        templateopts.termisheader=true;
+      }
+      templates.render('mod_wordcards/definition_as_header', templateopts).then(
           function(html, js) {
             $("#wordcards-question").html(html);
             //do text fit
@@ -230,7 +235,13 @@ define([
       $.each(distractors, function(i, o) {
         var is_correct = o['term'] == answer;
         var term_id = o['id'];
-        options.push('<li data-id="' + term_id + '" data-correct="' + is_correct.toString() + '" class="list-group-item a4e-distractor a4e-noselect">' + o['term'] + '</li>');
+        //depending on options  show option label as term or def
+        if(app.msoptions===app.termAtTop){
+          var label= o['definition'];
+        }else{
+          var label= o['term'];
+        }
+        options.push('<li data-id="' + term_id + '" data-correct="' + is_correct.toString() + '" class="list-group-item a4e-distractor a4e-noselect">' + label + '</li>');
       });
       var code = '<ul class="list-group a4e-distractors">' + options.join('') + '</ul>';
       return code;

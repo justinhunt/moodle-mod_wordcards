@@ -155,12 +155,30 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
             $label, $details, $default, $options));
 
-    //Listen and Choose
+    //Listen and Choose - audio is term or def
     $name = 'lcoptions';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = constants::M_LC_TERMDEF;
+    $default = constants::M_LC_AUDIO_DEF;
     $options = utils::fetch_options_listenchoose();
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
+
+    //Match Select - term or def at top
+    $name = 'msoptions';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = constants::M_MS_DEF_AT_TOP;
+    $options = utils::fetch_options_matchselect();
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
+
+    //Space Game - term as aliens, or definitions as aliens
+    $name = 'sgoptions';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = constants::M_SG_TERM_AS_ALIEN;
+    $options = utils::fetch_options_spacegame();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
 

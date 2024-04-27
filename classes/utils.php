@@ -1118,9 +1118,22 @@ class utils{
 
     public static function fetch_options_listenchoose(){
         return array(
-            constants::M_LC_TERMTERM=> get_string('lc_termterm', constants::M_COMPONENT),
-            constants::M_LC_TERMDEF => get_string('lc_termdef', constants::M_COMPONENT));
+            constants::M_LC_AUDIO_TERM=> get_string('lc_termterm', constants::M_COMPONENT),
+            constants::M_LC_AUDIO_DEF => get_string('lc_termdef', constants::M_COMPONENT));
     }
+
+    public static function fetch_options_matchselect(){
+        return array(
+            constants::M_MS_TERM_AT_TOP=> get_string('ms_termattop', constants::M_COMPONENT),
+            constants::M_MS_DEF_AT_TOP => get_string('ms_defattop', constants::M_COMPONENT));
+    }
+
+    public static function fetch_options_spacegame(){
+        return array(
+            constants::M_SG_TERM_AS_ALIEN=> get_string('sg_termasalien', constants::M_COMPONENT),
+            constants::M_SG_DEF_AS_ALIEN => get_string('sg_defasalien', constants::M_COMPONENT));
+    }
+
   public static function fetch_options_fontfaceflip(){
       return array(
               constants::M_FRONTFACEFLIP_TERM=> get_string('term', constants::M_COMPONENT),
@@ -1440,8 +1453,25 @@ class utils{
         $mform->setType('learnpoint', PARAM_INT);
         $mform->addHelpButton('learnpoint', 'learnpoint', constants::M_COMPONENT);
 
-        $mform->addElement('header', 'hdrappearance', get_string('appearance'));
-        $mform->setExpanded('hdrappearance');
+        //Attempts
+        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
+            1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',);
+        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
+
+        $t_options = utils::fetch_options_transcribers();
+        $mform->addElement('select', 'transcriber', get_string('transcriber', constants::M_COMPONENT),
+            $t_options,$config->transcriber);
+
+        $mform->addElement('hidden', 'skipreview',0);
+        $mform->setType('skipreview',PARAM_INT);
+
+        $mform->addElement('hidden', 'finishedstepmsg','');
+        $mform->addElement('hidden', 'completedstepmsg','');
+        $mform->setType('finishedstepmsg',PARAM_TEXT);
+        $mform->setType('completedstepmsg',PARAM_TEXT);
+
+        $mform->addElement('header', 'stepsmodeoptions', get_string('stepsmodeoptions',constants::M_COMPONENT));
+        $mform->setExpanded('stepsmodeoptions');
 
         //options for practicetype and term count
         $ptype_options_learn = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
@@ -1472,22 +1502,14 @@ class utils{
         $mform->addElement('select', 'step5termcount', get_string('step5termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
 
-        //Attempts
-        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
-                1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',);
-        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
 
-        $t_options = utils::fetch_options_transcribers();
-        $mform->addElement('select', 'transcriber', get_string('transcriber', constants::M_COMPONENT),
-                $t_options,$config->transcriber);
 
-        $mform->addElement('hidden', 'skipreview',0);
-        $mform->setType('skipreview',PARAM_INT);
 
-        $mform->addElement('hidden', 'finishedstepmsg','');
-        $mform->addElement('hidden', 'completedstepmsg','');
-        $mform->setType('finishedstepmsg',PARAM_TEXT);
-        $mform->setType('completedstepmsg',PARAM_TEXT);
+        //practice type options
+        $name = 'practicetypeoptions';
+        $label = get_string($name, 'wordcards');
+        $mform->addElement('header', $name, $label);
+        $mform->setExpanded($name, false);
 
         //Show images on task flip screen
         $mform->addElement('selectyesno', 'showimageflip', get_string('showimagesonflipscreen', constants::M_COMPONENT));
@@ -1495,12 +1517,19 @@ class utils{
 
         $frontfaceoptions = self::fetch_options_fontfaceflip();
         $mform->addElement('select', 'frontfaceflip', get_string('frontfaceflip', constants::M_COMPONENT),
-                $frontfaceoptions, $config->frontfaceflip);
+            $frontfaceoptions, $config->frontfaceflip);
 
         $lcoptions = self::fetch_options_listenchoose();
         $mform->addElement('select', 'lcoptions', get_string('lcoptions', constants::M_COMPONENT),
             $lcoptions, $config->lcoptions);
 
+        $msoptions = self::fetch_options_matchselect();
+        $mform->addElement('select', 'msoptions', get_string('msoptions', constants::M_COMPONENT),
+            $msoptions, $config->msoptions);
+
+        $sgoptions = self::fetch_options_spacegame();
+        $mform->addElement('select', 'sgoptions', get_string('sgoptions', constants::M_COMPONENT),
+            $sgoptions, $config->sgoptions);
 
   // show activity open closes
    $dateoptions = array('optional' => true);
