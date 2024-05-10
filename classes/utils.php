@@ -872,7 +872,7 @@ class utils{
           //constants::M_LANG_HEIL => [],
           //constants::M_LANG_IDID => [],
               constants::M_LANG_ITIT => ['Carla'=>'Carla',  'Bianca'=>'Bianca', 'Giorgio'=>'Giorgio'],
-              constants::M_LANG_JAJP => ['Takumi'=>'Takumi','Mizuki'=>'Mizuki'],
+              constants::M_LANG_JAJP => ['Takumi'=>'Takumi','Mizuki'=>'Mizuki','Kazuha'=>'Kazuha','Tomoko'=>'Tomoko'],
               constants::M_LANG_KOKR => ['Seoyeon'=>'Seoyeon'],
           //constants::M_LANG_MSMY => [],
               constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte","Laura"=>"Laura"],
@@ -885,7 +885,7 @@ class utils{
               constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
               constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
 
-          constants::M_LANG_NONO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g','nb-NO-Wavenet-A'=>'Hedda_g','nb-NO-Wavenet-D'=>'Anders_g'],
+          constants::M_LANG_NONO => ['Liv'=>'Liv','Ida'=>'Ida','nb-NO-Wavenet-B'=>'Lars_g','nb-NO-Wavenet-A'=>'Hedda_g','nb-NO-Wavenet-D'=>'Anders_g'],
           constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
           constants::M_LANG_RORO => ['Carmen'=>'Carmen','ro-RO-Wavenet-A'=>'Sorina_g'],
           constants::M_LANG_SVSE => ['Astrid'=>'Astrid'],

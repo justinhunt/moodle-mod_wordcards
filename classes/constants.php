@@ -131,7 +131,7 @@ const M_USE_PAGEDTABLES=1;
 const M_NO_TTS='none';
 const M_NEURALVOICES = array("Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
         "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe", "Gabrielle", "Vicki", "Seoyeon","Takumi","lucia",
-        "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila","Hala","Zayd");
+        "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila","Ida","Kazuha","Tomoko","Elin","Hala","Zayd");
 }
 const MS_TRANSLATE_LANGCODES = array(
     'af' => 'Afrikaans',
