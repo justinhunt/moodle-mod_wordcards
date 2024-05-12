@@ -1,3 +1,7 @@
+1.3.61 (Build 2024051200)
+- Tweaks to format functions for PHP8.2
+- Changes to way external apis are called
+
 1.3.60 (Build 2024042700)
 - Added missing lang string for export capability
 - Fixed incorrect param for activity page (state instead of nextstep)

@@ -105,7 +105,7 @@ if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
 }
 
 //depending on wordpool set page title
-$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 if($wordpool==mod_wordcards_module::WORDPOOL_REVIEW) {
     $pagetitle .= ': ' . get_string('reviewactivity', 'mod_wordcards');
 }else{
@@ -120,7 +120,7 @@ if($mod->get_mod()->hashisold) {
 
 
 $PAGE->navbar->add($pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
+$PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
 
 $config = get_config(constants::M_COMPONENT);

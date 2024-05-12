@@ -37,11 +37,11 @@ $mod->register_module_viewed();
 utils::stage_remote_process_job($mod->get_mod()->ttslanguage, $cmid);
 
 //$pagetitle = get_string('tabdefinitions', 'mod_wordcards');
-$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 
 $PAGE->set_url('/mod/wordcards/view.php', ['id' => $cmid]);
 //$PAGE->navbar->add($pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
+$PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
 $PAGE->force_settings_menu(true);
 $modulecontext = $mod->get_context();

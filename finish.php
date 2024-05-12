@@ -26,12 +26,12 @@ $mod->resume_progress($currentstate);
 
 utils::update_finalgrade($mod->get_id());
 
-$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 $pagetitle .= ': ' . get_string('activitycompleted', 'mod_wordcards');
 
 $PAGE->set_url('/mod/wordcards/finish.php', ['id' => $cmid, 'sesskey'=>$sesskey]);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
+$PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
 
 //Get admin settings

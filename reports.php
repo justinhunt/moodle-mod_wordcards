@@ -95,7 +95,7 @@ switch ($action) {
 
 
 /// Set up the page header
-$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 $pagetitle .= ': ' . get_string('reports', constants::M_COMPONENT);
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading(format_string($course->fullname));

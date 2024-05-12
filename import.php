@@ -24,7 +24,7 @@ require_login($course, true, $cm);
 $mod->require_manage();
 
 $modid = $mod->get_id();
-$pagetitle = format_string($mod->get_mod()->name, true, $mod->get_course());
+$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 $pagetitle .= ': ' . get_string('import', 'mod_wordcards');
 $baseurl = new moodle_url('/mod/wordcards/import.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
@@ -32,7 +32,7 @@ $term = null;
 
 $PAGE->set_url($baseurl);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
+$PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
 
 //Get admin settings
@@ -62,7 +62,7 @@ if ($data = $importform->get_data()) {
     	}
 
     	//get array of rows
-    	$rawdata =trim($data->importdata);
+    	$rawdata =\core_text::trim_utf8_bom($data->importdata);
     	$rows = explode(PHP_EOL, $rawdata);
 
         //prepare each row for import

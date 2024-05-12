@@ -8,12 +8,13 @@
 
 global $CFG;
 require_once($CFG->libdir . '/externallib.php');
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
 
 use mod_wordcards\utils;
 use mod_wordcards\constants;
-use external_api;
-use external_function_parameters;
-use external_value;
+
 
 /**
  * External class.
