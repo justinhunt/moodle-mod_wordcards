@@ -845,69 +845,9 @@ class utils{
   }
 
   public static function get_tts_voices($langcode, $showall=false){
-      $alllang= array(
-              constants::M_LANG_ARAE => ['Zeina'=>'Zeina'],
-                constants::M_LANG_ARSA => ['Hala'=>'Hala','Zayd'=>'Zayd'],
-                constants::M_LANG_DADK => ["Naja"=>"Naja","Mads"=>"Mads"],
-              constants::M_LANG_DEDE => ['Hans'=>'Hans','Marlene'=>'Marlene', 'Vicki'=>'Vicki','Daniel'=>'Daniel'],
-              constants::M_LANG_DEAT => ['Hannah'=>'Hannah'],
-          //constants::M_LANG_DECH => [],
-              constants::M_LANG_ENUS => ['Joey'=>'Joey','Justin'=>'Justin','Kevin'=>'Kevin','Matthew'=>'Matthew','Ivy'=>'Ivy',
-                      'Joanna'=>'Joanna','Kendra'=>'Kendra','Kimberly'=>'Kimberly','Salli'=>'Salli',
-                  'en-US-Whisper-alloy'=>'Ricky','en-US-Whisper-onyx'=>'Ed','en-US-Whisper-nova'=>'Tiffany','en-US-Whisper-shimmer'=>'Tammy'],
-              constants::M_LANG_ENGB => ['Brian'=>'Brian','Amy'=>'Amy', 'Emma'=>'Emma'],
-              constants::M_LANG_ENAU => ['Russell'=>'Russell','Nicole'=>'Nicole','Olivia'=>'Olivia'],
-              constants::M_LANG_ENNZ => ['Aria'=>'Aria'],
-              constants::M_LANG_ENZA => ['Ayanda'=>'Ayanda'],
-              constants::M_LANG_ENIN => ['Aditi'=>'Aditi', 'Raveena'=>'Raveena', 'Kajal'=>'Kajal'],
-          // constants::M_LANG_ENIE => [],
-              constants::M_LANG_ENWL => ["Geraint"=>"Geraint"],
-          // constants::M_LANG_ENAB => [],
-              constants::M_LANG_ESUS => ['Miguel'=>'Miguel','Penelope'=>'Penelope','Lupe'=>'Lupe'],
-              constants::M_LANG_ESES => [ 'Enrique'=>'Enrique', 'Conchita'=>'Conchita', 'Lucia'=>'Lucia'],
-          //constants::M_LANG_FAIR => [],
-              constants::M_LANG_FRCA => ['Chantal'=>'Chantal', 'Gabrielle'=>'Gabrielle','Liam'=>'Liam'],
-              constants::M_LANG_FRFR => ['Mathieu'=>'Mathieu','Celine'=>'Celine', 'Lea'=>'Lea'],
-              constants::M_LANG_HIIN => ["Aditi"=>"Aditi"],
-          //constants::M_LANG_HEIL => [],
-          //constants::M_LANG_IDID => [],
-              constants::M_LANG_ITIT => ['Carla'=>'Carla',  'Bianca'=>'Bianca', 'Giorgio'=>'Giorgio'],
-              constants::M_LANG_JAJP => ['Takumi'=>'Takumi','Mizuki'=>'Mizuki','Kazuha'=>'Kazuha','Tomoko'=>'Tomoko'],
-              constants::M_LANG_KOKR => ['Seoyeon'=>'Seoyeon'],
-          //constants::M_LANG_MSMY => [],
-              constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte","Laura"=>"Laura"],
-              constants::M_LANG_NLBE => ["nl-BE-Standard-B"=>"Marc_g","nl-BE-Wavenet-A"=>"Marie_g"],
-              constants::M_LANG_PTBR => ['Ricardo'=>'Ricardo', 'Vitoria'=>'Vitoria','Camila'=>'Camila'],
-              constants::M_LANG_PTPT => ["Ines"=>"Ines",'Cristiano'=>'Cristiano'],
-              constants::M_LANG_RURU => ["Tatyana"=>"Tatyana","Maxim"=>"Maxim"],
-          //constants::M_LANG_TAIN => [],
-          //constants::M_LANG_TEIN => [],
-              constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
-              constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
+      $alllang= constants::ALL_VOICES;
+      $alllang[constants::M_LANG_OTHER]=[constants::M_NO_TTS=>get_string('notts', constants::M_COMPONENT)];
 
-          constants::M_LANG_NONO => ['Liv'=>'Liv','Ida'=>'Ida','nb-NO-Wavenet-B'=>'Lars_g','nb-NO-Wavenet-A'=>'Hedda_g','nb-NO-Wavenet-D'=>'Anders_g'],
-          constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
-          constants::M_LANG_RORO => ['Carmen'=>'Carmen','ro-RO-Wavenet-A'=>'Sorina_g'],
-          constants::M_LANG_SVSE => ['Astrid'=>'Astrid'],
-          constants::M_LANG_UKUA => ['uk-UA-Wavenet-A'=>'Katya_g'],
-          constants::M_LANG_FILPH => ['fil-PH-Wavenet-A'=>'Darna_g','fil-PH-Wavenet-B'=>'Reyna_g','fil-PH-Wavenet-C'=>'Bayani_g','fil-PH-Wavenet-D'=>'Ernesto_g'],
-          constants::M_LANG_FIFI => ['Suvi'=>'Suvi','fi-FI-Wavenet-A'=>'Kaarina_g'],
-          constants::M_LANG_HUHU => ['hu-HU-Wavenet-A'=>'Eszter_g'],
-
-          constants::M_LANG_BGBG => array('bg-BG-Standard-A' => 'Mila_g'),//nikolai
-          constants::M_LANG_CSCZ => array('cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g'),
-          constants::M_LANG_ELGR => array('el-GR-Wavenet-A' => 'Sophia_g', 'el-GR-Standard-A' => 'Isabella_g'),
-          // constants::M_LANG_HRHR => array('A' => 'Ivana', 'B' => 'Marko'),
-          constants::M_LANG_LVLV => array('lv-LV-Standard-A' => 'Janis_g'),
-          constants::M_LANG_LTLT => array('lt-LT-Standard-A' => 'Matas_g'),
-          constants::M_LANG_SKSK => array('sk-SK-Wavenet-A' => 'Laura_g', 'sk-SK-Standard-A' => 'Natalia_g'),
-          //   constants::M_LANG_SLSI => array('A' => 'Pia', 'B' => 'Vid'),
-          constants::M_LANG_ISIS => array('Dora' => 'Dora', 'Karl' => 'Karl'),
-          //    constants::M_LANG_MKMK => array('A' => 'Marija', 'B' => 'Trajko'),
-          constants::M_LANG_SRRS => array('sr-RS-Standard-A' => 'Milena_g'),
-          constants::M_LANG_OTHER=>array(constants::M_NO_TTS=>get_string('notts', constants::M_COMPONENT)),
-
-      );
       if(array_key_exists($langcode,$alllang)&& !$showall) {
           return $alllang[$langcode];
       }elseif($showall && array_key_exists($langcode,$alllang)) {
@@ -935,33 +875,6 @@ class utils{
           //what could this be?
           return $alllang[constants::M_LANG_ENUS];
       }
-    /*
-      {"lang": "English(US)", "voices":  [{name: 'Joey', mf: 'm'},{name: 'Justin', mf: 'm'},{name: 'Matthew', mf: 'm'},{name: 'Ivy', mf: 'f'},{name: 'Joanna', mf: 'f'},{name: 'Kendra', mf: 'f'},{name: 'Kimberly', mf: 'f'},{name: 'Salli', mf: 'f'}]},
-      {"lang": "English(GB)", "voices":  [{name: 'Brian', mf: 'm'},{name: 'Amy', mf: 'f'},{name: 'Emma', mf: 'f'}]},
-      {"lang": "English(AU)", "voices": [{name: 'Russell', mf: 'm'},{name: 'Nicole', mf: 'f'}]},
-      {"lang": "English(IN)", "voices":  [{name: 'Aditi', mf: 'm'},{name: 'Raveena', mf: 'f'}]},
-      {"lang": "English(WELSH)", "voices":  [{name: 'Geraint', mf: 'm'}]},
-      {"lang": "Danish", "voices":  [{name: 'Mads', mf: 'm'},{name: 'Naja', mf: 'f'}]},
-      {"lang": "Dutch", "voices":  [{name: 'Ruben', mf: 'm'},{name: 'Lotte', mf: 'f'}]},
-      {"lang": "French(FR)", "voices":  [{name: 'Mathieu', mf: 'm'},{name: 'Celine', mf: 'f'},{name: 'Léa', mf: 'f'}]},
-      {"lang": "French(CA)", "voices":  [{name: 'Chantal', mf: 'm'}]},
-      {"lang": "German", "voices":  [{name: 'Hans', mf: 'm'},{name: 'Marlene', mf: 'f'},{name: 'Vicki', mf: 'f'}]},
-      {"lang": "Icelandic", "voices":  [{name: 'Karl', mf: 'm'},{name: 'Dora', mf: 'f'}]},
-      {"lang": "Italian", "voices":  [{name: 'Carla', mf: 'f'},{name: 'Bianca', mf: 'f'},{name: 'Giorgio', mf: 'm'}]},
-      {"lang": "Japanese", "voices":  [{name: 'Takumi', mf: 'm'},{name: 'Mizuki', mf: 'f'}]},
-      {"lang": "Korean", "voices":  [{name: 'Seoyeon', mf: 'f'}]},
-      {"lang": "Norwegian", "voices":  [{name: 'Liv', mf: 'f'}]},
-      {"lang": "Polish", "voices":  [{name: 'Jacek', mf: 'm'},{name: 'Jan', mf: 'm'},{name: 'Maja', mf: 'f'},{name: 'Ewa', mf: 'f'}]},
-      {"lang": "Portugese(BR)", "voices":  [{name: 'Ricardo', mf: 'm'},{name: 'Vitoria', mf: 'f'}]},
-      {"lang": "Portugese(PT)", "voices":  [{name: 'Cristiano', mf: 'm'},{name: 'Ines', mf: 'f'}]},
-      {"lang": "Romanian", "voices":  [{name: 'Carmen', mf: 'f'}]},
-      {"lang": "Russian", "voices":  [{name: 'Maxim', mf: 'm'},{name: 'Tatyana', mf: 'f'}]},
-      {"lang": "Spanish(ES)", "voices":  [{name: 'Enrique', mf: 'm'},{name: 'Conchita', mf: 'f'},{name: 'Lucia', mf: 'f'}]},
-      {"lang": "Spanish(US)", "voices":  [{name: 'Miguel', mf: 'm'},{name: 'Penelope', mf: 'f'}]},
-      {"lang": "Swedish", "voices":  [{name: 'Astrid', mf: 'f'}]},
-      {"lang": "Turkish", "voices":  [{name: 'Filiz', mf: 'f'}]},
-      {"lang": "Welsh", "voices":  [{name: 'Gwyneth', mf: 'f'}]},
-    */
 
   }
 
