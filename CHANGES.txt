@@ -1,3 +1,6 @@
+1.3.62 (Build 2024051600)
+- Fixes for external APIS calls in pre M40
+
 1.3.61 (Build 2024051200)
 - Tweaks to format functions for PHP8.2
 - Changes to way external apis are called
