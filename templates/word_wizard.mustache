@@ -29,11 +29,11 @@
                 var langs = ['ar','id','zh','zh_tw','ja','ko','pt','es','th','vi','fr','rus'];
                 var langdef = $("#{{uniqid}}_ww_langdef").val();
                 var allwords = $("#{{uniqid}}_ww_words").val();
-                if (allwords.\core_text::trim_utf8_bom() === '') {
+                if (allwords.trim() === '') {
                     return;
                 }
                 //if the langdef is other then we can not fetch definitions then we can not get definitions
-                if (langdef.\core_text::trim_utf8_bom() === 'zz') {
+                if (langdef.trim() === 'zz') {
                     return;
                 }
 
