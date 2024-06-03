@@ -55,6 +55,11 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
                 //set up events
                 var on_gotstream=  function(stream) {
 
+                    //clear any existing interval
+                    if(that.interval!==undefined){
+                        clearInterval(that.interval);
+                    }
+
                     var newaudio={stream: stream, isRecording: true};
                     that.update_audio(newaudio);
                     that.currentTime = 0;
@@ -90,6 +95,11 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
 
                 var on_stopped = function(blob) {
                     clearInterval(that.interval);
+
+                    //if the blob is undefined then the user is super clicking or something
+                    if(blob===undefined){
+                        return;
+                    }
 
                     //if ds recc
                     var newaudio = {
@@ -249,6 +259,11 @@ define(['jquery', 'core/log', 'mod_wordcards/ttaudiohelper', 'core/notification'
             },
             toggleRecording: function() {
                 var that =this;
+
+                //If we are recognizing, then we want to discourage super click'ers
+                if (this.audio.isRecognizing) {
+                    return;
+                }
 
                 //If we are current recording
                 if (this.audio.isRecording) {

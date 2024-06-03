@@ -62,7 +62,7 @@ if ($data = $importform->get_data()) {
     	}
 
     	//get array of rows
-    	$rawdata =\core_text::trim_utf8_bom($data->importdata);
+    	$rawdata =utils::super_trim($data->importdata);
     	$rows = explode(PHP_EOL, $rawdata);
 
         //prepare each row for import

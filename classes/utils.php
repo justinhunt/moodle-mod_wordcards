@@ -258,8 +258,8 @@ class utils{
 
 
         $message = '';
-        $apiuser = \core_text::trim_utf8_bom($apiuser);
-        $apisecret = \core_text::trim_utf8_bom($apisecret);
+        $apiuser = self::super_trim($apiuser);
+        $apisecret = self::super_trim($apisecret);
         if(empty($apiuser)){
            $message .= get_string('noapiuser',constants::M_COMPONENT) . '<br>';
        }
@@ -314,8 +314,8 @@ class utils{
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('recentpoodlltoken');
         $tokenuser = $cache->get('recentpoodlluser');
-        $apiuser = \core_text::trim_utf8_bom($apiuser);
-        $apisecret = \core_text::trim_utf8_bom($apisecret);
+        $apiuser = self::super_trim($apiuser);
+        $apisecret = self::super_trim($apisecret);
 
         //if we got a token and its less than expiry time
         // use the cached one
@@ -394,7 +394,7 @@ class utils{
             //just in case, lowercase'ify them
             $thewwwroot = strtolower($CFG->wwwroot);
             $theregisteredurl = strtolower($site);
-            $theregisteredurl = \core_text::trim_utf8_bom($theregisteredurl);
+            $theregisteredurl = self::super_trim($theregisteredurl);
 
             //add http:// or https:// to URLs that do not have it
             if (strpos($theregisteredurl, 'https://') !== 0 &&
@@ -1480,11 +1480,11 @@ class utils{
 
         $insertdata = new \stdClass();
         $insertdata->modid = $modid;
-        $insertdata->term = \core_text::trim_utf8_bom($term);
-        $insertdata->definition = \core_text::trim_utf8_bom($definition);
-        $insertdata->translations = \core_text::trim_utf8_bom($translations);
-        $insertdata->sourcedef = \core_text::trim_utf8_bom($sourcedef);
-        $insertdata->model_sentence = \core_text::trim_utf8_bom($modelsentence);
+        $insertdata->term = self::super_trim($term);
+        $insertdata->definition = self::super_trim($definition);
+        $insertdata->translations = self::super_trim($translations);
+        $insertdata->sourcedef = self::super_trim($sourcedef);
+        $insertdata->model_sentence = self::super_trim($modelsentence);
         $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
         $ret = $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
         if($ret && !empty($insertdata->model_sentence)){
@@ -1795,13 +1795,13 @@ class utils{
         if(count($cols)>=2 && !empty($cols[0]) && !empty($cols[1])){
             $insertdata = new \stdClass();
             $insertdata->modid = $mod->get_mod()->id;
-            $insertdata->term = \core_text::trim_utf8_bom($cols[0], $trimchars);
-            $insertdata->definition = \core_text::trim_utf8_bom($cols[1], $trimchars);
+            $insertdata->term = self::super_trim($cols[0], $trimchars);
+            $insertdata->definition = self::super_trim($cols[1], $trimchars);
             //voices
             $voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
             $insertdata->ttsvoice='';
             if(!empty($cols[2])){
-                $thevoice = \core_text::trim_utf8_bom($cols[2],$trimchars);
+                $thevoice = self::super_trim($cols[2],$trimchars);
                 if(in_array($thevoice,$voices) && $thevoice!='auto') {
                     $voice = array_search($thevoice, $voices);
                     $insertdata->ttsvoice = $voice;
@@ -1813,7 +1813,7 @@ class utils{
 
             //model sentence
             if(!empty($cols[3])) {
-                $insertdata->model_sentence = \core_text::trim_utf8_bom($cols[3], $trimchars);
+                $insertdata->model_sentence = self::super_trim($cols[3], $trimchars);
             }
             return $insertdata;
         }else{
@@ -1829,6 +1829,15 @@ class utils{
             $glossarylist[$glossary->id] = $glossary->name;
         }
         return $glossarylist;
+    }
+
+    public static function super_trim($str){
+        if($str==null){
+            return '';
+        }else{
+            $str = trim($str);
+            return $str;
+        }
     }
 
 }
