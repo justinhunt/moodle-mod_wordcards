@@ -9,6 +9,7 @@
 namespace mod_wordcards\output;
 
 use \mod_wordcards\constants;
+use \mod_wordcards\utils;
 
 class report_renderer extends \plugin_renderer_base {
 
