@@ -1,7 +1,8 @@
-1.3.64 (Build 202406xxxx)
+1.3.64 (Build 2024071000)
 - fixed wrong trim function
 - added a bit more robustness to prevent superclickers from breaking the audio recorder
 - fixed wrong dialect labels for Arabic voices:  Arabic (modern standard) / Arabic (gulf)
+- made review pool only use current language terms
 
 1.3.63 (Build 2024052600)
 - Fixed broken wordwizard (from last release)
