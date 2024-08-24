@@ -355,7 +355,7 @@ class mod_wordcards_module {
         $cms = $modinfo->get_instances_of('wordcards');
         $allowedmodids = [];
         foreach ($cms as $cm) {
-            //we only want visible mods and not the current one
+            //we only want visible mods, and not the current activity
             if ($cm->uservisible && $cm->id != $this->cm->id) {
                 $allowedmodids[] = $cm->instance;
             }
@@ -373,7 +373,8 @@ class mod_wordcards_module {
             $sql = " FROM {wordcards_terms} t
                       JOIN {wordcards} f
                         ON f.id = t.modid
-                     WHERE t.deleted = 0        -- The term was not deleted.
+                     WHERE t.deleted = 0        -- The term was not deleted
+                     AND f.ttslanguage='" . $this->mod->ttslanguage . "' -- The tts language is the same as the module
                        AND f.id $insql          -- The user has access to the module in which the term is.
                    ";
             // This is the way to make it simili random, we extract a random subset.
@@ -389,6 +390,7 @@ class mod_wordcards_module {
                  LEFT JOIN {wordcards_associations} a  -- Link the associations, if any.
                         ON a.termid = t.id
                        AND a.userid = :userid2
+                       AND f.ttslanguage='" . $this->mod->ttslanguage . "' -- The tts language is the same as the module
                      WHERE t.deleted = 0        -- The term was not deleted.
                        AND f.id $insql          -- The user has access to the module in which the term is.
                   ORDER BY
