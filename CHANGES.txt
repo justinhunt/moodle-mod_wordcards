@@ -1,3 +1,6 @@
+1.3.65 (Build 2024082600)
+- Fix for layout(display of introduction) issue on Adaptable theme
+
 1.3.64 (Build 2024071000)
 - fixed wrong trim function
 - added a bit more robustness to prevent superclickers from breaking the audio recorder

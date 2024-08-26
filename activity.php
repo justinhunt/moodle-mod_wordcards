@@ -127,7 +127,7 @@ $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab){
     $PAGE->set_pagelayout('popup');
 }else{
-    $PAGE->set_pagelayout('course');
+    $PAGE->set_pagelayout('incourse');
 }
 
 switch ($practicetype) {
@@ -156,8 +156,11 @@ $heading = $renderer->heading($pagetitle, 3, 'main');
 $displaytext = \html_writer::div($heading, constants::M_CLASS . '_center');
 echo $displaytext;
 
-if (!empty($mod->get_mod()->intro)) {
-    echo $renderer->box(format_module_intro('wordcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
+//show module intro if this is an old moodle version
+if( $CFG->version<2022041900) {
+    if (!empty($mod->get_mod()->intro)) {
+        echo $renderer->box(format_module_intro('wordcards', $mod->get_mod(), $cm->id), 'generalbox', 'intro');
+    }
 }
 
 echo $renderer->navigation($mod, $currentstep);

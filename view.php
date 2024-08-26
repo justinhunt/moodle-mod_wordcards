@@ -50,7 +50,7 @@ $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab){
     $PAGE->set_pagelayout('popup');
 }else{
-    $PAGE->set_pagelayout('course');
+    $PAGE->set_pagelayout('incourse');
 }
 
 
@@ -73,17 +73,10 @@ echo $renderer->heading($pagetitle, 3, 'main');
 
 //show open close dates and module intro
 $hasopenclosedates = $moduleinstance->viewend > 0 || $moduleinstance->viewstart>0;
-if (!empty($mod->get_mod()->intro)) {
-    $moduleintro = format_module_intro('wordcards', $mod->get_mod(), $cm->id);
-    if($hasopenclosedates) {
-        $moduleintro .= $renderer->show_open_close_dates($moduleinstance);
-    }
-    echo $renderer->box($moduleintro, 'generalbox', 'intro');
-}else{
-    if($hasopenclosedates) {
-        echo $renderer->box($renderer->show_open_close_dates($moduleinstance), 'generalbox');
-    }
+if($hasopenclosedates) {
+    echo $renderer->box($renderer->show_open_close_dates($moduleinstance), 'generalbox');
 }
+
 
 //enforce open close dates
 if($hasopenclosedates){
@@ -100,6 +93,14 @@ if($hasopenclosedates){
     if(!has_capability('mod/wordcards:preview',$modulecontext) && $closed){
         echo $renderer->footer();
         exit;
+    }
+}
+
+//show activity description - pre m4.0
+if( $CFG->version<2022041900) {
+    if (!empty($mod->get_mod()->intro)) {
+        $moduleintro = format_module_intro('wordcards', $mod->get_mod(), $cm->id);
+        echo $renderer->box($moduleintro, 'generalbox', 'intro');
     }
 }
 
