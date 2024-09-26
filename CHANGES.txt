@@ -1,3 +1,6 @@
+1.3.66 (Build 2024092500)
+- Added support for Vietnamese
+
 1.3.65 (Build 2024082600)
 - Fix for layout(display of introduction) issue on Adaptable theme
 

@@ -9,7 +9,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_wordcards';
-$plugin->version = 2024082600;
+$plugin->version = 2024092500;
 $plugin->requires = 2015111603;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = "1.3.65 (Build 2024082600)";
+$plugin->release = "1.3.66 (Build 2024092500)";

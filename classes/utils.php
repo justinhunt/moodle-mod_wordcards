@@ -1117,6 +1117,7 @@ class utils{
                constants::M_LANG_ISIS => get_string('is-is', constants::M_COMPONENT),
                constants::M_LANG_MKMK => get_string('mk-mk', constants::M_COMPONENT),
                constants::M_LANG_SRRS => get_string('sr-rs', constants::M_COMPONENT),
+               constants::M_LANG_VIVN => get_string('vi-vn',constants::M_COMPONENT),
                constants::M_LANG_OTHER => get_string('xx-xx', constants::M_COMPONENT),
        );
    }
