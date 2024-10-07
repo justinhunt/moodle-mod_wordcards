@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
  * Terms table.
  *
@@ -10,8 +25,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/tablelib.php');
 
 use core\output\checkbox_toggleall;
-use \mod_wordcards\utils;
-use \mod_wordcards\constants;
+use mod_wordcards\utils;
+use mod_wordcards\constants;
 
 /**
  * Terms table class.
@@ -20,6 +35,19 @@ use \mod_wordcards\constants;
  * @author  Frédéric Massart - FMCorz.net
  */
 class mod_wordcards_table_terms extends table_sql {
+
+    /**
+     * The module instance.
+     *
+     * @var object
+     */
+    private $mod;
+    /**
+     * The TTS voices.
+     *
+     * @var array
+     */
+    private $voices;
 
     /**
      *
@@ -37,13 +65,13 @@ class mod_wordcards_table_terms extends table_sql {
         global $PAGE;
         parent::__construct($uniqueid);
         $this->mod = $mod;
-        //this prevents the user changing the ttslanguage eg en-US => en-GB .. the selected voices will not match
-        //$this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
-        $showall=true;
-        $this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage,$showall);
+        // this prevents the user changing the ttslanguage eg en-US => en-GB .. the selected voices will not match
+        // $this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
+        $showall = true;
+        $this->voices = utils::get_tts_voices($mod->get_mod()->ttslanguage, $showall);
 
         // Define columns.
-        $this->define_columns(array(
+        $this->define_columns([
             'bulkselect',
             'term',
             'definition',
@@ -51,8 +79,8 @@ class mod_wordcards_table_terms extends table_sql {
             'image',
             'ttsvoice',
             'model_sentence',
-            'actions'
-        ));
+            'actions',
+        ]);
         $this->renderer = $PAGE->get_renderer('mod_wordcards');
         $mastercheckbox = new checkbox_toggleall('delete-term', true, [
             'id' => 'select-all-term',
@@ -61,7 +89,7 @@ class mod_wordcards_table_terms extends table_sql {
             'selectall' => get_string('selectall'),
             'deselectall' => get_string('deselectall'),
         ]);
-        $this->define_headers(array(
+        $this->define_headers([
             $this->renderer->render($mastercheckbox),
             get_string('term', constants::M_COMPONENT),
             get_string('definition', constants::M_COMPONENT),
@@ -69,10 +97,10 @@ class mod_wordcards_table_terms extends table_sql {
                 get_string('imagefile', constants::M_COMPONENT),
                 get_string('ttsvoice', constants::M_COMPONENT),
                 get_string('model_sentence', constants::M_COMPONENT),
-            get_string('actions')
-        ));
+            get_string('actions'),
+        ]);
 
-//t.model_sentence
+        // t.model_sentence
         // Define SQL.
         $sqlfields = "t.id, t.term, CASE 
          WHEN CHAR_LENGTH(t.model_sentence) > 15 THEN CONCAT(SUBSTRING(t.model_sentence, 1, 15), '...')
@@ -100,13 +128,12 @@ class mod_wordcards_table_terms extends table_sql {
      * @param stdClass $row Table row.
      * @return string Output produced.
      */
-    protected function col_ttsvoice($row)
-    {
+    protected function col_ttsvoice($row) {
         global $OUTPUT;
-        if(array_key_exists($row->ttsvoice,$this->voices)){
+        if(array_key_exists($row->ttsvoice, $this->voices)){
             return $this->voices[$row->ttsvoice];
         }else{
-            return get_string('invalidvoice',constants::M_COMPONENT);
+            return get_string('invalidvoice', constants::M_COMPONENT);
         }
 
     }
@@ -122,7 +149,7 @@ class mod_wordcards_table_terms extends table_sql {
 
         $actions = [];
 
-        //non AJAX edit form - defunct
+        // non AJAX edit form - defunct
         /*
         $url = new moodle_url($this->baseurl);
         $url->params(['action' => 'edit', 'termid' => $row->id]);
@@ -131,11 +158,10 @@ class mod_wordcards_table_terms extends table_sql {
         $actions[] = $actionlink;
         */
 
-        //ajax action
-        $ajaxeditlink = $OUTPUT->action_link('#', '', null, array('data-id'=>$row->id,'data-type'=>"edit",'class'=>"mod_wordcards_item_row_editlink"), new pix_icon('t/edit',
+        // ajax action
+        $ajaxeditlink = $OUTPUT->action_link('#', '', null, ['data-id' => $row->id, 'data-type' => "edit", 'class' => "mod_wordcards_item_row_editlink"], new pix_icon('t/edit',
                 get_string('editterm', 'mod_wordcards', $row->term)));
         $actions[] = $ajaxeditlink;
-
 
         $action = new confirm_action(get_string('reallydeleteterm', 'mod_wordcards', $row->term));
         $url = new moodle_url($this->baseurl);
@@ -149,7 +175,7 @@ class mod_wordcards_table_terms extends table_sql {
 
     protected function col_bulkselect($row) {
         $checkbox = new checkbox_toggleall('delete-term', false, [
-            'value' => $row->id, 'class' => 'bulkselectcol', 'name' => 'termdeleteid[]'
+            'value' => $row->id, 'class' => 'bulkselectcol', 'name' => 'termdeleteid[]',
         ]);
         return $this->renderer->render($checkbox);
     }
