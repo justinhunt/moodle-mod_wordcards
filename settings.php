@@ -215,4 +215,16 @@ if ($ADMIN->fulltree) {
     $default = 4;
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
         $label, $details, $default, PARAM_INT));
+
+    // Set the default free mode options
+    $name = 'freemodesettings';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $settings->add(new admin_setting_heading(constants::M_COMPONENT . "/$name", $label, $details));
+
+    $freemodeoptions = constants::FREEMODE_ACTIVITIES;
+    foreach ($freemodeoptions as $theoption) {
+        $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT . '/freemode_' . $theoption,
+        get_string('title_' . $theoption, constants::M_COMPONENT), "", 1));
+    }
 }

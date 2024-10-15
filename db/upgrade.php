@@ -551,7 +551,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     if ($oldversion < 2024042700) {
         $table = new xmldb_table(constants::M_TABLE);
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('msoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_MS_DEF_AT_TOP);
         $fields[] = new xmldb_field('sgoptions', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_SG_TERM_AS_ALIEN);
 
@@ -562,6 +562,18 @@ function xmldb_wordcards_upgrade($oldversion) {
             }
         }
         upgrade_mod_savepoint(true, 2024042700, 'wordcards');
+    }
+
+    if ($oldversion < 2024101500) {
+        $table = new xmldb_table('wordcards');
+        // Define field foriframe to be added to wordcards
+        $field = new xmldb_field('freemodeoptions', XMLDB_TYPE_TEXT, null, null, null, null);
+
+        // add  field to wordcards table
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2024101500, 'wordcards');
     }
 
     return true;

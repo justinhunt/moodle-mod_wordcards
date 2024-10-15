@@ -92,12 +92,12 @@ class mod_wordcards_mod_form extends moodleform_mod {
             //$data->finishedstepmsg = $data->finishedstepmsg_editor['text'];
             //$data->completedmsg = $data->completedmsg_editor['text'];
         }
-
         return $data;
     }
 
      public function data_preprocessing(&$data) {
         if ($this->current->instance) {
+            $data = utils::unpack_freemode_options($data);
             //$data =  utils::prepare_file_and_json_stuff($data,$this->context);
         }
     }
@@ -109,10 +109,6 @@ class mod_wordcards_mod_form extends moodleform_mod {
                 $errors['viewend'] = "End date should be after Start Date";
             }
         }
-
-
-
         return $errors;
     }
-
 }

@@ -47,6 +47,7 @@
         <FIELD NAME="viewend" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="videoexamples" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="show video example on def page"/>
         <FIELD NAME="learnpoint" TYPE="int" LENGTH="10" NOTNULL="true"  DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="freemodeoptions" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Free mode options"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

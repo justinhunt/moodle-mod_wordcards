@@ -1,13 +1,28 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * Freemode class to produce data for free mode mustache.
+ * Session mode class to produce data for session mode mustache.
  *
  * @package mod_wordcards
- * @author  David Watson - evolutioncode.uk
+ * @author  Justin Hunt - poodll.com
  */
 
 /**
- * Freemode class to produce data for free mode mustache.
+ * Session mode class to produce data for session mode mustache.
  *
  * @package mod_wordcards
  * @author  David Watson - evolutioncode.uk
@@ -18,7 +33,7 @@ namespace mod_wordcards\output;
 use mod_wordcards\constants;
 use mod_wordcards\utils;
 
-class freemode implements \renderable, \templatable {
+class sessionmode implements \renderable, \templatable {
 
     private $cm;
     private $course;
@@ -62,20 +77,18 @@ class freemode implements \renderable, \templatable {
         $data->id = $this->cm->id;
         $data->practicetype = $this->practicetype;
         $data->wordpool = $this->wordpool;
-
-        // Get the list of activities to show in free mode.
-        $practicetypeoptions = utils::get_available_freemode_activities($this->mod->get_mod()->freemodeoptions);
+        $practicetypeoptions = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
         $data->introactive = !$this->practicetype;
         $journeymode = $this->mod->get_mod()->journeymode;
-        $data->stepsmodeavailable = ($journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE);
-        $data->defsurl = new \moodle_url('/mod/wordcards/freemode.php', ['id' => $this->cm->id, 'practicetype' => 0, 'wordpool' => $this->wordpool]);
+        $data->stepsmodeavailable = ($journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_SESSIONTHENFREE);
+        $data->defsurl = new \moodle_url('/mod/wordcards/sessionmode.php', ['id' => $this->cm->id, 'practicetype' => 0, 'wordpool' => $this->wordpool]);
         foreach ($practicetypeoptions as $id => $title) {
             $data->tabs[] = [
                 'id' => $id,
                 'title' => $title,
                 'active' => $id == $this->practicetype ? 1 : 0,
                 'url' => new \moodle_url(
-                    '/mod/wordcards/freemode.php', ['id' => $this->cm->id, 'practicetype' => $id, 'wordpool' => $this->wordpool]
+                    '/mod/wordcards/sessionmode.php', ['id' => $this->cm->id, 'practicetype' => $id, 'wordpool' => $this->wordpool]
                 ),
                 'icon' => utils::fetch_activity_tabicon($id),
             ];
@@ -85,10 +98,12 @@ class freemode implements \renderable, \templatable {
             $data->intro = format_module_intro('wordcards', $this->mod, $this->cm->id);
         }
 
+        // TO DO - probably remove wordpool selection from session, but lets just get it to load
         $wordpoolicons = [
             \mod_wordcards_module::WORDPOOL_LEARN => 'fa-star-o',
             \mod_wordcards_module::WORDPOOL_REVIEW => 'fa-history',
-            \mod_wordcards_module::WORDPOOL_MY_WORDS => 'fa-refresh'
+            \mod_wordcards_module::WORDPOOL_MY_WORDS => 'fa-refresh',
+            \mod_wordcards_module::WORDPOOL_SESSION_WORDS => 'fa-circle-o',
         ];
 
         $mywordspool = new \mod_wordcards\my_words_pool($this->cm->course);
@@ -102,7 +117,7 @@ class freemode implements \renderable, \templatable {
                 'wordpoolid' => $wordpoolid,
                 'title' => $renderer->get_wordpool_string($wordpoolid),
                 'selected' => $wordpoolid == $this->wordpool,
-                'icon' => isset($wordpoolicons[$wordpoolid]) ? $wordpoolicons[$wordpoolid] : 'fa-circle-o'
+                'icon' => isset($wordpoolicons[$wordpoolid]) ? $wordpoolicons[$wordpoolid] : 'fa-circle-o',
             ];
             $wordcount = $wordpoolcounts[$wordpoolid];
             $pool->countwordstoreview = (string)$wordcount;
@@ -122,7 +137,7 @@ class freemode implements \renderable, \templatable {
         $data->showselectmenu = in_array($devicetype, [\core_useragent::DEVICETYPE_MOBILE, \core_useragent::DEVICETYPE_TABLET]);
 
         if ($data->selectedpoolhaswords) {
-            $definitions = $this->get_terms($this->wordpool, false,$this->practicetype);
+            $definitions = $this->get_terms($this->wordpool, false, $this->practicetype);
             switch ($this->practicetype){
                 case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
@@ -139,7 +154,7 @@ class freemode implements \renderable, \templatable {
                 default:
                     // Show the intro page and cards.
                     $data->isintropage = 1;
-                    $data->definitions = $renderer->definitions_page_data($this->mod,$definitions);
+                    $data->definitions = $renderer->definitions_page_data($this->mod, $definitions);
                     $data->definitions['isfreemode'] = 1;
                     $data->definitions['nexturl'] = isset($data->tabs[0]['url']) ? $data->tabs[0]['url'] : '';
                     $data->definitions['introheading'] = get_string('freemode', 'mod_wordcards');
@@ -155,9 +170,7 @@ class freemode implements \renderable, \templatable {
                     }
             }
         } else {
-            $data->mainhtml = \html_writer::div(
-                get_string('selectedpoolhasnowords', 'mod_wordcards'),
-                'wordcards_selectedpoolnowords');
+            $data->mainhtml = get_string('selectedpoolhasnowords', 'mod_wordcards');
         }
 
         return $data;
@@ -166,17 +179,17 @@ class freemode implements \renderable, \templatable {
     private function get_terms(int $wordpool, bool $countonly, int $practicetype=0) {
         global $DB, $USER;
 
-        //SQL Params
-        $params = ['userid' => $USER->id, 'modid' => $this->cm->instance, 'courseid'=>$this->cm->course];
+        // SQL Params
+        $params = ['userid' => $USER->id, 'modid' => $this->cm->instance, 'courseid' => $this->cm->course];
 
-        //words to show
-        if($practicetype ==\mod_wordcards_module::PRACTICETYPE_NONE){
-            $maxwords=0;
+        // words to show
+        if($practicetype == \mod_wordcards_module::PRACTICETYPE_NONE){
+            $maxwords = 0;
         }else{
             $maxwords = get_config(constants::M_COMPONENT, 'def_wordstoshow');
         }
 
-        //wordpool :: MY WORDS
+        // wordpool :: MY WORDS
         if ($wordpool == \mod_wordcards_module::WORDPOOL_MY_WORDS) {
             $wordpool = new \mod_wordcards\my_words_pool($this->course->id);
             return $countonly
@@ -184,10 +197,10 @@ class freemode implements \renderable, \templatable {
                 : $wordpool->get_words($maxwords);
         }
 
-        //wordpool :: REVIEW WORDS
-        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW){
-            //in this case we want ALL the words returned
-            if ($countonly || $practicetype ==\mod_wordcards_module::PRACTICETYPE_NONE) {
+        // wordpool :: REVIEW WORDS
+        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
+            // In this case we want ALL the words returned.
+            if ($countonly || $practicetype == \mod_wordcards_module::PRACTICETYPE_NONE) {
                 $reviewsql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
                 $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
                 $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
@@ -204,12 +217,12 @@ class freemode implements \renderable, \templatable {
                     $records = \mod_wordcards_module::format_defs($records);
                 }
             } else {
-                //in this case we want words to practice returned
+                // in this case we want words to practice returned
                 return $this->mod->get_review_terms($maxwords);
             }
         }
 
-        //wordpool :: NEW WORDS
+        // wordpool :: NEW WORDS
         if ($countonly) {
             $learnsql = "SELECT COUNT(t.id)  FROM {wordcards_terms} t WHERE t.deleted = 0 AND t.modid = :modid";
             return $DB->get_field_sql($learnsql, $params);

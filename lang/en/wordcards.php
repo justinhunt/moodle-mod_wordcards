@@ -1,4 +1,19 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
  * Displays information about the wordcards in the course.
  *
@@ -9,15 +24,15 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['activitycompleted'] = 'Activity completed';
-//$string['completedmsg'] = 'Completed message';
-//$string['completedmsg_help'] = 'This is the message displayed on the final screen of the activity when the student complete the last practice.';
+// $string['completedmsg'] = 'Completed message';
+// $string['completedmsg_help'] = 'This is the message displayed on the final screen of the activity when the student complete the last practice.';
 $string['completionwhenfinish'] = 'The student has finished the activity.';
 $string['congrats'] = 'Congratulations!';
 $string['congratsitsover'] = '<div  style="text-align: center;">You have finished this activity. Thank you!</div>';
 $string['definition'] = 'Definition';
 $string['shortdefinition'] = 'Def:';
 $string['definition_help'] = 'Enter definition of the term(word/phrase) here. It should be short but still tell the student what the term means.';
-//$string['definitions'] = 'Definitions';
+// $string['definitions'] = 'Definitions';
 $string['deleteallentries'] = 'Delete all user attempts and stats (keep the terms/definitions)';
 $string['deleteterm'] = 'Delete term \'{$a}\'';
 $string['delimiter'] = 'Delimiter Character';
@@ -35,31 +50,31 @@ $string['wordcards:manage'] = 'Manage';
 $string['wordcards:export'] = 'Export Wordcards';
 $string['reviewactivity'] = 'Review';
 
-$string['privacy:metadata:attemptid']='The unique identifier of a users Wordcards attempt.';
-$string['privacy:metadata:wordcardsid']='The unique identifier of a Wordcards activity instance.';
-$string['privacy:metadata:userid']='The user id for the Wordcards attempt';
-$string['privacy:metadata:grade1']='The score for the attempt on step 1 ';
-$string['privacy:metadata:grade2']='The score for the attempt on step 2 ';
-$string['privacy:metadata:grade3']='The score for the attempt on step 3 ';
-$string['privacy:metadata:grade4']='The score for the attempt on step 4 ';
-$string['privacy:metadata:grade5']='The score for the attempt on step 5 ';
-$string['privacy:metadata:totalgrade']='The total score for the attempt';
-$string['privacy:metadata:timecreated']='The that that the attempt was created';
-$string['privacy:metadata:timemodified']='The last time attempt was modified for the attempt';
-$string['privacy:metadata:attempttable']='Stores the scores and other user data associated with a WordCards attempt.';
+$string['privacy:metadata:attemptid'] = 'The unique identifier of a users Wordcards attempt.';
+$string['privacy:metadata:wordcardsid'] = 'The unique identifier of a Wordcards activity instance.';
+$string['privacy:metadata:userid'] = 'The user id for the Wordcards attempt';
+$string['privacy:metadata:grade1'] = 'The score for the attempt on step 1 ';
+$string['privacy:metadata:grade2'] = 'The score for the attempt on step 2 ';
+$string['privacy:metadata:grade3'] = 'The score for the attempt on step 3 ';
+$string['privacy:metadata:grade4'] = 'The score for the attempt on step 4 ';
+$string['privacy:metadata:grade5'] = 'The score for the attempt on step 5 ';
+$string['privacy:metadata:totalgrade'] = 'The total score for the attempt';
+$string['privacy:metadata:timecreated'] = 'The that that the attempt was created';
+$string['privacy:metadata:timemodified'] = 'The last time attempt was modified for the attempt';
+$string['privacy:metadata:attempttable'] = 'Stores the scores and other user data associated with a WordCards attempt.';
 $string['privacy:metadata'] = 'The Poodll Wordcards plugin does store personal data.';
 $string['privacy:metadata:modid'] = 'The unique identifier of a Poodll Wordcards activity instance.';
 
-//$string['reviewactivityfinished'] = 'You finished the review session in {$a->seconds} seconds.';
+// $string['reviewactivityfinished'] = 'You finished the review session in {$a->seconds} seconds.';
 
 $string['gotit'] = 'Got it';
 $string['import'] = 'Import';
 $string['importdata'] = 'Import Data';
 $string['importresults'] = 'Successfully imported {$a->imported} rows. {$a->failed} rows failed.';
 $string['introduction'] = 'Introduction';
-//$string['learnactivityfinished'] = 'You finished the practice session in {$a->seconds} seconds.';
-//$string['finishedstepmsg'] = 'Finished message';
-//$string['finishedstepmsg_help'] = 'This is the message displayed when you end a practice session.';
+// $string['learnactivityfinished'] = 'You finished the practice session in {$a->seconds} seconds.';
+// $string['finishedstepmsg'] = 'Finished message';
+// $string['finishedstepmsg_help'] = 'This is the message displayed when you end a practice session.';
 $string['step1termcount'] = 'Step 1 word set size';
 $string['step2termcount'] = 'Step 2 word set size';
 $string['step3termcount'] = 'Step 3 word set size';
@@ -78,10 +93,10 @@ $string['pluginadministration'] = 'Wordcards administration';
 $string['pluginname'] = 'Poodll Wordcards';
 $string['reallydeleteterm'] = 'Are you sure you want to delete the term \'{$a}\'?';
 $string['removeuserdata'] = 'Remove Wordcards user data';
-//$string['setup'] = 'Setup';
+// $string['setup'] = 'Setup';
 $string['managewords'] = 'Manage Words';
-//$string['skipreview'] = 'Hide first review session';
-//$string['skipreview_help'] = 'Hide the review session of this specific activity if no wordcards activities have been completed in this course.';
+// $string['skipreview'] = 'Hide first review session';
+// $string['skipreview_help'] = 'Hide the review session of this specific activity if no wordcards activities have been completed in this course.';
 $string['tabdefinitions'] = 'Start';
 $string['tabmanagewords'] = 'Words Admin';
 $string['tabimport'] = 'Import';
@@ -105,10 +120,10 @@ $string['scatter'] = 'Scatter';
 $string['speechcards'] = 'Speech Cards';
 
 
-$string['apiuser']='Poodll API User ';
-$string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
-$string['apisecret']='Poodll API Secret ';
-$string['apisecret_details']='The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
+$string['apiuser'] = 'Poodll API User ';
+$string['apiuser_details'] = 'The Poodll account username that authorises Poodll on this site.';
+$string['apisecret'] = 'Poodll API Secret ';
+$string['apisecret_details'] = 'The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
 $string['useast1'] = 'US East';
 $string['tokyo'] = 'Tokyo, Japan';
 $string['sydney'] = 'Sydney, Australia';
@@ -121,7 +136,7 @@ $string['mumbai'] = 'Mumbai, India';
 $string['singapore'] = 'Singapore';
 $string['bahrain'] = 'Bahrain';
 $string['capetown'] = 'Capetown, South Africa';
-$string['forever']='Never expire';
+$string['forever'] = 'Never expire';
 
 $string['en-us'] = 'English (US)';
 $string['en-gb'] = 'English (GB)';
@@ -184,23 +199,23 @@ $string['hu-hu'] = 'Hungarian';
 
 $string['sv-se'] = 'Swedish';
 $string['no-no'] = 'Norwegian';
-$string['nb-no'] = 'Norwegian'; //unused
+$string['nb-no'] = 'Norwegian'; // unused
 $string['pl-pl'] = 'Polish';
 $string['ro-ro'] = 'Romanian';
 $string['xx-xx'] = 'Other'; // Other
 
-$string['awsregion']='AWS Region';
-//$string['region']='AWS Region';
-$string['expiredays']='Days to keep file';
+$string['awsregion'] = 'AWS Region';
+// $string['region']='AWS Region';
+$string['expiredays'] = 'Days to keep file';
 $string['displaysubs'] = '{$a->subscriptionname} : expires {$a->expiredate}';
 $string['noapiuser'] = "No API user entered. Word Cards will not work correctly.";
 $string['noapisecret'] = "No API secret entered. Word Cards will not work correctly.";
 $string['credentialsinvalid'] = "The API user and secret entered could not be used to get access. Please check them.";
-$string['appauthorised']= "Poodll Word Cards is authorised for this site.";
-$string['appnotauthorised']= "Poodll Word Cards is NOT authorised for this site.";
-$string['refreshtoken']= "Refresh license information";
-$string['notokenincache']= "Refresh to see license information. Contact Poodll support if there is a problem.";
-//these errors are displayed on activity page
+$string['appauthorised'] = "Poodll Word Cards is authorised for this site.";
+$string['appnotauthorised'] = "Poodll Word Cards is NOT authorised for this site.";
+$string['refreshtoken'] = "Refresh license information";
+$string['notokenincache'] = "Refresh to see license information. Contact Poodll support if there is a problem.";
+// these errors are displayed on activity page
 $string['nocredentials'] = 'API user and secret not entered. Please enter them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
 $string['novalidcredentials'] = 'API user and secret were rejected and could not gain access. Please check them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
 $string['nosubscriptions'] = "There is no current subscription for this site/plugin.";
@@ -221,23 +236,23 @@ $string['audiofile_help'] = 'Upload an audio file illustrating the pronunciation
 $string['imagefile'] = 'Image file';
 $string['imagefile_help'] = 'Upload an image file to be displayed on the cards.';
 $string['starttest'] = 'Begin';
-//$string['quit'] = 'Quit';
+// $string['quit'] = 'Quit';
 $string['next'] = 'Next';
 $string['previous'] = 'Prev';
-//$string['ok'] = 'OK';
+// $string['ok'] = 'OK';
 $string['listen'] = 'Listen';
-//$string['delete'] = 'Delete';
-//$string['submit'] = 'Submit';
+// $string['delete'] = 'Delete';
+// $string['submit'] = 'Submit';
 $string['flip'] = 'Flip';
 $string['word'] = 'Word';
 $string['meaning'] = 'Meaning';
 $string['correct'] = 'Correct';
-//$string['backtostart'] = 'Back to Start';
+// $string['backtostart'] = 'Back to Start';
 $string['loading'] = 'Loading';
 $string['title_matchselect'] = 'Choose the Answer';
 $string['title_matchtype'] = 'Type the Answer';
 $string['title_dictation'] = 'Listen and Type';
-//$string['title_scatter'] = 'Match the Words';
+// $string['title_scatter'] = 'Match the Words';
 $string['title_speechcards'] = 'Say the Words';
 $string['title_listenchoose'] = 'Listen and Choose';
 $string['title_spacegame'] = 'Space Game';
@@ -249,7 +264,7 @@ $string['title_noactivity'] = 'None';
 $string['title_matchselect_rev'] = 'Choose the Answer (Review)';
 $string['title_matchtype_rev'] = 'Type the Answer (Review)';
 $string['title_dictation_rev'] = 'Listen and Type (Review)';
-//$string['title_scatter_rev'] = 'Match the Words (Review)';
+// $string['title_scatter_rev'] = 'Match the Words (Review)';
 $string['title_speechcards_rev'] = 'Say the Words (Review)';
 $string['title_listenchoose_rev'] = 'Listen and Choose (Review)';
 $string['title_spacegame_rev'] = 'Space Game (Review)';
@@ -258,12 +273,12 @@ $string['title_vocablist'] = 'Get Ready';
 $string['instructions_matchselect'] = 'Tap the best match from the choices below for the highlighted word.';
 $string['instructions_matchtype'] = 'Type the best match for the highlighted word.';
 $string['instructions_dictation'] = 'Listen and type the word(s) that you hear. Tap the blue button to hear the word(s).';
-//$string['instructions_scatter'] = 'Match the cards with the same meaning, by tapping them,';
+// $string['instructions_scatter'] = 'Match the cards with the same meaning, by tapping them,';
 $string['instructions_speechcards'] = 'Tap the blue button and speak the word(s) shown on the card. Speak slowly and clearly.';
 $string['instructions_vocablist'] = 'Review the words that will be used in this activity. Tap the word card or the \'Flip\' button to show the other side of the cards. When you are ready, tap \'Begin\' to test your knowledge of these words.';
-//$string['pushtospeak'] = 'Tap to Speak';
+// $string['pushtospeak'] = 'Tap to Speak';
 
-//Reports
+// Reports
 $string['itemsperpage'] = "Items per Page";
 $string['itemsperpage_details'] = "";
 $string['tabreports'] = "Reports";
@@ -288,7 +303,7 @@ $string['nodataavailable'] = "No  data available";
 $string['maxattempts'] = "Maximum Attempts";
 $string['unlimited'] = "Unlimited";
 
-//grades report
+// grades report
 $string['grades'] = "Grades";
 $string['userattemptsheading'] = "User Attempts Report";
 $string['gradesheadinglatest'] = "Grades Report (latest attempt)";
@@ -300,7 +315,7 @@ $string['grade3_p'] = "Step3(%)";
 $string['grade4_p'] = "Step4(%)";
 $string['grade5_p'] = "Step5(%)";
 $string['attempts'] = "Attempts";
-$string['reportsmenutop']="Choose from the reports available below. You can export the data to CSV using the button on the lower right of the report when displayed.";
+$string['reportsmenutop'] = "Choose from the reports available below. You can export the data to CSV using the button on the lower right of the report when displayed.";
 $string['try_again'] = "Try again";
 $string['next_step'] = "Next";
 $string['done'] = 'Next';
@@ -309,45 +324,45 @@ $string['reattempt'] = 'Try Again';
 $string['continue'] = 'Continue';
 $string['reattempttitle'] = 'Really Try Again?';
 $string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';
-$string['importinstructions']='You can import lists of words using the \'import data\' text area below. Each line should contain one term(word/phrase) and it\'s definition separated by a delimiter. Optionally specify 3rd and 4th fields for TTS voice and model sentence. You can choose a delimiter from the dropdown box below. The format of each line should be:<br><br> new-word | definition | TTS Voice | Model Sentence<br><br> Each line therefore should look something like this:<br> <i>Bonjour | Hello| Celine | Bonjour Monsieur</i>';
-$string['managewordsinstructions']="Use the 'Add New' button to add new words for the activity. You can view, edit and delete previously added words from the table at the bottom of the page. Only the term and definition are required.";
+$string['importinstructions'] = 'You can import lists of words using the \'import data\' text area below. Each line should contain one term(word/phrase) and it\'s definition separated by a delimiter. Optionally specify 3rd and 4th fields for TTS voice and model sentence. You can choose a delimiter from the dropdown box below. The format of each line should be:<br><br> new-word | definition | TTS Voice | Model Sentence<br><br> Each line therefore should look something like this:<br> <i>Bonjour | Hello| Celine | Bonjour Monsieur</i>';
+$string['managewordsinstructions'] = "Use the 'Add New' button to add new words for the activity. You can view, edit and delete previously added words from the table at the bottom of the page. Only the term and definition are required.";
 $string['model_sentence'] = 'Model sentence';
 $string['model_sentence_audio'] = 'Model sentence audio';
 $string['model_sentence_help'] = 'Enter model sentence of the term(word/phrase) here. It should be short but still tell the student what the term means.';
 $string['audioandimages'] = 'Audio and Images';
-$string['addnewterm']= "Add New";
-$string['enablesetuptab']="Enable setup tab";
-$string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
-$string['setup']="Setup";
-$string['tabsetup']="Setup";
+$string['addnewterm'] = "Add New";
+$string['enablesetuptab'] = "Enable setup tab";
+$string['enablesetuptab_details'] = "Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
+$string['setup'] = "Setup";
+$string['tabsetup'] = "Setup";
 
-$string['showimagesonflipscreen']="Show images on flip cards";
-$string['showimagesonflipscreen_desc']="If the wordcards set has images, and this property is true, the image will be displayed under the word on the flip cards screen before a practice activity.";
-$string['frontfaceflip']="Front face on flip cards";
-$string['frontfaceflip_details']="Show the term or definition on the front face of the wordcards.";
-$string['pushalltogradebook']="Re-push grades to gradebook";
-$string['gradespushed']="Grades pushed to gradebook";
-$string['gradesadmin']="Grades Administration";
-$string['cancelbuttontext']="Quit Attempt";
-$string['cancelattempttitle']="Quit Attempt?";
-$string['cancelattemptbody']="This will quit your attempt and take you back to the start. Really quit?";
-$string['cancelattempt']="Quit Attempt";
+$string['showimagesonflipscreen'] = "Show images on flip cards";
+$string['showimagesonflipscreen_desc'] = "If the wordcards set has images, and this property is true, the image will be displayed under the word on the flip cards screen before a practice activity.";
+$string['frontfaceflip'] = "Front face on flip cards";
+$string['frontfaceflip_details'] = "Show the term or definition on the front face of the wordcards.";
+$string['pushalltogradebook'] = "Re-push grades to gradebook";
+$string['gradespushed'] = "Grades pushed to gradebook";
+$string['gradesadmin'] = "Grades Administration";
+$string['cancelbuttontext'] = "Quit Attempt";
+$string['cancelattempttitle'] = "Quit Attempt?";
+$string['cancelattemptbody'] = "This will quit your attempt and take you back to the start. Really quit?";
+$string['cancelattempt'] = "Quit Attempt";
 
-$string['gradelatest']="most recent attempt";
-$string['gradehighest']="highest scoring attempt";
+$string['gradelatest'] = "most recent attempt";
+$string['gradehighest'] = "highest scoring attempt";
 $string['gradeoptions'] = 'Grade Options';
 $string['gradeoptions_help'] =
     'When there are multiple attempts by a user, this setting determines which attempt to use when grading';
 $string['gradeoptions_details'] =
     'NB This determines the gradebook entry. The activity grading report will display the attempt selected here.';
-$string['letsaddwords']="Lets add some words..";
-$string['addwords']="Add Words";
+$string['letsaddwords'] = "Lets add some words..";
+$string['addwords'] = "Add Words";
 
 $string['freetrial'] = "Get Cloud Poodll API Credentials and a Free Trial";
 $string['freetrial_desc'] = "A dialog should appear that allows you to register for a free trial with Poodll. After registering you should login to the members dashboard to get your API user and secret. And to register your site URL.";
-//$string['memberdashboard'] = "Member Dashboard";
-//$string['memberdashboard_desc'] = "";
-$string['fillcredentials']="Set API user and secret with existing credentials";
+// $string['memberdashboard'] = "Member Dashboard";
+// $string['memberdashboard_desc'] = "";
+$string['fillcredentials'] = "Set API user and secret with existing credentials";
 $string['ww_words_instructions'] = " Wordcards will fetch a list of definitions for the words you entered.";
 $string['ww_words'] = "Enter Words separated by commas, e.g cat,dog";
 $string['ww_words_fetch'] = "Fetch Definitions";
@@ -361,23 +376,25 @@ $string['deflanguage'] = "Definitions Language";
 $string['deflanguage_help'] = "This is choosed to preselect the correct language when using the dictionary in teh Word Wizard. (Only some langs are aavailable ..sorry)";
 $string['wizardinstructions'] = 'Word Wizard will search the {$a} dictionary for the words you enter. <ol><li>Enter a comma separated list of {$a} words.</li><li>Press the \'Fetch Definitions\' button.</li><li>Select the best entry per term, edit the entry content and press the \'use\' button to add the word to the wordcards activity.</li></ol>';
 $string['nodefinitionfound'] = "No definition found";
-$string['viewstart']="Activity open";
-$string['viewend']="Activity close";
-$string['viewstart_help']="If set, prevents a student from entering the activity before the start date/time.";
-$string['viewend_help']="If set, prevents a student from entering the activity after the closing date/time.";
+$string['viewstart'] = "Activity open";
+$string['viewend'] = "Activity close";
+$string['viewstart_help'] = "If set, prevents a student from entering the activity before the start date/time.";
+$string['viewend_help'] = "If set, prevents a student from entering the activity after the closing date/time.";
 $string['activitydate:submissionsdue'] = 'Due:';
 $string['activitydate:submissionsopen'] = 'Opens:';
 $string['activitydate:submissionsopened'] = 'Opened:';
-$string['activityisnotopenyet']="This activity is not open yet.";
-$string['activityisclosed']="This activity is closed.";
-$string['open']="Open: ";
-$string['until']="Until: ";
-$string['activityopenscloses']="Activity open/close dates";
-$string['wordcards:preview']="Can preview Wordcards activities";
-$string['mode_steps']="Steps mode";
-$string['mode_free']="Free mode";
-$string['mode_freeaftersteps']="Steps mode then Free mode";
-$string['journeymode']="Mode";
+$string['activityisnotopenyet'] = "This activity is not open yet.";
+$string['activityisclosed'] = "This activity is closed.";
+$string['open'] = "Open: ";
+$string['until'] = "Until: ";
+$string['activityopenscloses'] = "Activity open/close dates";
+$string['wordcards:preview'] = "Can preview Wordcards activities";
+$string['mode_steps'] = "Steps mode";
+$string['mode_free'] = "Free mode";
+$string['mode_freeaftersteps'] = "Steps mode then Free mode";
+$string['mode_session'] = "Session mode";
+$string['mode_freeaftersession'] = "Session mode then Free mode";
+$string['journeymode'] = "Mode";
 $string['m'] = "m";
 $string['addtomywords'] = "Click to add to My Words";
 $string['removefrommywords'] = "Click to remove from My Words";
@@ -397,32 +414,33 @@ $string['flashcards'] = "Flashcards";
 $string['grid'] = "Grid";
 $string['selectwordstolearn'] = "Select words to learn";
 $string['freemodenotavailable'] = "The Site Administrator has not enabled free mode.";
+$string['sessionmodenotavailable'] = "The Site Administrator has not enabled session mode.";
 $string['def_wordstoshow'] = "Max words to show (free mode)";
 $string['def_wordstoshow_details'] = "How many words to show the user from the wordpool when in free mode.";
-$string['reportstable']="Reports Style";
-$string['reportstable_details']="Ajax tables are faster to use and can sort data. Paged tables load faster but are harder to navigate with.";
-$string['reporttableajax']="Ajax Tables";
-$string['reporttablepaged']="Paged Tables";
-$string['totalscore']="Total Score";
-$string['backtocourse']="Back to Course";
-$string['morepractice']="More Practice";
-$string['lc_termterm']="Audio: term, Options: terms";
-$string['lc_termdef']="Audio: term, Options: definitions";
-$string['lcoptions']="Listen and Choose options";
-$string['lcoptions_details']="Display terms as options, or word definitions";
-$string['msoptions']="Match Select options";
-$string['msoptions_details']="Display terms as options, or word definitions";
-$string['sgoptions']="Space Game options";
-$string['sgoptions_details']="Display terms as aliens, or definitions as aliens";
-$string['animations']="Animations";
-$string['animations_details']="Transitions between item subtypes are animated. If fancy animation causes trouble, choose plain.";
-$string['anim_fancy']="Fancy animation";
-$string['anim_plain']="Plain animation";
+$string['reportstable'] = "Reports Style";
+$string['reportstable_details'] = "Ajax tables are faster to use and can sort data. Paged tables load faster but are harder to navigate with.";
+$string['reporttableajax'] = "Ajax Tables";
+$string['reporttablepaged'] = "Paged Tables";
+$string['totalscore'] = "Total Score";
+$string['backtocourse'] = "Back to Course";
+$string['morepractice'] = "More Practice";
+$string['lc_termterm'] = "Audio: term, Options: terms";
+$string['lc_termdef'] = "Audio: term, Options: definitions";
+$string['lcoptions'] = "Listen and Choose options";
+$string['lcoptions_details'] = "Display terms as options, or word definitions";
+$string['msoptions'] = "Match Select options";
+$string['msoptions_details'] = "Display terms as options, or word definitions";
+$string['sgoptions'] = "Space Game options";
+$string['sgoptions_details'] = "Display terms as aliens, or definitions as aliens";
+$string['animations'] = "Animations";
+$string['animations_details'] = "Transitions between item subtypes are animated. If fancy animation causes trouble, choose plain.";
+$string['anim_fancy'] = "Fancy animation";
+$string['anim_plain'] = "Plain animation";
 $string['eventwordcardsstepsubmitted'] = 'Wordcards step submitted';
 $string['eventwordcardsattemptsubmitted'] = 'Wordcards attempt submitted';
-$string['listofwords']="List of words";
+$string['listofwords'] = "List of words";
 
-//spacegame
+// spacegame
 $string['removescores'] = 'Remove all user scores';
 $string['score'] = 'Score: {$a->score} Lives: {$a->lives}';
 $string['scoreheader'] = 'Score';
@@ -447,7 +465,7 @@ Press the spacebar or click the mouse button to shoot, or tap with two fingers a
 
 Clear as many questions as possible by shooting the correct answer.  Good Luck!';
 
-//Video Examples
+// Video Examples
 $string['videoexamples'] = 'Video Examples';
 $string['videoexamples_details'] = 'In definitions/start mode automatically generated video examples can be shown on the back face of the card.';
 $string['videoexamples_help'] = 'In definitions/start mode automatically generated video examples can be shown on the back face of the card.';
@@ -464,7 +482,7 @@ $string['learned_p'] = "Learned(%)";
 $string['learned_progress'] = "Learned(%)";
 $string['userlearned'] = "User Learned Terms";
 $string['userlearnedheading'] = 'User Learned Terms: {$a}';
-$string['reportsmenutoptext']="Review attempts on WordCards activities using the reports below.";
+$string['reportsmenutoptext'] = "Review attempts on WordCards activities using the reports below.";
 $string['learnedreport_explanation'] = 'A list of the number of terms learned by each user in this activity.';
 $string['gradesreport_explanation'] = 'The grades for each user in this activity.';
 $string['attemptsreport_explanation'] = 'A summary of WordCards attempts per user in this activity.';
@@ -484,9 +502,12 @@ $string['loadthensave'] = 'Confirm before importing';
 $string['loadedglossaryentries'] = 'Load {$a} glossary entries';
 $string['glossaryimportinstructions'] = "Select a glossary to import terms from. The terms will be imported into the current wordcards activity.";
 $string['importwords'] = 'Import Words';
-$string['ms_termattop']='Term at top, Definitions as choices';
-$string['ms_defattop']='Definition at top, Terms as choices';
-$string['sg_termasalien']='Terms as aliens (enemies)';
-$string['sg_defasalien']='Definition as aliens (enemies)';
-$string['practicetypeoptions']='Practice Type Options';
-$string['stepsmodeoptions']='Steps Mode Options';
+$string['ms_termattop'] = 'Term at top, Definitions as choices';
+$string['ms_defattop'] = 'Definition at top, Terms as choices';
+$string['sg_termasalien'] = 'Terms as aliens (enemies)';
+$string['sg_defasalien'] = 'Definition as aliens (enemies)';
+$string['practicetypeoptions'] = 'Practice Type Options';
+$string['stepsmodeoptions'] = 'Steps Mode Options';
+$string['freemodesettings'] = 'Free Mode Defaults';
+$string['freemodesettings_details'] = 'Choose which activity types are available in WordCards free mode by default. These defaults can be overriden in the activity instance.';
+$string['freemodeoptions'] = 'Free Mode Options';

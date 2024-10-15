@@ -486,9 +486,15 @@ class utils{
     }
 
     public static function get_journeymode_options() {
+        global $CFG;
         $options = array( constants::MODE_STEPSTHENFREE => get_string("mode_freeaftersteps", constants::M_COMPONENT),
             constants::MODE_STEPS => get_string("mode_steps", constants::M_COMPONENT),
             constants::MODE_FREE => get_string("mode_free", constants::M_COMPONENT));
+
+        if ($CFG->wordcards_sessionmode) {
+            $options[constants::MODE_SESSION] = get_string("mode_session", constants::M_COMPONENT);
+            $options[constants::MODE_SESSIONTHENFREE] = get_string("mode_freeaftersession", constants::M_COMPONENT);
+        }    
         return $options;
     }
 
@@ -1000,6 +1006,54 @@ class utils{
         }
     }
 
+  public static function get_available_freemode_activities($freemodeoptions){
+        $candidates=[];
+        $available=[];
+        // For free mode we need to unpack the activity settings
+        // free mode settings might not be there if the user restored from an old moodle version
+        //or if something awful happend. So if its not there, default to admin config settings
+        //so first build the candidate list of activities, before choosing the enabled ones
+        $freemodeoptionsarray = ['freemodeoptions' => $freemodeoptions];
+        if ($freemodeoptionsarray['freemodeoptions']) {
+            $candidates = utils::unpack_freemode_options($freemodeoptionsarray);
+        } else {
+            // Set the default free mode options.
+            foreach (constants::FREEMODE_ACTIVITIES as $activity) {
+               if (get_config(constants::M_COMPONENT, 'freemode_' . $activity)){
+                 $candidates['freemode_' . $activity] =1;
+               }
+            }
+        }
+
+        //then we build the return data from the candidates that are set to show in free mode
+        foreach($candidates as $activity=>$enabled){
+            if(!$enabled){
+                continue;
+            }
+            switch($activity){
+                case 'freemode_matchselect':
+                    $available[ \mod_wordcards_module::PRACTICETYPE_MATCHSELECT]=get_string('title_matchselect', constants::M_COMPONENT);
+                    break;
+                case 'freemode_matchtype':
+                    $available[ \mod_wordcards_module::PRACTICETYPE_MATCHTYPE]=get_string('title_matchtype', constants::M_COMPONENT);
+                    break;
+                case 'freemode_dictation':
+                    $available[ \mod_wordcards_module::PRACTICETYPE_DICTATION]=get_string('title_dictation', constants::M_COMPONENT);
+                    break;
+                case 'freemode_speechcards':
+                    $available[ \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS]=get_string('title_speechcards', constants::M_COMPONENT);
+                    break;
+                case 'freemode_listenchoose':
+                    $available[ \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE]=get_string('title_matchselect', constants::M_COMPONENT);
+                    break;
+                case 'freemode_spacegame':
+                    $available[ \mod_wordcards_module::PRACTICETYPE_SPACEGAME]=get_string('title_spacegame', constants::M_COMPONENT);
+                    break;        
+            }
+        }
+        return $available;
+  }  
+
   public static function get_practicetype_options($wordpool=false){
       $none =  array(\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', constants::M_COMPONENT));
       $learnoptions = [
@@ -1416,8 +1470,15 @@ class utils{
         $mform->addElement('select', 'step5termcount', get_string('step5termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
 
+        //Free Mode Options
+        $mform->addElement('header', 'freemodeoptions', get_string('freemodeoptions',constants::M_COMPONENT));
+        $mform->setExpanded('freemodeoptions');
 
-
+        $freemodeoptions = constants::FREEMODE_ACTIVITIES;
+        foreach($freemodeoptions as $theoption){
+            $mform->addElement('advcheckbox', 'freemode_' . $theoption, get_string('title_' . $theoption, constants::M_COMPONENT));
+            $mform->setDefault('freemode_' . $theoption, $config->{'freemode_' . $theoption});
+        }
 
         //practice type options
         $name = 'practicetypeoptions';
@@ -1465,6 +1526,38 @@ class utils{
         $mform->addHelpButton($name, $name, constants::M_COMPONENT);
     } //end of add_mform_elements
 
+    public static function pack_freemode_options($module){
+        
+        $freemodeactivities = constants::FREEMODE_ACTIVITIES;
+        $freemodeoptions= new \stdClass();
+        $selectedactivities=[];
+        foreach($freemodeactivities as $activity){
+            if(isset($module->{'freemode_' . $activity}) && $module->{'freemode_' . $activity}==1){
+                $selectedactivities[]=$activity;
+            }
+        }
+        $freemodeoptions->activities = $selectedactivities;
+        $jsondata = json_encode($freemodeoptions);
+        return $jsondata;
+    }
+
+    public static function unpack_freemode_options($data){
+       
+        if (isset($data['freemodeoptions']) && self::is_json($data['freemodeoptions'])){
+            //first uncheck all the activity boxes
+            $freemodeactivities = constants::FREEMODE_ACTIVITIES;
+            foreach($freemodeactivities as $theactivity){
+                $data['freemode_' . $theactivity]=0;
+            }
+            //then check the selected ones
+            $freemodeoptions=json_decode($data['freemodeoptions']);
+            foreach($freemodeoptions->activities as $activity){
+                $data['freemode_' . $activity]=1;
+            }
+            unset($data['freemodeoptions']);
+        }
+        return $data;
+    }
 
     //What multi-attempt grading approach
     public static function get_grade_options() {

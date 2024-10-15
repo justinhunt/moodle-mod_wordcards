@@ -52,6 +52,7 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
 
     $module->timecreated = time();
     $module->timemodified = time();
+    $module->freemodeoptions = utils::pack_freemode_options($module);
 
     if (empty($module->skipreview)) {
         $module->skipreview = 0;
@@ -80,6 +81,7 @@ function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mfo
 
     $module->timemodified = time();
     $module->id = $module->instance;
+    $module->freemodeoptions = utils::pack_freemode_options($module);
     $params = array('id' => $module->instance);
     $oldmod = $DB->get_record(constants::M_TABLE,  $params);
     $oldgradefield = $oldmod->grade;
