@@ -511,3 +511,4 @@ $string['stepsmodeoptions'] = 'Steps Mode Options';
 $string['freemodesettings'] = 'Free Mode Defaults';
 $string['freemodesettings_details'] = 'Choose which activity types are available in WordCards free mode by default. These defaults can be overriden in the activity instance.';
 $string['freemodeoptions'] = 'Free Mode Options';
+$string['never'] = 'Never';
