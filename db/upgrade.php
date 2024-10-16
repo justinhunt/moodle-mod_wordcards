@@ -566,7 +566,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     if ($oldversion < 2024101500) {
         $table = new xmldb_table('wordcards');
-        // Define field foriframe to be added to wordcards
+        // Define field freemodeoptions to be added to wordcards
         $field = new xmldb_field('freemodeoptions', XMLDB_TYPE_TEXT, null, null, null, null);
 
         // add  field to wordcards table
