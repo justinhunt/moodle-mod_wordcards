@@ -52,18 +52,27 @@ $string['reviewactivity'] = 'Review';
 
 $string['privacy:metadata:attemptid'] = 'The unique identifier of a users Wordcards attempt.';
 $string['privacy:metadata:wordcardsid'] = 'The unique identifier of a Wordcards activity instance.';
-$string['privacy:metadata:userid'] = 'The user id for the Wordcards attempt';
+$string['privacy:metadata:userid'] = 'The user id for the Wordcards user';
 $string['privacy:metadata:grade1'] = 'The score for the attempt on step 1 ';
 $string['privacy:metadata:grade2'] = 'The score for the attempt on step 2 ';
 $string['privacy:metadata:grade3'] = 'The score for the attempt on step 3 ';
 $string['privacy:metadata:grade4'] = 'The score for the attempt on step 4 ';
 $string['privacy:metadata:grade5'] = 'The score for the attempt on step 5 ';
 $string['privacy:metadata:totalgrade'] = 'The total score for the attempt';
-$string['privacy:metadata:timecreated'] = 'The that that the attempt was created';
-$string['privacy:metadata:timemodified'] = 'The last time attempt was modified for the attempt';
+$string['privacy:metadata:timecreated'] = 'The time that the record was created';
+$string['privacy:metadata:timemodified'] = 'The last time the record was modified';
 $string['privacy:metadata:attempttable'] = 'Stores the scores and other user data associated with a WordCards attempt.';
+$string['privacy:metadata:seentable'] = 'Stores a record of WordCards words the user has commenced learning.';
+$string['privacy:metadata:associationstable'] = 'Stores a record of failed or successful attempts to associate words with their definitions.';
+$string['privacy:metadata:mywordstable'] = 'Stores a record of WordCards words the user has selected for their personal learning list.';
 $string['privacy:metadata'] = 'The Poodll Wordcards plugin does store personal data.';
 $string['privacy:metadata:modid'] = 'The unique identifier of a Poodll Wordcards activity instance.';
+$string['privacy:metadata:termid'] = 'The unique identifier of a Poodll Wordcards word.';
+$string['privacy:metadata:lastfail'] = 'The last time the user failed to associate a specific Poodll Wordcards word correctly.';
+$string['privacy:metadata:lastsuccess'] = 'The last time the user succcessfully associated a specific Poodll Wordcards word correctly.';
+$string['privacy:metadata:failcount'] = 'The total number of times the user failed to associate a specific Poodll Wordcards word correctly.';
+$string['privacy:metadata:successcount'] = 'The total number of times the user successfully associated a specific Poodll Wordcards word correctly.';
+
 
 // $string['reviewactivityfinished'] = 'You finished the review session in {$a->seconds} seconds.';
 
