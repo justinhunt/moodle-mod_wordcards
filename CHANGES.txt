@@ -1,3 +1,6 @@
+1.3.69 (Build 2024101501)
+- Fix for code warning about session_mode
+
 1.3.68 (Build 2024101500)
 - Added ability to set the practice types available in free mode
 - Added foundations of new "sessions" mode - not yet Enabled

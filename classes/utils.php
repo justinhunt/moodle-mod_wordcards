@@ -491,10 +491,10 @@ class utils{
             constants::MODE_STEPS => get_string("mode_steps", constants::M_COMPONENT),
             constants::MODE_FREE => get_string("mode_free", constants::M_COMPONENT));
 
-        if ($CFG->wordcards_sessionmode) {
+        if (isset($CFG->wordcards_sessionmode) && $CFG->wordcards_sessionmode) {
             $options[constants::MODE_SESSION] = get_string("mode_session", constants::M_COMPONENT);
             $options[constants::MODE_SESSIONTHENFREE] = get_string("mode_freeaftersession", constants::M_COMPONENT);
-        }    
+        }
         return $options;
     }
 
