@@ -447,6 +447,7 @@ $string['anim_fancy'] = "Fancy animation";
 $string['anim_plain'] = "Plain animation";
 $string['eventwordcardsstepsubmitted'] = 'Wordcards step submitted';
 $string['eventwordcardsattemptsubmitted'] = 'Wordcards attempt submitted';
+$string['eventwordcardswordlearned'] = 'Wordcards word learned';
 $string['listofwords'] = "List of words";
 
 // spacegame
