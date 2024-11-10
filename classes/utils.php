@@ -1101,6 +1101,11 @@ class utils{
             constants::M_SG_DEF_AS_ALIEN => get_string('sg_defasalien', constants::M_COMPONENT));
     }
 
+    public static function fetch_options_wordcards(){
+        return array(
+            constants::M_WC_TERM_AS_READABLE=> get_string('wc_termasreadable', constants::M_COMPONENT),
+            constants::M_WC_MODELSENTENCE_AS_READABLE => get_string('wc_modelsentenceasreadable', constants::M_COMPONENT));
+    }
   public static function fetch_options_fontfaceflip(){
       return array(
               constants::M_FRONTFACEFLIP_TERM=> get_string('term', constants::M_COMPONENT),
@@ -1505,6 +1510,10 @@ class utils{
         $sgoptions = self::fetch_options_spacegame();
         $mform->addElement('select', 'sgoptions', get_string('sgoptions', constants::M_COMPONENT),
             $sgoptions, $config->sgoptions);
+
+        $scoptions = self::fetch_options_wordcards();
+        $mform->addElement('select', 'scoptions', get_string('scoptions', constants::M_COMPONENT),
+                $scoptions, $config->scoptions);    
 
   // show activity open closes
    $dateoptions = array('optional' => true);

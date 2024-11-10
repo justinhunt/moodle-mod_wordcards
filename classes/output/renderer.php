@@ -179,6 +179,8 @@ class renderer extends \plugin_renderer_base {
             $def->ttsvoice=$definition->ttsvoice;
             $def->id=$definition->id;
             $def->term =$definition->term;
+            $def->model_sentence =$definition->model_sentence;
+            $def->model_sentence_audio =$definition->model_sentence_audio;
             $def->definition =$definition->definition;
             if($mod->get_mod()->showimageflip){
                 $def->showimageflip=true;
@@ -414,7 +416,7 @@ class renderer extends \plugin_renderer_base {
 
         //next url
         $nextstep = $mod->get_next_step($currentstep);
-        $nexturl =  (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+        $nexturl = (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
 
         //make sure each definition has a voice
         foreach($definitions as $def){
@@ -437,6 +439,7 @@ class renderer extends \plugin_renderer_base {
         $opts['modid']= $mod->get_id();
         $opts['expiretime']=300;//max expire time is 300 seconds
         $opts['useanimatecss'] = get_config(constants::M_COMPONENT,'animations')==constants::M_ANIM_FANCY;
+        $opts['cardface']= $mod->get_mod()->scoptions==constants::M_WC_TERM_AS_READABLE ? 'term' : 'model_sentence';
 
         if($mod->get_mod()->transcriber == constants::TRANSCRIBER_POODLL){
             //this will force browser recognition to use Poodll (not chrome or other browser speech)

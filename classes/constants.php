@@ -60,6 +60,8 @@ class constants {
     const M_MS_DEF_AT_TOP = 1;
     const M_SG_TERM_AS_ALIEN = 0;
     const M_SG_DEF_AS_ALIEN = 1;
+    const M_WC_TERM_AS_READABLE = 0;
+    const M_WC_MODELSENTENCE_AS_READABLE = 1;
     const MODE_STEPS = 0;
     const MODE_FREE = 1;
     const MODE_STEPSTHENFREE = 2;

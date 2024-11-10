@@ -723,6 +723,11 @@ class mod_wordcards_module {
         } else {
             $DB->update_record(constants::M_ASSOCTABLE, $record);
         }
+
+         // Raise word learned event.
+        if ($record->successcount === $this->mod->learnpoint) {
+            \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record)->trigger();
+        }
     }
 
     public function resume_progress($currentstate) {

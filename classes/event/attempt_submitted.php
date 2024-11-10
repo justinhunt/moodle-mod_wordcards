@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_solo attempt submitted event.
+ * The mod_wordcards attempt submitted event.
  *
- * @package    mod_solo
+ * @package    mod_wordcards
  * @copyright  2023 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

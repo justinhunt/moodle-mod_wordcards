@@ -36,6 +36,7 @@ define([
       this.modid = props.modid;
       this.region = props.region;
       this.isFreeMode = props.isfreemode;
+      this.cardface = props.cardface;
       var definitionscontrol = $(theid).get(0);
       if (definitionscontrol) {
         var jsondata = JSON.parse(definitionscontrol.value);
@@ -181,12 +182,14 @@ define([
     },
 
     setCardData: function(theterm) {
-        app.controls.slider.text(theterm.term);
-        app.ttrec.currentPrompt=theterm.term;
+        var cardtext = app.cardface == 'term' ? theterm.term : theterm.model_sentence;
+        var cardaudio = app.cardface == 'term' ? theterm.audio : theterm.model_sentence_audio;
+        app.controls.slider.text(cardtext);
+        app.ttrec.currentPrompt=cardtext;
 
         //set speaker icon attributes (a4e.js will play them if clicked)
-        app.controls.speakericon.attr('data-modelaudio',theterm.audio);
-        app.controls.speakericon.attr('data-tts',theterm.term);
+        app.controls.speakericon.attr('data-modelaudio',cardaudio);
+        app.controls.speakericon.attr('data-tts',cardtext);
         app.controls.speakericon.attr('data-ttsvoice',theterm.ttsvoice);
     },
 
@@ -210,7 +213,7 @@ define([
             var cleanspeechtext = app.cleanText(speechtext);
             
             var spoken = cleanspeechtext;
-            var correct = app.terms[app.pointer - 1].term;
+            var correct =  app.cardface == 'term' ? app.terms[app.pointer - 1].term : app.terms[app.pointer - 1].model_sentence;
 
             //Similarity check by character matching
             var similarity = app.similarity(spoken,correct);
@@ -318,12 +321,13 @@ define([
 
     wordsDoMatch: function(wordheard, currentterm) {
       //lets lower case everything
-       wordheard = app.cleanText(wordheard);
-      currentterm.term = app.cleanText(currentterm.term);
-      if (wordheard == currentterm.term) {
+      wordheard = app.cleanText(wordheard);
+      correcttext = app.cardface=='term' ? currentterm.term : currentterm.model_sentence;
+      correcttext = app.cleanText(correcttext);
+      if (wordheard == correcttext) {
         return true;
       }
-      if (!currentterm.alternates) {
+      if (!currentterm.alternates || app.cardface=='term') {
         return false;
       }
       var awords = currentterm.alternates.split(',');
