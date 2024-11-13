@@ -110,6 +110,12 @@ class mod_wordcards_module {
         $event->trigger();
     }
 
+    public function completion_module_viewed() {
+        // Register completion based on view
+        $completion = new completion_info($this->course);
+        $completion->set_module_viewed($this->cm);
+    }
+
     public function delete() {
         global $DB;
         $modid = $this->get_id();
@@ -533,7 +539,7 @@ class mod_wordcards_module {
         }
 
         // if we have not completed the last attempt, we can attempt
-        if(!$this->has_user_completed_activity()){return true;
+        if(!$this->has_user_finished_latest_attempt()){return true;
         }
 
         // otherwise, no we can not attempt
@@ -568,6 +574,16 @@ class mod_wordcards_module {
             $terms = self::format_defs($terms);
         }
         return $terms;
+    }
+
+    public function get_terms_count($includedeleted = false) {
+        global $DB;
+        $params = ['modid' => $this->mod->id];
+        if (!$includedeleted) {
+            $params['deleted'] = 0;
+        }
+        $termcount = $DB->count_records('wordcards_terms', $params);
+        return $termcount;
     }
 
     protected function has_completed_state($state) {
@@ -658,13 +674,51 @@ class mod_wordcards_module {
         return $DB->record_exists('wordcards_terms', ['modid' => $this->get_id()]);
     }
 
-    public function has_user_completed_activity() {
+    public function has_user_finished_latest_attempt() {
         $record = $this->get_latest_attempt();
         return $record && $record->state == self::STATE_END;
     }
 
+    public function has_user_finished_an_attempt() {
+        $records = $this->get_attempts();
+        if ($records) {
+            foreach ($records as $record) {
+                if ($record && isset($record->state) && $record->state == self::STATE_END) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function has_user_learned_all_terms() {
+        global $DB, $USER;
+
+        $learnedcount = $this->get_user_learned_count();
+        $termcount = $this->get_terms_count();
+        return $learnedcount >= $termcount;
+    }
+
+    public function get_user_learned_count() {
+        global $DB, $USER;
+
+        $sql = "SELECT t.id, a.successcount
+                  FROM {wordcards_terms} t
+                  JOIN {wordcards_associations} a
+                    ON a.termid = t.id
+                 WHERE a.userid = ?
+                   AND t.modid = ?
+                   AND t.deleted = 0
+                   AND a.successcount >= ?";
+
+        $learned = $DB->get_records_sql($sql, [$USER->id, $this->get_id(), $this->mod->learnpoint]);
+        $learnedcount = 0;
+        if($learned){$learnedcount = count($learned);}
+        return $learnedcount;
+    }
+
     public function is_completion_enabled() {
-        return !empty($this->mod->completionwhenfinish);
+        return !empty($this->mod->completionwhenfinish) || !empty($this->mod->completionwhenlearned);
     }
 
     public function record_failed_association($term, $term2id=0) {
@@ -725,8 +779,10 @@ class mod_wordcards_module {
         }
 
          // Raise word learned event.
-        if ($record->successcount === $this->mod->learnpoint) {
-            \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record)->trigger();
+        if ($record->successcount === (int)$this->mod->learnpoint) {
+            $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
+            $theevent->trigger();
+
         }
     }
 
@@ -765,9 +821,11 @@ class mod_wordcards_module {
 
         // only cancel if we have a current attempt going
         $latestattempt = $this->get_latest_attempt();
-        if(!$latestattempt){return false;
+        if(!$latestattempt){
+            return false;
         }
-        if($latestattempt->state == self::STATE_END){return false;
+        if($latestattempt->state == self::STATE_END){
+            return false;
         }
         $ret = $DB->delete_records(constants::M_ATTEMPTSTABLE, ['id' => $latestattempt->id]);
         return $ret;

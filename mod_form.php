@@ -77,13 +77,27 @@ class mod_wordcards_mod_form extends moodleform_mod {
   }
 
     public function add_completion_rules() {
+        global $CFG;
+
         $mform =& $this->_form;
-        $mform->addElement('advcheckbox', 'completionwhenfinish', '', get_string('completionwhenfinish', 'mod_wordcards'));
-        return array('completionwhenfinish');
+        $completionfields=['completionwhenfinish','completionwhenlearned'];
+        $suffixedfields=[];
+
+        foreach($completionfields as $field){
+            $suffixedname = $this->get_suffixed_name($field);
+            $mform->addElement('advcheckbox', $suffixedname, '', get_string($field, 'mod_wordcards'));
+            $suffixedfields[] = $suffixedname;
+        }
+        return $suffixedfields;
     }
 
     public function completion_rule_enabled($data) {
-        return !empty($data['completionwhenfinish']);
+        global $CFG;
+        $completionfields=['completionwhenfinish','completionwhenlearned'];
+        foreach($completionfields as $field){
+            if(!empty($data[$this->get_suffixed_name($field)])){return true;}
+        }
+        return false;
     }
 
     public function get_data() {
@@ -110,5 +124,12 @@ class mod_wordcards_mod_form extends moodleform_mod {
             }
         }
         return $errors;
+    }
+
+    private function get_suffixed_name($completionfieldname){
+        global $CFG;
+        $m43 = $CFG->version >= 2023100900;
+        $suffix = $m43 ? $this->get_suffix() : '';
+        return $suffix . $completionfieldname;
     }
 }

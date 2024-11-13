@@ -36,6 +36,9 @@ $currentstate = mod_wordcards_module::STATE_TERMS;
 
 require_login($course, true, $cm);
 
+//Tell Moodle this has been viewed and can be complete on that condition
+$mod->completion_module_viewed();
+
 // if free mode then lets do that
 switch ($mod->get_mod()->journeymode ) {
     case constants::MODE_FREE:
@@ -56,6 +59,7 @@ $moduleinstance = $mod->get_mod();
 
 // trigger module viewed event
 $mod->register_module_viewed();
+
 
 // log usage
 utils::stage_remote_process_job($mod->get_mod()->ttslanguage, $cmid);

@@ -24,6 +24,8 @@ function wordcards_supports($feature) {
             return true;
         case FEATURE_SHOW_DESCRIPTION:
             return true;
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
+            return true;
         case FEATURE_COMPLETION_HAS_RULES:
             return true;
         case FEATURE_BACKUP_MOODLE2:
@@ -146,8 +148,24 @@ function wordcards_get_completion_state($course, $cm, $userid, $type) {
     global $CFG;
 
     $mod = mod_wordcards_module::get_by_cmid($cm->id);
+    $onfinish = $mod->get_mod()->completionwhenfinish;
+    $onlearned = $mod->get_mod()->completionwhenlearned;
     if ($mod->is_completion_enabled()) {
-        return $mod->has_user_completed_activity();
+        switch($type){
+            case COMPLETION_AND:
+                if($onfinish && $onlearned) {
+                    return $mod->has_user_finished_an_attempt() && $mod->has_user_learned_all_terms();
+                }elseif($onfinish) {
+                    return $mod->has_user_finished_an_attempt();
+                }elseif($onlearned) {
+                    return $mod->has_user_learned_all_terms();
+                }
+                break;
+            case COMPLETION_OR:
+                if($onfinish || $onlearned ) {
+                    return $mod->has_user_finished_an_attempt() || $mod->has_user_learned_all_terms();
+                }
+        }
     }
 
     // Completion option is not enabled, we must return $type.
@@ -612,8 +630,49 @@ function wordcards_get_coursemodule_info($coursemodule) {
             $result->content = format_module_intro('wordcards', $moduleinstance, $coursemodule->id, false);
         }
     }
+
+    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionwhenfinish'] = $moduleinstance->completionwhenfinish;
+        $result->customdata['customcompletionrules']['completionwhenlearned'] = $moduleinstance->completionwhenlearned;
+    }
+
+
     $result->name = $moduleinstance->name;
     $result->customdata['duedate'] = $moduleinstance->viewend;
     $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
    return $result;
+}
+
+/**
+ * Callback which returns human-readable strings describing the active completion custom rules for the module instance.
+ *
+ * @param cm_info|stdClass $cm object with fields ->completion and ->customdata['customcompletionrules']
+ * @return array $descriptions the array of descriptions for the custom rules.
+ */
+function mod_wordcards_get_completion_active_rule_descriptions($cm) {
+
+    // Values will be present in cm_info, and we assume these are up to date.
+    if (empty($cm->customdata['customcompletionrules']) || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
+        return [];
+    }
+
+    $descriptions = [];
+    foreach ($cm->customdata['customcompletionrules'] as $key => $val) {
+        switch ($key) {
+            case 'completionwhenfinish':
+                if (!empty($val)) {
+                    $descriptions[] = get_string('completionwhenfinishdesc', 'wordcards', $val);
+                }
+                break;
+            case 'completionwhenlearned':
+                if (!empty($val)) {
+                    $descriptions[] = get_string('completionwhenlearneddesc', 'wordcards', $val);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    return $descriptions;
 }

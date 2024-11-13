@@ -1445,6 +1445,8 @@ class utils{
 
         $mform->addElement('header', 'stepsmodeoptions', get_string('stepsmodeoptions',constants::M_COMPONENT));
         $mform->setExpanded('stepsmodeoptions');
+        $mform->addElement('static', 'description', '',get_string('stepsmodeoptions_desc',constants::M_COMPONENT));
+
 
         //options for practicetype and term count
         $ptype_options_learn = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
@@ -1478,6 +1480,7 @@ class utils{
         //Free Mode Options
         $mform->addElement('header', 'freemodeoptions', get_string('freemodeoptions',constants::M_COMPONENT));
         $mform->setExpanded('freemodeoptions');
+        $mform->addElement('static', 'description', '',get_string('freemodeoptions_desc',constants::M_COMPONENT));
 
         $freemodeoptions = constants::FREEMODE_ACTIVITIES;
         foreach($freemodeoptions as $theoption){
@@ -1486,10 +1489,11 @@ class utils{
         }
 
         //practice type options
-        $name = 'practicetypeoptions';
+        $name = 'learningactivityoptions';
         $label = get_string($name, 'wordcards');
         $mform->addElement('header', $name, $label);
         $mform->setExpanded($name, false);
+        $mform->addElement('static', 'description', '',get_string('learningactivityoptions_desc',constants::M_COMPONENT));
 
         //Show images on task flip screen
         $mform->addElement('selectyesno', 'showimageflip', get_string('showimagesonflipscreen', constants::M_COMPONENT));

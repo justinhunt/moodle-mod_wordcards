@@ -52,7 +52,7 @@ class word_learned extends \core\event\base {
      * @param $wordcards
      * @param $submission
      * @param $editable
-     * @return word_learned
+     * @return $event
      */
     public static function create_from_term($term, $modulecontext, $association) {
         global $USER;

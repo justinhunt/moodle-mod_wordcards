@@ -48,7 +48,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
             'name', 'intro', 'introformat', 'journeymode','step1termcount', 'step2termcount', 'step3termcount', 'step4termcount','step5termcount',
                 'grade','gradeoptions','mingrade',
                 'step1practicetype','step2practicetype','step3practicetype','step4practicetype','step5practicetype',
-                'completionwhenfinish','maxattempts', 'timecreated', 'timemodified','skipreview', 'finishedstepmsg',
+                'completionwhenfinish','completionwhenlearned','maxattempts', 'timecreated', 'timemodified','skipreview', 'finishedstepmsg',
                 'completedmsg', 'ttslanguage','deflanguage','transcriber','passagehash','hashisold','foriframe',
                 'showimageflip', 'frontfaceflip','lcoptions','msoptions','sgoptions','scoptions','viewstart','viewend','videoexamples','learnpoint','freemodeoptions'));
 
