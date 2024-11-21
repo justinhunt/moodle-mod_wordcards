@@ -43,8 +43,7 @@ class constants {
 
     const M_PLUGINSETTINGS = '/admin/settings.php?section=modsettingwordcards';
     const M_DEFLANG_OTHER = 'zz';
-
-    // const CLOUDPOODLL = 'http://localhost/moodle';
+//     const CLOUDPOODLL = 'http://localhost:8044';
     const CLOUDPOODLL = 'https://cloud.poodll.com';
 
     const M_FRONTFACEFLIP_DEF = 0;

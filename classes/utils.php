@@ -36,9 +36,6 @@ use \mod_wordcards\constants;
  */
 class utils{
 
-    //const CLOUDPOODLL = 'http://localhost/moodle';
-   // const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
-    const CLOUDPOODLL = 'https://cloud.poodll.com';
 
     //are we willing and able to transcribe submissions?
     public static function can_transcribe($instance)
@@ -326,7 +323,7 @@ class utils{
         }
 
         // Send the request & save response to $resp
-        $token_url =  self::CLOUDPOODLL . "/local/cpapi/poodlltoken.php";
+        $token_url =  constants::CLOUDPOODLL . "/local/cpapi/poodlltoken.php";
         $postdata = array(
             'username' => $apiuser,
             'password' => $apisecret,
@@ -614,7 +611,7 @@ class utils{
         $params['owner'] = hash('md5',$USER->username);
         $params['region'] = $region;
         $params['engine'] = self::can_speak_neural($voice, $region)?'neural' : 'standard';
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -715,7 +712,7 @@ class utils{
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
         $params['appid'] = constants::M_COMPONENT;
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -781,7 +778,7 @@ class utils{
         $params['notificationurl'] = 'none';
         $params['sourcemimetype'] = 'unknown';
 
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -825,7 +822,7 @@ class utils{
         $params['sourcelang'] =$sourcelang;
         $params['targetlangs'] =urlencode($targetlangs);;
         $params['appid'] = constants::M_COMPONENT;
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;

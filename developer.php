@@ -179,21 +179,19 @@ function copyAttempt($attempt,$assocs,$terms,  $user ){
             unset($newassoc->id);
             $newassoc->termid = $term->id;
             $newassoc->userid = $user->id;
-            $newassoc->timecreated=time();
-            $associd = $DB->insert_record(constants::M_ASSOCTABLE,$newassoc);
+            $newassoc->timecreated = time();
+            $associd = $DB->insert_record(constants::M_ASSOCTABLE, $newassoc);
 
-            //create a seen entry if there is not one
-            if($associd && !$DB->record_exists(constants::M_SEENTABLE,['termid'=>$term->id,'userid'=>$user->id])){
+            // Create a seen entry if there is not one.
+            if ($associd && !$DB->record_exists(constants::M_SEENTABLE, ['termid'=>$term->id,'userid'=>$user->id])) {
                 $seen = new stdClass();
-                $seen->termid=$term->id;
-                $seen->userid=$user->id;
+                $seen->termid = $term->id;
+                $seen->userid = $user->id;
                 $seen->timecreated = time();
-                $seenid = $DB->insert_record(constants::M_SEENTABLE,$seen);
+                $seenid = $DB->insert_record(constants::M_SEENTABLE, $seen);
             }
         }
 
     }
-
-    //return true
     return true;
 }
