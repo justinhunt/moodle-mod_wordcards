@@ -43,6 +43,7 @@ class constants {
 
     const M_PLUGINSETTINGS = '/admin/settings.php?section=modsettingwordcards';
     const M_DEFLANG_OTHER = 'zz';
+//    const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
 //     const CLOUDPOODLL = 'http://localhost:8044';
     const CLOUDPOODLL = 'https://cloud.poodll.com';
 

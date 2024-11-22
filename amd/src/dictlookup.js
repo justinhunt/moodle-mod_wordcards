@@ -21,9 +21,11 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
         },
 
         update_page: function(alldata){
+
             //update the page
             var that = this;
             that.resultscont.empty();
+
             for(var i = 0; i < alldata.length; i++)
             {
                 var tdata = alldata[i];
@@ -38,39 +40,53 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
 
         getwords: function (allwords,sourcelang,definitionslang) {
             var that = this;
-            var langs = ['ar', 'id', 'zh', 'zh_tw', 'ja', 'ko', 'pt', 'es', 'th', 'vi', 'fr', 'rus'];
 
             //if we have no words, do nothing
             if (allwords.trim() === '') {
                 return false;
             }
+        //originally we passed a single request with all words in a CSV list in the terms arg
+        //but that was too slow because the server would process them sequentially
+        // so now we make a request for each word. It would still work with a single request
+            var requests = [];
+            var wordarray = allwords.split(',');
+            for (var i = 0; i < wordarray.length; i++) {
+                var word = wordarray[i].trim();
+                if (word !== '') {
+                    requests.push({
+                        methodname: 'mod_wordcards_search_dictionary',
+                        args: {terms: word, cmid: that.cmid, sourcelang: sourcelang, targetlangs: definitionslang},
+                        async: false
+                    });
+                }
+            }
 
-            var p = ajax.call([
-                {
-                    methodname: 'mod_wordcards_search_dictionary',
-                    args: {terms: allwords, cmid: that.cmid, sourcelang: sourcelang, targetlangs: definitionslang},
-                    async: false
-                },
-            ])[0];
-
-            p.then(async function(response){
+            var wordpromises = ajax.call(requests);
+            Promise.all(wordpromises).then(async function(allresponses){
                 var allterms_result = [];
-                //if return code=0, disaster, log and die
-                if (response.success === 0) {
-                    log.debug(response.payload);
+                if(allresponses.length===0){
                     return allterms_result;
                 }
 
+                for(var responseindex = 0; responseindex < allresponses.length; responseindex++) {
 
+                    var response = allresponses[responseindex];
+
+                    //if return code=0, disaster, log and continue
+                    if (response.success === 0) {
+                        log.debug(response.payload);
+                    }
                     var terms = JSON.parse(response.payload);
                     for (var i = 0; i < terms.length; i++) {
                         var theterm = terms[i];
                         //if a word search failed
                         if (theterm.count === 0) {
-                            var senses=[];
-                            senses.push({definition: '',sourcedefinition: 'No def. available',
-                                modelsentence: '', senseindex: 0, translations: '{}'})
-                            var tdata = {term: theterm.term, senses: senses, modid: that.modid };
+                            var senses = [];
+                            senses.push({
+                                definition: '', sourcedefinition: 'No def. available',
+                                modelsentence: '', senseindex: 0, translations: '{}'
+                            })
+                            var tdata = {term: theterm.term, senses: senses, modid: that.modid};
                             allterms_result.push(tdata);
 
                         } else {
@@ -80,9 +96,12 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                                 //by default its term:English def:English
                                 var sourcedefinition = sense.definition;
                                 var alltrans = {};
-                                for (var ti = 0; ti < langs.length; ti++) {
-                                    alltrans[langs[ti]] = sense['lang_' + langs[ti]];
+                                for (var langkey in sense) {
+                                    if (sense.hasOwnProperty(langkey) && langkey.startsWith('lang_')) {
+                                        alltrans[langkey.substring(5)] = sense[langkey];
+                                    }
                                 }
+
                                 var translations = JSON.stringify(alltrans);
                                 var definition = sourcedefinition;
                                 //if its NOT term:english and def:english, we pull the definition from the translation
@@ -96,7 +115,7 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                                     }
                                 }
 
-                                //model sentence is only in english (for now)
+                                //model sentence)
                                 var modelsentence = sense.example;
 
 
@@ -107,67 +126,11 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                             }//end of results loop
                             allterms_result.push(tdata);
                         }
-                    }
-
-                    that.update_page(allterms_result );
+                    }//end of terms loop
+                }//end of allresponses loop
+                that.update_page(allterms_result );
             });//end of promise then
         },
-
-
-        /*
-            var langs = {
-                "af": "Afrikaans",
-                "ar": "Arabic",
-                "bn": "Bangla",
-                "bs": "Bosnian",
-                "bg": "Bulgarian",
-                "ca": "Catalan",
-                "cs": "Czech",
-                "cy": "Welsh",
-                "da": "Danish",
-                "de": "German",
-                "el": "Greek",
-                "en": "English",
-                "es": "Spanish",
-                "et": "Estonian",
-                "fa": "Persian",
-                "fi": "Finnish",
-                "fr": "French",
-                "ht": "Haitian Creole",
-                "he": "Hebrew",
-                "hi": "Hindi",
-                'hr': 'Croatian',
-                'hu': 'Hungarian',
-                'id': 'Indonesian',
-                'is': 'Icelandic',
-                'it': 'Italian',
-                'ja': 'Japanese',
-                'ko': 'Korean',
-                'lt': 'Lithuanian',
-                'lv': 'Latvian',
-                'mww': 'Hmong Daw',
-                'ms': 'Malay',
-                'mt': 'Maltese',
-                'nl': 'Dutch',
-                'nb': 'Norwegian',
-                'pl': 'Polish',
-                'pt': 'Portuguese',
-                'ro': 'Romanian',
-                'ru': 'Russian',
-                'sr-Latn': 'Serbian (Latin)',
-                'sk': 'Slovak',
-                'sl': 'Slovenian',
-                'sv': 'Swedish',
-                'ta': 'Tamil',
-                'th': 'Thai',
-                'tr': 'Turkish',
-                'uk': 'Ukrainian',
-                'ur': 'Urdu',
-                'vi': 'Vietnamese',
-                'zh-Hans': 'Chinese Simplified'
-            }
-*/
-
     }
 
 });

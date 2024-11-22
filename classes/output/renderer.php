@@ -606,8 +606,6 @@ class renderer extends \plugin_renderer_base {
             'cmid' =>$cm->id,
             'langterm' =>$langterm,
             'langdefs'=>$langdefs,
-            //'lexicalauser'=>$lexicalauser,
-           // 'lexicalapass'=>$lexicalapass
         ];
         return $this->render_from_template('mod_wordcards/word_wizard', $data);
     }
