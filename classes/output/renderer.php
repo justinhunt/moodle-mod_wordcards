@@ -568,6 +568,34 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/student_navigation', $data);
     }
 
+    public function language_chooser($activity_definitions_language){
+        global $CFG;
+
+        //if we are not M4.3 or greater the ajax wont work, so dont show it
+        if($CFG->version < 2023100900){return '';}
+
+        //get selected definitions language
+        $selected = $activity_definitions_language;
+        $userpref_deflanguage = get_user_preferences('wordcards_deflang');
+        if (!empty($userpref_deflanguage)) {
+            $selected = $userpref_deflanguage;
+        }
+
+        // Get list of langs..
+        // We pass in the selected lang but since we build the dropdown list differently here,.
+        // We actually set selected in html_writer below.
+        $alldeflangs =  utils::get_rcdic_langs($selected, false);
+        $options=[];
+        foreach ($alldeflangs as $deflang) {
+            $options[$deflang['code']] = $deflang['name'];
+        }
+        //prepare data for js and html in mustache template
+        $data=[];
+        $data['dropdownlist'] = \html_writer::select($options,'mydefs_lang', $selected);
+        $data['activitydefault'] = $activity_definitions_language;
+        return $this->render_from_template('mod_wordcards/deflang_chooser',  $data);
+    }
+
     /**
      * Return HTML to display message about problem
      */

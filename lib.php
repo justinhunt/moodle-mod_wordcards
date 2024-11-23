@@ -673,3 +673,14 @@ function mod_wordcards_get_completion_active_rule_descriptions($cm) {
     }
     return $descriptions;
 }
+
+function mod_wordcards_user_preferences(): array {
+    $prefs = [];
+    $prefs['wordcards_deflang'] = [
+            'type' => PARAM_ALPHA,
+            'null' => NULL_NOT_ALLOWED,
+            'default' => false,
+            'permissioncallback' => [core_user::class, 'is_current_user'],
+    ];
+    return $prefs;
+}

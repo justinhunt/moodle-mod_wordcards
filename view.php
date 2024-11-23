@@ -36,7 +36,7 @@ $currentstate = mod_wordcards_module::STATE_TERMS;
 
 require_login($course, true, $cm);
 
-//Tell Moodle this has been viewed and can be complete on that condition
+// Tell Moodle this has been viewed and can be complete on that condition.
 $mod->completion_module_viewed();
 
 // if free mode then lets do that
@@ -132,7 +132,9 @@ if ( $CFG->version < 2022041900) {
     }
 }
 
+echo $renderer->language_chooser($mod->get_mod()->deflanguage);
 echo $renderer->navigation($mod, $currentstate);
+
 
 // do definitions
 if (empty($definitions)) {

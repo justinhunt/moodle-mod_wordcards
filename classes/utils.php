@@ -1402,7 +1402,7 @@ class utils{
                 $options);
         $mform->setDefault('ttslanguage',$config->ttslanguage);
 
-        $deflangs =  utils::get_rcdic_langs();// utils::get_lexicala_langs();
+        $deflangs =  utils::get_rcdic_langs();
         $options=[];
         foreach($deflangs as $deflang){
             $options[$deflang['code']]=$deflang['name'];

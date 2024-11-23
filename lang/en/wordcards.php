@@ -535,3 +535,4 @@ $string['freemodesettings_details'] = 'Choose which activity types are available
 $string['freemodeoptions'] = 'Free Mode Options';
 $string['freemodeoptions_desc'] = 'Enable the learning activities that should be available to students in free mode.';
 $string['never'] = 'Never';
+$string['choose_deflang'] = "Choose definitions language";

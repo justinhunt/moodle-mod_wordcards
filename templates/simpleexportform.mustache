@@ -19,8 +19,7 @@
 <option value="tab">{{#str}}delim_tab,mod_wordcards{{/str}}</option>
 </select>
 
-        {{#js}}
-//<script>
+{{#js}}
   require(['jquery'], function($) {
     $('#wordcards-export-delim').change(function() {
         var delim = $(this).val();

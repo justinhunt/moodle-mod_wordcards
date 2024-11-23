@@ -1,0 +1,24 @@
+<div id="{{uniqid}}_defcont" class="wordcards_deflang_chooser">
+    {{{dropdownlist}}}
+    <button type="button" id="{{uniqid}}_setpref">{{#str}}choose_deflang, mod_wordcards{{/str}}</button>
+</div>
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery','core/log','core_user/repository','core/notification'],function($,log,repository,notification) {
+            //get controls
+            var defbtn = $("#{{uniqid}}_setpref");
+            var defselect = $("#{{uniqid}}_defcont select");
+
+            //set handler to get set pref according to selection, and reload
+           defbtn.on("click", function(e){
+             var pref = defselect.val();
+             if(pref==='{{activitydefault}}'){
+                pref=false;
+             }
+             repository.setUserPreference('wordcards_deflang',pref)
+                .then(function(ret){window.location.reload();})
+                .catch(notification.exception)
+           });
+        });
+    {{/js}}
+{{/element.frozen}}

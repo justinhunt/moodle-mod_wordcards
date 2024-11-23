@@ -346,6 +346,32 @@ class mod_wordcards_module {
         return $terms;
     }
 
+    public function update_userpref_defs($terms){
+        // Get selected definitions language.
+        $activitydefinitionslanguage = $this->get_mod()->deflanguage;
+        $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+ 
+        // If there is no userpref or its the same as the activity def, nothing to update.
+        if (empty($userprefdeflanguage) || $userprefdeflanguage == $activitydefinitionslanguage) {
+            return $terms;
+        }
+        //otherwise get the translation that suits
+        foreach ($terms as $term) {
+            if (empty($term->translations)) {continue;}
+            if (!self::is_json($term->translations)) {continue;}
+            $translations = json_decode($term->translations);
+            // English is a special case.
+            if ($userprefdeflanguage == 'en') {
+                $translations->en = $term->sourcedef;
+            }
+            if (!empty($translations) &&
+                isset($translations->{$userprefdeflanguage})) {
+                    $term->definition = $translations->{$userprefdeflanguage};
+            }
+        }
+        return $terms;
+    }
+
 
     public function get_learn_terms(int $maxterms) {
         $records = $this->get_terms();
@@ -571,6 +597,7 @@ class mod_wordcards_module {
         $terms = $DB->get_records('wordcards_terms', $params, 'id ASC');
         if($terms){
             $terms = self::insert_media_urls($terms);
+            $terms = $this->update_userpref_defs($terms);
             $terms = self::format_defs($terms);
         }
         return $terms;
@@ -1091,5 +1118,17 @@ class mod_wordcards_module {
         }
         $filecontent = implode("\r\n", $ret);
         return $filecontent;
+    }
+
+    // See if this is truly json or some error.
+    public static function is_json($string) {
+        if (!$string) {
+            return false;
+        }
+        if (empty($string)) {
+            return false;
+        }
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }
