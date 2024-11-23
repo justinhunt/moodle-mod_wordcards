@@ -1,4 +1,4 @@
-<div id="{{uniqid}}_defcont" class="wordcards_deflang_chooser">
+<div id="wordcards_chooser_cont_{{uniqid}}" class="wordcards_deflang_chooser">
     {{{dropdownlist}}}
     <button type="button" id="{{uniqid}}_setpref">{{#str}}choose_deflang, mod_wordcards{{/str}}</button>
 </div>
@@ -7,7 +7,7 @@
         require(['jquery','core/log','core_user/repository','core/notification'],function($,log,repository,notification) {
             //get controls
             var defbtn = $("#{{uniqid}}_setpref");
-            var defselect = $("#{{uniqid}}_defcont select");
+            var defselect = $("#wordcards_chooser_cont_{{uniqid}} select");
 
             //set handler to get set pref according to selection, and reload
            defbtn.on("click", function(e){

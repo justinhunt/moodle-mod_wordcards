@@ -121,6 +121,11 @@ class freemode implements \renderable, \templatable {
         $devicetype = \core_useragent::get_device_type();
         $data->showselectmenu = in_array($devicetype, [\core_useragent::DEVICETYPE_MOBILE, \core_useragent::DEVICETYPE_TABLET]);
 
+        //lang chooser
+        if ($this->mod->get_mod()->showlangchooser) {
+            $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage);
+        }
+
         if ($data->selectedpoolhaswords) {
             $definitions = $this->get_terms($this->wordpool, false,$this->practicetype);
             switch ($this->practicetype){
@@ -141,6 +146,7 @@ class freemode implements \renderable, \templatable {
                     $data->isintropage = 1;
                     $data->definitions = $renderer->definitions_page_data($this->mod,$definitions);
                     $data->definitions['isfreemode'] = 1;
+                    $data->definitions['langchooser'] = $langchooser;
                     $data->definitions['nexturl'] = isset($data->tabs[0]['url']) ? $data->tabs[0]['url'] : '';
                     $data->definitions['introheading'] = get_string('freemode', 'mod_wordcards');
                     $stringmanager = get_string_manager();

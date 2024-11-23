@@ -1413,10 +1413,9 @@ class utils{
         $mform->setDefault('deflanguage',$config->deflanguage);
         $mform->addHelpButton('deflanguage', 'deflanguage', constants::M_COMPONENT);
 
-        $mform->addElement('select', 'showlangchooser', get_string('showlangchooser', constants::M_COMPONENT),
-        $options);
+        $mform->addElement('selectyesno', 'showlangchooser', get_string('showlangchooser', constants::M_COMPONENT));
         $mform->setDefault('showlangchooser',$config->showlangchooser);
-        $mform->addHelpButton('deflanguage', 'showlangchooser', constants::M_COMPONENT);
+        $mform->addHelpButton('showlangchooser', 'showlangchooser', constants::M_COMPONENT);
 
         $videooptions =  [0=>get_string('no'),1=>get_string('yes')];
         $mform->addElement('select', 'videoexamples', get_string('videoexamples', constants::M_COMPONENT),

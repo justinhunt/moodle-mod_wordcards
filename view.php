@@ -95,6 +95,11 @@ if (empty($definitions)) {
     $definitionsdata = $renderer->definitions_page_data($mod, $definitions);
 }
 
+// add lang chooser to definitions data
+if ($mod->get_mod()->showlangchooser) {
+    $definitionsdata['langchooser'] = $renderer->language_chooser($mod->get_mod()->deflanguage);
+}
+
 // begin HTML output
 echo $renderer->header();
 echo $renderer->heading($pagetitle, 3, 'main');
@@ -130,9 +135,6 @@ if ( $CFG->version < 2022041900) {
         $moduleintro = format_module_intro('wordcards', $mod->get_mod(), $cm->id);
         echo $renderer->box($moduleintro, 'generalbox', 'intro');
     }
-}
-if ($mod->get_mod()->showlangchooser) {
-    echo $renderer->language_chooser($mod->get_mod()->deflanguage);
 }
 echo $renderer->navigation($mod, $currentstate);
 
