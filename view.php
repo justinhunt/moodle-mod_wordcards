@@ -131,8 +131,9 @@ if ( $CFG->version < 2022041900) {
         echo $renderer->box($moduleintro, 'generalbox', 'intro');
     }
 }
-
-echo $renderer->language_chooser($mod->get_mod()->deflanguage);
+if ($mod->get_mod()->showlangchooser) {
+    echo $renderer->language_chooser($mod->get_mod()->deflanguage);
+}
 echo $renderer->navigation($mod, $currentstate);
 
 

@@ -88,7 +88,9 @@ $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/freemode", 'init', []);
 
 echo $renderer->header();
-echo $renderer->language_chooser($mod->get_mod()->deflanguage);
+if ($mod->get_mod()->showlangchooser) {
+    echo $renderer->language_chooser($mod->get_mod()->deflanguage);
+}
 //if admin we show a heading in free mode (otherwise they would not be able to add definitions)
 if($isteacher && $mod->get_mod()->journeymode==constants::MODE_FREE) {
     //this is a bit hacky, TO DO make a new state "FREEMODE"

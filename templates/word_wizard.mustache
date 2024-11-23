@@ -36,18 +36,9 @@
                     return;
                 }
 
-                //add placeholders for each word
-                var tdata = {'terms': allwords.split(/[\n,]/)};
-                log.debug(tdata);
-                templates.render('mod_wordcards/ww_skeletons',tdata).done(function(html, js) {
-                    resultscont.html(html);
-                }).fail(function(ex) {
-                    log.error(ex);
-                });
-
                 //replace any new lines with commas
                 var allsearchwords = allwords.replace(/[\n]/g,',');
-                 dictlookup.getwords(allsearchwords,'{{langterm}}',langdef);
+                dictlookup.getwords(allsearchwords,'{{langterm}}',langdef);
 
             });
 

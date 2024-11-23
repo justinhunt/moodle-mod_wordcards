@@ -380,6 +380,10 @@ class mod_wordcards_external extends external_api {
     }
     public static function search_dictionary($terms, $cmid, $sourcelang, $targetlangs){
         $ret = new \stdClass();
+
+        // We need to do this so that search_dictionary requests can run in parallel.
+        session_write_close();
+        
         $payload = utils::fetch_dictionary_entries($terms,$sourcelang,$targetlangs);
         if(!$payload){
             $ret->success=false;

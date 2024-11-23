@@ -536,3 +536,5 @@ $string['freemodeoptions'] = 'Free Mode Options';
 $string['freemodeoptions_desc'] = 'Enable the learning activities that should be available to students in free mode.';
 $string['never'] = 'Never';
 $string['choose_deflang'] = "Choose definitions language";
+$string['showlangchooser'] = "Show language chooser";
+$string['showlangchooser_help'] = "The language chooser allows the user to select the language that the wordcard definition is displayed in. Multiple language definitions will only be available if the word as added via the Word Wizard. The language chooser is available from Moodle 4.3 and newer.";
