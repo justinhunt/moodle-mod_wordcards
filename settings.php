@@ -140,8 +140,9 @@ if ($ADMIN->fulltree) {
 
     //show images on flip screen
     $name = 'showimageflip';
-    $label = get_string('showimagesonflipscreen', constants::M_COMPONENT);
-    $details ="";
+    $label = get_string('showimageflip', constants::M_COMPONENT);
+    $details = get_string($name, constants::M_COMPONENT);
+    get_string($name . '_details', constants::M_COMPONENT);
     $default = 1;
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT . "/$name",
             $label, $details, $default));

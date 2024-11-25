@@ -590,13 +590,14 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024111101, 'wordcards');
     }
 
-    if ($oldversion < 2024111201) {
+    if ($oldversion < 2024111203) {
         $table = new xmldb_table('wordcards');
         // Define field foriframe to be added to wordcards
         $fields = [];
         $fields[] = new xmldb_field('completionwhenfinish', XMLDB_TYPE_INTEGER, 2,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
         $fields[] = new xmldb_field('completionwhenlearned', XMLDB_TYPE_INTEGER, 2,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
         $fields[] = new xmldb_field('showlangchooser', XMLDB_TYPE_INTEGER, 2,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('masterinstance', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
 
         // Alter fields
         foreach ($fields as $field) {
@@ -604,7 +605,7 @@ function xmldb_wordcards_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-        upgrade_mod_savepoint(true, 2024111201, 'wordcards');
+        upgrade_mod_savepoint(true, 2024111203, 'wordcards');
     }
 
     return true;

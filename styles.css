@@ -2093,5 +2093,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 .wordcards_deflang_chooser {
     float: right;
     padding: 5px;
-    
 }
+.mod_wordcards_manybuttonsmenu_item {
+    max-width: 800px;
+  }

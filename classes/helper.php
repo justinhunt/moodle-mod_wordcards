@@ -23,6 +23,7 @@ class mod_wordcards_helper {
         $config = get_config(constants::M_COMPONENT);
         $cmid = $mod->get_cmid();
         $canmanage = $mod->can_manage();
+        $canpush = $mod->can_push();
         $canviewreports = $mod->can_viewreports();
         $inactives = array_diff(mod_wordcards_module::get_all_states(), $mod->get_allowed_states());
 
@@ -30,15 +31,15 @@ class mod_wordcards_helper {
         $tabicon = utils::fetch_activity_tabicon($mod->get_practicetype(mod_wordcards_module::STATE_STEP1));
 
         //show different tabs for free and steps mode (free = admin only) (steps = practice steps + admin)
-        $isfreemode= $mod->get_mod()->journeymode==constants::MODE_FREE;
-        if($isfreemode) {
+        $isfreemode = $mod->get_mod()->journeymode == constants::MODE_FREE;
+        if ($isfreemode) {
             $tabs = [
                 new tabobject(mod_wordcards_module::STATE_TERMS,
                     new moodle_url('/mod/wordcards/freemode.php', ['id' => $cmid]),
                     get_string('freemode', 'mod_wordcards'), 'fa-dot-circle-o', true),
 
             ];
-        }else{
+        } else {
             $tabs = [
                 new tabobject(mod_wordcards_module::STATE_TERMS,
                     new moodle_url('/mod/wordcards/view.php', ['id' => $cmid]),
@@ -96,14 +97,13 @@ class mod_wordcards_helper {
             }
         }
 
-
-        if($canmanage && $config->enablesetuptab){
+        if ($canmanage && $config->enablesetuptab) {
             $tabs[] = new tabobject('setup',
                     new moodle_url('/mod/wordcards/setup.php', ['id' => $cmid]),
                     get_string('tabsetup', constants::M_COMPONENT), '', true);
         }
 
-        if($canviewreports){
+        if ($canviewreports) {
             $tabs[] = new tabobject('reports',
                     new moodle_url('/mod/wordcards/reports.php', ['id' => $cmid]),
                     get_string('tabreports', constants::M_COMPONENT), '', true);
@@ -118,14 +118,18 @@ class mod_wordcards_helper {
                 get_string('tabimport', constants::M_COMPONENT), '', true);
 
             //if we have a language that is in the dictionary, we show the word wizard
-            if($mod->get_mod()->deflanguage!==constants::M_DEFLANG_OTHER) {
+            if($mod->get_mod()->deflanguage !== constants::M_DEFLANG_OTHER) {
                 $tabs[] = new tabobject('wordwizard',
                     new moodle_url('/mod/wordcards/wordwizard.php', ['id' => $cmid]),
                     get_string('wordwizard', constants::M_COMPONENT), '', true);
             }
         }
 
-
+        if ($canpush) {
+            $tabs[] = new tabobject('push',
+                new moodle_url('/mod/wordcards/push.php', ['id' => $cmid]),
+                get_string('push', constants::M_COMPONENT), '', true);
+        }
         return new tabtree($tabs, $current, $inactives);
     }
 

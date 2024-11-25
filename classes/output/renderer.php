@@ -617,12 +617,48 @@ class renderer extends \plugin_renderer_base {
         $ret = $this->output->render_from_template( constants::M_COMPONENT . '/openclosedates',$tdata);
         return $ret;
     }
-      /*
-     * Show attempt for review by student. called from view php
-     */
+      
 
     /**
-     * Show error (but when?)
+     * Push Menu
+     */
+    public function push_buttons_menu($cm){
+        $templateitems=[];
+        $pushthings = ['maxattempts','transcriber', 'learnpoint','showimageflip', 'frontfaceflip', 'showlangchooser', 'videoexamples','journeymode',  'stepsmodeoptions',
+         'freemodeoptions', 'lcoptions',  'msoptions','sgoptions',];
+
+        foreach($pushthings as $pushthing){
+            switch($pushthing){
+                case 'transcriber': $action=constants::M_PUSH_TRANSCRIBER;break;
+                case 'showimageflip': $action=constants::M_PUSH_SHOWIMAGEFLIP;break;
+                case 'showlangchooser': $action=constants::M_PUSH_SHOWLANGCHOOSER;break;
+                case 'showvideoexamples': $action=constants::M_PUSH_VIDEOEXAMPLES;break;
+                case 'sgoptions': $action=constants::M_PUSH_SGOPTIONS;break;
+                case 'stepsmodeoptions': $action=constants::M_PUSH_STEPSMODEOPTIONS;break;
+                case 'maxattempts': $action=constants::M_PUSH_MAXATTEMPTS;break;
+                case 'freemodeoptions': $action=constants::M_PUSH_FREEMODEOPTIONS;break;
+                case 'frontfaceflip': $action=constants::M_PUSH_FRONTFACEFLIP;break;
+                case 'journeymode': $action=constants::M_PUSH_JOURNEYMODE;break;
+                case 'lcoptions': $action=constants::M_PUSH_LCOPTIONS;break;
+                case 'learnpoint': $action=constants::M_PUSH_LEARNPOINT;break;
+                case 'msoptions': $action=constants::M_PUSH_MSOPTIONS;break;
+
+            }
+            $templateitems[] = ['title'=>get_string($pushthing, constants::M_COMPONENT),
+                'description'=>get_string($pushthing . '_details', constants::M_COMPONENT),
+                'content'=>$this->output->single_button(new \moodle_url( constants::M_URL . '/push.php',
+                    array('id'=>$cm->id,'action'=>$action)),get_string($pushthing,constants::M_COMPONENT))];
+        }
+
+        //Generate and return menu
+        $ret = $this->output->render_from_template( constants::M_COMPONENT . '/manybuttonsmenu', ['items'=>$templateitems]);
+
+        return $ret;
+
+    }
+
+    /**
+     * Word Wizard
      */
     public function word_wizard($mod,$cm){
         $langterm =  utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);

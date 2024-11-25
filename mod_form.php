@@ -55,7 +55,7 @@ class mod_wordcards_mod_form extends moodleform_mod {
         //Add this activity specific form fields
         //We want to do this procedurally because in setup tabs we want to show a subset of this form
         // with just the activity specific fields,and we use a custom form and the same elements
-        utils::add_mform_elements($mform,$this->context);
+        utils::add_mform_elements($mform, $this->context);
 
         // Grade.
         $this->standard_grading_coursemodule_elements();

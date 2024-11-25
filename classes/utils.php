@@ -21,10 +21,12 @@
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- namespace mod_wordcards;
+
+namespace mod_wordcards;
+
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_wordcards\constants;
+use mod_wordcards\constants;
 
 
 /**
@@ -34,12 +36,10 @@ use \mod_wordcards\constants;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class utils{
-
+class utils {
 
     //are we willing and able to transcribe submissions?
-    public static function can_transcribe($instance)
-    {
+    public static function can_transcribe($instance) {
         //we default to true
         //but it only takes one no ....
         $ret = true;
@@ -50,36 +50,35 @@ class utils{
                 $ret = true;
         }
 
-        //if user disables ai, we do not transcribe
-        if(!$instance->enableai){
-            $ret =false;
+        // If user disables ai, we do not transcribe.
+        if (!$instance->enableai) {
+            $ret = false;
         }
-
         return $ret;
     }
 
     //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
-    public static function convert_to_phonetic($phrase,$language){
+    public static function convert_to_phonetic($phrase, $language) {
 
         switch($language){
             case 'en':
                 $phonetic = metaphone($phrase);
                 break;
             case 'ja':
-                //gettting phonetics for JP requires php-mecab library doc'd here
-                //https://github.com/nihongodera/php-mecab-documentation
-                if(extension_loaded('mecab')){
+                // gettting phonetics for JP requires php-mecab library doc'd here
+                // https://github.com/nihongodera/php-mecab-documentation
+                if (extension_loaded('mecab')) {
                     $mecab = new \MeCab\Tagger();
-                    $nodes=$mecab->parseToNode($phrase);
-                    $katakanaarray=[];
+                    $nodes = $mecab->parseToNode($phrase);
+                    $katakanaarray = [];
                     foreach ($nodes as $n) {
                         $f =  $n->getFeature();
-                        $reading = explode(',',$f)[8];
-                        if($reading!='*'){
-                            $katakanaarray[] =$reading;
+                        $reading = explode(',', $f)[8];
+                        if ($reading != '*') {
+                            $katakanaarray[] = $reading;
                         }
                     }
-                    $phonetic=implode($katakanaarray,'');
+                    $phonetic = implode('', $katakanaarray);
                     break;
                 }
             default:
@@ -1356,7 +1355,7 @@ class utils{
         }
     }
 
-    public static function add_mform_elements($mform, $context,$setuptab=false) {
+    public static function add_mform_elements($mform, $context, $setuptab=false) {
         global $CFG;
         $config = get_config(constants::M_COMPONENT);
 
@@ -1444,14 +1443,30 @@ class utils{
         $mform->setType('finishedstepmsg',PARAM_TEXT);
         $mform->setType('completedstepmsg',PARAM_TEXT);
 
+          // Advanced.
+          $mform->addElement('header', 'advancedheader', get_string('advancedheader', constants::M_COMPONENT));
+
+
+        //master instance or not
+        if(!has_capability('mod/wordcards:push', $context)){
+            $mform->addElement('hidden','masterinstance');
+            $mform->setType('masterinstance', PARAM_INT);
+            $mform->setDefault('masterinstance', constants::M_PUSHMODE_NONE);
+        }else {
+            $pushoptions = self::get_master_options();
+            $mform->addElement('static', 'masterdescription', '',get_string('masterinstance_details',constants::M_COMPONENT));
+            $mform->addElement('select', 'masterinstance', get_string('masterinstance', constants::M_COMPONENT),
+                     $pushoptions,constants::M_PUSHMODE_NONE);
+        }
+ 
         $mform->addElement('header', 'stepsmodeoptions', get_string('stepsmodeoptions',constants::M_COMPONENT));
         $mform->setExpanded('stepsmodeoptions');
-        $mform->addElement('static', 'description', '',get_string('stepsmodeoptions_desc',constants::M_COMPONENT));
+        $mform->addElement('static', 'description', '',get_string('stepsmodeoptions_details',constants::M_COMPONENT));
 
 
         //options for practicetype and term count
-        $ptype_options_learn = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
-        $ptype_options_all = utils::get_practicetype_options();
+        $ptype_options_learn = self::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
+        $ptype_options_all =self::get_practicetype_options();
         $termcount_options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
 
         $mform->addElement('select', 'step1practicetype', get_string('step1practicetype', constants::M_COMPONENT),
@@ -1481,7 +1496,7 @@ class utils{
         //Free Mode Options
         $mform->addElement('header', 'freemodeoptions', get_string('freemodeoptions',constants::M_COMPONENT));
         $mform->setExpanded('freemodeoptions');
-        $mform->addElement('static', 'description', '',get_string('freemodeoptions_desc',constants::M_COMPONENT));
+        $mform->addElement('static', 'description', '',get_string('freemodeoptions_details',constants::M_COMPONENT));
 
         $freemodeoptions = constants::FREEMODE_ACTIVITIES;
         foreach($freemodeoptions as $theoption){
@@ -1494,10 +1509,10 @@ class utils{
         $label = get_string($name, 'wordcards');
         $mform->addElement('header', $name, $label);
         $mform->setExpanded($name, false);
-        $mform->addElement('static', 'description', '',get_string('learningactivityoptions_desc',constants::M_COMPONENT));
+        $mform->addElement('static', 'description', '',get_string('learningactivityoptions_details',constants::M_COMPONENT));
 
         //Show images on task flip screen
-        $mform->addElement('selectyesno', 'showimageflip', get_string('showimagesonflipscreen', constants::M_COMPONENT));
+        $mform->addElement('selectyesno', 'showimageflip', get_string('showimageflip', constants::M_COMPONENT));
         $mform->setDefault('showimageflip', $config->showimageflip);
 
         $frontfaceoptions = self::fetch_options_fontfaceflip();
@@ -1520,8 +1535,8 @@ class utils{
         $mform->addElement('select', 'scoptions', get_string('scoptions', constants::M_COMPONENT),
                 $scoptions, $config->scoptions);    
 
-  // show activity open closes
-   $dateoptions = array('optional' => true);
+        // show activity open closes
+        $dateoptions = array('optional' => true);
         $name = 'activityopenscloses';
         $label = get_string($name, 'wordcards');
         $mform->addElement('header', $name, $label);
@@ -1571,6 +1586,13 @@ class utils{
             unset($data['freemodeoptions']);
         }
         return $data;
+    }
+
+    public static function get_master_options() {
+        return [constants::M_PUSHMODE_NONE => get_string('pushmode_none', constants::M_COMPONENT),
+            constants::M_PUSHMODE_MODULENAME => get_string('pushmode_modulename', constants::M_COMPONENT),
+            constants::M_PUSHMODE_COURSE => get_string('pushmode_course', constants::M_COMPONENT),
+            constants::M_PUSHMODE_SITE => get_string('pushmode_site', constants::M_COMPONENT)];
     }
 
     //What multi-attempt grading approach

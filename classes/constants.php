@@ -270,4 +270,24 @@ class constants {
     'zh-Hans' => 'Chinese Simplified',
     ];
 
+    const M_PUSHMODE_NONE = 0;
+    const M_PUSHMODE_MODULENAME = 1;
+    const M_PUSHMODE_COURSE = 2;
+    const M_PUSHMODE_SITE = 3;
+    const M_PUSH_NONE = 0;
+    const M_PUSH_TRANSCRIBER = 1;
+    const M_PUSH_SHOWLANGCHOOSER = 2;
+    const M_PUSH_LEARNPOINT = 3;
+    const M_PUSH_MAXATTEMPTS = 4;
+    const M_PUSH_STEPSMODEOPTIONS = 5;
+    const M_PUSH_FREEMODEOPTIONS = 6;
+    const M_PUSH_JOURNEYMODE = 7;
+    const M_PUSH_VIDEOEXAMPLES = 8;
+    const M_PUSH_SHOWIMAGEFLIP = 9;
+    const M_PUSH_FRONTFACEFLIP = 10;
+    const M_PUSH_LCOPTIONS = 11;
+    const M_PUSH_MSOPTIONS = 12;
+    const M_PUSH_SGOPTIONS = 13;
+
+
 }

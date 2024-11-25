@@ -6,8 +6,8 @@
  * @author  Justin Hunt - ishinekk.co.jp
  */
 
-use \mod_wordcards\constants;
-use \mod_wordcards\utils;
+use mod_wordcards\constants;
+use mod_wordcards\utils;
 
 require_once(__DIR__ . '/../../config.php');
 
@@ -34,9 +34,9 @@ $PAGE->set_title($pagetitle);
 
 //Get admin settings
 $config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab){
+if ($config->enablesetuptab) {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 

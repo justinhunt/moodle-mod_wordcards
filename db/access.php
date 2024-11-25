@@ -17,7 +17,7 @@ $capabilities = [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'mod/page:view'
     ],
@@ -28,7 +28,7 @@ $capabilities = [
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
@@ -39,7 +39,7 @@ $capabilities = [
             'contextlevel' => CONTEXT_COURSE,
             'archetypes' => [
                     'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
+                    'manager' => CAP_ALLOW,
             ],
             'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
@@ -49,7 +49,7 @@ $capabilities = [
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
@@ -61,7 +61,7 @@ $capabilities = [
             'archetypes' => [
                     'teacher' => CAP_ALLOW,
                     'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
+                    'manager' => CAP_ALLOW,
             ],
             'clonepermissionsfrom' => 'moodle/grade:viewall'
     ],
@@ -73,23 +73,32 @@ $capabilities = [
             'archetypes' => [
                     'teacher' => CAP_ALLOW,
                     'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
+                    'manager' => CAP_ALLOW,
             ],
             'clonepermissionsfrom' => 'moodle/grade:viewall'
     ],
 
-        'mod/wordcards:preview' => array(
+        'mod/wordcards:preview' => [
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_COURSE,
-                'archetypes' => array(
+                'archetypes' => [
                         'teacher' => CAP_ALLOW,
                         'editingteacher' => CAP_ALLOW,
-                        'manager' => CAP_ALLOW
-                ),
+                        'manager' => CAP_ALLOW,
+                ],
                 'clonepermissionsfrom' => 'moodle/grade:viewall'
-        ),
+        ],
 
-    
+        'mod/wordcards:push' => [
+            'riskbitmask' => RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE,
+            'archetypes' => [
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        ],
+
 
 ];
 

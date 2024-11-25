@@ -956,7 +956,11 @@ class mod_wordcards_module {
 
     // Capabilities.
     public function can_manage() {
-        return  has_capability('mod/wordcards:addinstance', $this->context);
+        return  has_capability('mod/wordcards:manage', $this->context);
+    }
+    public function can_push() {
+        return  has_capability('mod/wordcards:push', $this->context) &&
+        $this->get_mod()->masterinstance;
     }
     public function require_manage() {
         require_capability('mod/wordcards:addinstance', $this->context);
