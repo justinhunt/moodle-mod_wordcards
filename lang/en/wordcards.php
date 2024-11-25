@@ -557,5 +557,5 @@ $string['pushmode_course'] = 'for WordCard activities in this course';
 $string['pushmode_site'] = 'for all WordCard activities sitewide';
 $string['pushpage_scopemodule'] = 'Scope: WordCard activities (sitewide) with this activity name: {$a}';
 $string['pushpage_scopecourse'] = 'Scope: WordCard activities in this course: {$a}';
-$string['pushpage_scopesite'] = 'Scope: ALL WordCard activities SITEWIDE';
+$string['pushpage_scopesite'] = 'Scope: All WordCard activities SITEWIDE';
 $string['pushpage_scopenone'] = 'Scope: NO WordCard activities';
