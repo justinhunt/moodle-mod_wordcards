@@ -26,13 +26,27 @@ require_once(__DIR__ . '/../../config.php');
 
 use mod_wordcards\constants;
 use mod_wordcards\utils;
+use mod_wordcards\mobile_auth;
 
 $cmid = required_param('id', PARAM_INT);
+$embed = optional_param('embed', 0, PARAM_INT);
 
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
 $currentstate = mod_wordcards_module::STATE_TERMS;
+
+// Allow login through an authentication token.
+$userid = optional_param('user_id', null, PARAM_ALPHANUMEXT);
+$secret  = optional_param('secret', null, PARAM_RAW);
+//formerly had !isloggedin() check, but we want tologin afresh on each embedded access
+if(!empty($userid) && !empty($secret) ) {
+    if (mobile_auth::has_valid_token($userid, $secret)) {
+        $user = get_complete_user_data('id', $userid);
+        complete_user_login($user);
+        $embed = 2;
+    }
+}
 
 require_login($course, true, $cm);
 
@@ -42,9 +56,11 @@ $mod->completion_module_viewed();
 // if free mode then lets do that
 switch ($mod->get_mod()->journeymode ) {
     case constants::MODE_FREE:
-        redirect($CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $cmid);
+        $redirecturl = new moodle_url($CFG->wwwroot . '/mod/wordcards/freemode.php', ['id' => $cmid, 'embed' => $embed]);
+        redirect($redirecturl);
     case constants::MODE_SESSION:
-        redirect($CFG->wwwroot . '/mod/wordcards/sessionmode.php?id=' . $cmid);
+        $redirecturl = new moodle_url($CFG->wwwroot . '/mod/wordcards/sessionmode.php', ['id' => $cmid, 'embed' => $embed]);
+        redirect($redirecturl);
     case constants::MODE_STEPS:
     case constants::MODE_STEPSTHENFREE:
     case constants::MODE_SESSIONTHENFREE:
@@ -67,7 +83,7 @@ utils::stage_remote_process_job($mod->get_mod()->ttslanguage, $cmid);
 // $pagetitle = get_string('tabdefinitions', 'mod_wordcards');
 $pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 
-$PAGE->set_url('/mod/wordcards/view.php', ['id' => $cmid]);
+$PAGE->set_url('/mod/wordcards/view.php', ['id' => $cmid,'embed'=>$embed]);
 // $PAGE->navbar->add($pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
@@ -75,7 +91,7 @@ $PAGE->force_settings_menu(true);
 $modulecontext = $mod->get_context();
 // Get an admin settings
 $config = get_config(constants::M_COMPONENT);
-if ($config->enablesetuptab) {
+if ($config->enablesetuptab || $embed) {
     $PAGE->set_pagelayout('popup');
 } else {
     $PAGE->set_pagelayout('incourse');
@@ -102,8 +118,9 @@ if ($mod->get_mod()->showlangchooser) {
 
 // begin HTML output
 echo $renderer->header();
-echo $renderer->heading($pagetitle, 3, 'main');
-
+if(!$embed) {
+    echo $renderer->heading($pagetitle, 3, 'main');
+}
 // show open close dates and module intro
 $hasopenclosedates = $moduleinstance->viewend > 0 || $moduleinstance->viewstart > 0;
 if ($hasopenclosedates) {

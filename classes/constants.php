@@ -35,6 +35,7 @@ class constants {
     const M_TABLE = 'wordcards';
     const M_TERMSTABLE = 'wordcards_terms';
     const M_ATTEMPTSTABLE = 'wordcards_progress';
+    const M_AUTHTABLE='wordcards_auth';
     const M_GLOSSARYTABLE = 'glossary';
     const M_GLOSSARYENTRIESTABLE = 'glossary_entries';
     const M_ASSOCTABLE = 'wordcards_associations';

@@ -12,7 +12,7 @@ use \mod_wordcards\constants;
 use mod_wordcards\utils;
 
 $cmid = required_param('id', PARAM_INT);
-//the step that the user is requesting
+$embed = optional_param('embed', 0, PARAM_INT);
 
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
@@ -21,7 +21,7 @@ require_login($course, true, $cm);
 
 if (!$mod->can_free_mode()) {
     redirect(
-        new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]),
+        new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id,'embed'=>$embed]),
         get_string('freemodenotavailable', constants::M_COMPONENT),
         null,
         \core\output\notification::NOTIFY_ERROR
@@ -51,7 +51,7 @@ if(empty($learnterms)){
 }
 
 
-$PAGE->set_url('/mod/wordcards/freemode.php', ['id' => $cmid, 'practicetype' => $practicetype, 'wordpool' => $wordpool]);
+$PAGE->set_url('/mod/wordcards/freemode.php', ['id' => $cmid, 'practicetype' => $practicetype, 'wordpool' => $wordpool, 'embed' => $embed]);
 $mod->require_view();
 
 //is teacher?
@@ -70,7 +70,7 @@ $PAGE->set_title($templatedata->pagetitle);
 $PAGE->force_settings_menu(true);
 
 $config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab){
+if($config->enablesetuptab || $embed){
     $PAGE->set_pagelayout('popup');
 }else{
     $PAGE->set_pagelayout('incourse');
