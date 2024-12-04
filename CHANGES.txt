@@ -1,5 +1,7 @@
 1.3.72 (Build 2024120700)
 - added support for Moodle Mobile app
+- randomized cards on definitions page (will people howl?)
+- fixed issue with langchooser in free mode
 
 1.3.71 (Build 2024111203)
 - added a language chooser for students to select their preferred (native) language - this only works if words were added with word wizard

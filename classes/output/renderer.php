@@ -26,6 +26,9 @@ class renderer extends \plugin_renderer_base {
 
         $mywordspool = new my_words_pool($mod->get_course()->id);
 
+        // Randomize definitions.
+        shuffle($definitions);
+
         $firstcardset = false;
         foreach($definitions as $def){
             //we cheat here , and add an index to avoid flicker before we apply the show/hide to flashcards

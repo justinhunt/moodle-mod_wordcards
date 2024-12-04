@@ -121,9 +121,11 @@ class freemode implements \renderable, \templatable {
         $devicetype = \core_useragent::get_device_type();
         $data->showselectmenu = in_array($devicetype, [\core_useragent::DEVICETYPE_MOBILE, \core_useragent::DEVICETYPE_TABLET]);
 
-        //lang chooser
+        // Lang chooser
         if ($this->mod->get_mod()->showlangchooser) {
             $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage);
+        } else {
+            $langchooser = "";
         }
 
         if ($data->selectedpoolhaswords) {
@@ -144,7 +146,7 @@ class freemode implements \renderable, \templatable {
                 default:
                     // Show the intro page and cards.
                     $data->isintropage = 1;
-                    $data->definitions = $renderer->definitions_page_data($this->mod,$definitions);
+                    $data->definitions = $renderer->definitions_page_data($this->mod, $definitions);
                     $data->definitions['isfreemode'] = 1;
                     $data->definitions['langchooser'] = $langchooser;
                     $data->definitions['nexturl'] = isset($data->tabs[0]['url']) ? $data->tabs[0]['url'] : '';
