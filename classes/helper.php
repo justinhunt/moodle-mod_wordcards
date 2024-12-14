@@ -17,7 +17,7 @@ use mod_wordcards\constants;
  */
 class mod_wordcards_helper {
 
-    public static function get_tabs(mod_wordcards_module $mod, $current) {
+    public static function get_tabs(mod_wordcards_module $mod, $current, $embed = 0) {
         global $CFG;
 
         $config = get_config(constants::M_COMPONENT);
@@ -103,12 +103,12 @@ class mod_wordcards_helper {
                     get_string('tabsetup', constants::M_COMPONENT), '', true);
         }
 
-        if ($canviewreports) {
+        if ($canviewreports && $embed !== 2) {
             $tabs[] = new tabobject('reports',
                     new moodle_url('/mod/wordcards/reports.php', ['id' => $cmid]),
                     get_string('tabreports', constants::M_COMPONENT), '', true);
         }
-        if ($canmanage) {
+        if ($canmanage && $embed !== 2) {
             $tabs[] = new tabobject('managewords',
                 new moodle_url('/mod/wordcards/managewords.php', ['id' => $cmid]),
                 get_string('tabmanagewords', constants::M_COMPONENT), '', true);
@@ -125,7 +125,7 @@ class mod_wordcards_helper {
             }
         }
 
-        if ($canpush) {
+        if ($canpush && $embed !== 2) {
             $tabs[] = new tabobject('push',
                 new moodle_url('/mod/wordcards/push.php', ['id' => $cmid]),
                 get_string('push', constants::M_COMPONENT), '', true);

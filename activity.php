@@ -20,12 +20,14 @@ $oldstep = optional_param('oldstep',mod_wordcards_module::STATE_TERMS, PARAM_TEX
 $reattempt = optional_param('reattempt',0, PARAM_INT);
 //cancel an attempt
 $cancelattempt = optional_param('cancelattempt',0, PARAM_INT);
+// embed mode
+$embed = optional_param('embed', 0, PARAM_INT);
 
 $mod = mod_wordcards_module::get_by_cmid($cmid);
 $course = $mod->get_course();
 $cm = $mod->get_cm();
 
-$PAGE->set_url('/mod/wordcards/activity.php', ['id' => $cmid,'oldstep'=>$oldstep, 'nextstep'=>$nextstep]);
+$PAGE->set_url('/mod/wordcards/activity.php', ['id' => $cmid,'oldstep'=>$oldstep, 'nextstep'=>$nextstep, 'embed'=>$embed]);
 require_login($course, true, $cm);
 $mod->require_view();
 
@@ -58,7 +60,7 @@ if(!$reattempt && $cancelattempt){
             if($mod->get_latest_attempt() === false){
                 $mod->mark_terms_as_unseen();
             }
-            redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
+            redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id, 'embed'=>$embed]));
     }
 }
 
@@ -82,13 +84,13 @@ if($currentstate==mod_wordcards_module::STATE_END){
 
 //redirect to finished if this state end
 if($currentstep==mod_wordcards_module::STATE_END) {
-    redirect(new moodle_url('/mod/wordcards/finish.php', ['id' => $cm->id, 'sesskey'=>sesskey()]));
+    redirect(new moodle_url('/mod/wordcards/finish.php', ['id' => $cm->id, 'embed' => $embed, 'sesskey'=>sesskey()]));
 }
 
 
 //do we need this anymore?
 if($currentstep==mod_wordcards_module::STATE_TERMS) {
-    redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id]));
+    redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id, 'embed'=>$embed]));
 }
 
 //get our practicetype an wordpool
@@ -124,9 +126,13 @@ $PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
 
 $config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab){
+//get our page layout
+if ($mod->get_mod()->foriframe==1  || $embed == 1) {
+    $PAGE->set_pagelayout('embedded');
+}else if ($config->enablesetuptab || $embed == 2) {
     $PAGE->set_pagelayout('popup');
-}else{
+    $PAGE->add_body_class('poodll-wordcards-embed');
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 

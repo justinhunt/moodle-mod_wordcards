@@ -62,19 +62,24 @@ if($mod->get_mod()->hashisold) {
     $mod->set_region_passagehash();
 }
 $renderer = $PAGE->get_renderer('mod_wordcards');
+
+//get our page layout
+$config = get_config(constants::M_COMPONENT);
+if ($mod->get_mod()->foriframe==1  || $embed == 1) {
+    $PAGE->set_pagelayout('embedded');
+}else if ($config->enablesetuptab || $embed == 2) {
+    $PAGE->set_pagelayout('popup');
+    $PAGE->add_body_class('poodll-wordcards-embed');
+} else {
+    $PAGE->set_pagelayout('incourse');
+}
+
 $templateable = new \mod_wordcards\output\freemode($cm, $course, $practicetype, $wordpool);
 $templatedata = $templateable->export_for_template($renderer);
 $PAGE->navbar->add($templatedata->pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true));
 $PAGE->set_title($templatedata->pagetitle);
 $PAGE->force_settings_menu(true);
-
-$config = get_config(constants::M_COMPONENT);
-if($config->enablesetuptab || $embed){
-    $PAGE->set_pagelayout('popup');
-}else{
-    $PAGE->set_pagelayout('incourse');
-}
 
 //load animate css
 ////this library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/)

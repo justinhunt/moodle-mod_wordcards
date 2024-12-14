@@ -21,7 +21,7 @@ use mod_wordcards\constants;
 
 class renderer extends \plugin_renderer_base {
 
-    public function definitions_page_data(\mod_wordcards_module $mod, $definitions) {
+    public function definitions_page_data(\mod_wordcards_module $mod, $definitions, $embed = 0) {
         global $USER;
 
         $mywordspool = new my_words_pool($mod->get_course()->id);
@@ -106,7 +106,7 @@ class renderer extends \plugin_renderer_base {
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
             'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),
-                'nextstep'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt]))->out(true),
+                'nextstep'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt,'embed'=>$embed]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'definition_grid' => $this->image_url('grid', 'mod_wordcards')->out(true),
@@ -140,6 +140,20 @@ class renderer extends \plugin_renderer_base {
             }
         }
         return $data;
+    }
+
+    public function get_embed_flag(){
+        switch($this->page->pagelayout){
+            case 'popup':
+                $embed = 2;
+                break;
+            case 'embedded':
+                $embed = 1;
+                break;
+            default:
+                $embed = 0;
+        }
+        return $embed;
     }
 
     public function cancel_attempt_button($mod){
@@ -537,8 +551,9 @@ class renderer extends \plugin_renderer_base {
 
 
     public function navigation(\mod_wordcards_module $mod, $currentstate, $navdisabled = false){
-        $tabtree = \mod_wordcards_helper::get_tabs($mod, $currentstate);
-        if ($mod->can_manage() || $mod->can_viewreports()) {
+        $embed = $this->get_embed_flag();
+        $tabtree = \mod_wordcards_helper::get_tabs($mod, $currentstate, $embed);
+        if (($mod->can_manage() || $mod->can_viewreports()) && $embed !== 2) {
             // Teachers see the tabs, as normal tabs.
             return $this->render($tabtree);
         }

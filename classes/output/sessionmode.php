@@ -73,6 +73,7 @@ class sessionmode implements \renderable, \templatable {
             }
         }
 
+        $data->embed = $renderer->get_embed_flag();
         $data->pagetitle = $renderer->page_heading($this->practicetype, $this->wordpool);
         $data->id = $this->cm->id;
         $data->practicetype = $this->practicetype;
@@ -81,14 +82,14 @@ class sessionmode implements \renderable, \templatable {
         $data->introactive = !$this->practicetype;
         $journeymode = $this->mod->get_mod()->journeymode;
         $data->stepsmodeavailable = ($journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_SESSIONTHENFREE);
-        $data->defsurl = new \moodle_url('/mod/wordcards/sessionmode.php', ['id' => $this->cm->id, 'practicetype' => 0, 'wordpool' => $this->wordpool]);
+        $data->defsurl = new \moodle_url('/mod/wordcards/sessionmode.php', ['id' => $this->cm->id, 'practicetype' => 0, 'wordpool' => $this->wordpool, 'embed' => $data->embed]);
         foreach ($practicetypeoptions as $id => $title) {
             $data->tabs[] = [
                 'id' => $id,
                 'title' => $title,
                 'active' => $id == $this->practicetype ? 1 : 0,
                 'url' => new \moodle_url(
-                    '/mod/wordcards/sessionmode.php', ['id' => $this->cm->id, 'practicetype' => $id, 'wordpool' => $this->wordpool]
+                    '/mod/wordcards/sessionmode.php', ['id' => $this->cm->id, 'practicetype' => $id, 'wordpool' => $this->wordpool, 'embed' => $data->embed]
                 ),
                 'icon' => utils::fetch_activity_tabicon($id),
             ];

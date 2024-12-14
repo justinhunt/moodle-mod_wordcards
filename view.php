@@ -91,8 +91,11 @@ $PAGE->force_settings_menu(true);
 $modulecontext = $mod->get_context();
 // Get an admin settings
 $config = get_config(constants::M_COMPONENT);
-if ($config->enablesetuptab || $embed) {
+if ($moduleinstance->foriframe==1  || $embed == 1) {
+    $PAGE->set_pagelayout('embedded');
+}else if ($config->enablesetuptab || $embed == 2) {
     $PAGE->set_pagelayout('popup');
+    $PAGE->add_body_class('poodll-wordcards-embed');
 } else {
     $PAGE->set_pagelayout('incourse');
 }
@@ -108,8 +111,10 @@ $definitions = $mod->get_terms();
 if (empty($definitions)) {
     $definitionsdata = [];
 } else {
-    $definitionsdata = $renderer->definitions_page_data($mod, $definitions);
+    $definitionsdata = $renderer->definitions_page_data($mod, $definitions, $embed);
 }
+//add embed to definitions data
+$definitionsdata['embed'] = $embed;
 
 // add lang chooser to definitions data
 if ($mod->get_mod()->showlangchooser) {
