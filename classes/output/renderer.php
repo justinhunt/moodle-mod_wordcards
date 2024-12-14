@@ -21,7 +21,8 @@ use mod_wordcards\constants;
 
 class renderer extends \plugin_renderer_base {
 
-    public function definitions_page_data(\mod_wordcards_module $mod, $definitions, $embed = 0) {
+    public function definitions_page_data(\mod_wordcards_module $mod, $definitions, $embed = 0)
+    {
         global $USER;
 
         $mywordspool = new my_words_pool($mod->get_course()->id);
@@ -30,14 +31,14 @@ class renderer extends \plugin_renderer_base {
         shuffle($definitions);
 
         $firstcardset = false;
-        foreach($definitions as $def){
+        foreach ($definitions as $def) {
             //we cheat here , and add an index to avoid flicker before we apply the show/hide to flashcards
-            if(!$firstcardset) {
+            if (!$firstcardset) {
                 $def->isfirstcard = true;
                 $firstcardset = true;
             }
             //make sure each definition has a voice
-            if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
+            if ($def->ttsvoice == 'Auto' || $def->ttsvoice == '') {
                 $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
             // Add flag to show if it's in "My words" or not.
@@ -48,65 +49,69 @@ class renderer extends \plugin_renderer_base {
         $definitions = $mod->insert_learned_state($definitions);
 
         //attempt info
-        $canattempt=$mod->can_attempt();
+        $canattempt = $mod->can_attempt();
         $attempts = $mod->get_attempts();
-        $canmanage=$mod->can_manage();
-        if($attempts){
-            $attemptcount=count($attempts);
-        }else{
-            $attemptcount=0;
+        $canmanage = $mod->can_manage();
+        if ($attempts) {
+            $attemptcount = count($attempts);
+        } else {
+            $attemptcount = 0;
         }
-        $maxattempts=$mod->get_mod()->maxattempts;
-        $isreattempt = $attemptcount>0 && $canattempt && !$canmanage;
-        if($isreattempt){
-            $nextaction='reattempt';
-            $reattempt=1;
-           // $nextbuttontext=get_string('reattempt',constants::M_COMPONENT);
+        $maxattempts = $mod->get_mod()->maxattempts;
+        $isreattempt = $attemptcount > 0 && $canattempt && !$canmanage;
+        if ($isreattempt) {
+            $nextaction = 'reattempt';
+            $reattempt = 1;
+            // $nextbuttontext=get_string('reattempt',constants::M_COMPONENT);
             //some felt "try again" was confusing here ... not sure .. but ok justin 20231118
-            $nextbuttontext=get_string('continue',constants::M_COMPONENT);
-        }elseif($attemptcount==0 || $canattempt){
-            $nextaction='attempt';
-            $reattempt=0;
-            $nextbuttontext=get_string('continue',constants::M_COMPONENT);
-        }else{
-            $nextaction='none';
-            $reattempt=0;
-            $nextbuttontext=get_string('continue',constants::M_COMPONENT);
+            $nextbuttontext = get_string('continue', constants::M_COMPONENT);
+        } elseif ($attemptcount == 0 || $canattempt) {
+            $nextaction = 'attempt';
+            $reattempt = 0;
+            $nextbuttontext = get_string('continue', constants::M_COMPONENT);
+        } else {
+            $nextaction = 'none';
+            $reattempt = 0;
+            $nextbuttontext = get_string('continue', constants::M_COMPONENT);
         }
 
         //config
         $config = get_config('mod_wordcards');
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
-        $journeymode= $mod->get_mod()->journeymode; //get_config(constants::M_COMPONENT, 'journeymode');
+        $journeymode = $mod->get_mod()->journeymode; //get_config(constants::M_COMPONENT, 'journeymode');
 
         //video examples (or not)
-        if($mod->get_mod()->videoexamples){
+        if ($mod->get_mod()->videoexamples) {
             //fetch the lang name and accent (if any) for youglish
             $youglish = utils::get_youglish_config($mod->get_mod()->ttslanguage);
-        }else{
+        } else {
             $youglish = false;
         }
 
 
         $data = [
-            'uniqid'=> \html_writer::random_id('wordcards'),
+            'uniqid' => \html_writer::random_id('wordcards'),
             'canmanage' => $mod->can_manage(),
-            'canattempt'=>$canattempt,
-            'attemptcount'=>$attemptcount,
-            'maxattempts'=>$maxattempts,
-            'nextaction'=>$nextaction,
-            'nextbuttontext'=>$nextbuttontext,
-            'isreattempt'=>$isreattempt,
+            'canattempt' => $canattempt,
+            'attemptcount' => $attemptcount,
+            'maxattempts' => $maxattempts,
+            'nextaction' => $nextaction,
+            'nextbuttontext' => $nextbuttontext,
+            'isreattempt' => $isreattempt,
             'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
-            'youglish'=>$youglish,
+            'youglish' => $youglish,
             'gotit' => get_string('gotit', 'mod_wordcards'),
             'loading' => get_string('loading', 'mod_wordcards'),
             'loadingurl' => $this->image_url('i/loading_small')->out(true),
             'markasseen' => get_string('markasseen', 'mod_wordcards'),
             'modid' => $mod->get_id(),
-            'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),
-                'nextstep'=>\mod_wordcards_module::STATE_STEP1,'reattempt'=>$reattempt,'embed'=>$embed]))->out(true),
+            'nexturl' => (new \moodle_url('/mod/wordcards/activity.php', [
+                'id' => $mod->get_cmid(),
+                'nextstep' => \mod_wordcards_module::STATE_STEP1,
+                'reattempt' => $reattempt,
+                'embed' => $embed,
+            ]))->out(true),
             'noteaboutseenforteachers' => get_string('noteaboutseenforteachers', 'mod_wordcards'),
             'notseenurl' => $this->image_url('not-seen', 'mod_wordcards')->out(true),
             'definition_grid' => $this->image_url('grid', 'mod_wordcards')->out(true),
@@ -115,11 +120,11 @@ class renderer extends \plugin_renderer_base {
             'str_term' => get_string('term', 'mod_wordcards'),
             'termnotseen' => get_string('termnotseen', 'mod_wordcards'),
             'termseen' => get_string('termseen', 'mod_wordcards'),
-            'token'=>$token,
-            'region'=>$config->awsregion,
-            'owner'=>hash('md5',$USER->username),
+            'token' => $token,
+            'region' => $config->awsregion,
+            'owner' => hash('md5', $USER->username),
             'cmid' => $mod->get_cmid(),
-            'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attemptcount>0),
+            'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attemptcount > 0),
             'stepsmodeavailable' => $journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE
         ];
 
@@ -142,7 +147,7 @@ class renderer extends \plugin_renderer_base {
         return $data;
     }
 
-    public function get_embed_flag(){
+    public function get_embed_flag() {
         switch($this->page->pagelayout){
             case 'popup':
                 $embed = 2;
@@ -163,50 +168,58 @@ class renderer extends \plugin_renderer_base {
             return "";
         }
 
-        $data=array('modid'=> $mod->get_id(),
-            'cancelurl' => (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),
-                'cancelattempt'=>1]))->out(true),
+        $data = array(
+            'modid' => $mod->get_id(),
+            'cancelurl' => (new \moodle_url('/mod/wordcards/activity.php', [
+                'id' => $mod->get_cmid(),
+                'cancelattempt' => 1,
+                'embed' => $this->get_embed_flag(),
+            ]))->out(true),
             );
         $this->page->requires->js_call_amd("mod_wordcards/cancel_attempt_button", 'init', array($data));
         return $this->render_from_template('mod_wordcards/cancel_attempt_button', $data);
     }
 
-    public function no_definitions_yet($mod){
+    public function no_definitions_yet($mod)
+    {
         $displaytext = $this->output->box_start();
         $displaytext .= $this->output->heading(get_string('nodefinitions', constants::M_COMPONENT), 3, 'main');
         $showaddwordlinks = $mod->can_manage();
         if ($showaddwordlinks) {
             $displaytext .= \html_writer::div(get_string('letsaddwords', constants::M_COMPONENT), '', array());
-            $displaytext .= $this->output->single_button(new \moodle_url(constants::M_URL . '/managewords.php',
-                array('id' => $mod->get_cmid())), get_string('addwords', constants::M_COMPONENT));
+            $displaytext .= $this->output->single_button(new \moodle_url(
+                constants::M_URL . '/managewords.php',
+                array('id' => $mod->get_cmid())
+            ), get_string('addwords', constants::M_COMPONENT));
         }
         $displaytext .= $this->output->box_end();
-        $ret= \html_writer::div($displaytext,'');
+        $ret = \html_writer::div($displaytext, '');
         return $ret;
     }
 
-    private function make_json_string($definitions,$mod){
+    private function make_json_string($definitions, $mod)
+    {
 
         $defs = array();
-        foreach ($definitions as $definition){
+        foreach ($definitions as $definition) {
             $def = new \stdClass();
-            $def->image=$definition->image;
-            $def->audio=$definition->audio;
-            $def->alternates=$definition->alternates;
-            $def->ttsvoice=$definition->ttsvoice;
-            $def->id=$definition->id;
-            $def->term =$definition->term;
-            $def->model_sentence =$definition->model_sentence;
-            $def->model_sentence_audio =$definition->model_sentence_audio;
-            $def->definition =$definition->definition;
-            if($mod->get_mod()->showimageflip){
-                $def->showimageflip=true;
+            $def->image = $definition->image;
+            $def->audio = $definition->audio;
+            $def->alternates = $definition->alternates;
+            $def->ttsvoice = $definition->ttsvoice;
+            $def->id = $definition->id;
+            $def->term = $definition->term;
+            $def->model_sentence = $definition->model_sentence;
+            $def->model_sentence_audio = $definition->model_sentence_audio;
+            $def->definition = $definition->definition;
+            if ($mod->get_mod()->showimageflip) {
+                $def->showimageflip = true;
             }
             //which face to tag as front and which as back
-            if($mod->get_mod()->frontfaceflip == constants::M_FRONTFACEFLIP_DEF) {
+            if ($mod->get_mod()->frontfaceflip == constants::M_FRONTFACEFLIP_DEF) {
                 $def->frontfacedef = true;
             }
-            $defs[]=$def;
+            $defs[] = $def;
         }
         $defs_object = new \stdClass();
         $defs_object->terms = $defs;
@@ -224,8 +237,8 @@ class renderer extends \plugin_renderer_base {
         list($state) = $mod->get_state();
 
         //make sure each definition has a voice
-        foreach($definitions as $def){
-            if($def->ttsvoice=='Auto' || $def->ttsvoice==''){
+        foreach ($definitions as $def) {
+            if ($def->ttsvoice == 'Auto' || $def->ttsvoice == '') {
                 $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
         }
@@ -237,7 +250,11 @@ class renderer extends \plugin_renderer_base {
 
         if ($currentstep) {
             $nextstep = $mod->get_next_step($currentstep);
-            $nexturl =  (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(),'oldstep'=>$currentstep,'nextstep'=>$nextstep]))->out(true);
+            $nexturl = (new \moodle_url('/mod/wordcards/activity.php', 
+            ['id' => $mod->get_cmid(),
+            'oldstep' => $currentstep,
+            'nextstep' => $nextstep,
+            'embed' => $this->get_embed_flag()]))->out(true);
         } else {
             // In Freemode we will not have a next or current step, so we pass an empty next URL to JS.
             $nexturl = '';
@@ -245,12 +262,18 @@ class renderer extends \plugin_renderer_base {
 
         $token = utils::fetch_token($config->apiuser, $config->apisecret);
 
-        $opts=array('widgetid'=>$widgetid,'ttslanguage'=>$mod->get_mod()->ttslanguage,
-                'dryRun'=> $mod->can_manage() && !$isfreemode, 'nexturl'=>$nexturl, 'region'=>$config->awsregion,
-                'token'=>$token,'owner'=>hash('md5',$USER->username),'modid'=>$mod->get_id(),
-                'isfreemode' => get_config(constants::M_COMPONENT, 'journeymode') == constants::MODE_FREE
-                    && $PAGE->url->compare(new \moodle_url('/mod/wordcards/freemode.php'), URL_MATCH_BASE)
-            );
+        $opts = array(
+            'widgetid' => $widgetid,
+            'ttslanguage' => $mod->get_mod()->ttslanguage,
+            'dryRun' => $mod->can_manage() && !$isfreemode,
+            'nexturl' => $nexturl,
+            'region' => $config->awsregion,
+            'token' => $token,
+            'owner' => hash('md5', $USER->username),
+            'modid' => $mod->get_id(),
+            'isfreemode' => get_config(constants::M_COMPONENT, 'journeymode') == constants::MODE_FREE
+                && $PAGE->url->compare(new \moodle_url('/mod/wordcards/freemode.php'), URL_MATCH_BASE)
+        );
 
         $data = [];
         switch($practicetype){
@@ -294,15 +317,18 @@ class renderer extends \plugin_renderer_base {
         $data = [
             'canmanage' => $mod->can_manage(),
             'modid' => $mod->get_id(),
-            'courseurl'=>$CFG->wwwroot . '/course/view.php?id=' . $this->page->course->id . '#section-'. $mod->get_cm()->sectionnum,
-            'freemodeurl'=>$CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $mod->get_cmid(),
-            'canfreemode'=>$mod->can_free_mode()
+            'freemodeurl' => $CFG->wwwroot . '/mod/wordcards/freemode.php?id=' . $mod->get_cmid() . '&embed=' . $this->get_embed_flag(),
+            'canfreemode' => $mod->can_free_mode(),
         ];
 
+        if ($this->get_embed_flag() == 0) {
+            $data['courseurl'] = $CFG->wwwroot . '/course/view.php?id=' . $this->page->course->id . '#section-' . $mod->get_cm()->sectionnum;
+        }
+
         //attempt info
-        $canattempt=$mod->can_attempt();
-        if($canattempt){
-            $data['reattempturl']=$CFG->wwwroot . '/mod/wordcards/view.php?id=' . $mod->get_cmid();
+        $canattempt = $mod->can_attempt();
+        if ($canattempt) {
+            $data['reattempturl'] = $CFG->wwwroot . '/mod/wordcards/view.php?id=' . $mod->get_cmid() . '&embed=' . $this->get_embed_flag();
         }
 
         //if we have a latest attempt, we need STARS!!!
