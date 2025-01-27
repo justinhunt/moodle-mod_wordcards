@@ -62,8 +62,16 @@ define([
 
         //register button event handlers to play audio
         //flip cards / icons on learn cards / icons in vocab list / icons in learn list / icons in speech cards
-      $(document.body).on('click','.a4e-flashcards-container .play-tts,.definitions-container .definition-play-tts, #speech-container .wordcards-speechcards-speaker-icon ',playonclick);
-      $(document.body).on('keydown','.a4e-flashcards-container .play-tts,.definitions-container .definition-play-tts, #speech-container .wordcards-speechcards-speaker-icon ',playonclick);
+        //self select icons
+      var selectors = '.a4e-flashcards-container .play-tts';
+      selectors += ', .definitions-container .definition-play-tts';
+      selectors += ', #speech-container .wordcards-speechcards-speaker-icon';
+      selectors += ', .mod_wordcards_matching_frontbtn';
+      selectors += ', .model-sentence-play-tts';
+      selectors += ', #card-audio';
+      selectors += ', .selfselect-container .term-play-tts, .selfselect-container .model-sentence-play-tts';  
+      $(document.body).on('click', selectors, playonclick);
+      $(document.body).on('keydown', selectors, playonclick);
 
         //cards on learn page
       $('span.model-sentence-play-tts, #card-audio').on('click',playonclick );
@@ -103,6 +111,19 @@ define([
       var minutes = Math.floor(time / 60);
       var seconds = time - minutes * 60;
       return a4e.str_pad_left(minutes, '0', 2) + ':' + a4e.str_pad_left(seconds, '0', 2);
+    },
+
+    list_selfselect: function(target, terms) {
+
+      //template data
+      var tdata = [];
+      tdata['terms'] = terms;
+      templates.render('mod_wordcards/selfselect', tdata).then(
+        function(html, js) {
+          $(target).html(html);
+        }
+      );
+
     },
 
     list_vocab: function(target, terms, frontfaceflip) {

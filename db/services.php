@@ -85,4 +85,13 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+
+    'mod_wordcards_report_successful_learnclaim' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'report_successful_learnclaim',
+        'description' => 'Reports a successful claim that a term is learned(or known).',
+        'capabilities'=> 'mod/wordcards:view',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
 );

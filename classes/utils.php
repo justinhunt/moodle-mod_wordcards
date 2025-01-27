@@ -889,6 +889,7 @@ class utils {
           case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
           case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
           case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+          case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
               return get_string('practice',constants::M_COMPONENT) ;
           case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
           case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
@@ -896,6 +897,7 @@ class utils {
           case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
           case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
           case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+          case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:  
               return get_string('review',constants::M_COMPONENT);
 
       }
@@ -999,6 +1001,9 @@ class utils {
                 return get_string('title_listenchoose_rev', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
                 return get_string('title_spacegame_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
+            case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
+                    return get_string('title_wordpreview', constants::M_COMPONENT);
         }
     }
 
@@ -1016,7 +1021,7 @@ class utils {
             // Set the default free mode options.
             foreach (constants::FREEMODE_ACTIVITIES as $activity) {
                if (get_config(constants::M_COMPONENT, 'freemode_' . $activity)){
-                 $candidates['freemode_' . $activity] =1;
+                 $candidates['freemode_' . $activity] = 1;
                }
             }
         }
@@ -1040,11 +1045,14 @@ class utils {
                     $available[ \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS]=get_string('title_speechcards', constants::M_COMPONENT);
                     break;
                 case 'freemode_listenchoose':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE]=get_string('title_matchselect', constants::M_COMPONENT);
+                    $available[ \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE]=get_string('title_listenchoose', constants::M_COMPONENT);
                     break;
                 case 'freemode_spacegame':
                     $available[ \mod_wordcards_module::PRACTICETYPE_SPACEGAME]=get_string('title_spacegame', constants::M_COMPONENT);
-                    break;        
+                    break;
+                case 'freemode_wordpreview':
+                        $available[ \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW]=get_string('title_wordpreview', constants::M_COMPONENT);
+                        break;             
             }
         }
         return $available;
@@ -1053,21 +1061,23 @@ class utils {
   public static function get_practicetype_options($wordpool=false){
       $none =  array(\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', constants::M_COMPONENT));
       $learnoptions = [
+              \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW => get_string('title_wordpreview', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('title_matchselect', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('title_matchtype', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_DICTATION => get_string('title_dictation', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE => get_string('title_listenchoose', constants::M_COMPONENT),
-                \mod_wordcards_module::PRACTICETYPE_SPACEGAME => get_string('title_spacegame', constants::M_COMPONENT)
+              \mod_wordcards_module::PRACTICETYPE_SPACEGAME => get_string('title_spacegame', constants::M_COMPONENT),
       ];
 
         $reviewoptions = [
+            \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV => get_string('title_wordpreview_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV => get_string('title_matchselect_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV => get_string('title_matchtype_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_DICTATION_REV => get_string('title_dictation_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV => get_string('title_speechcards_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV => get_string('title_listenchoose_rev', constants::M_COMPONENT),
-              \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV => get_string('title_spacegame_rev', constants::M_COMPONENT)
+            \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV => get_string('title_spacegame_rev', constants::M_COMPONENT),
             ];
 
       if($wordpool===\mod_wordcards_module::WORDPOOL_LEARN){
@@ -1097,7 +1107,7 @@ class utils {
             constants::M_SG_DEF_AS_ALIEN => get_string('sg_defasalien', constants::M_COMPONENT));
     }
 
-    public static function fetch_options_wordcards(){
+    public static function fetch_options_speechcards(){
         return array(
             constants::M_WC_TERM_AS_READABLE=> get_string('wc_termasreadable', constants::M_COMPONENT),
             constants::M_WC_MODELSENTENCE_AS_READABLE => get_string('wc_modelsentenceasreadable', constants::M_COMPONENT));
@@ -1467,12 +1477,16 @@ class utils {
         //options for practicetype and term count
         $ptype_options_learn = self::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
         $ptype_options_all =self::get_practicetype_options();
+        //remove wordpreview from "all" options .. because it does not make much sense to preview after learning
+        unset($ptype_options_all[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW]);
+        unset($ptype_options_all[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV]);
         $termcount_options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
 
         $mform->addElement('select', 'step1practicetype', get_string('step1practicetype', constants::M_COMPONENT),
                 $ptype_options_learn, \mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
         $mform->addElement('select', 'step1termcount', get_string('step1termcount', constants::M_COMPONENT), $termcount_options, 4);
-
+        $mform->disabledIf('step1termcount', 'step1practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW);
+        
         $mform->addElement('select', 'step2practicetype', get_string('step2practicetype', constants::M_COMPONENT),
                 $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
         $mform->addElement('select', 'step2termcount', get_string('step2termcount', constants::M_COMPONENT), $termcount_options, 4);
@@ -1531,7 +1545,7 @@ class utils {
         $mform->addElement('select', 'sgoptions', get_string('sgoptions', constants::M_COMPONENT),
             $sgoptions, $config->sgoptions);
 
-        $scoptions = self::fetch_options_wordcards();
+        $scoptions = self::fetch_options_speechcards();
         $mform->addElement('select', 'scoptions', get_string('scoptions', constants::M_COMPONENT),
                 $scoptions, $config->scoptions);    
 

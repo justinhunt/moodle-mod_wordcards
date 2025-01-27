@@ -55,7 +55,7 @@ if (!in_array($wordpool, $wordpools)) {
     throw new invalid_parameter_exception('Invalid wordpool');
 }
 
-// if there are no learn terms and its set to wordpoodl learn, lets set it to review
+// if there are no learn terms and its set to wordpool learn, lets set it to review
 $learnterms = $mod->get_terms();
 if(empty($learnterms)){
     $wordpool = mod_wordcards_module::WORDPOOL_REVIEW;
@@ -89,7 +89,7 @@ if ($mod->get_mod()->foriframe==1  || $embed == 1) {
     $PAGE->set_pagelayout('incourse');
 }
 
-$templateable = new \mod_wordcards\output\freemode($cm, $course, $practicetype, $wordpool);
+$templateable = new \mod_wordcards\output\sessionmode($cm, $course, $practicetype, $wordpool);
 $templatedata = $templateable->export_for_template($renderer);
 $PAGE->navbar->add($templatedata->pagetitle, $PAGE->url);
 $PAGE->set_heading(format_string($course->fullname, true));
@@ -108,9 +108,11 @@ $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/mywords", 'init', []);
 $PAGE->requires->js_call_amd(constants::M_COMPONENT . "/freemode", 'init', []);
 
 echo $renderer->header();
+/*
 if ($mod->get_mod()->showlangchooser) {
     echo $renderer->language_chooser($mod->get_mod()->deflanguage);
 }
+*/
 
 // if admin we show a heading in free mode (otherwise they would not be able to add definitions)
 if($isteacher && $mod->get_mod()->journeymode == constants::MODE_FREE) {

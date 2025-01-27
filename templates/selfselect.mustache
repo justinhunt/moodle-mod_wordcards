@@ -1,0 +1,39 @@
+<div class="selfselect-container definitions-container">
+   <audio id="poodll_vocabplayer"></audio>
+   <div class="terms clearfix definition_grid">
+  {{#terms}} 
+    <div class="selfselect-card selfselect-noselect term-wrapper">
+        <div class="term" data-termid="{{id}}">
+              <div class="term-title">
+                  {{term}}
+                  <i id="audio-small" style="cursor:pointer;" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="fa fa-volume-up term-play-tts"></i>
+              </div>
+              {{{definition}}}
+              {{#model_sentence}}
+              
+              <div class="term-modelsentence">
+                  <span>{{model_sentence}}</span>
+                   <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="model-sentence-play-tts term-modelsentence-small" style="cursor:pointer;">
+                     </span>
+              </div>
+              
+              {{/model_sentence}}
+              <div class="selfselect-selector {{#selected}}selfselect-selected{{/selected}}">
+                  <div class="selected-status-icon"></div>
+                  <div class="selfselect-selected-text">{{#selected}}{{#str}}selfselect-selected, mod_wordcards{{/str}}{{/selected}}
+                  </div>
+              </div>
+              <!-- Toggle Switch -->
+              <label class="wc_selfselector">
+                  <input type="checkbox" data-learned="{{learned}}" data-termid="{{id}}" class="toggle-input" {{#learned}}checked{{/learned}}>
+                  <span class="slider round"></span>
+              </label>
+        </div>
+    </div>
+  {{/terms}}
+  </div>
+</div>
+
+<button id='wordcards-start-button' class='btn btn-success btn-lg center-block btn-block'>
+  <i class='fa fa-play'></i> {{#str}}starttest, mod_wordcards{{/str}}
+</button>

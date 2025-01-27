@@ -188,7 +188,7 @@ if ($ADMIN->fulltree) {
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = constants::M_WC_TERM_AS_READABLE;
-    $options = utils::fetch_options_wordcards();
+    $options = utils::fetch_options_speechcards();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));        
 

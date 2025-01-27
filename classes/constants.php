@@ -35,7 +35,7 @@ class constants {
     const M_TABLE = 'wordcards';
     const M_TERMSTABLE = 'wordcards_terms';
     const M_ATTEMPTSTABLE = 'wordcards_progress';
-    const M_AUTHTABLE='wordcards_auth';
+    const M_AUTHTABLE = 'wordcards_auth';
     const M_GLOSSARYTABLE = 'glossary';
     const M_GLOSSARYENTRIESTABLE = 'glossary_entries';
     const M_ASSOCTABLE = 'wordcards_associations';
@@ -68,8 +68,11 @@ class constants {
     const MODE_STEPSTHENFREE = 2;
     const MODE_SESSION = 3;
     const MODE_SESSIONTHENFREE = 4;
+    const CURRENTMODE_STEPS = 0;
+    const CURRENTMODE_FREE = 1;
+    const CURRENTMODE_SESSION = 2;
 
-    const FREEMODE_ACTIVITIES = ["matchselect", "matchtype", "dictation", "speechcards", "listenchoose", "spacegame"];
+    const FREEMODE_ACTIVITIES = ["wordpreview", "matchselect", "matchtype", "dictation", "speechcards", "listenchoose", "spacegame"];
 
     // grading options
     const M_GRADEHIGHEST = 0;

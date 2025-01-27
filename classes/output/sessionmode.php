@@ -104,7 +104,6 @@ class sessionmode implements \renderable, \templatable {
             \mod_wordcards_module::WORDPOOL_LEARN => 'fa-star-o',
             \mod_wordcards_module::WORDPOOL_REVIEW => 'fa-history',
             \mod_wordcards_module::WORDPOOL_MY_WORDS => 'fa-refresh',
-            \mod_wordcards_module::WORDPOOL_SESSION_WORDS => 'fa-circle-o',
         ];
 
         $mywordspool = new \mod_wordcards\my_words_pool($this->cm->course);
@@ -112,6 +111,7 @@ class sessionmode implements \renderable, \templatable {
         // Add the ids of all terms in my words pool to the page markup so that JS can see them.
         $data->mywordstermids = json_encode(array_keys($mywordspool->get_words()));
         $data->selectedpoolhaswords = 0;
+
         // We need to add a list of word pools to the page for the word pool select menu.
         foreach (\mod_wordcards_module::get_wordpools() as $wordpoolid) {
             $pool = (object)[
@@ -137,26 +137,39 @@ class sessionmode implements \renderable, \templatable {
         $devicetype = \core_useragent::get_device_type();
         $data->showselectmenu = in_array($devicetype, [\core_useragent::DEVICETYPE_MOBILE, \core_useragent::DEVICETYPE_TABLET]);
 
+
         if ($data->selectedpoolhaswords) {
             $definitions = $this->get_terms($this->wordpool, false, $this->practicetype);
+           
+            // Each practice type is set up here.
             switch ($this->practicetype){
                 case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
                 case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
                 case \mod_wordcards_module::PRACTICETYPE_DICTATION:
                 case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
-                    $data->mainhtml = $renderer->a4e_page($this->mod, $this->practicetype, $definitions, true);
+                case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
+                    $data->mainhtml = $renderer->a4e_page($this->mod, $this->practicetype, $definitions, constants::CURRENTMODE_SESSION);
                     break;
                 case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
-                    $data->mainhtml = $renderer->speechcards_page($this->mod, $definitions, true);
+                    $data->mainhtml = $renderer->speechcards_page($this->mod, $definitions, constants::CURRENTMODE_SESSION);
                     break;
                 case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
-                    $data->mainhtml = $renderer->spacegame_page($this->mod, $definitions, true);
+                    $data->mainhtml = $renderer->spacegame_page($this->mod, $definitions, constants::CURRENTMODE_SESSION);
                     break;
                 default:
                     // Show the intro page and cards.
                     $data->isintropage = 1;
                     $data->definitions = $renderer->definitions_page_data($this->mod, $definitions);
                     $data->definitions['isfreemode'] = 1;
+
+                     // Lang chooser: - add lang chooser so templates can choose to show it.
+                    if ($this->mod->get_mod()->showlangchooser) {
+                        $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage);
+                    } else {
+                        $langchooser = "";
+                    }
+                    $data->definitions['langchooser'] = $langchooser;
+ 
                     $data->definitions['nexturl'] = isset($data->tabs[0]['url']) ? $data->tabs[0]['url'] : '';
                     $data->definitions['introheading'] = get_string('freemode', 'mod_wordcards');
                     $stringmanager = get_string_manager();
@@ -180,55 +193,76 @@ class sessionmode implements \renderable, \templatable {
     private function get_terms(int $wordpool, bool $countonly, int $practicetype=0) {
         global $DB, $USER;
 
+        //return value
+        $returnterms = null;
+
         // SQL Params
         $params = ['userid' => $USER->id, 'modid' => $this->cm->instance, 'courseid' => $this->cm->course];
 
-        // words to show
-        if($practicetype == \mod_wordcards_module::PRACTICETYPE_NONE){
+        // Words to show
+        if ($practicetype == \mod_wordcards_module::PRACTICETYPE_NONE){
             $maxwords = 0;
-        }else{
+        } else {
             $maxwords = get_config(constants::M_COMPONENT, 'def_wordstoshow');
         }
 
-        // wordpool :: MY WORDS
-        if ($wordpool == \mod_wordcards_module::WORDPOOL_MY_WORDS) {
-            $wordpool = new \mod_wordcards\my_words_pool($this->course->id);
-            return $countonly
-                ? $wordpool->word_count()
-                : $wordpool->get_words($maxwords);
-        }
-
-        // wordpool :: REVIEW WORDS
-        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
-            // In this case we want ALL the words returned.
-            if ($countonly || $practicetype == \mod_wordcards_module::PRACTICETYPE_NONE) {
-                $reviewsql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
-                $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
-                $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
-                $reviewsql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL AND w.course = :courseid";
-                if($countonly) {
-                    return $DB->get_field_sql($reviewsql, $params);
-                }else{
-                    $records = $DB->get_records_sql($reviewsql, $params);
-                    if (!$records) {
-                        return [];
+        switch ($wordpool) {
+            // wordpool :: REVIEW WORDS
+            case \mod_wordcards_module::WORDPOOL_REVIEW:
+                $thewordpool = \mod_wordcards_module::WORDPOOL_REVIEW;
+                    // In this case we want ALL the words returned.
+                    if ($countonly || $practicetype == \mod_wordcards_module::PRACTICETYPE_NONE
+                        || $practicetype == \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW
+                        || $practicetype == \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV) {
+                        $reviewsql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
+                        $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
+                        $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
+                        $reviewsql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL AND w.course = :courseid";
+                        if ($countonly) {
+                            $returnterms = $DB->get_field_sql($reviewsql, $params);
+                        }else{
+                            $records = $DB->get_records_sql($reviewsql, $params);
+                            if (!$records) {
+                                $returnterms = [];
+                            }else{
+                                shuffle($records);
+                                $records = \mod_wordcards_module::insert_media_urls($records);
+                                $records = \mod_wordcards_module::format_defs($records);
+                                $returnterms = $records;
+                            }
+                        }
+                    } else {
+                        // In this case we want words to practice returned.
+                        $returnterms = $this->mod->get_review_terms($maxwords);
                     }
-                    shuffle($records);
-                    $records = \mod_wordcards_module::insert_media_urls($records);
-                    $records = \mod_wordcards_module::format_defs($records);
-                }
-            } else {
-                // in this case we want words to practice returned
-                return $this->mod->get_review_terms($maxwords);
-            }
-        }
 
-        // wordpool :: NEW WORDS
+                break;
+            // wordpool :: MY WORDS    
+            case \mod_wordcards_module::WORDPOOL_MY_WORDS:
+                $thewordpool = new \mod_wordcards\my_words_pool($this->course->id);
+                if ($countonly) {
+                    $returnterms = $thewordpool->word_count();
+                } else {
+                    $returnterms = $thewordpool->get_words($maxwords);
+                }
+                break;
+            // wordpool :: NEW WORDS       
+            case \mod_wordcards_module::WORDPOOL_LEARN:
+            default:
+                if ($countonly) {
+                    $learnsql = "SELECT COUNT(t.id)  FROM {wordcards_terms} t WHERE t.deleted = 0 AND t.modid = :modid";
+                    $returnterms = $DB->get_field_sql($learnsql, $params);
+                } else {
+                    $returnterms = $this->mod->get_learn_terms($maxwords);
+                }
+        }//end of switch
+
+        // If its count only we are done, return the count.
         if ($countonly) {
-            $learnsql = "SELECT COUNT(t.id)  FROM {wordcards_terms} t WHERE t.deleted = 0 AND t.modid = :modid";
-            return $DB->get_field_sql($learnsql, $params);
-        }else{
-            return $this->mod->get_learn_terms($maxwords);
+            return $returnterms;
+        // Otherwise lets add the learned state and return the defs.
+        } else {
+            return $this->mod->insert_learned_state($returnterms);
         }
 
     }

@@ -27,7 +27,7 @@ if (!$mod->can_free_mode()) {
         \core\output\notification::NOTIFY_ERROR
     );
 }
-$practicetypeoptions =  utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
+$practicetypeoptions = utils::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
 $practicetype = optional_param('practicetype', mod_wordcards_module::PRACTICETYPE_NONE, PARAM_INT);
 if ($practicetype && !isset($practicetypeoptions[$practicetype])) {
     throw new invalid_parameter_exception('Invalid activity type');
@@ -39,7 +39,7 @@ if (!in_array($wordpool, $wordpools)) {
     throw new invalid_parameter_exception('Invalid wordpool');
 }
 
-//if there are no learn terms and its set to wordpoodl learn, lets set it to review
+//if there are no learn terms and its set to wordpool learn, lets set it to review
 $learnterms = $mod->get_terms();
 if(empty($learnterms)){
     $wordpool=mod_wordcards_module::WORDPOOL_REVIEW;

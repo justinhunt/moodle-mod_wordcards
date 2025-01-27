@@ -45,7 +45,6 @@ class mod_wordcards_module {
     const WORDPOOL_LEARN = 0;
     const WORDPOOL_REVIEW = 1;
     const WORDPOOL_MY_WORDS = 2;
-    const WORDPOOL_SESSION_WORDS = 3;
     const PRACTICETYPE_SCATTER = -1;// not used
     const PRACTICETYPE_SCATTER_REV = -2;// not used
     const PRACTICETYPE_NONE = 0;
@@ -55,6 +54,7 @@ class mod_wordcards_module {
     const PRACTICETYPE_SPEECHCARDS = 4;
     const PRACTICETYPE_LISTENCHOOSE = 9;
     const PRACTICETYPE_SPACEGAME = 11;
+    const PRACTICETYPE_WORDPREVIEW = 13;
 
     const PRACTICETYPE_MATCHSELECT_REV = 5;
     const PRACTICETYPE_MATCHTYPE_REV = 6;
@@ -62,6 +62,7 @@ class mod_wordcards_module {
     const PRACTICETYPE_SPEECHCARDS_REV = 8;
     const PRACTICETYPE_LISTENCHOOSE_REV = 10;
     const PRACTICETYPE_SPACEGAME_REV = 12;
+    const PRACTICETYPE_WORDPREVIEW_REV = 14;
 
     protected static $states = [
         self::STATE_TERMS,
@@ -252,6 +253,7 @@ class mod_wordcards_module {
             case self::PRACTICETYPE_SPEECHCARDS:
             case self::PRACTICETYPE_LISTENCHOOSE:
             case self::PRACTICETYPE_SPACEGAME:
+            case self::PRACTICETYPE_WORDPREVIEW:
                 return self::WORDPOOL_LEARN;
 
             case self::PRACTICETYPE_MATCHSELECT_REV:
@@ -260,6 +262,7 @@ class mod_wordcards_module {
             case self::PRACTICETYPE_SPEECHCARDS_REV:
             case self::PRACTICETYPE_LISTENCHOOSE_REV:
             case self::PRACTICETYPE_SPACEGAME_REV:
+            case self::PRACTICETYPE_WORDPREVIEW_REV:
             default:
                 return self::WORDPOOL_REVIEW;
         }
@@ -288,9 +291,10 @@ class mod_wordcards_module {
                 $term->learned_progress = 0;
                 if (isset($result[$term->id])){
                     if($result[$term->id]->successcount >= $learnpoint) {
-                        $term->learned = $result[$term->id];
+                        $term->learned = true; //$result[$term->id];
                         $term->learned_progress = 100;
                     }else{
+                        $term->learned = false;
                         $term->learned_progress = round($result[$term->id]->successcount / $learnpoint * 100);
                     }
                 }
@@ -385,6 +389,27 @@ class mod_wordcards_module {
             $selectedrecords = self::format_defs($selectedrecords);
             return $selectedrecords;
         } else {
+            $records = self::insert_media_urls($records);
+            $records = self::format_defs($records);
+            return $records;
+        }
+    }
+
+    public function get_allreview_terms($countonly = false) {
+        global $DB, $USER;
+        $params = ['userid' => $USER->id, 'modid' => $this->cm->instance, 'courseid' => $this->cm->course];
+        $reviewsql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
+                $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
+                $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
+                $reviewsql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL AND w.course = :courseid";
+        if ($countonly) {
+            return $DB->get_field_sql($reviewsql, $params);
+        } else {
+            $records = $DB->get_records_sql($reviewsql, $params);
+            if (!$records) {
+                return [];
+            }
+            shuffle($records);
             $records = self::insert_media_urls($records);
             $records = self::format_defs($records);
             return $records;
@@ -810,6 +835,31 @@ class mod_wordcards_module {
             $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
             $theevent->trigger();
 
+        }
+    }
+
+    public function record_successful_learn($term, $triggerevent) {
+        global $DB, $USER;
+
+        $params = ['userid' => $USER->id, 'termid' => $term->id];
+        if (!($record = $DB->get_record(constants::M_ASSOCTABLE, $params))) {
+            $record = (object) $params;
+            $record->successcount = 0;
+        }
+
+        $record->successcount = (int)$this->mod->learnpoint;
+        $record->lastsuccess = time();
+
+        if (empty($record->id)) {
+            $DB->insert_record(constants::M_ASSOCTABLE, $record);
+        } else {
+            $DB->update_record(constants::M_ASSOCTABLE, $record);
+        }
+
+         // Raise word learned event.
+        if ($triggerevent) {
+            $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
+            $theevent->trigger();
         }
     }
 
