@@ -131,6 +131,7 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                                 var translations = JSON.stringify(alltrans);
                                 var definition = sourcedefinition;
                                 //if its NOT term:english and def:english, we pull the definition from the translation
+                                log.debug('definitionslang: ' + definitionslang);
                                 if (definitionslang !== "en") {
                                     if (sense.hasOwnProperty('lang_' + definitionslang)) {
                                         definition = sense['lang_' + definitionslang];
@@ -142,7 +143,7 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                                         definition = sense.meaning;
                                     } else if (sense.hasOwnProperty('lang_en')) {
                                         definition = sense['lang_en'];
-                                    } else {
+                                    } else if (definition == '') {
                                         definition = 'No translation available';
                                     }
                                 }

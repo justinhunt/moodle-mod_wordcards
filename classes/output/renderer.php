@@ -319,7 +319,7 @@ class renderer extends \plugin_renderer_base {
 
             case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
             case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
-                $opts['wpoptions'] = $mod->get_mod()->wpoptions;
+               // $opts['wpoptions'] = $mod->get_mod()->wpoptions;
                 $this->page->requires->js_call_amd("mod_wordcards/wordpreview", 'init', [$opts]);
                 $activityhtml = $this->render_from_template('mod_wordcards/wordpreview_page', $data);
                 break;

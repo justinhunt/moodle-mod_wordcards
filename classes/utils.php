@@ -1483,27 +1483,32 @@ class utils {
         $termcount_options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
 
         $mform->addElement('select', 'step1practicetype', get_string('step1practicetype', constants::M_COMPONENT),
-                $ptype_options_learn, \mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
+                $ptype_options_learn);
+        $mform->setDefault('step1practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHSELECT);       
         $mform->addElement('select', 'step1termcount', get_string('step1termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step1termcount', 'step1practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW);
         
         $mform->addElement('select', 'step2practicetype', get_string('step2practicetype', constants::M_COMPONENT),
-                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+                $ptype_options_all);
+        $mform->setDefault('step2practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHTYPE);         
         $mform->addElement('select', 'step2termcount', get_string('step2termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step2termcount', 'step2practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
 
         $mform->addElement('select', 'step3practicetype', get_string('step3practicetype', constants::M_COMPONENT),
-                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+                $ptype_options_all);
+        $mform->setDefault('step3practicetype', \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE);         
         $mform->addElement('select', 'step3termcount', get_string('step3termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step3termcount', 'step3practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
 
         $mform->addElement('select', 'step4practicetype', get_string('step4practicetype', constants::M_COMPONENT),
-                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+                $ptype_options_all);
+        $mform->setDefault('step4practicetype', \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS);          
         $mform->addElement('select', 'step4termcount', get_string('step4termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step4termcount', 'step4practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
 
         $mform->addElement('select', 'step5practicetype', get_string('step5practicetype', constants::M_COMPONENT),
-                $ptype_options_all,\mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+                $ptype_options_all);
+        $mform->setDefault('step5practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);        
         $mform->addElement('select', 'step5termcount', get_string('step5termcount', constants::M_COMPONENT), $termcount_options, 4);
         $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
 
