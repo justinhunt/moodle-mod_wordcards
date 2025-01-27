@@ -12,9 +12,11 @@
             //set handler to get set pref according to selection, and reload
            defbtn.on("click", function(e){
              var pref = defselect.val();
+             /*
              if(pref==='{{activitydefault}}'){
                 pref=false;
              }
+             */
              repository.setUserPreference('wordcards_deflang',pref)
                 .then(function(ret){window.location.reload();})
                 .catch(notification.exception)
