@@ -78,6 +78,7 @@ $string['privacy:metadata:lastfail'] = 'The last time the user failed to associa
 $string['privacy:metadata:lastsuccess'] = 'The last time the user succcessfully associated a specific Poodll Wordcards word correctly.';
 $string['privacy:metadata:failcount'] = 'The total number of times the user failed to associate a specific Poodll Wordcards word correctly.';
 $string['privacy:metadata:successcount'] = 'The total number of times the user successfully associated a specific Poodll Wordcards word correctly.';
+$string['privacy:metadata:deflangpref'] = 'The users selected definitions language for Poodll WordCards (probably their native language).';
 
 
 // $string['reviewactivityfinished'] = 'You finished the review session in {$a->seconds} seconds.';

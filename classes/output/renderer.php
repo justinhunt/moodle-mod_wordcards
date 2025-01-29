@@ -665,6 +665,14 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     * Return HTML to embed a minilesson
+     */
+    public function embed_nativelangchooser($cmid, $token) {
+        global $DB;
+        return $this->language_chooser();
+    }
+
+    /**
      * Return HTML to display message about problem
      */
     public function show_problembox($msg) {

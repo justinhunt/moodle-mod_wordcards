@@ -107,7 +107,7 @@ class provider implements
             'timemoodified' => 'privacy:metadata:timemodified',
         ];
         $collection->add_database_table(constants::M_MYWORDSTABLE , $details, 'privacy:metadata:mywordstable');
-
+        $collection->add_user_preference('wordcards_deflang', 'privacy:metadata:deflangpref');
         return $collection;
     }
 
@@ -326,7 +326,29 @@ class provider implements
         helper::export_context_files($context, $user);
     }
 
-     /**
+    /**
+     * Stores the user preferences related to mod_wordcards.
+     *
+     * @param  int $userid The user ID that we want the preferences for.
+     */
+    public static function export_user_preferences(int $userid) {
+        $context = \context_system::instance();
+        $preferences = [
+            'wordcards_deflang' => ['string' => get_string('privacy:metadata:deflangpref', constants::M_COMPONENT), 'bool' => false],
+        ];
+        foreach ($preferences as $key => $preference) {
+            $value = get_user_preferences($key, null, $userid);
+            if ($preference['bool'] && $value !== null) {
+                $value = $value ? 'yes' : 'no';
+            }
+            if (isset($value)) {
+                writer::with_context($context)->export_user_preference(constants::M_COMPONENT, $key, $value, $preference['string']);
+            }
+        }
+    }
+
+
+    /**
       * Export the supplied personal data for a single wordcards attempt along with any generic data or area files.
       *
       * @param array $attemptdata the personal data to export
