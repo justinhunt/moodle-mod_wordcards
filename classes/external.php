@@ -501,4 +501,31 @@ class mod_wordcards_external extends external_api {
         return new external_value(PARAM_BOOL);
     }
 
+    public static function set_user_preference_parameters() {
+        return new external_function_parameters([
+            'name' => new external_value(PARAM_TEXT, 'The user preference name'),
+            'value' => new external_value(PARAM_TEXT, 'The user preference value'),
+        ]);
+    }
+
+    public static function set_user_preference($name, $value) {
+
+        //set the user preference
+        switch($name){
+            case 'wordcards_deflang':
+                if (empty($value)) {
+                    unset_user_preference($name);
+                } else {
+                    set_user_preference($name, $value);
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static function set_user_preference_returns() {
+        return new external_value(PARAM_BOOL);
+    }
+
 }

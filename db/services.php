@@ -94,4 +94,13 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+
+    'mod_wordcards_set_user_preference' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'set_user_preference',
+        'description' => 'Sets a wordcards user preference',
+        'capabilities'=> 'mod/wordcards:view',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
 );

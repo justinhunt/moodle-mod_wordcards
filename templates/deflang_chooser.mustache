@@ -4,7 +4,7 @@
 </div>
 {{^element.frozen}}
     {{#js}}
-        require(['jquery','core/log','core_user/repository','core/notification'],function($,log,repository,notification) {
+        require(['jquery','core/log','core/ajax','core/notification'],function($,log,ajax,notification) {
             //get controls
             var defbtn = $("#{{uniqid}}_setpref");
             var defselect = $("#wordcards_chooser_cont_{{uniqid}} select");
@@ -14,14 +14,20 @@
              var pref = defselect.val();
              if(pref==='{{activitydefault}}' || pref===''){
                 //clear the preference
-                repository.setUserPreference('wordcards_deflang')
-                    .then(function(ret){window.location.reload();})
-                    .catch(notification.exception)
-             }else{
-                repository.setUserPreference('wordcards_deflang',pref)
-                    .then(function(ret){window.location.reload();})
-                    .catch(notification.exception)
+                pref = '';
              }
+            ajax.call([{
+                    methodname: 'mod_wordcards_set_user_preference',
+                    args: {
+                        name: 'wordcards_deflang',
+                        value: pref
+                    }
+                }])[0].done(function(response) {
+                    window.location.reload();
+                }).fail(function() {
+                    log.debug('user preference could not be set');
+                    window.location.reload();
+                })
            });
         });
     {{/js}}

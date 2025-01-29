@@ -638,10 +638,6 @@ class renderer extends \plugin_renderer_base {
     public function language_chooser($activitydefinitionslanguage) {
         global $CFG;
 
-        // if we are not M4.3 or greater the ajax wont work, so dont show it
-        if($CFG->version < 2023100900){return '';
-        }
-
         // get selected definitions language
         $selected = $activitydefinitionslanguage;
         $userprefdeflanguage = get_user_preferences('wordcards_deflang');
