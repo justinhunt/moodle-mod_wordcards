@@ -665,7 +665,8 @@ class renderer extends \plugin_renderer_base {
      */
     public function embed_nativelangchooser($cmid, $token) {
         global $DB;
-        return $this->language_chooser();
+        $currentlang = get_user_preferences('wordcards_deflang');
+        return $this->language_chooser($currentlang);
     }
 
     /**
