@@ -164,11 +164,14 @@ class mod_wordcards_table_terms extends table_sql {
         $actions[] = $ajaxeditlink;
 
         // ajax action - imagegen
-        $ajaximagegenlink = $OUTPUT->action_link('#', '', null, ['data-id' => $row->id, 'data-type' => "imagegen", 'class' => "mod_wordcards_item_row_imagegenlink"], new pix_icon('sparkles-image',
-                get_string('imagegen', 'mod_wordcards', $row->term), 'tiny_aiplacement'));
-        $actions[] = $ajaximagegenlink;
+        if (utils::is_ai_placement_action_available($this->mod->get_context(), 'generate_wordcards_image', \core_ai\aiactions\generate_image::class)) {
+            $ajaximagegenlink = $OUTPUT->action_link('#', '', null, ['data-id' => $row->id, 'data-type' => "imagegen",
+            'class' => "mod_wordcards_item_row_imagegenlink"], new pix_icon('t/life-ring',
+                    get_string('imagegen', 'mod_wordcards', $row->term)));
+            $actions[] = $ajaximagegenlink;
+        }
 
-        //ajac action - delete
+        // Ajax action - delete.
         $action = new confirm_action(get_string('reallydeleteterm', 'mod_wordcards', $row->term));
         $url = new moodle_url($this->baseurl);
         $url->params(['action' => 'delete', 'termid' => $row->id, 'sesskey' => sesskey()]);

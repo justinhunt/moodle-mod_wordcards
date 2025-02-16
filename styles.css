@@ -2222,12 +2222,13 @@ button.definitions-next.btn .fa-arrow-right:before {
 .mod-wordcards-imagemaker-fa-image {
     height: 100%;
     width: 100%;
-    background-image: url('[[pix:mod_wordcards|sparkles-image]]');
+   /* background-image: url('[[pix:mod_wordcards|sparkles-image]]'); */
     background-repeat: no-repeat;
     background-position: center;
     background-color: rgba(255, 255, 255, 0.5);
     background-blend-mode: lighten;
     background-size: 100px 100px;
+    
 }
 
 .mod-wordcards-imagemaker-toggle-container {
@@ -2327,4 +2328,13 @@ button.definitions-next.btn .fa-arrow-right:before {
 }
 .mod_wordcards_form_imagegen .col-form-label {
     max-width: 10px;
+}
+
+.mod_wordcards_imagegen_btn {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.mod_wordcards_imagemaker_term {
+    text-decoration: underline;
 }

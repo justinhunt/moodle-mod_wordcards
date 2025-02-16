@@ -1980,6 +1980,33 @@ class utils {
         return $glossarylist;
     }
 
+    /**
+     * Check if AI Placement HTML editor action is available for the context.
+     *
+     * @param \context $context The context.
+     * @param string $actionname The name of the action.
+     * @param string $actionclass The class name of the action.
+     * @return bool True if the action is available, false otherwise.
+     */
+    public static function is_ai_placement_action_available( $context, $actionname, $actionclass) {
+        if(!class_exists('\core_ai\manager')){
+            return false;
+        }
+        [$plugintype, $pluginname] = explode('_', \core_component::normalize_componentname('aiplacement_poodll'), 2);
+        $manager = \core_plugin_manager::resolve_plugininfo_class($plugintype);
+
+        if ($manager::is_plugin_enabled($pluginname)) {
+            if (
+                has_capability("aiplacement/poodll:{$actionname}", $context)
+                && \core_ai\manager::is_action_available($actionclass)
+                && \core_ai\manager::is_action_enabled('aiplacement_poodll', $actionclass)
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function super_trim($str){
         if($str==null){
             return '';
