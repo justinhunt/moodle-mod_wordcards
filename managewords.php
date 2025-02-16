@@ -28,7 +28,8 @@ $modid = $mod->get_id();
 $pagetitle = format_string($mod->get_mod()->name, true, $course->id);
 $pagetitle .= ': ' . get_string('managewords', 'mod_wordcards');
 $baseurl = new moodle_url('/mod/wordcards/managewords.php', ['id' => $cmid]);
-$formurl = new moodle_url($baseurl);
+$termformurl = new moodle_url($baseurl);
+$imagegenformurl = new moodle_url($baseurl);
 $term = null;
 
 $PAGE->set_url($baseurl);
@@ -43,6 +44,9 @@ if($config->enablesetuptab){
 }else{
     $PAGE->set_pagelayout('incourse');
 }
+//get filemanager options
+$audiooptions = utils::fetch_filemanager_opts('audio');
+$imageoptions = utils::fetch_filemanager_opts('image');
 
 $output = $PAGE->get_renderer('mod_wordcards');
 
@@ -55,10 +59,11 @@ if ($action == 'delete') {
 
 } else if ($action == 'edit') {
     // Adding those parameters ensures that we confirm that the term belongs to the right module after submission.
-    $formurl->param('action', 'edit');
-    $formurl->param('termid', 'termid');
+    $termformurl->param('action', 'edit');
+    $termformurl->param('termid', 'termid');
     $term = $DB->get_record(constants::M_TERMSTABLE, ['modid' => $modid, 'id' => $termid], '*', MUST_EXIST);
-}else if($action =='export') {
+
+} else if ($action =='export') {
     utils::export_terms_to_csv($modid);
     exit;
 } else if ($action == 'bulkdelete') {
@@ -71,25 +76,51 @@ if ($action == 'delete') {
     redirect($baseurl);
 }
 
-$form = new mod_wordcards_form_term($formurl->out(false), ['termid' => $term ? $term->id : 0,'ttslanguage'=>$mod->get_mod()->ttslanguage]);
+$imagegenform = new mod_wordcards_form_imagegen($imagegenformurl->out(false),
+['termid' => $term ? $term->id : 0, 'imagemaker' => '']);
+if ($imagegendata = $imagegenform->get_data() && !empty($data['draftfileurl'])) {
+    $options = (array)$imageoptions;
+    if (!isset($options['subdirs'])) {
+        $options['subdirs'] = false;
+    }
+    if (!isset($options['maxfiles'])) {
+        $options['maxfiles'] = -1; // unlimited
+    }
+    if (!isset($options['maxbytes'])) {
+        $options['maxbytes'] = 0; // unlimited
+    }
+    require_once($CFG->dirroot . '/repository/lib.php');
+    // Parse the URL to get the draft filearea id and filename
+    $parsedurl = parse_url($data['draftfileurl']);
+    $path = $parsedurl['path'];
+
+    // Extract the filename from the path
+    $filename = basename($path);
+    $draftitemid = basename(dirname($path));
+
+    file_save_draft_area_files( $draftitemid, $context->id, constants::M_COMPONENT, 'image', $data['termid'], $options);
+    $DB->update_record('wordcards_terms', ['id' => $data->termid, 'image' => 1]);;
+    redirect($PAGE->url);
+}
+
+$termform = new mod_wordcards_form_term($termformurl->out(false),
+['termid' => $term ? $term->id : 0, 'ttslanguage' => $mod->get_mod()->ttslanguage]);
 
 if (!$term) {
     $term = new stdClass();
-    $term->id=null;
+    $term->id = null;
 }
 
 //prepare filemanager
-$audiooptions= utils::fetch_filemanager_opts('audio');
-$imageoptions= utils::fetch_filemanager_opts('image');
 file_prepare_standard_filemanager($term, 'audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'audio', $term->id);
 file_prepare_standard_filemanager($term, 'image', $imageoptions, $modulecontext, constants::M_COMPONENT, 'image', $term->id);
 file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $modulecontext, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
 
 
 //set data to form
-$form->set_data($term);
+$termform->set_data($term);
 
-if ($data = $form->get_data()) {
+if ($data = $termform->get_data()) {
 
     //if this new add and collect data->id
     $needsupdating = false;

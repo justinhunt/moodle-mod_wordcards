@@ -1,0 +1,78 @@
+<div id="{{uniqid}}_wc_imagemaker_blur">
+        <div id="{{uniqid}}_"wc_imagemaker_overlay" class="mod-wordcards-imagemaker-overlay hidden"></div>
+        <div class="row">
+            <div class="col-xl-6 col-lg-5">
+                {{> mod_wordcards/imagemakercontrols }}
+            </div>
+            <div class="col-xl-6 col-lg-7">
+                <div id="{{uniqid}}_wc_imagemaker-imagecontainer" class="mod-wordcards-imagemaker-imagecontainer text-center mt-3 mt-lg-0">
+                    <div id="{{uniqid}}_wc-imagemaker-fa-image" class="mod-wordcards-imagemaker-fa-image" {{#imageurl}}style="display: none"{{/imageurl}}> <i class="fa fa-image fa-5x fa-fw"></i></div>
+                    <div id="{{uniqid}}_image_display_container" class="mod-wordcards-imagemaker-image-display-container">
+                        {{#imageurl}}
+                            <img id="{{uniqid}}_wordcards_generated_image" alt="{{model_sentence}}" src="{{{imageurl}}}" class="img-fluid mw-100">
+                        {{/imageurl}}
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<button type="button" data-contextid="{{contextid}}" id="{{uniqid}}_generatebutton" class="btn btn-secondary" >{{#str}} imagegen, mod_wordcards {{/str}}</button>
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery','core/log','core/templates','core/ajax'],function($,log,templates, ajax) {
+        
+        var btn = $('#{{uniqid}}_generatebutton');
+        var spinner = $('#{{uniqid}}_wc-imagemaker-fa-image');
+        var spinneri = $('#{{uniqid}}_wc-imagemaker-fa-image i');
+        var imagecont = $('#{{uniqid}}_image_display_container');
+        var promptbox = $('#{{uniqid}}_mod_wordcards_imageprompt');
+        var draftfileurlfield = $("input[name='draftfileurl']");
+
+        btn.on('click',async function(e){
+            log.debug('clicked');
+            var prompttext= promptbox.val();
+            if(prompttext.trim()==''){return;}
+            var aspectratio = 'square';
+            var quality = 'standard';//hd,standard
+            var numimages=1;
+            var style= 'natural';//natural,vivid
+            
+
+            var imageargs = {
+                'contextid': $(this).data('contextid'),
+                'prompttext': prompttext,
+                'aspectratio': aspectratio,
+                'quality': quality,
+                'numimages': numimages,
+                'style': style,
+            };
+            var request = {
+                methodname: 'aiplacement_wordcards_generate_image',
+                args: imageargs
+            };
+
+            try {
+                spinneri.addClass('fa-pulse');
+                spinner.show();
+                var responseObj = await ajax.call([request])[0];
+                spinner.hide();
+                 log.debug(responseObj);
+                if (responseObj.error) {
+                    log.debug(responseObj.error);
+                } else {
+                    draftfileurlfield.val(responseObj.drafturl);
+                    // Render the image template and insert it into the modal.
+                    imagecont[0].innerHTML = await templates.render('mod_wordcards/aiimage', {
+                        url: responseObj.drafturl,
+                        elementid: 'worcards12345',
+                        alt: prompttext,
+                    });
+
+                }
+            } catch (error) {
+                log.debug(error);
+            }
+        });
+        });//end of require
+    {{/js}}
+{{/element.frozen}}

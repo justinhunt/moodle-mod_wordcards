@@ -266,12 +266,47 @@ class mod_wordcards_external extends external_api {
         $attributes = null;
         $editable = true;
 
+        //get the mform for imagegen
+        $imagegenform = new mod_wordcards_form_imagegen(null,
+        ['termid' => $data['termid'] ? $data['termid'] : 0, 'imagemaker' => ''],
+        $method, $target, $attributes, $editable, $data);
+
+        if ($imagegendata = $imagegenform->get_data() && !empty($data['draftfileurl'])) {
+            $options = (array)$imageoptions;
+            if (!isset($options['subdirs'])) {
+                $options['subdirs'] = false;
+            }
+            if (!isset($options['maxfiles'])) {
+                $options['maxfiles'] = -1; // unlimited
+            }
+            if (!isset($options['maxbytes'])) {
+                $options['maxbytes'] = 0; // unlimited
+            }
+            require_once($CFG->dirroot . '/repository/lib.php');
+            // Parse the URL to get the draft filearea id and filename
+            $parsedurl = parse_url($data['draftfileurl']);
+            $path = $parsedurl['path'];
+
+            // Extract the filename from the path
+            $filename = basename($path);
+            $draftitemid = basename(dirname($path));
+
+            file_save_draft_area_files( $draftitemid, $context->id, constants::M_COMPONENT, 'image', $data['termid'], $options);
+            $response = $DB->update_record('wordcards_terms', ['id' => $data['termid'], 'image' => 1]);;
+            if(!$response){
+                $ret->error = true;
+                // $ret->message = $ret->message;
+            } else {
+                $ret->itemid = $data['termid'];
+                $ret->error = false;
+            }
+        }
+
         // get the mform for our term
         $mform = new \mod_wordcards_form_term(null,
                 ['termid' => $data['termid'] ? $data['termid'] : 0, 'ttslanguage' => $moduleinstance->ttslanguage],
                         $method, $target, $attributes, $editable, $data
                 );
-        // $mform = new \mod_wordcards_form_term(null, $data);
 
         $validateddata = $mform->get_data();
         if ($validateddata) {
@@ -362,9 +397,9 @@ class mod_wordcards_external extends external_api {
                 }
             }
 
-            if($ret->error == true){
+            if ($ret->error == true) {
                 // $ret->message = $ret->message;
-            }else{
+            } else {
                 $theitem = $data;
                 $ret->itemid = $theitem->id;
                 $ret->error = false;

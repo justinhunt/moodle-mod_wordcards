@@ -2161,3 +2161,170 @@ button.definitions-next.btn .fa-arrow-right:before {
     line-height: 1.2;
     padding-left: 5px;
 }
+/* WordCards Image Maker */
+.mod-wordcards-imagemaker-overlay {
+    position: absolute;
+    background: rgba(255, 255, 255, 1);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.mod-wordcards-imagemaker-blur {
+    filter: blur(4px);
+}
+
+.mod-wordcards-imagemaker-loading-spinner-container {
+    min-height: 300px;
+}
+
+.mod-wordcards-imagemaker-loading-spinner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mod-wordcards-imagemaker-spinner-style {
+    width: 3rem !important; /* stylelint-disable-line declaration-no-important */
+    height: 3rem !important; /* stylelint-disable-line declaration-no-important */
+    color: #0f6cbf;
+    z-index: 1000;
+}
+
+.mod-wordcards-imagemaker-spinner-text-style {
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 1000;
+}
+
+.mod-wordcards-generate-image {
+    border-radius: 15px;
+    border: 2px dashed #bbb;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 150px;
+    margin-left: 0;
+    margin-top: 0;
+}
+
+
+.mod-wordcards-imagemaker-fa-image {
+    height: 100%;
+    width: 100%;
+    background-image: url('[[pix:mod_wordcards|sparkles-image]]');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-blend-mode: lighten;
+    background-size: 100px 100px;
+}
+
+.mod-wordcards-imagemaker-toggle-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mod-wordcards-imagemaker-toggle-switch {
+    display: none;
+}
+.mod-wordcards-imagemaker-toggle-slider {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 34px;
+    padding: 2px;
+    border: 1px solid #aaa;
+}
+.mod-wordcards-imagemaker-toggle-slider span {
+    width: 50%;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 34px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+.mod-wordcards-imagemaker-toggle-switch:checked + .mod-wordcards-imagemaker-toggle-slider .mod-wordcards-imagemaker-slider-right {
+    background-color: #007bff;
+    color: white;
+}
+.mod-wordcards-imagemaker-toggle-switch:not(:checked) + .mod-wordcards-imagemaker-toggle-slider .mod-wordcards-imagemaker-slider-left {
+    background-color: #007bff;
+    color: white;
+}
+
+.mod-wordcards-imagemaker-aspect-ratio-container {
+    display: flex;
+}
+.mod-wordcards-imagemaker-aspect-ratio-btn {
+    position: relative;
+    width: 100px;
+    height: 75px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+.mod-wordcards-imagemaker-aspect-ratio-btn i {
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+.mod-wordcards-imagemaker-aspect-ratio-btn span {
+    font-size: 14px;
+}
+.mod-wordcards-imagemaker-aspect-ratio-btn input[type="radio"] {
+    display: none;
+}
+.mod-wordcards-imagemaker-aspect-ratio-btn input[type="radio"]:checked + .mod-wordcards-imagemaker-aspect-ratio-label {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+.mod-wordcards-imagemaker-aspect-ratio-label {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    transition: background-color 0.3s, border-color 0.3s;
+    border: 1px solid #aaa;
+}
+
+.mod-wordcards-imagemaker-image-display-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.mod-wordcards-imagemaker-image-display-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.mod_wordcards_form_imagegen .col-form-label {
+    max-width: 10px;
+}

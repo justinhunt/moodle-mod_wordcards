@@ -565,6 +565,7 @@ function wordcards_output_fragment_mform($args) {
     $args = (object) $args;
     $context = $args->context;
     $formname = $args->formname;
+    $type = $args->type;
     $mform = null;
     $o = '';
 
@@ -592,8 +593,45 @@ function wordcards_output_fragment_mform($args) {
     file_prepare_standard_filemanager($term, 'image', $imageoptions, $context, constants::M_COMPONENT, 'image', $term->id);
     file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $context, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
 
-    $theform = new mod_wordcards_form_term(null, ['termid' => $term ? $term->id : 0,'ttslanguage' => $moduleinstance->ttslanguage], null, null, array('class'=>'mod_wordcards_form_term'));
-    $theform->set_data($term);
+    switch($type){
+        case 'edit':
+            $theform = new mod_wordcards_form_term(null, ['termid' => $term ? $term->id : 0,'ttslanguage' => $moduleinstance->ttslanguage], null, null, array('class'=>'mod_wordcards_form_term'));
+            $theform->set_data($term);
+            break;
+        case 'imagegen':
+
+            $renderer = $renderer = $PAGE->get_renderer('mod_wordcards');
+            $params = ['contextid' => $context->id, 'termid' => 0, 'image' => 0, 'model_sentence' => '', 'term' => '', 'definition' => ''];
+            if ($term) {
+                $options = (array)$imageoptions;
+                if (!isset($options['subdirs'])) {
+                    $options['subdirs'] = false;
+                }
+                if (is_null($term) || is_null($context)) {
+                    $itemid = null;
+                    $contextid = null;
+                } else {
+                    $contextid = $context->id;
+                }
+
+                if ($term->image) {
+                    $cachebuster = '?cb=' . \html_writer::random_id();
+                    $params['imageurl'] = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/image/$term->id" . $cachebuster;
+                } else {
+                    $params['imageurl'] = false;
+                }
+                $params['termid'] = $term->id;
+                $params['model_sentence'] = $term->model_sentence;
+                $params['term'] = $term->term;
+                $params['definition'] = $term->definition;
+            }
+            $imagemaker = $renderer->render_from_template('mod_wordcards/imagemaker', $params);
+            $theform = new mod_wordcards_form_imagegen(null,
+            ['termid' => $params['termid'], 'imagemaker' => $imagemaker], 
+            null, null, array('class' => 'mod_wordcards_form_imagegen'));
+            $theform->set_data($term);
+            break;
+    }
 
     if (!empty($theform)) {
         ob_start();

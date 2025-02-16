@@ -568,4 +568,17 @@ $string['instructions_wordpreview'] = 'Select the words that you already know fr
 $string['selectedwordstest'] = 'We will test you on the words that you selected. If you know them, then we will mark them as "learned." OK?';
 $string['nowordsselected'] = 'Continue on to practice words the words you don\'t know?';
 $string['selfselect-selected'] = 'I know this word already';
+$string['imagegen'] = 'Make Image';
+$string['imageprompt_label'] = 'Describe the image you want AI to create';
+$string['imageprompt_placeholder'] = 'Try \'Mountain landscape\'';
+$string['imagequality'] = 'Image quality';
+$string['imagestyle'] = 'Image style';
+$string['aspectlandscape'] = 'Landscape';
+$string['aspectportrait'] = 'Portrait';
+$string['aspectratio'] = 'Image shape';
+$string['aspectsquare'] = 'Square';
+$string['back'] = 'Go back';
+$string['buttontitle'] = 'tester';
+$string['definitionhigh'] = 'High';
+$string['definitionstandard'] = 'Standard';
 

@@ -67,6 +67,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                 e.preventDefault();
 
                 dd.itemid=$(this).data('id');
+                dd.type=$(this).data('type');
 
                 ModalFactory.create({
                     type: ModalFactory.types.SAVE_CANCEL,
@@ -116,7 +117,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                 formdata = {};
             }
             // Get the content of the modal.
-            var params = {jsonformdata: JSON.stringify(formdata), itemid: this.itemid};
+            var params = {jsonformdata: JSON.stringify(formdata), itemid: this.itemid, type: this.type};
             return Fragment.loadFragment('mod_wordcards', 'mform', this.contextid, params);
 
         };
