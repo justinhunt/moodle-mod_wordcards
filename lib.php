@@ -519,6 +519,16 @@ function wordcards_get_user_grades($moduleinstance, $userid=0) {
 }
 
 /**
+ * Whether the activity is branded.
+ * This information is used, for instance, to decide if a filter should be applied to the icon or not.
+ *
+ * @return bool True if the activity is branded, false otherwise.
+ */
+function wordcards_is_branded(){
+    return true;
+}
+
+/**
  * Is a given scale used by the instance of wordcards?
  *
  * This function returns if a scale is being used by one wordcards
