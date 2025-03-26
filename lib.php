@@ -574,7 +574,6 @@ function wordcards_output_fragment_mform($args) {
 
     $args = (object) $args;
     $context = $args->context;
-    $formname = $args->formname;
     $type = $args->type;
     $mform = null;
     $o = '';
@@ -604,12 +603,12 @@ function wordcards_output_fragment_mform($args) {
     file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $context, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
 
     switch($type){
+        case 'add':
         case 'edit':
             $theform = new mod_wordcards_form_term(null, ['termid' => $term ? $term->id : 0,'ttslanguage' => $moduleinstance->ttslanguage], null, null, array('class'=>'mod_wordcards_form_term'));
             $theform->set_data($term);
             break;
         case 'imagegen':
-
             $renderer = $renderer = $PAGE->get_renderer('mod_wordcards');
             $params = ['contextid' => $context->id, 'termid' => 0, 'image' => 0, 'model_sentence' => '', 'term' => '', 'definition' => ''];
             if ($term) {
