@@ -1,3 +1,9 @@
+1.3.74 (Build 2025040400)
+- Added AI image generator. You need to install the Poodll AI placement plugin for this to work. https://github.com/justinhunt/moodle-aiplacement_poodll
+- Fixed for failing add_word button on words admin page
+- Added is_branded callback so the activity icon is no longer a pink smudge
+- Improvements to lang chooser feature
+
 1.3.73 (Build 2025012500)
 - added word preview mode
 
