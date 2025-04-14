@@ -29,6 +29,7 @@ class constants {
 
     // component name, db tables, things that define app
     const M_COMPONENT = 'mod_wordcards';
+    const M_DEFAULT_CLOUDPOODLL = 'cloud.poodll.com';
     const M_MODNAME = 'wordcards';
     const M_URL = '/mod/wordcards';
     const M_CLASS = 'mod_wordcards';
@@ -44,10 +45,6 @@ class constants {
 
     const M_PLUGINSETTINGS = '/admin/settings.php?section=modsettingwordcards';
     const M_DEFLANG_OTHER = 'zz';
-//    const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
-//     const CLOUDPOODLL = 'http://localhost:8044';
-    const CLOUDPOODLL = 'https://cloud.poodll.com';
-
     const M_FRONTFACEFLIP_DEF = 0;
     const M_FRONTFACEFLIP_TERM = 1;
 

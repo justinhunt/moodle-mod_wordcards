@@ -79,6 +79,12 @@ if ($ADMIN->fulltree) {
     $regions = utils::get_region_options();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion', get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
 
+    // Cloud Poodll Server.
+    $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/cloudpoodllserver',
+    get_string('cloudpoodllserver', constants::M_COMPONENT),
+        get_string('cloudpoodllserver_details', constants::M_COMPONENT),
+        constants::M_DEFAULT_CLOUDPOODLL, PARAM_URL));
+    
     $modes = utils::get_journeymode_options();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/journeymode', get_string('journeymode', constants::M_COMPONENT), '', constants::MODE_STEPSTHENFREE, $modes));
 

@@ -42,8 +42,8 @@ define([
       app.process(matchingdata);
 
       a4e.register_events();
-      a4e.init_audio(props.token,props.region,props.owner);
-      polly.init(props.token, props.region, props.owner);
+      a4e.init_audio(props.token,props.region,props.owner, props.cloudpoodllurl);
+      polly.init(props.token, props.region, props.owner, props.cloudpoodllurl);
       app.ttslanguage = props.ttslanguage;
 
       this.register_events();

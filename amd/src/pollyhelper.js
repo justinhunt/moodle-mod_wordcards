@@ -10,11 +10,13 @@ define(['jquery', 'core/log'], function ($, log) {
         token:  '',
         region: '',
         owner: '',
+        cloudpoodllurl: '',
 
-        init: function(token, region, owner){
+        init: function(token, region, owner, cloudpoodllurl){
             this.token =token;
             this.region=region;
             this.owner=owner;
+            this.cloudpoodllurl = cloudpoodllurl;
         },
 
         fetch_polly_url: function(speaktext,texttype, voice) {
@@ -71,7 +73,7 @@ define(['jquery', 'core/log'], function ($, log) {
                 + '&owner=' + this.owner
                 + '&region=' + this.region;
 
-                var serverurl = 'https://cloud.poodll.com' + "/webservice/rest/server.php";
+                var serverurl = that.cloudpoodllurl + "/webservice/rest/server.php";
                 xhr.open("POST", serverurl, true);
                 xhr.setRequestHeader("Cache-Control", "no-cache");
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

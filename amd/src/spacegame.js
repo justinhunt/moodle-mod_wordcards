@@ -1700,7 +1700,7 @@ define(['jquery', 'core/notification', 'mod_wordcards/a4e', 'core/log', 'core/te
         this.process(this.definitions);
 
         a4e.register_events();
-        a4e.init_audio(props.token,props.region,props.owner);
+        a4e.init_audio(props.token, props.region, props.owner, props.cloudpoodllurl);
 
         //register the wordcards events
         this.registerWordcardsEvents();
