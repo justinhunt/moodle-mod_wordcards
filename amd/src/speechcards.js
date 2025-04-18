@@ -11,11 +11,10 @@ define([
   'core/ajax',
   'core/log',
   'mod_wordcards/a4e',
-  'mod_wordcards/cloudpoodllloader',
   'mod_wordcards/ttrecorder',
   'core/templates',
   'mod_wordcards/animatecss',
-], function($, Ajax, log, a4e, cloudpoodll, ttrecorder, templates, anim) {
+], function($, Ajax, log, a4e, ttrecorder, templates, anim) {
 
   var app = {
     passmark: 75,
@@ -59,7 +58,7 @@ define([
 
 
       a4e.register_events();
-      a4e.init_audio(props.token,props.region,props.owner);
+      a4e.init_audio(props.token, props.region, props.owner, props.cloudpoodllurl);
 
       this.init_controls();
       this.register_events();

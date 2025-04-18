@@ -24,12 +24,12 @@ define([
       log.debug("register_events within a4e.js");
     },
 
-    init_audio: function(token, region, owner){
+    init_audio: function(token, region, owner, cloudpoodllurl){
 
       log.debug("a4e.js: initializing audio ");
 
         //Init Polly TTS
-        polly.init(token, region, owner);
+        polly.init(token, region, owner, cloudpoodllurl);
 
         //play what was returned in polly.fetch_polly_url (callback)
         polly.onnewpollyurl = function(theurl) {

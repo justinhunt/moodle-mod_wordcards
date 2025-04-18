@@ -56,7 +56,7 @@ define([
       app.process(appdata);
 
       a4e.register_events();
-      a4e.init_audio(props.token,props.region,props.owner);
+      a4e.init_audio(props.token, props.region, props.owner, props.cloudpoodllurl);
 
       this.register_events();
     },

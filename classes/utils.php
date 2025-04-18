@@ -38,13 +38,23 @@ use mod_wordcards\constants;
  */
 class utils {
 
-    //are we willing and able to transcribe submissions?
+    // Get the Cloud Poodll Server URL
+    public static function get_cloud_poodll_server() {
+        $conf = get_config(constants::M_COMPONENT);
+        if (isset($conf->cloudpoodllserver) && !empty($conf->cloudpoodllserver)) {
+            return 'https://' . $conf->cloudpoodllserver;
+        } else {
+            return 'https://' . constants::M_DEFAULT_CLOUDPOODLL;
+        }
+    }
+
+    // are we willing and able to transcribe submissions?
     public static function can_transcribe($instance) {
-        //we default to true
-        //but it only takes one no ....
+        // we default to true
+        // but it only takes one no ....
         $ret = true;
 
-        //The regions that can transcribe
+        // The regions that can transcribe
         switch($instance->region){
             default:
                 $ret = true;
@@ -57,7 +67,7 @@ class utils {
         return $ret;
     }
 
-    //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
+    // convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
     public static function convert_to_phonetic($phrase, $language) {
 
         switch($language){
@@ -72,7 +82,7 @@ class utils {
                     $nodes = $mecab->parseToNode($phrase);
                     $katakanaarray = [];
                     foreach ($nodes as $n) {
-                        $f =  $n->getFeature();
+                        $f = $n->getFeature();
                         $reading = explode(',', $f)[8];
                         if ($reading != '*') {
                             $katakanaarray[] = $reading;
@@ -87,67 +97,69 @@ class utils {
         return $phonetic;
     }
 
-    public static function update_stepgrade($modid,$correct){
-        global $DB,$USER;
+    public static function update_stepgrade($modid, $correct) {
+        global $DB, $USER;
         $mod = \mod_wordcards_module::get_by_modid($modid);
-        $records = $DB->get_records(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id],'timecreated DESC');
+        $records = $DB->get_records(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id], 'timecreated DESC');
 
-        if (!$records) {return false;}
+        if (!$records) {return false;
+        }
         $record = array_shift($records);
-        if (!$record) {return false;}
+        if (!$record) {return false;
+        }
 
-        $field=false;
-        $termcount=0;
+        $field = false;
+        $termcount = 0;
         switch($record->state){
             case \mod_wordcards_module::STATE_STEP1:
-                $termcount=$mod->get_mod()->step1termcount;
+                $termcount = $mod->get_mod()->step1termcount;
                 $field = 'grade1';
                 break;
             case \mod_wordcards_module::STATE_STEP2:
-                $termcount=$mod->get_mod()->step2termcount;
+                $termcount = $mod->get_mod()->step2termcount;
                 $field = 'grade2';
                 break;
             case \mod_wordcards_module::STATE_STEP3:
-                $termcount=$mod->get_mod()->step3termcount;
+                $termcount = $mod->get_mod()->step3termcount;
                 $field = 'grade3';
                 break;
             case \mod_wordcards_module::STATE_STEP4:
-                $termcount=$mod->get_mod()->step4termcount;
+                $termcount = $mod->get_mod()->step4termcount;
                 $field = 'grade4';
                 break;
             case \mod_wordcards_module::STATE_STEP5:
-                $termcount=$mod->get_mod()->step5termcount;
+                $termcount = $mod->get_mod()->step5termcount;
                 $field = 'grade5';
                 break;
             case \mod_wordcards_module::STATE_END:
             case \mod_wordcards_module::STATE_TERMS:
             default:
-                //do nothing
+                // do nothing
                 break;
         }
-        if($field && $termcount && ($termcount>=$correct)){
-            $grade = ROUND(($correct / $termcount) * 100, 0);
-            $DB->set_field(constants::M_ATTEMPTSTABLE,$field,$grade,array('id'=>$record->id));
+        if($field && $termcount && ($termcount >= $correct)){
+            $grade = round(($correct / $termcount) * 100, 0);
+            $DB->set_field(constants::M_ATTEMPTSTABLE, $field, $grade, ['id' => $record->id]);
         }
 
         return true;
     }
 
-    //recalculate all final grades
-    public static function recalculate_final_grades($moduleinstance){
+    // recalculate all final grades
+    public static function recalculate_final_grades($moduleinstance) {
         global $DB;
 
         $records = $DB->get_records(constants::M_ATTEMPTSTABLE, ['modid' => $moduleinstance->id]);
         foreach($records as $record){
-            self::update_finalgrade($moduleinstance->id,$record->userid);
+            self::update_finalgrade($moduleinstance->id, $record->userid);
         }
     }
 
-    //calc and update final grade of a single user
-    public static function update_finalgrade($modid, $userid=0){
-        global $DB,$USER;
+    // calc and update final grade of a single user
+    public static function update_finalgrade($modid, $userid=0) {
+        global $DB, $USER;
 
-        //if we arrive off the finished page, we are just grading, not regrading..
+        // if we arrive off the finished page, we are just grading, not regrading..
         if($userid == 0){
             $userid = $USER->id;
             $regrading = false;
@@ -157,18 +169,19 @@ class utils {
 
         $mod = \mod_wordcards_module::get_by_modid($modid);
         $moduleinstance = $mod->get_mod();
-        $updateusergradebook = false; //post new grades to gradebook, set to true if find something gradeable
+        $updateusergradebook = false; // post new grades to gradebook, set to true if find something gradeable
 
-        $states = array(\mod_wordcards_module::STATE_STEP1, \mod_wordcards_module::STATE_STEP2, \mod_wordcards_module::STATE_STEP3,
-            \mod_wordcards_module::STATE_STEP4, \mod_wordcards_module::STATE_STEP5);
+        $states = [\mod_wordcards_module::STATE_STEP1, \mod_wordcards_module::STATE_STEP2, \mod_wordcards_module::STATE_STEP3,
+            \mod_wordcards_module::STATE_STEP4, \mod_wordcards_module::STATE_STEP5];
 
         $records = $DB->get_records(constants::M_ATTEMPTSTABLE,
-            ['modid' => $modid, 'userid' => $userid, 'state'=>\mod_wordcards_module::STATE_END]);
+            ['modid' => $modid, 'userid' => $userid, 'state' => \mod_wordcards_module::STATE_END]);
 
-        if (!$records) {return false;}
+        if (!$records) {return false;
+        }
         foreach($records as $record) {
 
-            ///dont redo grading unless that is what we are ding (ie from recalculate final grades)
+            // dont redo grading unless that is what we are ding (ie from recalculate final grades)
             if ($record->totalgrade > 0 && $regrading == false) {
                 continue;
             }
@@ -176,7 +189,7 @@ class utils {
             $totalgrade = 0;
             $totalsteps = 0;
             foreach ($states as $state) {
-                //if we have a practice type for the step and it has terms, then tally the grade
+                // if we have a practice type for the step and it has terms, then tally the grade
                 if ($moduleinstance->{$state} != \mod_wordcards_module::PRACTICETYPE_NONE) {
                     switch ($state) {
                         case \mod_wordcards_module::STATE_STEP1:
@@ -213,25 +226,21 @@ class utils {
                 }
             }
             if ($totalsteps > 0) {
-                $grade = ROUND(($totalgrade / $totalsteps), 0);
-                $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade, array('id' => $record->id));
-                $updateusergradebook= true;
+                $grade = round(($totalgrade / $totalsteps), 0);
+                $DB->set_field(constants::M_ATTEMPTSTABLE, 'totalgrade', $grade, ['id' => $record->id]);
+                $updateusergradebook = true;
             }
         }
-        //if we have something to update, do the re-grade
+        // if we have something to update, do the re-grade
         if( $updateusergradebook) {
             wordcards_update_grades($moduleinstance, $userid, false);
         }
         return true;
     }
 
-
-    //we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
-    //this is our helper
-    //we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
-    //this is our helper
-    public static function curl_fetch($url,$postdata=false)
-    {
+    // we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
+    // this is our helper
+    public static function curl_fetch($url, $postdata=false) {
         global $CFG;
 
         require_once($CFG->libdir.'/filelib.php');
@@ -241,71 +250,69 @@ class utils {
         return $result;
     }
 
-    //This is called from the settings page and we do not want to make calls out to cloud.poodll.com on settings
-    //page load, for performance and stability issues. So if the cache is empty and/or no token, we just show a
-    //"refresh token" links
-    public static function fetch_token_for_display($apiuser,$apisecret){
-       global $CFG;
+    // This is called from the settings page and we do not want to make calls out to cloud.poodll.com on settings
+    // page load, for performance and stability issues. So if the cache is empty and/or no token, we just show a
+    // "refresh token" links
+    public static function fetch_token_for_display($apiuser, $apisecret) {
+        global $CFG;
 
-       //First check that we have an API id and secret
-        //refresh token
+        // First check that we have an API id and secret
+        // refresh token
         $refresh = \html_writer::link($CFG->wwwroot . '/mod/wordcards/refreshtoken.php',
-                get_string('refreshtoken',constants::M_COMPONENT)) . '<br>';
-
+                get_string('refreshtoken', constants::M_COMPONENT)) . '<br>';
 
         $message = '';
         $apiuser = self::super_trim($apiuser);
         $apisecret = self::super_trim($apisecret);
         if(empty($apiuser)){
-           $message .= get_string('noapiuser',constants::M_COMPONENT) . '<br>';
-       }
+            $message .= get_string('noapiuser', constants::M_COMPONENT) . '<br>';
+        }
         if(empty($apisecret)){
-            $message .= get_string('noapisecret',constants::M_COMPONENT);
+            $message .= get_string('noapisecret', constants::M_COMPONENT);
         }
 
         if(!empty($message)){
             return $refresh . $message;
         }
 
-        //Fetch from cache and process the results and display
+        // Fetch from cache and process the results and display
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('recentpoodlltoken');
 
-        //if we have no token object the creds were wrong ... or something
+        // if we have no token object the creds were wrong ... or something
         if(!($tokenobject)){
-            $message = get_string('notokenincache',constants::M_COMPONENT);
-            //if we have an object but its no good, creds werer wrong ..or something
-        }elseif(!property_exists($tokenobject,'token') || empty($tokenobject->token)){
-            $message = get_string('credentialsinvalid',constants::M_COMPONENT);
-        //if we do not have subs, then we are on a very old token or something is wrong, just get out of here.
-        }elseif(!property_exists($tokenobject,'subs')){
+            $message = get_string('notokenincache', constants::M_COMPONENT);
+            // if we have an object but its no good, creds werer wrong ..or something
+        }else if(!property_exists($tokenobject, 'token') || empty($tokenobject->token)){
+            $message = get_string('credentialsinvalid', constants::M_COMPONENT);
+            // if we do not have subs, then we are on a very old token or something is wrong, just get out of here.
+        }else if(!property_exists($tokenobject, 'subs')){
             $message = 'No subscriptions found at all';
         }
         if(!empty($message)){
             return $refresh . $message;
         }
 
-        //we have enough info to display a report. Lets go.
+        // we have enough info to display a report. Lets go.
         foreach ($tokenobject->subs as $sub){
-            $sub->expiredate = date('d/m/Y',$sub->expiredate);
-            $message .= get_string('displaysubs',constants::M_COMPONENT, $sub) . '<br>';
+            $sub->expiredate = date('d/m/Y', $sub->expiredate);
+            $message .= get_string('displaysubs', constants::M_COMPONENT, $sub) . '<br>';
         }
 
-        //Is app authorised
-        if(in_array(constants::M_COMPONENT,$tokenobject->apps) &&
-         self::is_site_registered($tokenobject->sites,true)){
-            $message .= get_string('appauthorised',constants::M_COMPONENT) . '<br>';
+        // Is app authorised
+        if(in_array(constants::M_COMPONENT, $tokenobject->apps) &&
+         self::is_site_registered($tokenobject->sites, true)){
+            $message .= get_string('appauthorised', constants::M_COMPONENT) . '<br>';
         }else{
-            $message .= get_string('appnotauthorised',constants::M_COMPONENT) . '<br>';
+            $message .= get_string('appnotauthorised', constants::M_COMPONENT) . '<br>';
         }
 
         return $refresh . $message;
 
     }
 
-    //We need a Poodll token to make all this recording and transcripts happen
-    public static function fetch_token($apiuser, $apisecret, $force=false)
-    {
+    // We need a Poodll token to make all this recording and transcripts happen
+    public static function fetch_token($apiuser, $apisecret, $force=false) {
 
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('recentpoodlltoken');
@@ -313,56 +320,56 @@ class utils {
         $apiuser = self::super_trim($apiuser);
         $apisecret = self::super_trim($apisecret);
 
-        //if we got a token and its less than expiry time
+        // if we got a token and its less than expiry time
         // use the cached one
-        if($tokenobject && $tokenuser && $tokenuser==$apiuser && !$force){
+        if($tokenobject && $tokenuser && $tokenuser == $apiuser && !$force){
             if($tokenobject->validuntil == 0 || $tokenobject->validuntil > time()){
                 return $tokenobject->token;
             }
         }
 
         // Send the request & save response to $resp
-        $token_url =  constants::CLOUDPOODLL . "/local/cpapi/poodlltoken.php";
-        $postdata = array(
+        $tokenurl = self::get_cloud_poodll_server() . "/local/cpapi/poodlltoken.php";
+        $postdata = [
             'username' => $apiuser,
             'password' => $apisecret,
-            'service'=>'cloud_poodll'
-        );
-        $token_response = self::curl_fetch($token_url,$postdata);
-        if ($token_response) {
-            $resp_object = json_decode($token_response);
-            if($resp_object && property_exists($resp_object,'token')) {
-                $token = $resp_object->token;
-                //store the expiry timestamp and adjust it for diffs between our server times
-                if($resp_object->validuntil) {
-                    $validuntil = $resp_object->validuntil - ($resp_object->poodlltime - time());
-                    //we refresh one hour out, to prevent any overlap
+            'service' => 'cloud_poodll',
+        ];
+        $tokenresponse = self::curl_fetch($tokenurl, $postdata);
+        if ($tokenresponse) {
+            $respobject = json_decode($tokenresponse);
+            if($respobject && property_exists($respobject, 'token')) {
+                $token = $respobject->token;
+                // store the expiry timestamp and adjust it for diffs between our server times
+                if($respobject->validuntil) {
+                    $validuntil = $respobject->validuntil - ($respobject->poodlltime - time());
+                    // we refresh one hour out, to prevent any overlap
                     $validuntil = $validuntil - (1 * HOURSECS);
                 }else{
                     $validuntil = 0;
                 }
 
-                //cache the token
+                // cache the token
                 $tokenobject = new \stdClass();
                 $tokenobject->token = $token;
                 $tokenobject->validuntil = $validuntil;
-                $tokenobject->subs=false;
-                $tokenobject->apps=false;
-                $tokenobject->sites=false;
-                if(property_exists($resp_object,'subs')){
-                    $tokenobject->subs = $resp_object->subs;
+                $tokenobject->subs = false;
+                $tokenobject->apps = false;
+                $tokenobject->sites = false;
+                if(property_exists($respobject, 'subs')){
+                    $tokenobject->subs = $respobject->subs;
                 }
-                if(property_exists($resp_object,'apps')){
-                    $tokenobject->apps = $resp_object->apps;
+                if(property_exists($respobject, 'apps')){
+                    $tokenobject->apps = $respobject->apps;
                 }
-                if(property_exists($resp_object,'sites')){
-                    $tokenobject->sites = $resp_object->sites;
+                if(property_exists($respobject, 'sites')){
+                    $tokenobject->sites = $respobject->sites;
                 }
-                if(property_exists($resp_object,'awsaccesssecret')){
-                    $tokenobject->awsaccesssecret = $resp_object->awsaccesssecret;
+                if(property_exists($respobject, 'awsaccesssecret')){
+                    $tokenobject->awsaccesssecret = $respobject->awsaccesssecret;
                 }
-                if(property_exists($resp_object,'awsaccessid')){
-                    $tokenobject->awsaccessid = $resp_object->awsaccessid;
+                if(property_exists($respobject, 'awsaccessid')){
+                    $tokenobject->awsaccessid = $respobject->awsaccessid;
                 }
 
                 $cache->set('recentpoodlltoken', $tokenobject);
@@ -370,81 +377,81 @@ class utils {
 
             }else{
                 $token = '';
-                if($resp_object && property_exists($resp_object,'error')) {
-                    //ERROR = $resp_object->error
+                if($respobject && property_exists($respobject, 'error')) {
+                    // ERROR = $resp_object->error
                 }
             }
         }else{
-            $token='';
+            $token = '';
         }
         return $token;
     }
 
-    //check site URL is actually registered
+    // check site URL is actually registered
     static function is_site_registered($sites, $wildcardok = true) {
         global $CFG;
 
         foreach($sites as $site) {
 
-            //get arrays of the wwwroot and registered url
-            //just in case, lowercase'ify them
+            // get arrays of the wwwroot and registered url
+            // just in case, lowercase'ify them
             $thewwwroot = strtolower($CFG->wwwroot);
             $theregisteredurl = strtolower($site);
             $theregisteredurl = self::super_trim($theregisteredurl);
 
-            //add http:// or https:// to URLs that do not have it
+            // add http:// or https:// to URLs that do not have it
             if (strpos($theregisteredurl, 'https://') !== 0 &&
                     strpos($theregisteredurl, 'http://') !== 0) {
                 $theregisteredurl = 'https://' . $theregisteredurl;
             }
 
-            //if neither parsed successfully, that a no straight up
-            $wwwroot_bits = parse_url($thewwwroot);
-            $registered_bits = parse_url($theregisteredurl);
-            if (!$wwwroot_bits || !$registered_bits) {
-                //this is not a match
+            // if neither parsed successfully, that a no straight up
+            $wwwrootbits = parse_url($thewwwroot);
+            $registeredbits = parse_url($theregisteredurl);
+            if (!$wwwrootbits || !$registeredbits) {
+                // this is not a match
                 continue;
             }
 
-            //get the subdomain widlcard address, ie *.a.b.c.d.com
-            $wildcard_subdomain_wwwroot = '';
-            if (array_key_exists('host', $wwwroot_bits)) {
-                $wildcardparts = explode('.', $wwwroot_bits['host']);
+            // get the subdomain widlcard address, ie *.a.b.c.d.com
+            $wildcardsubdomainwwwroot = '';
+            if (array_key_exists('host', $wwwrootbits)) {
+                $wildcardparts = explode('.', $wwwrootbits['host']);
                 $wildcardparts[0] = '*';
-                $wildcard_subdomain_wwwroot = implode('.', $wildcardparts);
+                $wildcardsubdomainwwwroot = implode('.', $wildcardparts);
             } else {
-                //this is not a match
+                // this is not a match
                 continue;
             }
 
-            //match either the exact domain or the wildcard domain or fail
-            if (array_key_exists('host', $registered_bits)) {
-                //this will cover exact matches and path matches
-                if ($registered_bits['host'] === $wwwroot_bits['host']) {
-                    //this is a match
+            // match either the exact domain or the wildcard domain or fail
+            if (array_key_exists('host', $registeredbits)) {
+                // this will cover exact matches and path matches
+                if ($registeredbits['host'] === $wwwrootbits['host']) {
+                    // this is a match
                     return true;
-                    //this will cover subdomain matches
-                } else if (($registered_bits['host'] === $wildcard_subdomain_wwwroot) && $wildcardok) {
-                    //yay we are registered!!!!
+                    // this will cover subdomain matches
+                } else if (($registeredbits['host'] === $wildcardsubdomainwwwroot) && $wildcardok) {
+                    // yay we are registered!!!!
                     return true;
                 } else {
-                    //not a match
+                    // not a match
                     continue;
                 }
             } else {
-                //not a match
+                // not a match
                 return false;
             }
         }
         return false;
     }
 
-    //check token and tokenobject(from cache)
-    //return error message or blank if its all ok
-    public static function fetch_token_error($token){
+    // check token and tokenobject(from cache)
+    // return error message or blank if its all ok
+    public static function fetch_token_error($token) {
         global $CFG;
 
-        //check token authenticated
+        // check token authenticated
         if(empty($token)) {
             $message = get_string('novalidcredentials', constants::M_COMPONENT,
                     $CFG->wwwroot . constants::M_PLUGINSETTINGS);
@@ -455,13 +462,13 @@ class utils {
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('recentpoodlltoken');
 
-        //we should not get here if there is no token, but lets gracefully die, [v unlikely]
+        // we should not get here if there is no token, but lets gracefully die, [v unlikely]
         if (!($tokenobject)) {
             $message = get_string('notokenincache', constants::M_COMPONENT);
             return $message;
         }
 
-        //We have an object but its no good, creds were wrong ..or something. [v unlikely]
+        // We have an object but its no good, creds were wrong ..or something. [v unlikely]
         if (!property_exists($tokenobject, 'token') || empty($tokenobject->token)) {
             $message = get_string('credentialsinvalid', constants::M_COMPONENT);
             return $message;
@@ -477,15 +484,15 @@ class utils {
             return $message;
         }
 
-        //just return empty if there is no error.
+        // just return empty if there is no error.
         return '';
     }
 
     public static function get_journeymode_options() {
         global $CFG;
-        $options = array( constants::MODE_STEPSTHENFREE => get_string("mode_freeaftersteps", constants::M_COMPONENT),
+        $options = [ constants::MODE_STEPSTHENFREE => get_string("mode_freeaftersteps", constants::M_COMPONENT),
             constants::MODE_STEPS => get_string("mode_steps", constants::M_COMPONENT),
-            constants::MODE_FREE => get_string("mode_free", constants::M_COMPONENT));
+            constants::MODE_FREE => get_string("mode_free", constants::M_COMPONENT)];
 
         if (isset($CFG->wordcards_sessionmode) && $CFG->wordcards_sessionmode) {
             $options[constants::MODE_SESSION] = get_string("mode_session", constants::M_COMPONENT);
@@ -494,89 +501,101 @@ class utils {
         return $options;
     }
 
-  public static function get_region_options(){
-      return array(
-        "useast1" => get_string("useast1",constants::M_COMPONENT),
-          "tokyo" => get_string("tokyo",constants::M_COMPONENT),
-          "sydney" => get_string("sydney",constants::M_COMPONENT),
-          "dublin" => get_string("dublin",constants::M_COMPONENT),
-          "ottawa" => get_string("ottawa",constants::M_COMPONENT),
-          "frankfurt" => get_string("frankfurt",constants::M_COMPONENT),
-          "london" => get_string("london",constants::M_COMPONENT),
-          "saopaulo" => get_string("saopaulo",constants::M_COMPONENT),
-          "singapore" => get_string("singapore",constants::M_COMPONENT),
-          "mumbai" => get_string("mumbai",constants::M_COMPONENT),
-          "capetown" => get_string("capetown",constants::M_COMPONENT),
-          "bahrain" => get_string("bahrain",constants::M_COMPONENT)
-      );
-  }
+    public static function get_region_options() {
+        return [
+        "useast1" => get_string("useast1", constants::M_COMPONENT),
+          "tokyo" => get_string("tokyo", constants::M_COMPONENT),
+          "sydney" => get_string("sydney", constants::M_COMPONENT),
+          "dublin" => get_string("dublin", constants::M_COMPONENT),
+          "ottawa" => get_string("ottawa", constants::M_COMPONENT),
+          "frankfurt" => get_string("frankfurt", constants::M_COMPONENT),
+          "london" => get_string("london", constants::M_COMPONENT),
+          "saopaulo" => get_string("saopaulo", constants::M_COMPONENT),
+          "singapore" => get_string("singapore", constants::M_COMPONENT),
+          "mumbai" => get_string("mumbai", constants::M_COMPONENT),
+          "capetown" => get_string("capetown", constants::M_COMPONENT),
+          "bahrain" => get_string("bahrain", constants::M_COMPONENT),
+        ];
+    }
 
-    public static function translate_region($key){
+    public static function translate_region($key) {
         switch($key){
-            case "useast1": return "us-east-1";
-            case "tokyo": return "ap-northeast-1";
-            case "sydney": return "ap-southeast-2";
-            case "dublin": return "eu-west-1";
-            case "ottawa": return "ca-central-1";
-            case "frankfurt": return "eu-central-1";
-            case "london": return "eu-west-2";
-            case "saopaulo": return "sa-east-1";
-            case "singapore": return "ap-southeast-1";
-            case "mumbai": return "ap-south-1";
-            case "capetown": return "af-south-1";
-            case "bahrain": return "me-south-1";
+            case "useast1":
+return "us-east-1";
+            case "tokyo":
+return "ap-northeast-1";
+            case "sydney":
+return "ap-southeast-2";
+            case "dublin":
+return "eu-west-1";
+            case "ottawa":
+return "ca-central-1";
+            case "frankfurt":
+return "eu-central-1";
+            case "london":
+return "eu-west-2";
+            case "saopaulo":
+return "sa-east-1";
+            case "singapore":
+return "ap-southeast-1";
+            case "mumbai":
+return "ap-south-1";
+            case "capetown":
+return "af-south-1";
+            case "bahrain":
+return "me-south-1";
         }
     }
 
-    public static function get_timelimit_options(){
-        return array(
-            0 => get_string("notimelimit",constants::M_COMPONENT),
-            15 => get_string("xsecs",constants::M_COMPONENT,'15'),
-            30 => get_string("xsecs",constants::M_COMPONENT,'30'),
-            45 => get_string("xsecs",constants::M_COMPONENT,'45'),
-            60 => get_string("onemin",constants::M_COMPONENT),
-            90 => get_string("oneminxsecs",constants::M_COMPONENT,'30'),
-            120 => get_string("xmins",constants::M_COMPONENT,'2'),
-            150 => get_string("xminsecs",constants::M_COMPONENT,array('minutes'=>2,'seconds'=>30)),
-            180 => get_string("xmins",constants::M_COMPONENT,'3')
-        );
+    public static function get_timelimit_options() {
+        return [
+            0 => get_string("notimelimit", constants::M_COMPONENT),
+            15 => get_string("xsecs", constants::M_COMPONENT, '15'),
+            30 => get_string("xsecs", constants::M_COMPONENT, '30'),
+            45 => get_string("xsecs", constants::M_COMPONENT, '45'),
+            60 => get_string("onemin", constants::M_COMPONENT),
+            90 => get_string("oneminxsecs", constants::M_COMPONENT, '30'),
+            120 => get_string("xmins", constants::M_COMPONENT, '2'),
+            150 => get_string("xminsecs", constants::M_COMPONENT, ['minutes' => 2, 'seconds' => 30]),
+            180 => get_string("xmins", constants::M_COMPONENT, '3'),
+        ];
     }
 
-  public static function get_expiredays_options(){
-      return array(
-          "1"=>"1",
-          "3"=>"3",
-          "7"=>"7",
-          "30"=>"30",
-          "90"=>"90",
-          "180"=>"180",
-          "365"=>"365",
-          "730"=>"730",
-          "9999"=>get_string('forever',constants::M_COMPONENT)
-      );
-  }
+    public static function get_expiredays_options() {
+        return [
+          "1" => "1",
+          "3" => "3",
+          "7" => "7",
+          "30" => "30",
+          "90" => "90",
+          "180" => "180",
+          "365" => "365",
+          "730" => "730",
+          "9999" => get_string('forever', constants::M_COMPONENT),
+        ];
+    }
 
     public static function fetch_options_transcribers() {
-        $options = array(constants::TRANSCRIBER_AUTO => get_string("transcriber_auto", constants::M_COMPONENT),
-                constants::TRANSCRIBER_POODLL => get_string("transcriber_poodll", constants::M_COMPONENT));
+        $options = [constants::TRANSCRIBER_AUTO => get_string("transcriber_auto", constants::M_COMPONENT),
+                constants::TRANSCRIBER_POODLL => get_string("transcriber_poodll", constants::M_COMPONENT)];
         return $options;
     }
 
     public static function fetch_options_reportstable() {
-        $options = array(constants::M_USE_DATATABLES => get_string("reporttableajax", constants::M_COMPONENT),
-            constants::M_USE_PAGEDTABLES => get_string("reporttablepaged", constants::M_COMPONENT));
+        $options = [constants::M_USE_DATATABLES => get_string("reporttableajax", constants::M_COMPONENT),
+            constants::M_USE_PAGEDTABLES => get_string("reporttablepaged", constants::M_COMPONENT)];
         return $options;
     }
 
-    public static function fetch_filemanager_opts($mediatype){
-      global $CFG;
-        $file_external = 1;
-        $file_internal = 2;
-        return array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'areamaxbytes' => 10485760, 'maxfiles' => 1,
-                'accepted_types' => array($mediatype), 'return_types'=> $file_internal | $file_external);
+    public static function fetch_filemanager_opts($mediatype) {
+        global $CFG;
+        $fileexternal = 1;
+        $fileinternal = 2;
+        return ['subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'areamaxbytes' => 10485760, 'maxfiles' => 1,
+                'accepted_types' => [$mediatype], 'return_types' => $fileinternal | $fileexternal];
     }
 
-    //see if this is truly json or some error
+    // see if this is truly json or some error
     public static function is_json($string) {
         if (!$string) {
             return false;
@@ -588,18 +607,19 @@ class utils {
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
-    //fetch the MP3 URL of the text we want transcribed
-    public static function fetch_polly_url($token,$region,$speaktext,$texttype, $voice) {
+    // fetch the MP3 URL of the text we want transcribed
+    public static function fetch_polly_url($token, $region, $speaktext, $texttype, $voice) {
         global $USER;
 
-        //If this is the "notts" voice, then we just return false
-        if($voice=constants::M_NO_TTS){return false;}
+        // If this is the "notts" voice, then we just return false
+        if($voice = constants::M_NO_TTS){return false;
+        }
 
-        //The REST API we are calling
+        // The REST API we are calling
         $functionname = 'local_cpapi_fetch_polly_url';
 
-        //log.debug(params);
-        $params = array();
+        // log.debug(params);
+        $params = [];
         $params['wstoken'] = $token;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
@@ -607,20 +627,20 @@ class utils {
         $params['texttype'] = $texttype;
         $params['voice'] = $voice;
         $params['appid'] = constants::M_COMPONENT;
-        $params['owner'] = hash('md5',$USER->username);
+        $params['owner'] = hash('md5', $USER->username);
         $params['region'] = $region;
-        $params['engine'] = self::can_speak_neural($voice, $region)?'neural' : 'standard';
-        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
+        $params['engine'] = self::can_speak_neural($voice, $region) ? 'neural' : 'standard';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
         }
         $payloadobject = json_decode($response);
 
-        //returnCode > 0  indicates an error
+        // returnCode > 0  indicates an error
         if ($payloadobject->returnCode > 0) {
             return false;
-            //if all good, then lets do the embed
+            // if all good, then lets do the embed
         } else if ($payloadobject->returnCode === 0) {
             $pollyurl = $payloadobject->returnMessage;
             return $pollyurl;
@@ -629,71 +649,70 @@ class utils {
         }
     }
 
-    public static function export_terms_to_csv($modid){
+    public static function export_terms_to_csv($modid) {
         global $DB;
-        $terms = $DB->get_records(constants::M_TERMSTABLE,array('modid'=>$modid));
+        $terms = $DB->get_records(constants::M_TERMSTABLE, ['modid' => $modid]);
 
-        //echo header row
+        // echo header row
         $name = 'wordcards_terms';
         $quote = '"';
-        $delim = ",";//"\t";
+        $delim = ",";// "\t";
         $newline = "\r\n";
 
         header("Content-Disposition: attachment; filename=$name.csv");
         header("Content-Type: text/comma-separated-values");
 
-        //echo header
-        $head = array('term','ar','es','fr','th','vi','ja','ko','pt','ru','zh','zh_tw','id');
+        // echo header
+        $head = ['term', 'ar', 'es', 'fr', 'th', 'vi', 'ja', 'ko', 'pt', 'ru', 'zh', 'zh_tw', 'id'];
         $heading = "";
         foreach ($head as $headfield) {
             $heading .= $quote . $headfield . $quote . $delim;
         }
         echo $heading . $newline;
 
-
-        //echo data rows
+        // echo data rows
         $quote = '"';
-        $delim = ",";//"\t";
+        $delim = ",";// "\t";
         $newline = "\r\n";
         $handle = fopen('php://output', 'w+');
 
         foreach($terms as $term){
             $translations = json_decode($term->translations);
-            $rowarray=[];
-            $rowarray[]=$term->term;
-            $rowarray[]=isset($translations->ar)?$translations->ar:'';
-            $rowarray[]=isset($translations->es)?$translations->es:'';
-            $rowarray[]=isset($translations->fr)?$translations->fr:'';
-            $rowarray[]=isset($translations->th)?$translations->th:'';
-            $rowarray[]=isset($translations->vi)?$translations->vi:'';
-            $rowarray[]=isset($translations->ja)?$translations->ja:'';
-            $rowarray[]=isset($translations->ko)?$translations->ko:'';
-            $rowarray[]=isset($translations->pt)?$translations->pt:'';
-            $rowarray[]=isset($translations->rus)?$translations->rus:'';
-            $rowarray[]=isset($translations->zh)?$translations->zh:'';
-            $rowarray[]=isset($translations->zh_tw)?$translations->zh_tw:'';
-            $rowarray[]=isset($translations->id)?$translations->id:'';
-            fputcsv($handle, $rowarray,$delim,$quote);
+            $rowarray = [];
+            $rowarray[] = $term->term;
+            $rowarray[] = isset($translations->ar) ? $translations->ar : '';
+            $rowarray[] = isset($translations->es) ? $translations->es : '';
+            $rowarray[] = isset($translations->fr) ? $translations->fr : '';
+            $rowarray[] = isset($translations->th) ? $translations->th : '';
+            $rowarray[] = isset($translations->vi) ? $translations->vi : '';
+            $rowarray[] = isset($translations->ja) ? $translations->ja : '';
+            $rowarray[] = isset($translations->ko) ? $translations->ko : '';
+            $rowarray[] = isset($translations->pt) ? $translations->pt : '';
+            $rowarray[] = isset($translations->rus) ? $translations->rus : '';
+            $rowarray[] = isset($translations->zh) ? $translations->zh : '';
+            $rowarray[] = isset($translations->zh_tw) ? $translations->zh_tw : '';
+            $rowarray[] = isset($translations->id) ? $translations->id : '';
+            fputcsv($handle, $rowarray, $delim, $quote);
         }
         fclose($handle);
-        //After file is created, die
+        // After file is created, die
         die();
     }
 
-    //fetch the dictionary entries from cloud poodll
+    // fetch the dictionary entries from cloud poodll
     public static function fetch_youglish_token() {
         global $USER;
 
-        //if we already have a token just use that
+        // if we already have a token just use that
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $youglishtoken = $cache->get('youglishtoken');
         if($youglishtoken){
             return $youglishtoken;
         }
 
-        //If we dont have a youglish token we need a poodlltoken to make the API call to get one
-        $poodlltoken=false;
-        $conf= get_config(constants::M_COMPONENT);
+        // If we dont have a youglish token we need a poodlltoken to make the API call to get one
+        $poodlltoken = false;
+        $conf = get_config(constants::M_COMPONENT);
         if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
             $poodlltoken = self::fetch_token($conf->apiuser, $conf->apisecret);
         }
@@ -701,27 +720,26 @@ class utils {
             return false;
         }
 
-
-        //The REST API we are calling
+        // The REST API we are calling
         $functionname = 'local_cpapi_fetch_youglish_token';
 
-        //log.debug(params);
-        $params = array();
+        // log.debug(params);
+        $params = [];
         $params['wstoken'] = $poodlltoken;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
         $params['appid'] = constants::M_COMPONENT;
-        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
         }
         $payloadobject = json_decode($response);
 
-        //returnCode > 0  indicates an error
+        // returnCode > 0  indicates an error
         if ($payloadobject->returnCode > 0) {
             return false;
-            //if all good, then lets do the embed
+            // if all good, then lets do the embed
         } else if ($payloadobject->returnCode === 0) {
             $youglishtoken = $payloadobject->returnMessage;
             $cache->set('youglishtoken', $youglishtoken);
@@ -731,13 +749,13 @@ class utils {
         }
     }
 
-    //stage remote processing job ..just logging really
-    public static function stage_remote_process_job($language,$cmid) {
+    // stage remote processing job ..just logging really
+    public static function stage_remote_process_job($language, $cmid) {
 
         global $CFG, $USER;
 
-        $token=false;
-        $conf= get_config(constants::M_COMPONENT);
+        $token = false;
+        $conf = get_config(constants::M_COMPONENT);
         if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
             $token = self::fetch_token($conf->apiuser, $conf->apisecret);
         }
@@ -749,45 +767,45 @@ class utils {
         if (!$host) {
             $host = "unknown";
         }
-        //owner
-        $owner = hash('md5',$USER->username);
-        $ownercomphash = hash('md5',$USER->username . constants::M_COMPONENT . $cmid . date("Y-m-d"));
+        // owner
+        $owner = hash('md5', $USER->username);
+        $ownercomphash = hash('md5', $USER->username . constants::M_COMPONENT . $cmid . date("Y-m-d"));
 
-        //The REST API we are calling
+        // The REST API we are calling
         $functionname = 'local_cpapi_stage_remoteprocess_job';
 
-        //log.debug(params);
-        $params = array();
+        // log.debug(params);
+        $params = [];
         $params['wstoken'] = $token;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
         $params['appid'] = constants::M_COMPONENT;
         $params['region'] = $conf->awsregion;
         $params['host'] = $host;
-        $params['s3outfilename'] = $ownercomphash; //we just want a unique value per session here
+        $params['s3outfilename'] = $ownercomphash; // we just want a unique value per session here
         $params['owner'] = $owner;
-        $params['transcode'] =  '0';
+        $params['transcode'] = '0';
         $params['transcoder'] = 'default';
-        $params['transcribe'] =  '0';
+        $params['transcribe'] = '0';
         $params['subtitle'] = '0';
         $params['language'] = $language;
         $params['vocab'] = 'none';
-        $params['s3path'] ='/';
+        $params['s3path'] = '/';
         $params['mediatype'] = 'other';
         $params['notificationurl'] = 'none';
         $params['sourcemimetype'] = 'unknown';
 
-        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
         }
         $payloadobject = json_decode($response);
 
-        //returnCode > 0  indicates an error
+        // returnCode > 0  indicates an error
         if ($payloadobject->returnCode > 0) {
             return false;
-            //if all good, then lets just return true
+            // if all good, then lets just return true
         } else if ($payloadobject->returnCode === 0) {
             return true;
         } else {
@@ -796,12 +814,12 @@ class utils {
     }
 
 
-    //fetch the dictionary entries from cloud poodll
-    public static function fetch_dictionary_entries($terms,$sourcelang, $targetlangs) {
+    // fetch the dictionary entries from cloud poodll
+    public static function fetch_dictionary_entries($terms, $sourcelang, $targetlangs) {
         global $USER;
 
-        $token=false;
-        $conf= get_config(constants::M_COMPONENT);
+        $token = false;
+        $conf = get_config(constants::M_COMPONENT);
         if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
             $token = self::fetch_token($conf->apiuser, $conf->apisecret);
         }
@@ -809,29 +827,29 @@ class utils {
             return false;
         }
 
-        //The REST API we are calling
+        // The REST API we are calling
         $functionname = 'local_cpapi_fetch_words';
 
-        //log.debug(params);
-        $params = array();
+        // log.debug(params);
+        $params = [];
         $params['wstoken'] = $token;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
         $params['terms'] = $terms;
-        $params['sourcelang'] =$sourcelang;
-        $params['targetlangs'] =urlencode($targetlangs);;
+        $params['sourcelang'] = $sourcelang;
+        $params['targetlangs'] = urlencode($targetlangs);;
         $params['appid'] = constants::M_COMPONENT;
-        $serverurl = constants::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
         }
         $payloadobject = json_decode($response);
 
-        //returnCode > 0  indicates an error
+        // returnCode > 0  indicates an error
         if ($payloadobject->returnCode > 0) {
             return false;
-            //if all good, then lets do the embed
+            // if all good, then lets do the embed
         } else if ($payloadobject->returnCode === 0) {
             $pollyurl = $payloadobject->returnMessage;
             return $pollyurl;
@@ -840,71 +858,71 @@ class utils {
         }
     }
 
-  public static function fetch_auto_voice($langcode){
+    public static function fetch_auto_voice($langcode) {
         $voices = self::get_tts_voices($langcode);
         $autoindex = array_rand($voices);
         return $autoindex;
-  }
+    }
 
-  public static function get_tts_voices($langcode, $showall=false){
-      $alllang= constants::ALL_VOICES;
-      $alllang[constants::M_LANG_OTHER]=[constants::M_NO_TTS=>get_string('notts', constants::M_COMPONENT)];
+    public static function get_tts_voices($langcode, $showall=false) {
+        $alllang = constants::ALL_VOICES;
+        $alllang[constants::M_LANG_OTHER] = [constants::M_NO_TTS => get_string('notts', constants::M_COMPONENT)];
 
-      if(array_key_exists($langcode,$alllang)&& !$showall) {
-          return $alllang[$langcode];
-      }elseif($showall && array_key_exists($langcode,$alllang)) {
-          $usearray = [];
+        if(array_key_exists($langcode, $alllang)&& !$showall) {
+            return $alllang[$langcode];
+        }else if($showall && array_key_exists($langcode, $alllang)) {
+            $usearray = [];
 
-          //add current language first
-          foreach ($alllang[$langcode] as $v => $thevoice) {
-              $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
-              $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
-          }
-          //then all the rest
-          foreach ($alllang as $lang => $voices) {
-              if ($lang == $langcode) {
-                  continue;
-              }
-              foreach ($voices as $v => $thevoice) {
-                  $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
-                  $usearray[$v] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
-              }
-          }
-          return $usearray;
-      }elseif(!array_key_exists($langcode,$alllang)){
-          return [constants::M_NO_TTS=>get_string('notts', constants::M_COMPONENT) ];
-      }else{
-          //what could this be?
-          return $alllang[constants::M_LANG_ENUS];
-      }
+            // add current language first
+            foreach ($alllang[$langcode] as $v => $thevoice) {
+                $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
+                $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+            }
+            // then all the rest
+            foreach ($alllang as $lang => $voices) {
+                if ($lang == $langcode) {
+                    continue;
+                }
+                foreach ($voices as $v => $thevoice) {
+                    $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
+                    $usearray[$v] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+                }
+            }
+            return $usearray;
+        }else if(!array_key_exists($langcode, $alllang)){
+            return [constants::M_NO_TTS => get_string('notts', constants::M_COMPONENT) ];
+        }else{
+            // what could this be?
+            return $alllang[constants::M_LANG_ENUS];
+        }
 
-  }
-
-  /* An activity typoe will be eith practice or review */
-    public static function fetch_activity_tablabel($activitytype){
-      switch($activitytype){
-          case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
-          case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
-          case \mod_wordcards_module::PRACTICETYPE_DICTATION:
-          case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
-          case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
-          case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
-          case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
-              return get_string('practice',constants::M_COMPONENT) ;
-          case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
-          case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
-          case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
-          case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
-          case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
-          case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
-          case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:  
-              return get_string('review',constants::M_COMPONENT);
-
-      }
     }
 
     /* An activity typoe will be eith practice or review */
-    public static function is_review_activity($activitytype){
+    public static function fetch_activity_tablabel($activitytype) {
+        switch($activitytype){
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION:
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME:
+            case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
+                return get_string('practice', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
+            case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE_REV:
+            case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
+            case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
+            case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
+            case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
+            case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
+                return get_string('review', constants::M_COMPONENT);
+
+        }
+    }
+
+    /* An activity typoe will be eith practice or review */
+    public static function is_review_activity($activitytype) {
         switch($activitytype){
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
             case \mod_wordcards_module::PRACTICETYPE_MATCHTYPE:
@@ -921,7 +939,7 @@ class utils {
     }
 
     /* Each activity shows an icon on the tab tree */
-    public static function fetch_activity_tabicon($activitytype){
+    public static function fetch_activity_tabicon($activitytype) {
         switch($activitytype){
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
@@ -952,28 +970,28 @@ class utils {
         }
     }
 
-    public static function get_stars($grade){
+    public static function get_stars($grade) {
         // Every item stars.
-        if($grade==0){
-            $ystar_cnt=0;
-        }else if($grade<19) {
-            $ystar_cnt=1;
-        }else if($grade<39) {
-            $ystar_cnt=2;
-        }else if($grade<59) {
-            $ystar_cnt=3;
-        }else if($grade<79) {
-            $ystar_cnt=4;
+        if($grade == 0){
+            $ystarcnt = 0;
+        }else if($grade < 19) {
+            $ystarcnt = 1;
+        }else if($grade < 39) {
+            $ystarcnt = 2;
+        }else if($grade < 59) {
+            $ystarcnt = 3;
+        }else if($grade < 79) {
+            $ystarcnt = 4;
         }else{
-            $ystar_cnt=5;
+            $ystarcnt = 5;
         }
-        $yellowstars = array_fill(0, $ystar_cnt, true);
-        $gstar_cnt= 5 - $ystar_cnt;
-        $graystars = array_fill(0, $gstar_cnt, true);
-        return[$yellowstars,$graystars];
+        $yellowstars = array_fill(0, $ystarcnt, true);
+        $gstarcnt = 5 - $ystarcnt;
+        $graystars = array_fill(0, $gstarcnt, true);
+        return[$yellowstars, $graystars];
     }
 
-    public static function get_practicetype_label($practicetype){
+    public static function get_practicetype_label($practicetype) {
         switch($practicetype) {
             case \mod_wordcards_module::PRACTICETYPE_NONE:
                 return get_string('title_noactivity', constants::M_COMPONENT);
@@ -1007,60 +1025,60 @@ class utils {
         }
     }
 
-  public static function get_available_freemode_activities($freemodeoptions){
-        $candidates=[];
-        $available=[];
+    public static function get_available_freemode_activities($freemodeoptions) {
+        $candidates = [];
+        $available = [];
         // For free mode we need to unpack the activity settings
         // free mode settings might not be there if the user restored from an old moodle version
-        //or if something awful happend. So if its not there, default to admin config settings
-        //so first build the candidate list of activities, before choosing the enabled ones
+        // or if something awful happend. So if its not there, default to admin config settings
+        // so first build the candidate list of activities, before choosing the enabled ones
         $freemodeoptionsarray = ['freemodeoptions' => $freemodeoptions];
         if ($freemodeoptionsarray['freemodeoptions']) {
-            $candidates = utils::unpack_freemode_options($freemodeoptionsarray);
+            $candidates = self::unpack_freemode_options($freemodeoptionsarray);
         } else {
             // Set the default free mode options.
             foreach (constants::FREEMODE_ACTIVITIES as $activity) {
-               if (get_config(constants::M_COMPONENT, 'freemode_' . $activity)){
-                 $candidates['freemode_' . $activity] = 1;
-               }
+                if (get_config(constants::M_COMPONENT, 'freemode_' . $activity)){
+                    $candidates['freemode_' . $activity] = 1;
+                }
             }
         }
 
-        //then we build the return data from the candidates that are set to show in free mode
-        foreach($candidates as $activity=>$enabled){
+        // then we build the return data from the candidates that are set to show in free mode
+        foreach($candidates as $activity => $enabled){
             if(!$enabled){
                 continue;
             }
             switch($activity){
                 case 'freemode_matchselect':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_MATCHSELECT]=get_string('title_matchselect', constants::M_COMPONENT);
+                    $available[\mod_wordcards_module::PRACTICETYPE_MATCHSELECT] = get_string('title_matchselect', constants::M_COMPONENT);
                     break;
                 case 'freemode_matchtype':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_MATCHTYPE]=get_string('title_matchtype', constants::M_COMPONENT);
+                    $available[\mod_wordcards_module::PRACTICETYPE_MATCHTYPE] = get_string('title_matchtype', constants::M_COMPONENT);
                     break;
                 case 'freemode_dictation':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_DICTATION]=get_string('title_dictation', constants::M_COMPONENT);
+                    $available[\mod_wordcards_module::PRACTICETYPE_DICTATION] = get_string('title_dictation', constants::M_COMPONENT);
                     break;
                 case 'freemode_speechcards':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS]=get_string('title_speechcards', constants::M_COMPONENT);
+                    $available[\mod_wordcards_module::PRACTICETYPE_SPEECHCARDS] = get_string('title_speechcards', constants::M_COMPONENT);
                     break;
                 case 'freemode_listenchoose':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE]=get_string('title_listenchoose', constants::M_COMPONENT);
+                    $available[\mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE] = get_string('title_listenchoose', constants::M_COMPONENT);
                     break;
                 case 'freemode_spacegame':
-                    $available[ \mod_wordcards_module::PRACTICETYPE_SPACEGAME]=get_string('title_spacegame', constants::M_COMPONENT);
+                    $available[\mod_wordcards_module::PRACTICETYPE_SPACEGAME] = get_string('title_spacegame', constants::M_COMPONENT);
                     break;
                 case 'freemode_wordpreview':
-                        $available[ \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW]=get_string('title_wordpreview', constants::M_COMPONENT);
-                        break;             
+                      $available[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW] = get_string('title_wordpreview', constants::M_COMPONENT);
+                      break;
             }
         }
         return $available;
-  }  
+    }
 
-  public static function get_practicetype_options($wordpool=false){
-      $none =  array(\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', constants::M_COMPONENT));
-      $learnoptions = [
+    public static function get_practicetype_options($wordpool=false) {
+        $none = [\mod_wordcards_module::PRACTICETYPE_NONE => get_string('title_noactivity', constants::M_COMPONENT)];
+        $learnoptions = [
               \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW => get_string('title_wordpreview', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_MATCHSELECT => get_string('title_matchselect', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_MATCHTYPE => get_string('title_matchtype', constants::M_COMPONENT),
@@ -1068,7 +1086,7 @@ class utils {
               \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE => get_string('title_listenchoose', constants::M_COMPONENT),
               \mod_wordcards_module::PRACTICETYPE_SPACEGAME => get_string('title_spacegame', constants::M_COMPONENT),
-      ];
+        ];
 
         $reviewoptions = [
             \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV => get_string('title_wordpreview_rev', constants::M_COMPONENT),
@@ -1080,52 +1098,52 @@ class utils {
             \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV => get_string('title_spacegame_rev', constants::M_COMPONENT),
             ];
 
-      if($wordpool===\mod_wordcards_module::WORDPOOL_LEARN){
-          $options=$learnoptions;
-      }else{
-          //We need to merge arrays this way, not with array_merge, in order to preserve keys
-          $options = $none + $learnoptions + $reviewoptions;
-      }
-      return $options;
-  }
-
-    public static function fetch_options_listenchoose(){
-        return array(
-            constants::M_LC_AUDIO_TERM=> get_string('lc_termterm', constants::M_COMPONENT),
-            constants::M_LC_AUDIO_DEF => get_string('lc_termdef', constants::M_COMPONENT));
+        if($wordpool === \mod_wordcards_module::WORDPOOL_LEARN){
+            $options = $learnoptions;
+        }else{
+            // We need to merge arrays this way, not with array_merge, in order to preserve keys
+            $options = $none + $learnoptions + $reviewoptions;
+        }
+        return $options;
     }
 
-    public static function fetch_options_matchselect(){
-        return array(
-            constants::M_MS_TERM_AT_TOP=> get_string('ms_termattop', constants::M_COMPONENT),
-            constants::M_MS_DEF_AT_TOP => get_string('ms_defattop', constants::M_COMPONENT));
+    public static function fetch_options_listenchoose() {
+        return [
+            constants::M_LC_AUDIO_TERM => get_string('lc_termterm', constants::M_COMPONENT),
+            constants::M_LC_AUDIO_DEF => get_string('lc_termdef', constants::M_COMPONENT)];
     }
 
-    public static function fetch_options_spacegame(){
-        return array(
-            constants::M_SG_TERM_AS_ALIEN=> get_string('sg_termasalien', constants::M_COMPONENT),
-            constants::M_SG_DEF_AS_ALIEN => get_string('sg_defasalien', constants::M_COMPONENT));
+    public static function fetch_options_matchselect() {
+        return [
+            constants::M_MS_TERM_AT_TOP => get_string('ms_termattop', constants::M_COMPONENT),
+            constants::M_MS_DEF_AT_TOP => get_string('ms_defattop', constants::M_COMPONENT)];
     }
 
-    public static function fetch_options_speechcards(){
-        return array(
-            constants::M_WC_TERM_AS_READABLE=> get_string('wc_termasreadable', constants::M_COMPONENT),
-            constants::M_WC_MODELSENTENCE_AS_READABLE => get_string('wc_modelsentenceasreadable', constants::M_COMPONENT));
-    }
-  public static function fetch_options_fontfaceflip(){
-      return array(
-              constants::M_FRONTFACEFLIP_TERM=> get_string('term', constants::M_COMPONENT),
-              constants::M_FRONTFACEFLIP_DEF => get_string('definition', constants::M_COMPONENT));
-  }
-
-    public static function fetch_options_animations(){
-        return array(
-            constants::M_ANIM_FANCY=> get_string('anim_fancy', constants::M_COMPONENT),
-            constants::M_ANIM_PLAIN => get_string('anim_plain', constants::M_COMPONENT));
+    public static function fetch_options_spacegame() {
+        return [
+            constants::M_SG_TERM_AS_ALIEN => get_string('sg_termasalien', constants::M_COMPONENT),
+            constants::M_SG_DEF_AS_ALIEN => get_string('sg_defasalien', constants::M_COMPONENT)];
     }
 
-   public static function get_lang_options() {
-       return array(
+    public static function fetch_options_speechcards() {
+        return [
+            constants::M_WC_TERM_AS_READABLE => get_string('wc_termasreadable', constants::M_COMPONENT),
+            constants::M_WC_MODELSENTENCE_AS_READABLE => get_string('wc_modelsentenceasreadable', constants::M_COMPONENT)];
+    }
+    public static function fetch_options_fontfaceflip() {
+        return [
+              constants::M_FRONTFACEFLIP_TERM => get_string('term', constants::M_COMPONENT),
+              constants::M_FRONTFACEFLIP_DEF => get_string('definition', constants::M_COMPONENT)];
+    }
+
+    public static function fetch_options_animations() {
+        return [
+            constants::M_ANIM_FANCY => get_string('anim_fancy', constants::M_COMPONENT),
+            constants::M_ANIM_PLAIN => get_string('anim_plain', constants::M_COMPONENT)];
+    }
+
+    public static function get_lang_options() {
+        return [
                constants::M_LANG_ARAE => get_string('ar-ae', constants::M_COMPONENT),
                constants::M_LANG_ARSA => get_string('ar-sa', constants::M_COMPONENT),
                constants::M_LANG_DEDE => get_string('de-de', constants::M_COMPONENT),
@@ -1162,14 +1180,14 @@ class utils {
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT),
                constants::M_LANG_NONO => get_string('no-no', constants::M_COMPONENT),
-               //constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
+               // constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
                constants::M_LANG_PLPL => get_string('pl-pl', constants::M_COMPONENT),
                constants::M_LANG_RORO => get_string('ro-ro', constants::M_COMPONENT),
                constants::M_LANG_SVSE => get_string('sv-se', constants::M_COMPONENT),
-               constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
-               constants::M_LANG_EUES => get_string('eu-es',constants::M_COMPONENT),
-               constants::M_LANG_FIFI => get_string('fi-fi',constants::M_COMPONENT),
-               constants::M_LANG_HUHU => get_string('hu-hu',constants::M_COMPONENT),
+               constants::M_LANG_UKUA => get_string('uk-ua', constants::M_COMPONENT),
+               constants::M_LANG_EUES => get_string('eu-es', constants::M_COMPONENT),
+               constants::M_LANG_FIFI => get_string('fi-fi', constants::M_COMPONENT),
+               constants::M_LANG_HUHU => get_string('hu-hu', constants::M_COMPONENT),
 
                constants::M_LANG_BGBG => get_string('bg-bg', constants::M_COMPONENT),
                constants::M_LANG_CSCZ => get_string('cs-cz', constants::M_COMPONENT),
@@ -1182,15 +1200,17 @@ class utils {
                constants::M_LANG_ISIS => get_string('is-is', constants::M_COMPONENT),
                constants::M_LANG_MKMK => get_string('mk-mk', constants::M_COMPONENT),
                constants::M_LANG_SRRS => get_string('sr-rs', constants::M_COMPONENT),
-               constants::M_LANG_VIVN => get_string('vi-vn',constants::M_COMPONENT),
+               constants::M_LANG_VIVN => get_string('vi-vn', constants::M_COMPONENT),
                constants::M_LANG_OTHER => get_string('xx-xx', constants::M_COMPONENT),
-       );
-   }
+        ];
+    }
 
-    public static function fetch_short_lang($longlang){
-        if(\core_text::strlen($longlang)<=2){return $longlang;}
-        if($longlang=="fil-PH"){return "fil";}
-        $shortlang = substr($longlang,0,2);
+    public static function fetch_short_lang($longlang) {
+        if(\core_text::strlen($longlang) <= 2){return $longlang;
+        }
+        if($longlang == "fil-PH"){return "fil";
+        }
+        $shortlang = substr($longlang, 0, 2);
         return $shortlang;
     }
 
@@ -1199,7 +1219,7 @@ class utils {
      *
      */
     public static function needs_lang_model($mod) {
-        $region = get_config(constants::M_COMPONENT,'awsregion');
+        $region = get_config(constants::M_COMPONENT, 'awsregion');
         switch($region){
             case 'tokyo':
             case 'useast1':
@@ -1207,19 +1227,19 @@ class utils {
             case 'sydney':
             default:
                 $shortlang = self::fetch_short_lang($mod->get_mod()->ttslanguage);
-            return ($shortlang=='en' ||
-                    $shortlang=='de' ||
-                    $shortlang=='fr' ||
-                    $shortlang=='ru' ||
-                    $shortlang=='eu' ||
-                    $shortlang=='pl' ||
-                    $shortlang=='fi' ||
-                    $shortlang=='it' ||
-                    $shortlang=='pt' ||
-                    $shortlang=='uk' ||
-                    $shortlang=='ro' ||
-                    $shortlang=='hu' ||
-                            $shortlang=='es') && $mod->get_terms();
+            return ($shortlang == 'en' ||
+                    $shortlang == 'de' ||
+                    $shortlang == 'fr' ||
+                    $shortlang == 'ru' ||
+                    $shortlang == 'eu' ||
+                    $shortlang == 'pl' ||
+                    $shortlang == 'fi' ||
+                    $shortlang == 'it' ||
+                    $shortlang == 'pt' ||
+                    $shortlang == 'uk' ||
+                    $shortlang == 'ro' ||
+                    $shortlang == 'hu' ||
+                            $shortlang == 'es') && $mod->get_terms();
         }
     }
 
@@ -1241,30 +1261,30 @@ class utils {
      * Build a language model for this passage
      *
      */
-    public static function fetch_lang_model($mod){
-        $conf= get_config(constants::M_COMPONENT);
+    public static function fetch_lang_model($mod) {
+        $conf = get_config(constants::M_COMPONENT);
         if (!empty($conf->apiuser) && !empty($conf->apisecret)) {;
             $token = self::fetch_token($conf->apiuser, $conf->apisecret);
 
             if(empty($token)){
                 return false;
             }
-            $url = constants::CLOUDPOODLL . "/webservice/rest/server.php";
-            $params["wstoken"]=$token;
-            $params["wsfunction"]='local_cpapi_generate_lang_model';
-            $params["moodlewsrestformat"]='json';
-            $params["passage"]= self::fetch_activity_text($mod);
-            $params["language"]=$mod->get_mod()->ttslanguage;
-            $params["region"]=$conf->awsregion;
+            $url = self::get_cloud_poodll_server() . "/webservice/rest/server.php";
+            $params["wstoken"] = $token;
+            $params["wsfunction"] = 'local_cpapi_generate_lang_model';
+            $params["moodlewsrestformat"] = 'json';
+            $params["passage"] = self::fetch_activity_text($mod);
+            $params["language"] = $mod->get_mod()->ttslanguage;
+            $params["region"] = $conf->awsregion;
 
-            $resp = self::curl_fetch($url,$params);
-            $respObj = json_decode($resp);
+            $resp = self::curl_fetch($url, $params);
+            $respobj = json_decode($resp);
             $ret = new \stdClass();
-            if(isset($respObj->returnCode)){
-                $ret->success = $respObj->returnCode =='0' ? true : false;
-                $ret->payload = $respObj->returnMessage;
+            if(isset($respobj->returnCode)){
+                $ret->success = $respobj->returnCode == '0' ? true : false;
+                $ret->payload = $respobj->returnMessage;
             }else{
-                $ret->success=false;
+                $ret->success = false;
                 $ret->payload = "unknown problem occurred";
             }
             return $ret;
@@ -1281,7 +1301,8 @@ class utils {
     public static function fetch_activity_text($mod) {
 
         $terms = $mod->get_terms();
-        if(!$terms){return "";}
+        if(!$terms){return "";
+        }
         $thetext = "";
         foreach ($terms as $term){
             $thetext .= $term->term . " ";
@@ -1290,16 +1311,16 @@ class utils {
             }
         }
 
-        //f we think its unicodemb4, first test and then get on with it
-        $unicodemb4=self::isUnicodemb4($thetext);
+        // f we think its unicodemb4, first test and then get on with it
+        $unicodemb4 = self::isUnicodemb4($thetext);
 
-        //lowercaseify
+        // lowercaseify
         $thetext = strtolower($thetext);
 
-        //remove any html
+        // remove any html
         $thetext = strip_tags($thetext);
 
-        //replace all line ends with spaces
+        // replace all line ends with spaces
         if($unicodemb4) {
             $thetext = preg_replace('/#\R+#/u', ' ', $thetext);
             $thetext = preg_replace('/\r/u', ' ', $thetext);
@@ -1310,30 +1331,30 @@ class utils {
             $thetext = preg_replace('/\n/', ' ', $thetext);
         }
 
-        //remove punctuation. This is where we needed the unicode flag
-        //see https://stackoverflow.com/questions/5233734/how-to-strip-punctuation-in-php
+        // remove punctuation. This is where we needed the unicode flag
+        // see https://stackoverflow.com/questions/5233734/how-to-strip-punctuation-in-php
         // $thetext = preg_replace("#[[:punct:]]#", "", $thetext);
-        //https://stackoverflow.com/questions/5689918/php-strip-punctuation
+        // https://stackoverflow.com/questions/5689918/php-strip-punctuation
         if($unicodemb4) {
             $thetext = preg_replace("/[[:punct:]]+/u", "", $thetext);
         }else{
             $thetext = preg_replace("/[[:punct:]]+/", "", $thetext);
         }
 
-        //remove bad chars
-        $b_open = "“";
-        $b_close = "”";
-        $b_sopen = '‘';
-        $b_sclose = '’';
-        $bads = array($b_open, $b_close, $b_sopen, $b_sclose);
+        // remove bad chars
+        $bopen = "“";
+        $bclose = "”";
+        $bsopen = '‘';
+        $bsclose = '’';
+        $bads = [$bopen, $bclose, $bsopen, $bsclose];
         foreach ($bads as $bad) {
             $thetext = str_replace($bad, '', $thetext);
         }
 
-        //remove double spaces
-        //split on spaces into words
+        // remove double spaces
+        // split on spaces into words
         $textbits = explode(' ', $thetext);
-        //remove any empty elements
+        // remove any empty elements
         $textbits = array_filter($textbits, function($value) {
             return $value !== '';
         });
@@ -1345,18 +1366,21 @@ class utils {
     * Regexp replace with /u will return empty text if not unicodemb4
     * some DB collations and char sets may do that to us. So we test for that here
     */
-    public static function isUnicodemb4($thetext) {
-        //$testtext = "test text: " . "\xf8\xa1\xa1\xa1\xa1"; //this will fail for sure
+    public static function isunicodemb4($thetext) {
+        // $testtext = "test text: " . "\xf8\xa1\xa1\xa1\xa1"; //this will fail for sure
 
         $thetext = strtolower($thetext);
         $thetext = strip_tags($thetext);
         $testtext = "test text: " . $thetext;
         $test1 = preg_replace('/#\R+#/u', ' ', $testtext);
-        if(empty($test1)){return false;}
+        if(empty($test1)){return false;
+        }
         $test2 = preg_replace('/\r/u', ' ', $testtext);
-        if(empty($test2)){return false;}
+        if(empty($test2)){return false;
+        }
         $test3 = preg_replace('/\n/u', ' ', $testtext);
-        if(empty($test3)){return false;}
+        if(empty($test3)){return false;
+        }
         $test4 = preg_replace("/[[:punct:]]+/u", "", $testtext);
         if(empty($test4)){
             return false;
@@ -1369,18 +1393,18 @@ class utils {
         global $CFG;
         $config = get_config(constants::M_COMPONENT);
 
-        //if this is setup tab we need to add a field to tell it the id of the activity
+        // if this is setup tab we need to add a field to tell it the id of the activity
         if($setuptab) {
             $mform->addElement('hidden', 'n');
             $mform->setType('n', PARAM_INT);
         }
 
-        //-------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------
         // Adding the "general" fieldset, where all the common settings are showed
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('modulename', constants::M_COMPONENT), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('modulename', constants::M_COMPONENT), ['size' => '64']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -1391,131 +1415,129 @@ class utils {
         $mform->addHelpButton('name', 'modulename', constants::M_COMPONENT);
 
         // Adding the standard "intro" and "introformat" fields
-        //we do not support this in tabs
+        // we do not support this in tabs
         if(!$setuptab) {
             $label = get_string('moduleintro');
-            $mform->addElement('editor', 'introeditor', $label, array('rows' => 10), array('maxfiles' => EDITOR_UNLIMITED_FILES,
-                    'noclean' => true, 'context' => $context, 'subdirs' => true));
+            $mform->addElement('editor', 'introeditor', $label, ['rows' => 10], ['maxfiles' => EDITOR_UNLIMITED_FILES,
+                    'noclean' => true, 'context' => $context, 'subdirs' => true]);
             $mform->setType('introeditor', PARAM_RAW); // no XSS prevention here, users must be trusted
             $mform->addElement('advcheckbox', 'showdescription', get_string('showdescription'));
             $mform->addHelpButton('showdescription', 'showdescription');
         }
 
-        $options = utils::get_journeymode_options();
+        $options = self::get_journeymode_options();
         $mform->addElement('select', 'journeymode', get_string('journeymode', constants::M_COMPONENT),
             $options);
-        $mform->setDefault('journeymode',$config->journeymode);
+        $mform->setDefault('journeymode', $config->journeymode);
 
-        $options = utils::get_lang_options();
+        $options = self::get_lang_options();
         $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', constants::M_COMPONENT),
                 $options);
-        $mform->setDefault('ttslanguage',$config->ttslanguage);
+        $mform->setDefault('ttslanguage', $config->ttslanguage);
 
-        $deflangs =  utils::get_rcdic_langs();
-        $options=[];
+        $deflangs = self::get_rcdic_langs();
+        $options = [];
         foreach($deflangs as $deflang){
-            $options[$deflang['code']]=$deflang['name'];
+            $options[$deflang['code']] = $deflang['name'];
         }
 
         $mform->addElement('select', 'deflanguage', get_string('deflanguage', constants::M_COMPONENT),
             $options);
-        $mform->setDefault('deflanguage',$config->deflanguage);
+        $mform->setDefault('deflanguage', $config->deflanguage);
         $mform->addHelpButton('deflanguage', 'deflanguage', constants::M_COMPONENT);
 
         $mform->addElement('selectyesno', 'showlangchooser', get_string('showlangchooser', constants::M_COMPONENT));
-        $mform->setDefault('showlangchooser',$config->showlangchooser);
+        $mform->setDefault('showlangchooser', $config->showlangchooser);
         $mform->addHelpButton('showlangchooser', 'showlangchooser', constants::M_COMPONENT);
 
-        $videooptions =  [0=>get_string('no'),1=>get_string('yes')];
+        $videooptions = [0 => get_string('no'), 1 => get_string('yes')];
         $mform->addElement('select', 'videoexamples', get_string('videoexamples', constants::M_COMPONENT),
             $videooptions, $config->videoexamples);
         $mform->addHelpButton('videoexamples', 'videoexamples', constants::M_COMPONENT);
 
-        $mform->addElement('text', 'learnpoint', get_string('learnpoint', constants::M_COMPONENT), array('size'=>'4'));
-        $mform->setDefault('learnpoint',$config->learnpoint);
+        $mform->addElement('text', 'learnpoint', get_string('learnpoint', constants::M_COMPONENT), ['size' => '4']);
+        $mform->setDefault('learnpoint', $config->learnpoint);
         $mform->setType('learnpoint', PARAM_INT);
         $mform->addHelpButton('learnpoint', 'learnpoint', constants::M_COMPONENT);
 
-        //Attempts
-        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
-            1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5',);
+        // Attempts
+        $attemptoptions = [0 => get_string('unlimited', constants::M_COMPONENT),
+            1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', ];
         $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
 
-        $t_options = utils::fetch_options_transcribers();
+        $toptions = self::fetch_options_transcribers();
         $mform->addElement('select', 'transcriber', get_string('transcriber', constants::M_COMPONENT),
-            $t_options,$config->transcriber);
+            $toptions, $config->transcriber);
 
-        $mform->addElement('hidden', 'skipreview',0);
-        $mform->setType('skipreview',PARAM_INT);
+        $mform->addElement('hidden', 'skipreview', 0);
+        $mform->setType('skipreview', PARAM_INT);
 
-        $mform->addElement('hidden', 'finishedstepmsg','');
-        $mform->addElement('hidden', 'completedstepmsg','');
-        $mform->setType('finishedstepmsg',PARAM_TEXT);
-        $mform->setType('completedstepmsg',PARAM_TEXT);
+        $mform->addElement('hidden', 'finishedstepmsg', '');
+        $mform->addElement('hidden', 'completedstepmsg', '');
+        $mform->setType('finishedstepmsg', PARAM_TEXT);
+        $mform->setType('completedstepmsg', PARAM_TEXT);
 
           // Advanced.
           $mform->addElement('header', 'advancedheader', get_string('advancedheader', constants::M_COMPONENT));
 
-
-        //master instance or not
+        // master instance or not
         if(!has_capability('mod/wordcards:push', $context)){
-            $mform->addElement('hidden','masterinstance');
+            $mform->addElement('hidden', 'masterinstance');
             $mform->setType('masterinstance', PARAM_INT);
             $mform->setDefault('masterinstance', constants::M_PUSHMODE_NONE);
         }else {
             $pushoptions = self::get_master_options();
-            $mform->addElement('static', 'masterdescription', '',get_string('masterinstance_details',constants::M_COMPONENT));
+            $mform->addElement('static', 'masterdescription', '', get_string('masterinstance_details', constants::M_COMPONENT));
             $mform->addElement('select', 'masterinstance', get_string('masterinstance', constants::M_COMPONENT),
-                     $pushoptions,constants::M_PUSHMODE_NONE);
+                     $pushoptions, constants::M_PUSHMODE_NONE);
         }
- 
-        $mform->addElement('header', 'stepsmodeoptions', get_string('stepsmodeoptions',constants::M_COMPONENT));
+
+        $mform->addElement('header', 'stepsmodeoptions', get_string('stepsmodeoptions', constants::M_COMPONENT));
         $mform->setExpanded('stepsmodeoptions');
-        $mform->addElement('static', 'description', '',get_string('stepsmodeoptions_details',constants::M_COMPONENT));
+        $mform->addElement('static', 'description', '', get_string('stepsmodeoptions_details', constants::M_COMPONENT));
 
-
-        //options for practicetype and term count
-        $ptype_options_learn = self::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
-        $ptype_options_all =self::get_practicetype_options();
-        //remove wordpreview from "all" options .. because it does not make much sense to preview after learning
-        unset($ptype_options_all[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW]);
-        unset($ptype_options_all[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV]);
-        $termcount_options = [4 => 4, 5 => 5, 6 => 6, 7 => 7,8 => 8,9 => 9,10 => 10,11 => 11,12 => 12,13 => 13,14 => 14,15 => 15];
+        // options for practicetype and term count
+        $ptypeoptionslearn = self::get_practicetype_options(\mod_wordcards_module::WORDPOOL_LEARN);
+        $ptypeoptionsall = self::get_practicetype_options();
+        // remove wordpreview from "all" options .. because it does not make much sense to preview after learning
+        unset($ptypeoptionsall[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW]);
+        unset($ptypeoptionsall[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV]);
+        $termcountoptions = [4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10, 11 => 11, 12 => 12, 13 => 13, 14 => 14, 15 => 15];
 
         $mform->addElement('select', 'step1practicetype', get_string('step1practicetype', constants::M_COMPONENT),
-                $ptype_options_learn);
-        $mform->setDefault('step1practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHSELECT);       
-        $mform->addElement('select', 'step1termcount', get_string('step1termcount', constants::M_COMPONENT), $termcount_options, 4);
-        $mform->disabledIf('step1termcount', 'step1practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW);
-        
+                $ptypeoptionslearn);
+        $mform->setDefault('step1practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHSELECT);
+        $mform->addElement('select', 'step1termcount', get_string('step1termcount', constants::M_COMPONENT), $termcountoptions, 4);
+        $mform->disabledIf('step1termcount', 'step1practicetype', 'eq', \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW);
+
         $mform->addElement('select', 'step2practicetype', get_string('step2practicetype', constants::M_COMPONENT),
-                $ptype_options_all);
-        $mform->setDefault('step2practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHTYPE);         
-        $mform->addElement('select', 'step2termcount', get_string('step2termcount', constants::M_COMPONENT), $termcount_options, 4);
-        $mform->disabledIf('step2termcount', 'step2practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+                $ptypeoptionsall);
+        $mform->setDefault('step2practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHTYPE);
+        $mform->addElement('select', 'step2termcount', get_string('step2termcount', constants::M_COMPONENT), $termcountoptions, 4);
+        $mform->disabledIf('step2termcount', 'step2practicetype', 'eq', \mod_wordcards_module::PRACTICETYPE_NONE);
 
         $mform->addElement('select', 'step3practicetype', get_string('step3practicetype', constants::M_COMPONENT),
-                $ptype_options_all);
-        $mform->setDefault('step3practicetype', \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE);         
-        $mform->addElement('select', 'step3termcount', get_string('step3termcount', constants::M_COMPONENT), $termcount_options, 4);
-        $mform->disabledIf('step3termcount', 'step3practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+                $ptypeoptionsall);
+        $mform->setDefault('step3practicetype', \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE);
+        $mform->addElement('select', 'step3termcount', get_string('step3termcount', constants::M_COMPONENT), $termcountoptions, 4);
+        $mform->disabledIf('step3termcount', 'step3practicetype', 'eq', \mod_wordcards_module::PRACTICETYPE_NONE);
 
         $mform->addElement('select', 'step4practicetype', get_string('step4practicetype', constants::M_COMPONENT),
-                $ptype_options_all);
-        $mform->setDefault('step4practicetype', \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS);          
-        $mform->addElement('select', 'step4termcount', get_string('step4termcount', constants::M_COMPONENT), $termcount_options, 4);
-        $mform->disabledIf('step4termcount', 'step4practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+                $ptypeoptionsall);
+        $mform->setDefault('step4practicetype', \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS);
+        $mform->addElement('select', 'step4termcount', get_string('step4termcount', constants::M_COMPONENT), $termcountoptions, 4);
+        $mform->disabledIf('step4termcount', 'step4practicetype', 'eq', \mod_wordcards_module::PRACTICETYPE_NONE);
 
         $mform->addElement('select', 'step5practicetype', get_string('step5practicetype', constants::M_COMPONENT),
-                $ptype_options_all);
-        $mform->setDefault('step5practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);        
-        $mform->addElement('select', 'step5termcount', get_string('step5termcount', constants::M_COMPONENT), $termcount_options, 4);
-        $mform->disabledIf('step5termcount', 'step5practicetype', 'eq',\mod_wordcards_module::PRACTICETYPE_NONE);
+                $ptypeoptionsall);
+        $mform->setDefault('step5practicetype', \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV);
+        $mform->addElement('select', 'step5termcount', get_string('step5termcount', constants::M_COMPONENT), $termcountoptions, 4);
+        $mform->disabledIf('step5termcount', 'step5practicetype', 'eq', \mod_wordcards_module::PRACTICETYPE_NONE);
 
-        //Free Mode Options
-        $mform->addElement('header', 'freemodeoptions', get_string('freemodeoptions',constants::M_COMPONENT));
+        // Free Mode Options
+        $mform->addElement('header', 'freemodeoptions', get_string('freemodeoptions', constants::M_COMPONENT));
         $mform->setExpanded('freemodeoptions');
-        $mform->addElement('static', 'description', '',get_string('freemodeoptions_details',constants::M_COMPONENT));
+        $mform->addElement('static', 'description', '', get_string('freemodeoptions_details', constants::M_COMPONENT));
 
         $freemodeoptions = constants::FREEMODE_ACTIVITIES;
         foreach($freemodeoptions as $theoption){
@@ -1523,14 +1545,14 @@ class utils {
             $mform->setDefault('freemode_' . $theoption, $config->{'freemode_' . $theoption});
         }
 
-        //practice type options
+        // practice type options
         $name = 'learningactivityoptions';
         $label = get_string($name, 'wordcards');
         $mform->addElement('header', $name, $label);
         $mform->setExpanded($name, false);
-        $mform->addElement('static', 'description', '',get_string('learningactivityoptions_details',constants::M_COMPONENT));
+        $mform->addElement('static', 'description', '', get_string('learningactivityoptions_details', constants::M_COMPONENT));
 
-        //Show images on task flip screen
+        // Show images on task flip screen
         $mform->addElement('selectyesno', 'showimageflip', get_string('showimageflip', constants::M_COMPONENT));
         $mform->setDefault('showimageflip', $config->showimageflip);
 
@@ -1552,21 +1574,20 @@ class utils {
 
         $scoptions = self::fetch_options_speechcards();
         $mform->addElement('select', 'scoptions', get_string('scoptions', constants::M_COMPONENT),
-                $scoptions, $config->scoptions);    
+                $scoptions, $config->scoptions);
 
         // show activity open closes
-        $dateoptions = array('optional' => true);
+        $dateoptions = ['optional' => true];
         $name = 'activityopenscloses';
         $label = get_string($name, 'wordcards');
         $mform->addElement('header', $name, $label);
         $mform->setExpanded($name, false);
-        //-----------------------------------------------------------------------------
+        // -----------------------------------------------------------------------------
 
         $name = 'viewstart';
         $label = get_string($name, "wordcards");
         $mform->addElement('date_time_selector', $name, $label, $dateoptions);
         $mform->addHelpButton($name, $name, constants::M_COMPONENT);
-        
 
         $name = 'viewend';
         $label = get_string($name, "wordcards");
@@ -1574,14 +1595,14 @@ class utils {
         $mform->addHelpButton($name, $name, constants::M_COMPONENT);
     } //end of add_mform_elements
 
-    public static function pack_freemode_options($module){
-        
+    public static function pack_freemode_options($module) {
+
         $freemodeactivities = constants::FREEMODE_ACTIVITIES;
-        $freemodeoptions= new \stdClass();
-        $selectedactivities=[];
+        $freemodeoptions = new \stdClass();
+        $selectedactivities = [];
         foreach($freemodeactivities as $activity){
-            if(isset($module->{'freemode_' . $activity}) && $module->{'freemode_' . $activity}==1){
-                $selectedactivities[]=$activity;
+            if(isset($module->{'freemode_' . $activity}) && $module->{'freemode_' . $activity} == 1){
+                $selectedactivities[] = $activity;
             }
         }
         $freemodeoptions->activities = $selectedactivities;
@@ -1589,18 +1610,18 @@ class utils {
         return $jsondata;
     }
 
-    public static function unpack_freemode_options($data){
-       
+    public static function unpack_freemode_options($data) {
+
         if (isset($data['freemodeoptions']) && self::is_json($data['freemodeoptions'])){
-            //first uncheck all the activity boxes
+            // first uncheck all the activity boxes
             $freemodeactivities = constants::FREEMODE_ACTIVITIES;
             foreach($freemodeactivities as $theactivity){
-                $data['freemode_' . $theactivity]=0;
+                $data['freemode_' . $theactivity] = 0;
             }
-            //then check the selected ones
-            $freemodeoptions=json_decode($data['freemodeoptions']);
+            // then check the selected ones
+            $freemodeoptions = json_decode($data['freemodeoptions']);
             foreach($freemodeoptions->activities as $activity){
-                $data['freemode_' . $activity]=1;
+                $data['freemode_' . $activity] = 1;
             }
             unset($data['freemodeoptions']);
         }
@@ -1614,15 +1635,15 @@ class utils {
             constants::M_PUSHMODE_SITE => get_string('pushmode_site', constants::M_COMPONENT)];
     }
 
-    //What multi-attempt grading approach
+    // What multi-attempt grading approach
     public static function get_grade_options() {
-        return array(
+        return [
             constants::M_GRADELATEST => get_string("gradelatest", constants::M_COMPONENT),
-            constants::M_GRADEHIGHEST => get_string("gradehighest", constants::M_COMPONENT)
-        );
+            constants::M_GRADEHIGHEST => get_string("gradehighest", constants::M_COMPONENT),
+        ];
     }
 
-    public static function save_newterm($modid,$term, $definition,$translations,$sourcedef,$modelsentence){
+    public static function save_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence) {
 
         global $DB;
         $mod = \mod_wordcards_module::get_by_modid($modid);
@@ -1634,20 +1655,19 @@ class utils {
         $insertdata->translations = self::super_trim($translations);
         $insertdata->sourcedef = self::super_trim($sourcedef);
         $insertdata->model_sentence = self::super_trim($modelsentence);
-        $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+        $insertdata->ttsvoice = self::fetch_auto_voice($mod->get_mod()->ttslanguage);
         $ret = $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
         if($ret && !empty($insertdata->model_sentence)){
-            $DB->update_record('wordcards', array('id' => $modid, 'hashisold' => 1));
+            $DB->update_record('wordcards', ['id' => $modid, 'hashisold' => 1]);
         }
         return $ret;
     }
 
-    public static function get_rcdic_langs($selected='en', $other=true)
-    {
+    public static function get_rcdic_langs($selected='en', $other=true) {
 
         $langdefs = [];
         $langdefs[] = ['code' => 'ar', 'name' => self::get_lang_name('ar')];
-        //  $langdefs[] = ['code'=>'de','name'=>self::get_lang_name('de')];
+        // $langdefs[] = ['code'=>'de','name'=>self::get_lang_name('de')];
         $langdefs[] = ['code' => 'en', 'name' => self::get_lang_name('en')];
         $langdefs[] = ['code' => 'es', 'name' => self::get_lang_name('es')];
         $langdefs[] = ['code' => 'fr', 'name' => self::get_lang_name('fr')];
@@ -1661,257 +1681,276 @@ class utils {
         $langdefs[] = ['code' => 'zh', 'name' => self::get_lang_name('zh')];
         $langdefs[] = ['code' => 'zh_tw', 'name' => self::get_lang_name('zh_tw')];
 
-        //add ms dictionary languages
+        // add ms dictionary languages
         $langdefs = self::get_msdic_langs($langdefs);
 
         if ($other) {
             $langdefs[] = ['code' => constants::M_DEFLANG_OTHER, 'name' => self::get_lang_name(constants::M_DEFLANG_OTHER)];
         }
-        $default_set = false;
-        for($i=0;$i<count($langdefs);$i++){
-            if($langdefs[$i]['code']==$selected){
-                $langdefs[$i]['selected']=true;
-                $default_set = true;
+        $defaultset = false;
+        for($i = 0; $i < count($langdefs); $i++){
+            if($langdefs[$i]['code'] == $selected){
+                $langdefs[$i]['selected'] = true;
+                $defaultset = true;
                 break;
             }
         }
-        if(!$default_set){$langdefs[1]['selected']=true;}
+        if(!$defaultset){$langdefs[1]['selected'] = true;
+        }
         return $langdefs;
     }
 
-    //in most cases the rcdic lang code is two letters, but for russian it is rus and for Chinese there is a zh_tw
-    //but we dont have an aws zh_tw so we use zh
-    public static function fetch_rcdic_lang($ttslang)
-    {
-       $langcode = utils::fetch_short_lang($ttslang);
-       if($langcode=='ru'){
-           $langcode = 'rus';
-       }
-       return $langcode;
+    // in most cases the rcdic lang code is two letters, but for russian it is rus and for Chinese there is a zh_tw
+    // but we dont have an aws zh_tw so we use zh
+    public static function fetch_rcdic_lang($ttslang) {
+        $langcode = self::fetch_short_lang($ttslang);
+        if($langcode == 'ru'){
+            $langcode = 'rus';
+        }
+        return $langcode;
     }
 
-    public static function get_msdic_langs($langdefs){
-       // $langdefs = [];
-        $langdefs[] = ['code' => 'af', 'name' =>'Afrikaans'];
-        $langdefs[] = ['code' => 'bn', 'name' =>'Bangla'];
-        $langdefs[] = ['code' => 'bs', 'name' =>'Bosnian (Latin)'];
-        $langdefs[] = ['code' => 'bg', 'name' =>'Bulgarian'];
-        $langdefs[] = ['code' => 'ca', 'name' =>'Catalan'];
-        $langdefs[] = ['code' => 'hr', 'name' =>'Croatian'];
-        $langdefs[] = ['code' => 'cs', 'name' =>'Czech'];
-        $langdefs[] = ['code' => 'da', 'name' =>'Danish'];
-        $langdefs[] = ['code' => 'nl', 'name' =>'Dutch'];
-        $langdefs[] = ['code' => 'fi', 'name' =>'Finnish'];
-        $langdefs[] = ['code' => 'de', 'name' =>'German'];
-        $langdefs[] = ['code' => 'el', 'name' =>'Greek'];
-        $langdefs[] = ['code' => 'ht', 'name' =>'Haitian Creole'];
-        $langdefs[] = ['code' => 'he', 'name' =>'Hebrew'];
-        $langdefs[] = ['code' => 'hi', 'name' =>'Hindi'];
-        $langdefs[] = ['code' => 'hu', 'name' =>'Hungarian'];
-        $langdefs[] = ['code' => 'is', 'name' =>'Icelandic'];
-        $langdefs[] = ['code' => 'it', 'name' =>'Italian'];
-        $langdefs[] = ['code' => 'lv', 'name' =>'Latvian'];
-        $langdefs[] = ['code' => 'lt', 'name' =>'Lithuanian'];
-        $langdefs[] = ['code' => 'ms', 'name' =>'Malay (Latin)'];
-        $langdefs[] = ['code' => 'mt', 'name' =>'Maltese'];
-        $langdefs[] = ['code' => 'nb', 'name' =>'Norwegian'];
-        $langdefs[] = ['code' => 'fa', 'name' =>'Persian'];
-        $langdefs[] = ['code' => 'pl', 'name' =>'Polish'];
-        $langdefs[] = ['code' => 'ro', 'name' =>'Romanian'];
-        $langdefs[] = ['code' => 'sr', 'name' =>'Serbian (Latin)'];
-        $langdefs[] = ['code' => 'sk', 'name' =>'Slovak'];
-        $langdefs[] = ['code' => 'sl', 'name' =>'Slovenian'];
-        $langdefs[] = ['code' => 'sw', 'name' =>'Swahili (Latin)'];
-        $langdefs[] = ['code' => 'sv', 'name' =>'Swedish'];
-        $langdefs[] = ['code' => 'ta', 'name' =>'Tamil'];
-        $langdefs[] = ['code' => 'tr', 'name' =>'Turkish'];
-        $langdefs[] = ['code' => 'uk', 'name' =>'Ukrainian'];
-        $langdefs[] = ['code' => 'ur', 'name' =>'Urdu'];
-        $langdefs[] = ['code' => 'cy', 'name' =>'Welsh'];
+    public static function get_msdic_langs($langdefs) {
+        // $langdefs = [];
+        $langdefs[] = ['code' => 'af', 'name' => 'Afrikaans'];
+        $langdefs[] = ['code' => 'bn', 'name' => 'Bangla'];
+        $langdefs[] = ['code' => 'bs', 'name' => 'Bosnian (Latin)'];
+        $langdefs[] = ['code' => 'bg', 'name' => 'Bulgarian'];
+        $langdefs[] = ['code' => 'ca', 'name' => 'Catalan'];
+        $langdefs[] = ['code' => 'hr', 'name' => 'Croatian'];
+        $langdefs[] = ['code' => 'cs', 'name' => 'Czech'];
+        $langdefs[] = ['code' => 'da', 'name' => 'Danish'];
+        $langdefs[] = ['code' => 'nl', 'name' => 'Dutch'];
+        $langdefs[] = ['code' => 'fi', 'name' => 'Finnish'];
+        $langdefs[] = ['code' => 'de', 'name' => 'German'];
+        $langdefs[] = ['code' => 'el', 'name' => 'Greek'];
+        $langdefs[] = ['code' => 'ht', 'name' => 'Haitian Creole'];
+        $langdefs[] = ['code' => 'he', 'name' => 'Hebrew'];
+        $langdefs[] = ['code' => 'hi', 'name' => 'Hindi'];
+        $langdefs[] = ['code' => 'hu', 'name' => 'Hungarian'];
+        $langdefs[] = ['code' => 'is', 'name' => 'Icelandic'];
+        $langdefs[] = ['code' => 'it', 'name' => 'Italian'];
+        $langdefs[] = ['code' => 'lv', 'name' => 'Latvian'];
+        $langdefs[] = ['code' => 'lt', 'name' => 'Lithuanian'];
+        $langdefs[] = ['code' => 'ms', 'name' => 'Malay (Latin)'];
+        $langdefs[] = ['code' => 'mt', 'name' => 'Maltese'];
+        $langdefs[] = ['code' => 'nb', 'name' => 'Norwegian'];
+        $langdefs[] = ['code' => 'fa', 'name' => 'Persian'];
+        $langdefs[] = ['code' => 'pl', 'name' => 'Polish'];
+        $langdefs[] = ['code' => 'ro', 'name' => 'Romanian'];
+        $langdefs[] = ['code' => 'sr', 'name' => 'Serbian (Latin)'];
+        $langdefs[] = ['code' => 'sk', 'name' => 'Slovak'];
+        $langdefs[] = ['code' => 'sl', 'name' => 'Slovenian'];
+        $langdefs[] = ['code' => 'sw', 'name' => 'Swahili (Latin)'];
+        $langdefs[] = ['code' => 'sv', 'name' => 'Swedish'];
+        $langdefs[] = ['code' => 'ta', 'name' => 'Tamil'];
+        $langdefs[] = ['code' => 'tr', 'name' => 'Turkish'];
+        $langdefs[] = ['code' => 'uk', 'name' => 'Ukrainian'];
+        $langdefs[] = ['code' => 'ur', 'name' => 'Urdu'];
+        $langdefs[] = ['code' => 'cy', 'name' => 'Welsh'];
         return $langdefs;
     }
 
-    public static function get_youglish_config($ttslang){
+    public static function get_youglish_config($ttslang) {
 
-            $langs= array(
-                constants::M_LANG_ARAE =>  ['lang'=>'Arabic','accent'=>'eg'],
-                constants::M_LANG_ARSA =>  ['lang'=>'Arabic','accent'=>'sa'],
-                constants::M_LANG_DEDE => ['lang'=>'German','accent'=>false],
-                constants::M_LANG_DECH => ['lang'=>'German','accent'=>false],
-                constants::M_LANG_DEAT => ['lang'=>'German','accent'=>false],
-                constants::M_LANG_ENUS =>  ['lang'=>'English','accent'=>'us'],
-                constants::M_LANG_ENGB => ['lang'=>'English','accent'=>'uk'],
-                constants::M_LANG_ENAU => ['lang'=>'English','accent'=>'aus'],
-                constants::M_LANG_ENIN =>  ['lang'=>'English','accent'=>'uk'],
-                constants::M_LANG_ENIE => ['lang'=>'English','accent'=>'ie'],
-                constants::M_LANG_ENWL =>  ['lang'=>'English','accent'=>'uk'],
-                constants::M_LANG_ENAB => ['lang'=>'English','accent'=>'sco'],
-                constants::M_LANG_ESUS => ['lang'=>'Spanish','accent'=>'la'],
-                constants::M_LANG_ESES => ['lang'=>'Spanish','accent'=>'es'],
-                constants::M_LANG_FAIR => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_FILPH => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_FRCA =>  ['lang'=>'French','accent'=>'qc'],
-                constants::M_LANG_FRFR => ['lang'=>'French','accent'=>'fr'],
-                constants::M_LANG_HIIN => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_HEIL => ['lang'=>'Hebrew','accent'=>false],
-                constants::M_LANG_IDID => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_ITIT => ['lang'=>'Italian','accent'=>false],
-                constants::M_LANG_JAJP => ['lang'=>'Japanese','accent'=>false],
-                constants::M_LANG_KOKR => ['lang'=>'Korean','accent'=>false],
-                constants::M_LANG_MSMY => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_NLNL => ['lang'=>'Dutch','accent'=>'nl'],
-                constants::M_LANG_NLBE => ['lang'=>'Dutch','accent'=>'be'],
-                constants::M_LANG_PTBR => ['lang'=>'Portuguese','accent'=>'br'],
-                constants::M_LANG_PTPT => ['lang'=>'Portuguese','accent'=>'pt'],
-                constants::M_LANG_RURU => ['lang'=>'Russian','accent'=>false],
-                constants::M_LANG_TAIN => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_TEIN => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_TRTR => ['lang'=>'Turkish','accent'=>false],
-                constants::M_LANG_ZHCN =>  ['lang'=>'Chinese','accent'=>'cn'],
-                constants::M_LANG_NONO => ['lang'=>false,'accent'=>false],
-                //constants::M_LANG_NBNO => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_PLPL => ['lang'=>'Polish','accent'=>false],
-                constants::M_LANG_RORO => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_SVSE => ['lang'=>'Swedish','accent'=>false],
-                constants::M_LANG_UKUA => ['lang'=>'Ukrainian','accent'=>false],
-                constants::M_LANG_EUES => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_FIFI => ['lang'=>false,'accent'=>false],
-                constants::M_LANG_HUHU => ['lang'=>false,'accent'=>false],
-            );
+            $langs = [
+                constants::M_LANG_ARAE => ['lang' => 'Arabic', 'accent' => 'eg'],
+                constants::M_LANG_ARSA => ['lang' => 'Arabic', 'accent' => 'sa'],
+                constants::M_LANG_DEDE => ['lang' => 'German', 'accent' => false],
+                constants::M_LANG_DECH => ['lang' => 'German', 'accent' => false],
+                constants::M_LANG_DEAT => ['lang' => 'German', 'accent' => false],
+                constants::M_LANG_ENUS => ['lang' => 'English', 'accent' => 'us'],
+                constants::M_LANG_ENGB => ['lang' => 'English', 'accent' => 'uk'],
+                constants::M_LANG_ENAU => ['lang' => 'English', 'accent' => 'aus'],
+                constants::M_LANG_ENIN => ['lang' => 'English', 'accent' => 'uk'],
+                constants::M_LANG_ENIE => ['lang' => 'English', 'accent' => 'ie'],
+                constants::M_LANG_ENWL => ['lang' => 'English', 'accent' => 'uk'],
+                constants::M_LANG_ENAB => ['lang' => 'English', 'accent' => 'sco'],
+                constants::M_LANG_ESUS => ['lang' => 'Spanish', 'accent' => 'la'],
+                constants::M_LANG_ESES => ['lang' => 'Spanish', 'accent' => 'es'],
+                constants::M_LANG_FAIR => ['lang' => false, 'accent' => false],
+                constants::M_LANG_FILPH => ['lang' => false, 'accent' => false],
+                constants::M_LANG_FRCA => ['lang' => 'French', 'accent' => 'qc'],
+                constants::M_LANG_FRFR => ['lang' => 'French', 'accent' => 'fr'],
+                constants::M_LANG_HIIN => ['lang' => false, 'accent' => false],
+                constants::M_LANG_HEIL => ['lang' => 'Hebrew', 'accent' => false],
+                constants::M_LANG_IDID => ['lang' => false, 'accent' => false],
+                constants::M_LANG_ITIT => ['lang' => 'Italian', 'accent' => false],
+                constants::M_LANG_JAJP => ['lang' => 'Japanese', 'accent' => false],
+                constants::M_LANG_KOKR => ['lang' => 'Korean', 'accent' => false],
+                constants::M_LANG_MSMY => ['lang' => false, 'accent' => false],
+                constants::M_LANG_NLNL => ['lang' => 'Dutch', 'accent' => 'nl'],
+                constants::M_LANG_NLBE => ['lang' => 'Dutch', 'accent' => 'be'],
+                constants::M_LANG_PTBR => ['lang' => 'Portuguese', 'accent' => 'br'],
+                constants::M_LANG_PTPT => ['lang' => 'Portuguese', 'accent' => 'pt'],
+                constants::M_LANG_RURU => ['lang' => 'Russian', 'accent' => false],
+                constants::M_LANG_TAIN => ['lang' => false, 'accent' => false],
+                constants::M_LANG_TEIN => ['lang' => false, 'accent' => false],
+                constants::M_LANG_TRTR => ['lang' => 'Turkish', 'accent' => false],
+                constants::M_LANG_ZHCN => ['lang' => 'Chinese', 'accent' => 'cn'],
+                constants::M_LANG_NONO => ['lang' => false, 'accent' => false],
+                // constants::M_LANG_NBNO => ['lang'=>false,'accent'=>false],
+                constants::M_LANG_PLPL => ['lang' => 'Polish', 'accent' => false],
+                constants::M_LANG_RORO => ['lang' => false, 'accent' => false],
+                constants::M_LANG_SVSE => ['lang' => 'Swedish', 'accent' => false],
+                constants::M_LANG_UKUA => ['lang' => 'Ukrainian', 'accent' => false],
+                constants::M_LANG_EUES => ['lang' => false, 'accent' => false],
+                constants::M_LANG_FIFI => ['lang' => false, 'accent' => false],
+                constants::M_LANG_HUHU => ['lang' => false, 'accent' => false],
+            ];
 
-            if(array_key_exists($ttslang,$langs)) {
-                $youglish= $langs[$ttslang];
+            if(array_key_exists($ttslang, $langs)) {
+                $youglish = $langs[$ttslang];
                 $youglish['token'] = self::fetch_youglish_token();
             }else{
-                $youglish= ['lang'=>false,'accent'=>false,'token'=>false];
+                $youglish = ['lang' => false, 'accent' => false, 'token' => false];
             }
             return $youglish;
     }
 
-    public static function get_lexicala_langs($selected='en'){
-        $langdefs=[];
-        $langdefs[] = ['code'=>'af','name'=>'Afrikaans'];
-        $langdefs[] = ['code'=>'ar','name'=>'Arabic'];
-        $langdefs[] = ['code'=>'az','name'=>'Azerbaijani'];
-        $langdefs[] = ['code'=>'bg','name'=>'Bulgarian'];
-        $langdefs[] = ['code'=>'br','name'=>'Breton'];
-        $langdefs[] = ['code'=>'ca','name'=>'Catalan'];
-        $langdefs[] = ['code'=>'cs','name'=>'Czech'];
-        $langdefs[] = ['code'=>'de','name'=>'German'];
-        $langdefs[] = ['code'=>'dk','name'=>'Danish'];
-        $langdefs[] = ['code'=>'el','name'=>'Greek'];
-        $langdefs[] = ['code'=>'en','name'=>'English'];
-        $langdefs[] = ['code'=>'es','name'=>'Spanish'];
-        $langdefs[] = ['code'=>'et','name'=>'Estonian'];
-        $langdefs[] = ['code'=>'fa','name'=>'Persian'];
-        $langdefs[] = ['code'=>'fi','name'=>'Finnish'];
-        $langdefs[] = ['code'=>'fr','name'=>'French'];
-        $langdefs[] = ['code'=>'fy','name'=>'Western Frisian'];
-        $langdefs[] = ['code'=>'he','name'=>'Hebrew'];
-        $langdefs[] = ['code'=>'hi','name'=>'Hindi'];
-        $langdefs[] = ['code'=>'hr','name'=>'Croatian'];
-        $langdefs[] = ['code'=>'hu','name'=>'Hungarian'];
-        $langdefs[] = ['code'=>'is','name'=>'Icelandic'];
-        $langdefs[] = ['code'=>'it','name'=>'Italian'];
-        $langdefs[] = ['code'=>'ja','name'=>'Japanese'];
-        $langdefs[] = ['code'=>'ko','name'=>'Korean'];
-        $langdefs[] = ['code'=>'lt','name'=>'Lithuanian'];
-        $langdefs[] = ['code'=>'lv','name'=>'Latvian'];
-        $langdefs[] = ['code'=>'ml','name'=>'Burmese'];
-        $langdefs[] = ['code'=>'nl','name'=>'Dutch'];
-        $langdefs[] = ['code'=>'no','name'=>'Norwegian'];
-        $langdefs[] = ['code'=>'pl','name'=>'Polish'];
-        $langdefs[] = ['code'=>'prs','name'=>'English'];
-        $langdefs[] = ['code'=>'ps','name'=>'Pushto'];
-        $langdefs[] = ['code'=>'pt','name'=>'Portuguese'];
-        $langdefs[] = ['code'=>'ro','name'=>'Romanian'];
-        $langdefs[] = ['code'=>'ru','name'=>'Russian'];
-        $langdefs[] = ['code'=>'sk','name'=>'Slovak'];
-        $langdefs[] = ['code'=>'sl','name'=>'Slovenian'];
-        $langdefs[] = ['code'=>'sr','name'=>'Serbian'];
-        $langdefs[] = ['code'=>'sv','name'=>'Swedish'];
-        $langdefs[] = ['code'=>'th','name'=>'Thai'];
-        $langdefs[] = ['code'=>'tr','name'=>'Turkish'];
-        $langdefs[] = ['code'=>'tw','name'=>'Twi'];
-        $langdefs[] = ['code'=>'uk','name'=>'Ukranian'];
-        $langdefs[] = ['code'=>'ur','name'=>'Urdu'];
-        $langdefs[] = ['code'=>'vi','name'=>'Vietnamese'];
-        $langdefs[] = ['code'=>'zh','name'=>'Chinese'];
-        $default_set = false;
-        for($i=0;$i<count($langdefs);$i++){
-            if($langdefs[$i]['code']==$selected){
-                $langdefs[$i]['selected']=true;
-                $default_set = true;
+    public static function get_lexicala_langs($selected='en') {
+        $langdefs = [];
+        $langdefs[] = ['code' => 'af', 'name' => 'Afrikaans'];
+        $langdefs[] = ['code' => 'ar', 'name' => 'Arabic'];
+        $langdefs[] = ['code' => 'az', 'name' => 'Azerbaijani'];
+        $langdefs[] = ['code' => 'bg', 'name' => 'Bulgarian'];
+        $langdefs[] = ['code' => 'br', 'name' => 'Breton'];
+        $langdefs[] = ['code' => 'ca', 'name' => 'Catalan'];
+        $langdefs[] = ['code' => 'cs', 'name' => 'Czech'];
+        $langdefs[] = ['code' => 'de', 'name' => 'German'];
+        $langdefs[] = ['code' => 'dk', 'name' => 'Danish'];
+        $langdefs[] = ['code' => 'el', 'name' => 'Greek'];
+        $langdefs[] = ['code' => 'en', 'name' => 'English'];
+        $langdefs[] = ['code' => 'es', 'name' => 'Spanish'];
+        $langdefs[] = ['code' => 'et', 'name' => 'Estonian'];
+        $langdefs[] = ['code' => 'fa', 'name' => 'Persian'];
+        $langdefs[] = ['code' => 'fi', 'name' => 'Finnish'];
+        $langdefs[] = ['code' => 'fr', 'name' => 'French'];
+        $langdefs[] = ['code' => 'fy', 'name' => 'Western Frisian'];
+        $langdefs[] = ['code' => 'he', 'name' => 'Hebrew'];
+        $langdefs[] = ['code' => 'hi', 'name' => 'Hindi'];
+        $langdefs[] = ['code' => 'hr', 'name' => 'Croatian'];
+        $langdefs[] = ['code' => 'hu', 'name' => 'Hungarian'];
+        $langdefs[] = ['code' => 'is', 'name' => 'Icelandic'];
+        $langdefs[] = ['code' => 'it', 'name' => 'Italian'];
+        $langdefs[] = ['code' => 'ja', 'name' => 'Japanese'];
+        $langdefs[] = ['code' => 'ko', 'name' => 'Korean'];
+        $langdefs[] = ['code' => 'lt', 'name' => 'Lithuanian'];
+        $langdefs[] = ['code' => 'lv', 'name' => 'Latvian'];
+        $langdefs[] = ['code' => 'ml', 'name' => 'Burmese'];
+        $langdefs[] = ['code' => 'nl', 'name' => 'Dutch'];
+        $langdefs[] = ['code' => 'no', 'name' => 'Norwegian'];
+        $langdefs[] = ['code' => 'pl', 'name' => 'Polish'];
+        $langdefs[] = ['code' => 'prs', 'name' => 'English'];
+        $langdefs[] = ['code' => 'ps', 'name' => 'Pushto'];
+        $langdefs[] = ['code' => 'pt', 'name' => 'Portuguese'];
+        $langdefs[] = ['code' => 'ro', 'name' => 'Romanian'];
+        $langdefs[] = ['code' => 'ru', 'name' => 'Russian'];
+        $langdefs[] = ['code' => 'sk', 'name' => 'Slovak'];
+        $langdefs[] = ['code' => 'sl', 'name' => 'Slovenian'];
+        $langdefs[] = ['code' => 'sr', 'name' => 'Serbian'];
+        $langdefs[] = ['code' => 'sv', 'name' => 'Swedish'];
+        $langdefs[] = ['code' => 'th', 'name' => 'Thai'];
+        $langdefs[] = ['code' => 'tr', 'name' => 'Turkish'];
+        $langdefs[] = ['code' => 'tw', 'name' => 'Twi'];
+        $langdefs[] = ['code' => 'uk', 'name' => 'Ukranian'];
+        $langdefs[] = ['code' => 'ur', 'name' => 'Urdu'];
+        $langdefs[] = ['code' => 'vi', 'name' => 'Vietnamese'];
+        $langdefs[] = ['code' => 'zh', 'name' => 'Chinese'];
+        $defaultset = false;
+        for($i = 0; $i < count($langdefs); $i++){
+            if($langdefs[$i]['code'] == $selected){
+                $langdefs[$i]['selected'] = true;
+                $defaultset = true;
                 break;
             }
         }
-        if(!$default_set){$langdefs[10]['selected']=true;}
+        if(!$defaultset){$langdefs[10]['selected'] = true;
+        }
         return $langdefs;
     }
 
-    public static function get_lang_name($fulllangcode){
-        if(mb_strlen($fulllangcode)>2){
-            $shortlangcode = mb_substr($fulllangcode,0,2);
+    public static function get_lang_name($fulllangcode) {
+        if(mb_strlen($fulllangcode) > 2){
+            $shortlangcode = mb_substr($fulllangcode, 0, 2);
         }else{
             $shortlangcode = $fulllangcode;
         }
 
         switch($shortlangcode){
-            case 'ar': return 'Arabic';
-            case 'en': return 'English';
-            case 'es': return 'Spanish';
-            case 'fr': return 'French';
-            case 'id': return 'Bahasa Indonesia';
-            case 'ja': return 'Japanese';
-            case 'ko': return 'Korean';
-            case 'pt': return 'Portuguese';
-            case 'rus': return 'Russian';
-            case 'ru': return 'Russian';
-            case 'th': return 'Thai';
-            case 'tr': return 'Turkish';
-            case 'vi': return 'Vietnamese';
-            case 'zh': return  $fulllangcode=="zh_tw" ? 'Chinese (trad.)' : 'Chinese (simpl.)';
+            case 'ar':
+return 'Arabic';
+            case 'en':
+return 'English';
+            case 'es':
+return 'Spanish';
+            case 'fr':
+return 'French';
+            case 'id':
+return 'Bahasa Indonesia';
+            case 'ja':
+return 'Japanese';
+            case 'ko':
+return 'Korean';
+            case 'pt':
+return 'Portuguese';
+            case 'rus':
+return 'Russian';
+            case 'ru':
+return 'Russian';
+            case 'th':
+return 'Thai';
+            case 'tr':
+return 'Turkish';
+            case 'vi':
+return 'Vietnamese';
+            case 'zh':
+return  $fulllangcode == "zh_tw" ? 'Chinese (trad.)' : 'Chinese (simpl.)';
             case constants::M_DEFLANG_OTHER:
-                return get_string('deflang_other',constants::M_COMPONENT);
+                return get_string('deflang_other', constants::M_COMPONENT);
         }
     }
 
-    public static function update_deflanguage($mod){
+    public static function update_deflanguage($mod) {
         global $DB;
-        $terms = $DB->get_records(constants::M_TERMSTABLE,array('modid'=>$mod->get_mod()->id));
-        if(!$terms){return;}
-        //if the definitions language is other, we can not translate it
-        if($mod->get_mod()->deflanguage==constants::M_DEFLANG_OTHER){return;}
+        $terms = $DB->get_records(constants::M_TERMSTABLE, ['modid' => $mod->get_mod()->id]);
+        if(!$terms){return;
+        }
+        // if the definitions language is other, we can not translate it
+        if($mod->get_mod()->deflanguage == constants::M_DEFLANG_OTHER){return;
+        }
         foreach($terms as $term){
-            if(empty($term->translations)){continue;}
-            if(!self::is_json($term->translations)){continue;}
+            if(empty($term->translations)){continue;
+            }
+            if(!self::is_json($term->translations)){continue;
+            }
             $translations = json_decode($term->translations);
-            //english is a special case, lets support it
-            if($mod->get_mod()->deflanguage=='en') {
-                $translations->en=$term->sourcedef;
+            // english is a special case, lets support it
+            if($mod->get_mod()->deflanguage == 'en') {
+                $translations->en = $term->sourcedef;
             }
             if(!empty($translations) &&
                 isset($translations->{$mod->get_mod()->deflanguage})){
                 if(isset($translations->{$mod->get_mod()->deflanguage}->text)){
-                    //lexicala
+                    // lexicala
                     $newdef = $translations->{$mod->get_mod()->deflanguage}->text;
                     if(is_array($newdef)){
-                        //something is wrong here, we cant really trust the data
+                        // something is wrong here, we cant really trust the data
                         continue;
                     }
                 }else{
-                    //r and c db
+                    // r and c db
                     $newdef = $translations->{$mod->get_mod()->deflanguage};
                 }
-                $DB->update_record(constants::M_TERMSTABLE, ['id'=>$term->id,'definition'=>$newdef]);
+                $DB->update_record(constants::M_TERMSTABLE, ['id' => $term->id, 'definition' => $newdef]);
             }
         }
     }
 
-    //can speak neural?
-    public static function can_speak_neural($voice,$region){
+    // can speak neural?
+    public static function can_speak_neural($voice, $region) {
 
-        //check if the region is supported
+        // check if the region is supported
         switch($region){
             case "useast1":
             case "tokyo":
@@ -1921,46 +1960,46 @@ class utils {
             case "frankfurt":
             case "london":
             case "singapore":
-                //ok
+                // ok
                 break;
             default:
                 return false;
         }
 
-        //check if the voice is supported
-        if(in_array($voice,constants::M_NEURALVOICES)){
+        // check if the voice is supported
+        if(in_array($voice, constants::M_NEURALVOICES)){
             return true;
         }else{
             return false;
         }
     }
 
-    //Prepare the data for import
-    //a row will look like this: term|definition|voice|modelsentence
-    public static function prepare_import_data_row($rowdata, $delimiter,$mod){
+    // Prepare the data for import
+    // a row will look like this: term|definition|voice|modelsentence
+    public static function prepare_import_data_row($rowdata, $delimiter, $mod) {
         $trimchars = " \t\n\r\0\x0B";
-        //we limit at 4 so any commas in the model answer will not be split on
-        $cols = explode($delimiter,$rowdata,4);
-        if(count($cols)>=2 && !empty($cols[0]) && !empty($cols[1])){
+        // we limit at 4 so any commas in the model answer will not be split on
+        $cols = explode($delimiter, $rowdata, 4);
+        if(count($cols) >= 2 && !empty($cols[0]) && !empty($cols[1])){
             $insertdata = new \stdClass();
             $insertdata->modid = $mod->get_mod()->id;
             $insertdata->term = self::super_trim($cols[0], $trimchars);
             $insertdata->definition = self::super_trim($cols[1], $trimchars);
-            //voices
-            $voices = utils::get_tts_voices($mod->get_mod()->ttslanguage);
-            $insertdata->ttsvoice='';
+            // voices
+            $voices = self::get_tts_voices($mod->get_mod()->ttslanguage);
+            $insertdata->ttsvoice = '';
             if(!empty($cols[2])){
-                $thevoice = self::super_trim($cols[2],$trimchars);
-                if(in_array($thevoice,$voices) && $thevoice!='auto') {
+                $thevoice = self::super_trim($cols[2], $trimchars);
+                if(in_array($thevoice, $voices) && $thevoice != 'auto') {
                     $voice = array_search($thevoice, $voices);
                     $insertdata->ttsvoice = $voice;
                 }
             }
             if(empty($insertdata->ttsvoice)) {
-                $insertdata->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
+                $insertdata->ttsvoice = self::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
 
-            //model sentence
+            // model sentence
             if(!empty($cols[3])) {
                 $insertdata->model_sentence = self::super_trim($cols[3], $trimchars);
             }
@@ -1970,9 +2009,9 @@ class utils {
         }//end of if cols ok
     }
 
-    public static function fetch_glossaries_list($courseid){
+    public static function fetch_glossaries_list($courseid) {
         global $DB;
-        $glossaries = $DB->get_records(constants::M_GLOSSARYTABLE,array('course'=>$courseid));
+        $glossaries = $DB->get_records(constants::M_GLOSSARYTABLE, ['course' => $courseid]);
         $glossarylist = [];
         foreach($glossaries as $glossary){
             $glossarylist[$glossary->id] = $glossary->name;
@@ -1988,7 +2027,7 @@ class utils {
      * @param string $actionclass The class name of the action.
      * @return bool True if the action is available, false otherwise.
      */
-    public static function is_ai_placement_action_available( $context, $actionname, $actionclass) {
+    public static function is_ai_placement_action_available($context, $actionname, $actionclass) {
         if(!class_exists('\core_ai\manager')){
             return false;
         }
@@ -2007,8 +2046,8 @@ class utils {
         return false;
     }
 
-    public static function super_trim($str){
-        if($str==null){
+    public static function super_trim($str) {
+        if($str == null){
             return '';
         }else{
             $str = trim($str);

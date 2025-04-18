@@ -136,6 +136,7 @@ class renderer extends \plugin_renderer_base {
             'token' => $token,
             'region' => $config->awsregion,
             'owner' => hash('md5', $USER->username),
+            'cloudpoodllurl' => utils::get_cloud_poodll_server(),
             'cmid' => $mod->get_cmid(),
             'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attemptcount > 0),
             'stepsmodeavailable' => $journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE,
@@ -287,6 +288,7 @@ class renderer extends \plugin_renderer_base {
             'region' => $config->awsregion,
             'token' => $token,
             'owner' => hash('md5', $USER->username),
+            'cloudpoodllurl' => utils::get_cloud_poodll_server(),
             'modid' => $mod->get_id(),
             'isfreemode' => ($currentmode == constants::CURRENTMODE_FREE),
         ];
@@ -429,6 +431,7 @@ class renderer extends \plugin_renderer_base {
         $opts['nexturl'] = $nexturl;
         $opts['token'] = $token;
         $opts['owner'] = hash('md5', $USER->username);
+        $opts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
         $opts['appid'] = constants::M_COMPONENT;
         $opts['modid'] = $mod->get_id();
         $opts['isfreemode'] = ($currentmode == constants::CURRENTMODE_FREE);
@@ -503,6 +506,7 @@ class renderer extends \plugin_renderer_base {
         $opts['token'] = $token;
         $opts['parent'] = $CFG->wwwroot;
         $opts['owner'] = hash('md5', $USER->username);
+        $opts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
         $opts['appid'] = constants::M_COMPONENT;
         $opts['modid'] = $mod->get_id();
         $opts['expiretime'] = 300;// max expire time is 300 seconds
@@ -533,6 +537,7 @@ class renderer extends \plugin_renderer_base {
         $data['region'] = $region;
         $data['hints'] = $stringhints;
         $data['owner'] = hash('md5', $USER->username);
+        $opts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
 
         // TT Recorder ---------------
         $data['waveheight'] = 75;

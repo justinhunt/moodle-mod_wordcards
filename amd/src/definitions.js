@@ -116,7 +116,7 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
 
        //set up audio
        a4e.register_events();
-       a4e.init_audio(props.token,props.region,props.owner);
+       a4e.init_audio(props.token, props.region, props.owner, props.cloudpoodllurl);
 
        //set up card actions
         cardactions.init(props.youglish);

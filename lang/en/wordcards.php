@@ -581,4 +581,6 @@ $string['back'] = 'Go back';
 $string['buttontitle'] = 'tester';
 $string['definitionhigh'] = 'High';
 $string['definitionstandard'] = 'Standard';
+$string['cloudpoodllserver'] = 'Cloud Poodll Server';
+$string['cloudpoodllserver_details'] = 'The server to use for Cloud Poodll. Only change this if Poodll has provided a different one.';
 
