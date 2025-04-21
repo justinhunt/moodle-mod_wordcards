@@ -515,6 +515,7 @@ class utils {
           "mumbai" => get_string("mumbai", constants::M_COMPONENT),
           "capetown" => get_string("capetown", constants::M_COMPONENT),
           "bahrain" => get_string("bahrain", constants::M_COMPONENT),
+           "ningxia" => get_string("ningxia", constants::M_COMPONENT),
         ];
     }
 
@@ -544,6 +545,8 @@ return "ap-south-1";
 return "af-south-1";
             case "bahrain":
 return "me-south-1";
+            case "ningxia":
+                return "cn-northwest-1";
         }
     }
 
