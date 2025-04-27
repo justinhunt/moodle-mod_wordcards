@@ -557,6 +557,11 @@ class renderer extends \plugin_renderer_base {
             case 'useast1':
                 $data['asrurl'] = 'https://useast.ls.poodll.com/transcribe';
                 break;
+
+            case 'ningxia':
+                $data['asrurl'] = 'https://ningxia.ls.poodll.cn/transcribe';
+                break;
+
             default:
                 $data['asrurl'] = 'https://' . $region . '.ls.poodll.com/transcribe';
 
