@@ -862,13 +862,30 @@ return "me-south-1";
     }
 
     public static function fetch_auto_voice($langcode) {
-        $voices = self::get_tts_voices($langcode);
+        $voices = self::get_tts_voices($langcode, false);
         $autoindex = array_rand($voices);
         return $autoindex;
     }
 
     public static function get_tts_voices($langcode, $showall=false) {
-        $alllang = constants::ALL_VOICES;
+        $region = get_config(constants::M_COMPONENT, 'awsregion');
+        switch($region){
+            case "ningxia":
+                $alllang = constants::ALL_VOICES_NINGXIA;
+                break;
+            case "useast1":
+            case "tokyo":
+            case "sydney":
+            case "dublin":
+            case "ottawa":
+            case "capetown":
+            case "frankfurt":
+            case "london":
+            case "singapore":
+            case "mumbai":
+            default:
+                $alllang = constants::ALL_VOICES;
+        }
         $alllang[constants::M_LANG_OTHER] = [constants::M_NO_TTS => get_string('notts', constants::M_COMPONENT)];
 
         if(array_key_exists($langcode, $alllang)&& !$showall) {
