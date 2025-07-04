@@ -34,9 +34,11 @@ use mod_wordcards\my_words_pool;
 use mod_wordcards\utils;
 use mod_wordcards\constants;
 
-class renderer extends \plugin_renderer_base {
+class renderer extends \plugin_renderer_base
+{
 
-    public function definitions_page_data(\mod_wordcards_module $mod, $definitions, $embed = 0) {
+    public function definitions_page_data(\mod_wordcards_module $mod, $definitions, $embed = 0)
+    {
         global $USER;
 
         $mywordspool = new my_words_pool($mod->get_course()->id);
@@ -162,8 +164,9 @@ class renderer extends \plugin_renderer_base {
     }
 
     // Use page layout to reconstruct embed flag so we can generate links that maintain it.
-    public function get_embed_flag() {
-        switch($this->page->pagelayout){
+    public function get_embed_flag()
+    {
+        switch ($this->page->pagelayout) {
             case 'popup':
                 $embed = 2;
                 break;
@@ -176,7 +179,8 @@ class renderer extends \plugin_renderer_base {
         return $embed;
     }
 
-    public function cancel_attempt_button($mod) {
+    public function cancel_attempt_button($mod)
+    {
 
         // teachers can not attempt, so they cant quite attempts either
         if ($mod->can_manage() || $mod->can_viewreports()) {
@@ -190,12 +194,13 @@ class renderer extends \plugin_renderer_base {
                 'cancelattempt' => 1,
                 'embed' => $this->get_embed_flag(),
             ]))->out(true),
-            ];
+        ];
         $this->page->requires->js_call_amd("mod_wordcards/cancel_attempt_button", 'init', [$data]);
         return $this->render_from_template('mod_wordcards/cancel_attempt_button', $data);
     }
 
-    public function no_definitions_yet($mod) {
+    public function no_definitions_yet($mod)
+    {
         $displaytext = $this->output->box_start();
         $displaytext .= $this->output->heading(get_string('nodefinitions', constants::M_COMPONENT), 3, 'main');
         $showaddwordlinks = $mod->can_manage();
@@ -211,7 +216,8 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-    private function make_json_string($definitions, $mod) {
+    private function make_json_string($definitions, $mod)
+    {
 
         $defs = [];
         foreach ($definitions as $definition) {
@@ -225,10 +231,10 @@ class renderer extends \plugin_renderer_base {
             $def->model_sentence = $definition->model_sentence;
             $def->model_sentence_audio = $definition->model_sentence_audio;
             $def->definition = $definition->definition;
-            if(isset($definition->learned)){
+            if (isset($definition->learned)) {
                 $def->learned = $definition->learned;
             }
-            if(isset($definition->learned_progress)){
+            if (isset($definition->learned_progress)) {
                 $def->learnedprogress = $definition->learned_progress;
             }
             if ($mod->get_mod()->showimageflip) {
@@ -246,7 +252,8 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    public function a4e_page(\mod_wordcards_module $mod, int $practicetype, array $definitions, int $currentmode, $currentstep = '' ) {
+    public function a4e_page(\mod_wordcards_module $mod, int $practicetype, array $definitions, int $currentmode, $currentstep = '')
+    {
         global $USER, $PAGE, $OUTPUT;
 
         // Config.
@@ -268,11 +275,15 @@ class renderer extends \plugin_renderer_base {
 
         if ($currentstep) {
             $nextstep = $mod->get_next_step($currentstep);
-            $nexturl = (new \moodle_url('/mod/wordcards/activity.php',
-            ['id' => $mod->get_cmid(),
-            'oldstep' => $currentstep,
-            'nextstep' => $nextstep,
-            'embed' => $this->get_embed_flag()]))->out(true);
+            $nexturl = (new \moodle_url(
+                '/mod/wordcards/activity.php',
+                [
+                    'id' => $mod->get_cmid(),
+                    'oldstep' => $currentstep,
+                    'nextstep' => $nextstep,
+                    'embed' => $this->get_embed_flag()
+                ]
+            ))->out(true);
         } else {
             // In Freemode we will not have a next or current step, so we pass an empty next URL to JS.
             $nexturl = '';
@@ -294,7 +305,7 @@ class renderer extends \plugin_renderer_base {
         ];
 
         $data = [];
-        switch($practicetype){
+        switch ($practicetype) {
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT:
             case \mod_wordcards_module::PRACTICETYPE_MATCHSELECT_REV:
                 $opts['msoptions'] = $mod->get_mod()->msoptions;
@@ -321,7 +332,7 @@ class renderer extends \plugin_renderer_base {
 
             case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
             case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
-               // $opts['wpoptions'] = $mod->get_mod()->wpoptions;
+                // $opts['wpoptions'] = $mod->get_mod()->wpoptions;
                 $this->page->requires->js_call_amd("mod_wordcards/wordpreview", 'init', [$opts]);
                 $activityhtml = $this->render_from_template('mod_wordcards/wordpreview_page', $data);
                 break;
@@ -335,7 +346,8 @@ class renderer extends \plugin_renderer_base {
         return $optshtml . $activityhtml;
     }
 
-    public function finish_page(\mod_wordcards_module $mod) {
+    public function finish_page(\mod_wordcards_module $mod)
+    {
         global $CFG;
 
         $data = [
@@ -358,7 +370,7 @@ class renderer extends \plugin_renderer_base {
         // if we have a latest attempt, we need STARS!!!
         // teachers attempts are not saved, so they have no score when they get to the finished page
         $latestattempt = $mod->get_latest_attempt();
-        if($latestattempt){
+        if ($latestattempt) {
 
             // final score
             $data['hasscore'] = true;
@@ -371,9 +383,9 @@ class renderer extends \plugin_renderer_base {
 
             // each steps rating
             $ratingitems = [];
-            for($x = 1; $x < 6; $x++){
-                $practicetype = $mod->get_mod()->{'step' . $x .'practicetype'};
-                if((int)$practicetype !== \mod_wordcards_module::PRACTICETYPE_NONE){
+            for ($x = 1; $x < 6; $x++) {
+                $practicetype = $mod->get_mod()->{'step' . $x . 'practicetype'};
+                if ((int) $practicetype !== \mod_wordcards_module::PRACTICETYPE_NONE) {
                     $ratingitem = new \stdClass();
                     $ratingitem->grade = $latestattempt->{"grade" . $x};
                     $ratingitem->icon = utils::fetch_activity_tabicon($practicetype);
@@ -390,7 +402,8 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/finish_page', $data);
     }
 
-    public function push_recorder() {
+    public function push_recorder()
+    {
         $data = [];
         return $this->render_from_template('mod_wordcards/pushrecorder', $data);
     }
@@ -402,7 +415,8 @@ class renderer extends \plugin_renderer_base {
      * @param context $context The context
      * @return string The HTML code of the game
      */
-    public function spacegame_page(\mod_wordcards_module $mod, array $definitions, int $currentmode, $currentstep = '') {
+    public function spacegame_page(\mod_wordcards_module $mod, array $definitions, int $currentmode, $currentstep = '')
+    {
         global $USER;
 
         // config
@@ -454,7 +468,8 @@ class renderer extends \plugin_renderer_base {
 
 
 
-    public function speechcards_page(\mod_wordcards_module $mod, array $definitions, int $currentmode, $currentstep = '') {
+    public function speechcards_page(\mod_wordcards_module $mod, array $definitions, int $currentmode, $currentstep = '')
+    {
         global $CFG, $USER;
 
         // get state
@@ -466,16 +481,19 @@ class renderer extends \plugin_renderer_base {
         $region = get_config(constants::M_COMPONENT, 'awsregion');
 
         // check user has entered api credentials
-        if(empty($apiuser) || empty($apisecret)){
-            $errormessage = get_string('nocredentials', constants::M_COMPONENT,
-                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
+        if (empty($apiuser) || empty($apisecret)) {
+            $errormessage = get_string(
+                'nocredentials',
+                constants::M_COMPONENT,
+                $CFG->wwwroot . constants::M_PLUGINSETTINGS
+            );
             return ($this->show_problembox($errormessage));
-        }else {
+        } else {
             $token = utils::fetch_token($apiuser, $apisecret);
 
             // check token authenticated and no errors in it
             $errormessage = utils::fetch_token_error($token);
-            if(!empty($errormessage)){
+            if (!empty($errormessage)) {
                 return ($this->show_problembox($errormessage));
             }
         }
@@ -513,10 +531,10 @@ class renderer extends \plugin_renderer_base {
         $opts['useanimatecss'] = get_config(constants::M_COMPONENT, 'animations') == constants::M_ANIM_FANCY;
         $opts['cardface'] = $mod->get_mod()->scoptions == constants::M_WC_TERM_AS_READABLE ? 'term' : 'model_sentence';
 
-        if($mod->get_mod()->transcriber == constants::TRANSCRIBER_POODLL){
+        if ($mod->get_mod()->transcriber == constants::TRANSCRIBER_POODLL) {
             // this will force browser recognition to use Poodll (not chrome or other browser speech)
             $opts['stt_guided'] = true;
-        }else {
+        } else {
             $opts['stt_guided'] = false;
         }
 
@@ -546,13 +564,13 @@ class renderer extends \plugin_renderer_base {
         // passagehash if not empty will be region|hash eg tokyo|2353531453415134545
         // but we only send the hash up so we strip the region
         $data['passagehash'] = "";
-        if(!empty($mod->get_mod()->passagehash)){
+        if (!empty($mod->get_mod()->passagehash)) {
             $hashbits = explode('|', $mod->get_mod()->passagehash);
-            if(count($hashbits) == 2){
-                $data['passagehash']  = $hashbits[1];
+            if (count($hashbits) == 2) {
+                $data['passagehash'] = $hashbits[1];
             }
         }
-        switch($region) {
+        switch ($region) {
 
             case 'useast1':
                 $data['asrurl'] = 'https://useast.ls.poodll.com/transcribe';
@@ -572,44 +590,46 @@ class renderer extends \plugin_renderer_base {
 
     }
 
-    public function scatter_page(\mod_wordcards_module $mod, $wordpool, $currentstep) {
+    public function scatter_page(\mod_wordcards_module $mod, $wordpool, $currentstep)
+    {
         list($state) = $mod->get_state();
 
         $nextstep = $mod->get_next_step($currentstep);
         $nexturl = (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'oldstep' => $currentstep, 'nextstep' => $nextstep]))->out(true);
 
         // if we are in review state, we use different words and the next page is a finish page
-        if($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
+        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
             $definitions = $mod->get_review_terms($mod->fetch_step_termcount($currentstep));
-        }else{
+        } else {
             $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
         }
 
         // make sure each definition has a voice
-        foreach($definitions as $def){
-            if($def->ttsvoice == 'Auto' || $def->ttsvoice == ''){
+        foreach ($definitions as $def) {
+            if ($def->ttsvoice == 'Auto' || $def->ttsvoice == '') {
                 $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
             }
         }
 
         $data = [
-                'canmanage' => $mod->can_manage(),
-                'continue' => get_string('continue'),
-                'congrats' => get_string('congrats', 'mod_wordcards'),
-                'definitionsjson' => json_encode(array_values($definitions)),
-                'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
-                'modid' => $mod->get_id(),
-                'isglobalcompleted' => $state == \mod_wordcards_module::STATE_END,
-                'hascontinue' => $state != \mod_wordcards_module::STATE_END,
-                'nexturl' => $nexturl,
-                'isglobalscatter' => true,
+            'canmanage' => $mod->can_manage(),
+            'continue' => get_string('continue'),
+            'congrats' => get_string('congrats', 'mod_wordcards'),
+            'definitionsjson' => json_encode(array_values($definitions)),
+            'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
+            'modid' => $mod->get_id(),
+            'isglobalcompleted' => $state == \mod_wordcards_module::STATE_END,
+            'hascontinue' => $state != \mod_wordcards_module::STATE_END,
+            'nexturl' => $nexturl,
+            'isglobalscatter' => true,
         ];
 
         return $this->render_from_template('mod_wordcards/scatter_page', $data);
     }
 
 
-    public function navigation(\mod_wordcards_module $mod, $currentstate, $navdisabled = false) {
+    public function navigation(\mod_wordcards_module $mod, $currentstate, $navdisabled = false)
+    {
         $embed = $this->get_embed_flag();
         $tabtree = \mod_wordcards_helper::get_tabs($mod, $currentstate, $embed);
         if (($mod->can_manage() || $mod->can_viewreports()) && $embed !== 2) {
@@ -619,7 +639,7 @@ class renderer extends \plugin_renderer_base {
 
         $seencurrent = false;
         $step = 1;
-        $tabs = array_map(function($tab) use ($seencurrent, $currentstate, &$step, $tabtree, $navdisabled) {
+        $tabs = array_map(function ($tab) use ($seencurrent, $currentstate, &$step, $tabtree, $navdisabled) {
             $current = $tab->id == $currentstate;
             $seencurrent = $current || $seencurrent;
             $icon = $tab->title;
@@ -645,7 +665,8 @@ class renderer extends \plugin_renderer_base {
         return $this->render_from_template('mod_wordcards/student_navigation', $data);
     }
 
-    public function language_chooser($activitydefinitionslanguage) {
+    public function language_chooser($activitydefinitionslanguage)
+    {
         global $CFG;
 
         // get selected definitions language
@@ -667,19 +688,21 @@ class renderer extends \plugin_renderer_base {
         $data = [];
         $data['dropdownlist'] = \html_writer::select($options, 'mydefs_lang', $selected);
         $data['activitydefault'] = $activitydefinitionslanguage;
-        return $this->render_from_template('mod_wordcards/deflang_chooser',  $data);
+        return $this->render_from_template('mod_wordcards/deflang_chooser', $data);
     }
 
     /**
      * Return HTML to embed a minilesson
      */
-    public function embed_nativelangchooser($cmid, $token) {
+    public function embed_nativelangchooser($cmid, $token)
+    {
         global $DB;
         $currentlang = get_user_preferences('wordcards_deflang');
         return $this->language_chooser($currentlang);
     }
 
-    public function embed_usercourseprogress($courseid) {
+    public function embed_usercourseprogress($courseid)
+    {
         global $DB, $USER;
 
         //get all wordcards in course
@@ -688,14 +711,14 @@ class renderer extends \plugin_renderer_base {
 
         //get total terms
         $countsql = "SELECT COUNT(t.id) FROM {wordcards_terms} t
-                    WHERE t.modid $wordcardswhere 
+            WHERE t.modid $wordcardswhere 
                     AND t.deleted = 0";
         $totalterms = $DB->count_records_sql($countsql, $allparams);
 
         //Get default learned point
         $learnpoint = get_config(constants::M_COMPONENT, 'learnpoint');
 
-        $allsql= "SELECT COUNT((CASE WHEN a.successcount >=  $learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+        $allsql = "SELECT COUNT((CASE WHEN a.successcount >=  $learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
                     ON a.termid = t.id
@@ -704,11 +727,11 @@ class renderer extends \plugin_renderer_base {
                     AND a.userid = ?";
 
         $allparams = array_merge($allparams, [$USER->id]);
-        $alldata = $DB->get_record_sql($allsql,  $allparams);
-        if($alldata){
+        $alldata = $DB->get_record_sql($allsql, $allparams);
+        if ($alldata) {
             $data = [
                 'termslearned' => $alldata->termslearned - $alldata->selfclaimed,
-                'termstolearn' => $alldata->totalterms - $alldata->termslearned - $alldata->selfclaimed,
+                'termstolearn' => $alldata->totalterms - $alldata->termslearned,
                 'totalterms' => $alldata->totalterms - $alldata->selfclaimed,
             ];
             return $this->render_from_template('mod_wordcards/user_course_progress', $data);
@@ -721,7 +744,8 @@ class renderer extends \plugin_renderer_base {
     /**
      * Return HTML to display message about problem
      */
-    public function show_problembox($msg) {
+    public function show_problembox($msg)
+    {
         $output = '';
         $output .= $this->output->box_start(constants::M_COMPONENT . '_problembox');
         $output .= $this->notification($msg, 'warning');
@@ -730,15 +754,18 @@ class renderer extends \plugin_renderer_base {
     }
 
     /*
-    * Show open and close dates to the activity
-    */
-    public function show_open_close_dates($moduleinstance) {
+     * Show open and close dates to the activity
+     */
+    public function show_open_close_dates($moduleinstance)
+    {
         $tdata = [];
-        if($moduleinstance->viewstart > 0){$tdata['opendate'] = $moduleinstance->viewstart;
+        if ($moduleinstance->viewstart > 0) {
+            $tdata['opendate'] = $moduleinstance->viewstart;
         }
-        if($moduleinstance->viewend > 0){$tdata['closedate'] = $moduleinstance->viewend;
+        if ($moduleinstance->viewend > 0) {
+            $tdata['closedate'] = $moduleinstance->viewend;
         }
-        $ret = $this->output->render_from_template( constants::M_COMPONENT . '/openclosedates', $tdata);
+        $ret = $this->output->render_from_template(constants::M_COMPONENT . '/openclosedates', $tdata);
         return $ret;
     }
 
@@ -746,49 +773,80 @@ class renderer extends \plugin_renderer_base {
     /**
      * Push Menu
      */
-    public function push_buttons_menu($cm) {
+    public function push_buttons_menu($cm)
+    {
         $templateitems = [];
-        $pushthings = ['maxattempts', 'transcriber', 'learnpoint', 'showimageflip', 'frontfaceflip', 'showlangchooser', 'videoexamples', 'journeymode',  'stepsmodeoptions',
-         'freemodeoptions', 'lcoptions',  'msoptions', 'sgoptions', ];
+        $pushthings = [
+            'maxattempts',
+            'transcriber',
+            'learnpoint',
+            'showimageflip',
+            'frontfaceflip',
+            'showlangchooser',
+            'videoexamples',
+            'journeymode',
+            'stepsmodeoptions',
+            'freemodeoptions',
+            'lcoptions',
+            'msoptions',
+            'sgoptions',
+        ];
 
-        foreach($pushthings as $pushthing){
-            switch($pushthing){
-                case 'transcriber': $action = constants::M_PUSH_TRANSCRIBER;
-break;
-                case 'showimageflip': $action = constants::M_PUSH_SHOWIMAGEFLIP;
-break;
-                case 'showlangchooser': $action = constants::M_PUSH_SHOWLANGCHOOSER;
-break;
-                case 'showvideoexamples': $action = constants::M_PUSH_VIDEOEXAMPLES;
-break;
-                case 'sgoptions': $action = constants::M_PUSH_SGOPTIONS;
-break;
-                case 'stepsmodeoptions': $action = constants::M_PUSH_STEPSMODEOPTIONS;
-break;
-                case 'maxattempts': $action = constants::M_PUSH_MAXATTEMPTS;
-break;
-                case 'freemodeoptions': $action = constants::M_PUSH_FREEMODEOPTIONS;
-break;
-                case 'frontfaceflip': $action = constants::M_PUSH_FRONTFACEFLIP;
-break;
-                case 'journeymode': $action = constants::M_PUSH_JOURNEYMODE;
-break;
-                case 'lcoptions': $action = constants::M_PUSH_LCOPTIONS;
-break;
-                case 'learnpoint': $action = constants::M_PUSH_LEARNPOINT;
-break;
-                case 'msoptions': $action = constants::M_PUSH_MSOPTIONS;
-break;
+        foreach ($pushthings as $pushthing) {
+            switch ($pushthing) {
+                case 'transcriber':
+                    $action = constants::M_PUSH_TRANSCRIBER;
+                    break;
+                case 'showimageflip':
+                    $action = constants::M_PUSH_SHOWIMAGEFLIP;
+                    break;
+                case 'showlangchooser':
+                    $action = constants::M_PUSH_SHOWLANGCHOOSER;
+                    break;
+                case 'showvideoexamples':
+                    $action = constants::M_PUSH_VIDEOEXAMPLES;
+                    break;
+                case 'sgoptions':
+                    $action = constants::M_PUSH_SGOPTIONS;
+                    break;
+                case 'stepsmodeoptions':
+                    $action = constants::M_PUSH_STEPSMODEOPTIONS;
+                    break;
+                case 'maxattempts':
+                    $action = constants::M_PUSH_MAXATTEMPTS;
+                    break;
+                case 'freemodeoptions':
+                    $action = constants::M_PUSH_FREEMODEOPTIONS;
+                    break;
+                case 'frontfaceflip':
+                    $action = constants::M_PUSH_FRONTFACEFLIP;
+                    break;
+                case 'journeymode':
+                    $action = constants::M_PUSH_JOURNEYMODE;
+                    break;
+                case 'lcoptions':
+                    $action = constants::M_PUSH_LCOPTIONS;
+                    break;
+                case 'learnpoint':
+                    $action = constants::M_PUSH_LEARNPOINT;
+                    break;
+                case 'msoptions':
+                    $action = constants::M_PUSH_MSOPTIONS;
+                    break;
 
             }
-            $templateitems[] = ['title' => get_string($pushthing, constants::M_COMPONENT),
+            $templateitems[] = [
+                'title' => get_string($pushthing, constants::M_COMPONENT),
                 'description' => get_string($pushthing . '_details', constants::M_COMPONENT),
-                'content' => $this->output->single_button(new \moodle_url( constants::M_URL . '/push.php',
-                    ['id' => $cm->id, 'action' => $action]), get_string($pushthing, constants::M_COMPONENT))];
+                'content' => $this->output->single_button(new \moodle_url(
+                    constants::M_URL . '/push.php',
+                    ['id' => $cm->id, 'action' => $action]
+                ), get_string($pushthing, constants::M_COMPONENT))
+            ];
         }
 
         // Generate and return menu
-        $ret = $this->output->render_from_template( constants::M_COMPONENT . '/manybuttonsmenu', ['items' => $templateitems]);
+        $ret = $this->output->render_from_template(constants::M_COMPONENT . '/manybuttonsmenu', ['items' => $templateitems]);
 
         return $ret;
 
@@ -797,7 +855,8 @@ break;
     /**
      * Word Wizard
      */
-    public function word_wizard($mod, $cm) {
+    public function word_wizard($mod, $cm)
+    {
         $langterm = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
         $includeother = false;
         $langdefs = utils::get_rcdic_langs($mod->get_mod()->deflanguage, $includeother);
@@ -818,12 +877,13 @@ break;
      * @return string
      * @throws \coding_exception
      */
-    public function page_heading(int $practicetype, int $wordpool): string {
+    public function page_heading(int $practicetype, int $wordpool): string
+    {
         // First practice type.
-        if($practicetype !== \mod_wordcards_module::PRACTICETYPE_NONE) {
+        if ($practicetype !== \mod_wordcards_module::PRACTICETYPE_NONE) {
             $practicetypeoptions = utils::get_practicetype_options();
             $pagetitle = isset($practicetypeoptions[$practicetype]) ? $practicetypeoptions[$practicetype] : '';
-        }else{
+        } else {
             $pagetitle = get_string('introduction', constants::M_COMPONENT);
         }
         // Then wordpool.
@@ -834,7 +894,8 @@ break;
         return $pagetitle;
     }
 
-    public function get_wordpool_string(int $wordpoolid) {
+    public function get_wordpool_string(int $wordpoolid)
+    {
         $wordpoolstringkeys = [
             \mod_wordcards_module::WORDPOOL_LEARN => 'learnactivity',
             \mod_wordcards_module::WORDPOOL_REVIEW => 'seenwords',

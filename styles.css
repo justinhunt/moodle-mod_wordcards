@@ -1787,12 +1787,10 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 
 /* Limit page width following Moodle4 default heading sizes */
 
-#page-mod-wordcards-view #page-content /*, 
- #page-mod-solo-view #page-content,  */
-/* #page-mod-solo-reports .mod_solo_report_card */ {
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+#page-mod-wordcards-view #page-content{
+    /* max-width: 800px; */
+    /* margin-left: auto; */
+    /* margin-right: auto; */
 }
 
 button.definitions-next.btn {
@@ -2337,4 +2335,10 @@ button.definitions-next.btn .fa-arrow-right:before {
 
 .mod_wordcards_imagemaker_term {
     text-decoration: underline;
+}
+
+.wordcards_user_course_progress {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
 }

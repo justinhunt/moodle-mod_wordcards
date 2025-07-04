@@ -63,7 +63,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
 
         $associations = new backup_nested_element('associations');
         $association = new backup_nested_element('association', array('id'), array(
-            'userid', 'lastfail', 'lastsuccess', 'failcount', 'successcount'));
+            'userid', 'lastfail', 'lastsuccess', 'failcount', 'successcount', 'selfclaim'));
 
         $progresses = new backup_nested_element('progresses');
         $progress = new backup_nested_element('progress', array('id'), array(

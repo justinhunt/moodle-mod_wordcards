@@ -1,5 +1,46 @@
 <div class="wordcards_user_course_progress">
-    <div class="wc_ucp_termslearned"><span class="wc_ucp_label">{{#str}} termslearned, mod_wordcards {{/str}}:</span> <span class="wc_ucp_val">{{termslearned}}</span></div>
-    <div class="wc_ucp_termstolearn"><span class="wc_ucp_label">{{#str}} termstolearn, mod_wordcards {{/str}}:</span> <span class="wc_ucp_val">{{termstolearn}}</span></div>
-    <div class="wc_ucp_totalterms"><span class="wc_ucp_label">{{#str}} totalterms, mod_wordcards {{/str}}:</span> <span class="wc_ucp_val">{{totalterms}}</span></div>
+    <div>
+        <div class="wc_ucp_termslearned"><span class="wc_ucp_label">{{#str}} termslearned, mod_wordcards {{/str}}:</span> <span class="wc_ucp_val">{{termslearned}}</span></div>
+        <div class="wc_ucp_termstolearn"><span class="wc_ucp_label">{{#str}} termstolearn, mod_wordcards {{/str}}:</span> <span class="wc_ucp_val">{{termstolearn}}</span></div>
+        <div class="wc_ucp_totalterms"><span class="wc_ucp_label">{{#str}} totalterms, mod_wordcards {{/str}}:</span> <span class="wc_ucp_val">{{totalterms}}</span></div>
+    </div>
+    <div id="chart_container">
+        <canvas id="chart_canvas_user_course_progress"></canvas>
+    </div>
 </div>
+
+
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery', 'core/log','core/chartjs'],
+        function($, log, chartjs) {
+            var make_chart =function(thedata){
+                var ctx = document.getElementById("chart_canvas_user_course_progress").getContext("2d");
+                var labels=  ['Filled', 'Unfilled'];
+                var dataset = {label: 'Words Learned', fill: false, backgroundColor: ['#74DC72','#E3F8E3'],};
+                dataset.data= [thedata.filled,thedata.unfilled];
+                var usedata = {datasets: [dataset]};
+                var cjoptions = {
+                    type: 'doughnut',
+                    data: usedata,
+                    options: {
+                        plugins: {
+                            tooltip: {
+                                enabled: false // Disable tooltips
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            intersect: false
+                        },
+                        hover: {
+                            mode: null // Disable hover
+                        },
+                    },
+                };
+                var theRadarChart = new Chart(ctx,cjoptions);
+            }
+            make_chart({filled: {{termslearned}}, unfilled: {{termstolearn}}});
+        });
+    {{/js}}
+{{/element.frozen}}
