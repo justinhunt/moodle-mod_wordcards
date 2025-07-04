@@ -136,6 +136,7 @@ class renderer extends \plugin_renderer_base {
             'token' => $token,
             'region' => $config->awsregion,
             'owner' => hash('md5', $USER->username),
+            'cloudpoodllurl' => utils::get_cloud_poodll_server(),
             'cmid' => $mod->get_cmid(),
             'freemodeavailable' => $journeymode == constants::MODE_FREE || ($journeymode == constants::MODE_STEPSTHENFREE && $attemptcount > 0),
             'stepsmodeavailable' => $journeymode == constants::MODE_STEPS || $journeymode == constants::MODE_STEPSTHENFREE,
@@ -287,6 +288,7 @@ class renderer extends \plugin_renderer_base {
             'region' => $config->awsregion,
             'token' => $token,
             'owner' => hash('md5', $USER->username),
+            'cloudpoodllurl' => utils::get_cloud_poodll_server(),
             'modid' => $mod->get_id(),
             'isfreemode' => ($currentmode == constants::CURRENTMODE_FREE),
         ];
@@ -429,6 +431,7 @@ class renderer extends \plugin_renderer_base {
         $opts['nexturl'] = $nexturl;
         $opts['token'] = $token;
         $opts['owner'] = hash('md5', $USER->username);
+        $opts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
         $opts['appid'] = constants::M_COMPONENT;
         $opts['modid'] = $mod->get_id();
         $opts['isfreemode'] = ($currentmode == constants::CURRENTMODE_FREE);
@@ -503,6 +506,7 @@ class renderer extends \plugin_renderer_base {
         $opts['token'] = $token;
         $opts['parent'] = $CFG->wwwroot;
         $opts['owner'] = hash('md5', $USER->username);
+        $opts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
         $opts['appid'] = constants::M_COMPONENT;
         $opts['modid'] = $mod->get_id();
         $opts['expiretime'] = 300;// max expire time is 300 seconds
@@ -533,6 +537,7 @@ class renderer extends \plugin_renderer_base {
         $data['region'] = $region;
         $data['hints'] = $stringhints;
         $data['owner'] = hash('md5', $USER->username);
+        $opts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
 
         // TT Recorder ---------------
         $data['waveheight'] = 75;
@@ -552,6 +557,11 @@ class renderer extends \plugin_renderer_base {
             case 'useast1':
                 $data['asrurl'] = 'https://useast.ls.poodll.com/transcribe';
                 break;
+
+            case 'ningxia':
+                $data['asrurl'] = 'https://ningxia.ls.poodll.cn/transcribe';
+                break;
+
             default:
                 $data['asrurl'] = 'https://' . $region . '.ls.poodll.com/transcribe';
 
@@ -667,6 +677,45 @@ class renderer extends \plugin_renderer_base {
         global $DB;
         $currentlang = get_user_preferences('wordcards_deflang');
         return $this->language_chooser($currentlang);
+    }
+
+    public function embed_usercourseprogress($courseid) {
+        global $DB, $USER;
+
+        //get all wordcards in course
+        $wordcardsids = $DB->get_fieldset_select(constants::M_TABLE, 'id', 'course = ?', array($courseid));
+        list($wordcardswhere, $allparams) = $DB->get_in_or_equal($wordcardsids);
+
+        //get total terms
+        $countsql = "SELECT COUNT(t.id) FROM {wordcards_terms} t
+                    WHERE t.modid $wordcardswhere 
+                    AND t.deleted = 0";
+        $totalterms = $DB->count_records_sql($countsql, $allparams);
+
+        //Get default learned point
+        $learnpoint = get_config(constants::M_COMPONENT, 'learnpoint');
+
+        $allsql= "SELECT COUNT((CASE WHEN a.successcount >=  $learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+                  FROM {wordcards_associations} a
+                  INNER JOIN {wordcards_terms} t
+                    ON a.termid = t.id
+                   AND t.deleted = 0
+                    WHERE t.modid $wordcardswhere
+                    AND a.userid = ?";
+
+        $allparams = array_merge($allparams, [$USER->id]);
+        $alldata = $DB->get_record_sql($allsql,  $allparams);
+        if($alldata){
+            $data = [
+                'termslearned' => $alldata->termslearned - $alldata->selfclaimed,
+                'termstolearn' => $alldata->totalterms - $alldata->termslearned - $alldata->selfclaimed,
+                'totalterms' => $alldata->totalterms - $alldata->selfclaimed,
+            ];
+            return $this->render_from_template('mod_wordcards/user_course_progress', $data);
+        } else {
+            // No data found, return empty string or a message.
+            return '';
+        }
     }
 
     /**

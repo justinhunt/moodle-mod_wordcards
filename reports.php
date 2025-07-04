@@ -155,11 +155,32 @@ switch ($showreport) {
         $formdata->groupmenu = true;
         break;
 
+    case 'courselearned':
+        $report = new \mod_wordcards\local\report\courselearned();
+        $formdata = new stdClass();
+
+        $formdata->modid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupmenu = true;
+        break;
+
     case 'userlearned':
         if (!groups_user_groups_visible($course, $userid, $cm)) {
             throw new moodle_exception('nopermissiontoshow');
         }
         $report = new \mod_wordcards\local\report\userlearned();
+        $formdata = new stdClass();
+        $formdata->modid = $moduleinstance->id;
+        $formdata->userid = $userid;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->cmid = $cm->id;
+        break;
+
+    case 'courseuserlearned':
+        if (!groups_user_groups_visible($course, $userid, $cm)) {
+            throw new moodle_exception('nopermissiontoshow');
+        }
+        $report = new \mod_wordcards\local\report\courseuserlearned();
         $formdata = new stdClass();
         $formdata->modid = $moduleinstance->id;
         $formdata->userid = $userid;

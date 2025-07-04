@@ -52,7 +52,7 @@ class mod_wordcards_form_term extends moodleform {
         $mform->addHelpButton('alternates', 'alternates', constants::M_COMPONENT);
         $mform->setType('alternates', PARAM_NOTAGS);
 
-        $voices=utils::get_tts_voices($ttslanguage);
+        $voices=utils::get_tts_voices($ttslanguage, false);
         $mform->addElement('select', 'ttsvoice', get_string('ttsvoice', constants::M_COMPONENT),
                 $voices);
         $mform->addHelpButton('ttsvoice', 'ttsvoice', constants::M_COMPONENT);

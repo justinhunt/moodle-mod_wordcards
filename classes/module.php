@@ -276,7 +276,7 @@ class mod_wordcards_module {
             $userid = $USER->id;
         }
 
-        $sql = "SELECT t.id, a.successcount
+        $sql = "SELECT t.id, a.successcount, a.selfclaim
                   FROM {wordcards_terms} t
                   JOIN {wordcards_associations} a
                     ON a.termid = t.id
@@ -287,6 +287,7 @@ class mod_wordcards_module {
         $result = $DB->get_records_sql($sql, [$userid, $this->get_id()]);
         if($result) {
             foreach ($terms as $term) {
+                $term->selfclaim = 0;
                 $term->learned = 0;
                 $term->learned_progress = 0;
                 if (isset($result[$term->id])){
@@ -297,6 +298,7 @@ class mod_wordcards_module {
                         $term->learned = false;
                         $term->learned_progress = round($result[$term->id]->successcount / $learnpoint * 100);
                     }
+                    $term->selfclaim = $result[$term->id]->selfclaim;
                 }
             }
         }
@@ -838,17 +840,21 @@ class mod_wordcards_module {
         }
     }
 
-    public function record_successful_learn($term, $triggerevent) {
+    public function record_successful_learn($term, $selfclaim = false) {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
         if (!($record = $DB->get_record(constants::M_ASSOCTABLE, $params))) {
             $record = (object) $params;
-            $record->successcount = 0;
         }
 
         $record->successcount = (int)$this->mod->learnpoint;
         $record->lastsuccess = time();
+
+        // If it has been self claimed as already learned we flag that so we can give better reports on in session learns.
+        if ($selfclaim) {
+            $record->selfclaim = 1;
+        }
 
         if (empty($record->id)) {
             $DB->insert_record(constants::M_ASSOCTABLE, $record);
@@ -856,8 +862,8 @@ class mod_wordcards_module {
             $DB->update_record(constants::M_ASSOCTABLE, $record);
         }
 
-         // Raise word learned event.
-        if ($triggerevent) {
+         // Raise word learned event if it was not a self claim
+        if (!$selfclaim) {
             $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
             $theevent->trigger();
         }

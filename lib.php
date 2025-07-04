@@ -49,7 +49,7 @@ function wordcards_supports($feature) {
     }
 }
 
-function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform = null) {
+function wordcards_add_instance(stdClass $module,?mod_wordcards_mod_form $mform = null) {
     global $DB;
 
     $module->timecreated = time();
@@ -78,7 +78,7 @@ function wordcards_add_instance(stdClass $module, mod_wordcards_mod_form $mform 
     return $module->id;
 }
 
-function wordcards_update_instance(stdClass $module, mod_wordcards_mod_form $mform = null) {
+function wordcards_update_instance(stdClass $module,?mod_wordcards_mod_form $mform = null) {
     global $DB;
 
     $module->timemodified = time();
@@ -362,7 +362,7 @@ function wordcards_extend_navigation(navigation_node $navref, stdclass $course, 
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $wordcardsnode {@link navigation_node}
  */
-function wordcards_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $wordcardsnode=null) {
+function wordcards_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $wordcardsnode = null) {
 }
 
 //////////////////////////////////////////////////////////////////////////////

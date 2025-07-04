@@ -526,8 +526,8 @@ class mod_wordcards_external extends external_api {
 
         // We need read access.
         $mod->require_view();
-        $triggerevent = false;
-        $mod->record_successful_learn($term, $triggerevent);
+        $selfclaim = true;
+        $mod->record_successful_learn($term, $selfclaim);
 
         return true;
     }

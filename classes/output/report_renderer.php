@@ -40,6 +40,14 @@ class report_renderer extends \plugin_renderer_base {
         $reports[] = array('button'=>$this->render($learned),
             'text'=>get_string('learnedreport_explanation', constants::M_COMPONENT));
 
+        $courselearned = new \single_button(
+            new \moodle_url(constants::M_URL . '/reports.php',
+                array('report' => 'courselearned', 'id' => $cm->id, 'n' => $moduleinstance->id)),
+            get_string('courselearnedreport', constants::M_COMPONENT), 'get');
+        $reports[]=$this->render($courselearned);
+        $reports[] = array('button'=>$this->render($courselearned),
+            'text'=>get_string('courselearnedreport_explanation', constants::M_COMPONENT));
+
         $data=['reports' => $reports];
         $ret= $this->render_from_template('mod_wordcards/reportsmenu', $data);
 

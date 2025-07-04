@@ -630,5 +630,19 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, $newversion, 'wordcards');
     }
 
+    if ($oldversion < 2025070400) {
+        $table = new xmldb_table(constants::M_ASSOCTABLE);
+        $fields = [];
+        $fields[] = new xmldb_field('selfclaim', XMLDB_TYPE_INTEGER, 2, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2025070400, 'wordcards');
+    }
+
     return true;
 }
