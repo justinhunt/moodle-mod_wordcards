@@ -1787,10 +1787,10 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 
 /* Limit page width following Moodle4 default heading sizes */
 
-#page-mod-wordcards-view #page-content{
-    /* max-width: 800px; */
-    /* margin-left: auto; */
-    /* margin-right: auto; */
+#page-mod-wordcards-view #region-main-box{
+     max-width: 1000px; 
+     margin-left: auto; 
+     margin-right: auto; 
 }
 
 button.definitions-next.btn {
