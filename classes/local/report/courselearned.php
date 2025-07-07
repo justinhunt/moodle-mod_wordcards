@@ -123,7 +123,7 @@ class courselearned extends basereport {
                     ON a.termid = t.id
                    AND t.deleted = 0
                     WHERE t.modid $wordcardswhere
-                    GROUP BY a.userid";
+                    GROUP BY a.userid, t.modid";
 
             $alldata = $DB->get_records_sql($allsql,  $allwordcardsparams);
 
