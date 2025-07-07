@@ -38,7 +38,7 @@ class courseuserlearned extends basereport {
                 break;
 
             case 'learned':
-                $ret = $record->learned ? get_string('yes') : get_string('no');
+                $ret = $record->learned == 1 ? get_string('yes') : get_string('no');
                 break;
 
             case 'learned_progress':
@@ -82,21 +82,39 @@ class courseuserlearned extends basereport {
         $this->headingdata->userid = $formdata->userid;
         $this->headingdata->course = $mod->get_course();
 
-        //get all wordcards in course
-        $wordcardsids = $DB->get_fieldset_select(constants::M_TABLE, 'id', 'course = ?', array($mod->get_course()->id));
-        list($wordcardswhere, $allwordcardsparams) = $DB->get_in_or_equal($wordcardsids);
+        // Empty data just in case we have no results
+        $emptydata = array();
 
-        //get terms
-        $termsselect = "SELECT t.* 
-            FROM {".constants::M_TERMSTABLE."} t
-            WHERE t.deleted = 0 AND t.modid $wordcardswhere";
-        $terms =  $DB->get_records_sql($termsselect, $allwordcardsparams);
 
-        //add user learned status
-        $terms=$mod->insert_learned_state($terms,$formdata->userid);
-        usort($terms, fn($a, $b) => strcmp($a->learned_progress, $b->learned_progress));
-        $this->rawdata = $terms;
+        $allsql= "SELECT t.*, a.successcount, m.learnpoint, a.selfclaim as selfclaim 
+              FROM {wordcards_associations} a
+              INNER JOIN {wordcards_terms} t
+              INNER JOIN {wordcards} m
+                ON a.termid = t.id
+                AND m.id = t.modid
+                AND t.deleted = 0
+              WHERE  a.userid = ?
+              AND m.course = ?";
+
+        $alldata = $DB->get_records_sql($allsql,  [$formdata->userid, (int)$mod->get_course()->id]);
+        if ($alldata) {
+            foreach ($alldata as $thedata) {
+                //calculate the learned progress
+                $thedata->learned = $thedata->successcount >= $thedata->learnpoint ? true : false;
+                if($thedata->learned ) {
+                    $thedata->learned_progress = 100;
+                }else{
+                    $thedata->learned_progress = round($thedata->successcount / $thedata->learnpoint * 100);
+                }
+
+                $this->rawdata[] = $thedata;
+            }
+            $this->rawdata = $alldata;
+        } else {
+            $this->rawdata = $emptydata;
+        }
         return true;
+
     }
 
 }
