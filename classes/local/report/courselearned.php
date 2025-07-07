@@ -104,7 +104,7 @@ class courselearned extends basereport {
 
              list($groupswhere, $allparams) = $DB->get_in_or_equal($formdata->groupid);
 
-            $allsql= "SELECT DISTINCT a.userid,t.modid,COUNT((DISTINCT CASE WHEN a.successcount >= $moduleinstance->learnpoint THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+            $allsql= "SELECT DISTINCT a.userid,t.modid,COUNT( CASE WHEN a.successcount >= $moduleinstance->learnpoint THEN 1 END) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
                     ON a.termid = t.id
@@ -117,7 +117,7 @@ class courselearned extends basereport {
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }else{
 
-            $allsql= "SELECT DISTINCT a.userid,t.modid,COUNT(DISTINCT CASE WHEN a.successcount >=  $moduleinstance->learnpoint  THEN 1 END) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+            $allsql= "SELECT DISTINCT a.userid,t.modid,COUNT( CASE WHEN a.successcount >=  $moduleinstance->learnpoint  THEN 1 END) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
                     ON a.termid = t.id
