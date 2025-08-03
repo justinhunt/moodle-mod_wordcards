@@ -195,7 +195,8 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_SPACEGAME:
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:
     case mod_wordcards_module::PRACTICETYPE_SCATTER:
-        $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
+        $removealreadylearned = true;
+        $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep), $removealreadylearned);
         break;
 
     case mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:

@@ -124,7 +124,7 @@ define([
               // Though its not ideal we pass one in.
               var aterm = app.terms[0];
               app.reportSuccess(aterm.id);
-              
+
               //Then we set the next url and go
               var theurl = app.nexturl.replace(/&amp;/g, '&');
               window.location.href=theurl;
@@ -199,6 +199,17 @@ define([
           });
         }
       );
+      // HACK - Post a 100% grade. There should be no grade
+      if (!app.isFreeMode) {
+        var termscount = app.terms.length;
+        Ajax.call([{
+          methodname: 'mod_wordcards_report_step_grade',
+          args: {
+            modid: app.modid,
+            correct: termscount
+          }
+        }]);
+      }
     },
 
     next: function() {

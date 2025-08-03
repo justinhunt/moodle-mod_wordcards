@@ -379,11 +379,43 @@ class mod_wordcards_module {
     }
 
 
-    public function get_learn_terms(int $maxterms) {
-        $records = $this->get_terms();
+    public function get_learn_terms(int $maxterms, $removealreadylearned = false) {
+        if($removealreadylearned){
+            // We fetch all the terms and their learned status
+            $allrecords = $this->get_terms_with_learn_status();
+            if(!$allrecords){       
+                return [];
+            }
+
+            // We find which are learned and which are unlearned
+            $unlearnedrecords = array_filter($allrecords, function($record) {
+                return !$record->learned;
+            });
+            $learnedrecords = array_filter($allrecords, function($record) {
+                return $record->learned;
+            });
+
+            // If there are enough unlearned records, we return them
+            // If ther are not we return all the unlearned records and some learned records
+            // If there are not enough learned records, we return all the records
+            if(count($unlearnedrecords)>=$maxterms){
+                $records = $unlearnedrecords;
+            }else{
+                $records = $unlearnedrecords;
+                $extrarecordsneeded = $maxterms - count($records);
+                if(count($learnedrecords)>=$extrarecordsneeded){
+                    $records = array_merge($records, array_slice($learnedrecords, 0, $extrarecordsneeded));
+                }else{
+                    $records = $allrecords;
+                }
+            }
+        }else{
+            $records = $this->get_terms();
+        }
         if (!$records) {
             return [];
         }
+
         shuffle($records);
         if ($maxterms > 0) {
             $selectedrecords = array_slice($records, 0, $maxterms);
@@ -627,6 +659,35 @@ class mod_wordcards_module {
             $terms = $this->update_userpref_defs($terms);
             $terms = self::format_defs($terms);
         }
+        return $terms;
+    }
+
+    public function get_terms_with_learn_status($includedeleted = false) {
+        global $DB, $USER;
+        
+        $params = [$this->mod->learnpoint, $USER->id, $this->get_id()];
+        
+        $deletedCondition = '';
+        if (!$includedeleted) {
+            $deletedCondition = 'AND t.deleted = ?';
+            $params[] = 0;
+        }
+    
+        $sql = "SELECT t.*, CASE WHEN a.successcount >= ? THEN 1 ELSE 0 END AS learned
+                      FROM {wordcards_terms} t
+                      LEFT JOIN {wordcards_associations} a
+                        ON a.termid = t.id AND a.userid = ?
+                     WHERE t.modid = ?
+                       $deletedCondition";
+        
+        $terms = $DB->get_records_sql($sql, $params);
+        
+        if($terms){
+            $terms = self::insert_media_urls($terms);
+            $terms = $this->update_userpref_defs($terms);
+            $terms = self::format_defs($terms);
+        }
+        
         return $terms;
     }
 

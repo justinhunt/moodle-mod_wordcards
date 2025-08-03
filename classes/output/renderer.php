@@ -384,16 +384,22 @@ class renderer extends \plugin_renderer_base
             // each steps rating
             $ratingitems = [];
             for ($x = 1; $x < 6; $x++) {
-                $practicetype = $mod->get_mod()->{'step' . $x . 'practicetype'};
-                if ((int) $practicetype !== \mod_wordcards_module::PRACTICETYPE_NONE) {
-                    $ratingitem = new \stdClass();
-                    $ratingitem->grade = $latestattempt->{"grade" . $x};
-                    $ratingitem->icon = utils::fetch_activity_tabicon($practicetype);
-                    $ratingitem->title = utils::get_practicetype_label($practicetype);
-                    [$yellowstars, $graystars] = utils::get_stars($ratingitem->grade);
-                    $ratingitem->yellowstars = $yellowstars;
-                    $ratingitem->graystars = $graystars;
-                    $ratingitems[] = $ratingitem;
+                $practicetype = (int) $mod->get_mod()->{'step' . $x . 'practicetype'};
+                switch ($practicetype) {
+                    case \mod_wordcards_module::PRACTICETYPE_NONE:
+                    case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
+                    case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
+                        // Skip these practictype as they do not have a rating.
+                        break;
+                    default:
+                        $ratingitem = new \stdClass();
+                        $ratingitem->grade = $latestattempt->{"grade" . $x};
+                        $ratingitem->icon = utils::fetch_activity_tabicon($practicetype);
+                        $ratingitem->title = utils::get_practicetype_label($practicetype);
+                        [$yellowstars, $graystars] = utils::get_stars($ratingitem->grade);
+                        $ratingitem->yellowstars = $yellowstars;
+                        $ratingitem->graystars = $graystars;
+                        $ratingitems[] = $ratingitem;
                 }
             }
             $data['ratingitems'] = $ratingitems;
