@@ -707,6 +707,10 @@ class renderer extends \plugin_renderer_base
 
         //get all wordcards in course
         $wordcardsids = $DB->get_fieldset_select(constants::M_TABLE, 'id', 'course = ?', array($courseid));
+        if ($wordcardsids === false || count($wordcardsids) == 0) {
+            // No wordcards in course, return empty string or a message.
+            return 'No wordcards activities found in this course.';
+        }
         list($wordcardswhere, $allparams) = $DB->get_in_or_equal($wordcardsids);
 
         //get total terms
