@@ -2281,6 +2281,22 @@ class utils
         return false;
     }
 
+    /**
+     * array_key_last polyfill
+     *
+     * @param mixed $arr
+     * @return int|string|null
+     */
+    public static function array_key_last($arr) {
+        if (function_exists('array_key_last')) {
+            return array_key_last($arr);
+        }
+        if (!empty($arr)) {
+            return key(array_slice($arr, -1, 1, true));
+        }
+        return null;
+    }
+
     public static function super_trim($str)
     {
         if ($str == null) {

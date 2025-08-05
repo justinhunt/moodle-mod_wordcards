@@ -41,72 +41,8 @@
         <textarea
                 class="form-control"
                 id="{{uniqid}}_mod_wordcards_imageprompt"
-                rows="3"
+                rows="8"
                 placeholder="{{#str}} imageprompt_placeholder, mod_wordcards {{/str}}"
-        >{{term}}. {{model_sentence}}</textarea>
-    </div>
-    <span class="font-weight-bold">
-        {{#str}} imagequality, mod_wordcards{{/str}}
-    </span>
-    <div class="mod-wordcards-toggle-container mt-1 mb-1">
-        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-            <label class="btn btn-outline-secondary active">
-                <input
-                        type="radio"
-                        class="btn-check"
-                        name="quality"
-                        value="standard"
-                        checked
-                >
-                {{#str}} definitionstandard, mod_wordcards{{/str}}
-            </label>
-            <label class="btn btn-outline-secondary">
-                <input
-                        type="radio"
-                        class="btn-check"
-                        name="quality"
-                        value="hd"
-                >
-                {{#str}} definitionhigh, mod_wordcards{{/str}}
-            </label>
-        </div>
-    </div>
-    <span class="font-weight-bold">
-        {{#str}} aspectratio, mod_wordcards{{/str}}
-    </span>
-    <div class="mod-wordcards-aspect-ratio-container mt-1 mb-1">
-        <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
-            <label class="btn btn-outline-secondary active">
-                <input
-                        type="radio"
-                        class="btn-check"
-                        name="aspect-ratio"
-                        value="square"
-                        checked
-                >
-                <span class="d-block"><i class="fas fa-square"></i></span>
-                {{#str}} aspectsquare, mod_wordcards{{/str}}
-            </label>
-            <label class="btn btn-outline-secondary">
-                <input
-                        type="radio"
-                        class="btn-check"
-                        name="aspect-ratio"
-                        value="landscape"
-                >
-                <span class="d-block"><i class="fas fa-mobile fa-rotate-90"></i></span>
-                {{#str}} aspectlandscape, mod_wordcards{{/str}}
-            </label>
-            <label class="btn btn-outline-secondary">
-                <input
-                        type="radio"
-                        class="btn-check"
-                        name="aspect-ratio"
-                        value="portrait"
-                >
-                <span class="d-block"><i class="fas fa-mobile"></i></span>
-                {{#str}} aspectportrait, mod_wordcards{{/str}}
-            </label>
-        </div>
+        >{{defaultprompt}}</textarea>
     </div>
 </div>

@@ -35,6 +35,7 @@ use core_external\external_value;
 
 use mod_wordcards\utils;
 use mod_wordcards\constants;
+use mod_wordcards\imagegen;
 
 
 /**
@@ -43,18 +44,22 @@ use mod_wordcards\constants;
  * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_wordcards_external extends external_api {
+class mod_wordcards_external extends external_api
+{
 
-    public static function check_by_phonetic_parameters() {
+    public static function check_by_phonetic_parameters()
+    {
         return new external_function_parameters(
-                 ['spoken' => new external_value(PARAM_TEXT, 'The spoken phrase'),
-                       'correct' => new external_value(PARAM_TEXT, 'The correct phrase'),
-                       'language' => new external_value(PARAM_TEXT, 'The language eg en-US'),
-                 ]
+            [
+                'spoken' => new external_value(PARAM_TEXT, 'The spoken phrase'),
+                'correct' => new external_value(PARAM_TEXT, 'The correct phrase'),
+                'language' => new external_value(PARAM_TEXT, 'The language eg en-US'),
+            ]
         );
 
     }
-    public static function check_by_phonetic($spoken, $correct, $language) {
+    public static function check_by_phonetic($spoken, $correct, $language)
+    {
         $shortlang = utils::fetch_short_lang($language);
         $spokenphonetic = utils::convert_to_phonetic($spoken, $shortlang);
         $correctphonetic = utils::convert_to_phonetic($correct, $shortlang);
@@ -64,17 +69,20 @@ class mod_wordcards_external extends external_api {
 
     }
 
-    public static function check_by_phonetic_returns() {
+    public static function check_by_phonetic_returns()
+    {
         return new external_value(PARAM_INT, 'how close is spoken to correct, 0 - 100');
     }
 
-    public static function mark_as_seen_parameters() {
+    public static function mark_as_seen_parameters()
+    {
         return new external_function_parameters([
             'termid' => new external_value(PARAM_INT),
         ]);
     }
 
-    public static function mark_as_seen($termid) {
+    public static function mark_as_seen($termid)
+    {
         global $DB;
 
         $params = self::validate_parameters(self::mark_as_seen_parameters(), compact('termid'));
@@ -93,7 +101,8 @@ class mod_wordcards_external extends external_api {
         return self::mark_as_seen_db($termid);
     }
 
-    private static function mark_as_seen_db(int $termid): bool {
+    private static function mark_as_seen_db(int $termid): bool
+    {
         global $DB, $USER;
         $params = ['userid' => $USER->id, 'termid' => $termid];
         if ($DB->record_exists('wordcards_seen', $params)) {
@@ -105,18 +114,21 @@ class mod_wordcards_external extends external_api {
         return (bool) $DB->insert_record('wordcards_seen', $record);
     }
 
-    public static function mark_as_seen_returns() {
+    public static function mark_as_seen_returns()
+    {
         return new external_value(PARAM_BOOL);
     }
 
-    public static function report_successful_association_parameters() {
+    public static function report_successful_association_parameters()
+    {
         return new external_function_parameters([
             'termid' => new external_value(PARAM_INT),
             'isfreemode' => new external_value(PARAM_BOOL, 'True if free mode is being used', VALUE_DEFAULT, 0),
         ]);
     }
 
-    public static function report_successful_association($termid, $isfreemode = false) {
+    public static function report_successful_association($termid, $isfreemode = false)
+    {
         global $DB;
 
         $params = self::validate_parameters(self::report_successful_association_parameters(), compact('termid'));
@@ -140,11 +152,13 @@ class mod_wordcards_external extends external_api {
         return true;
     }
 
-    public static function report_successful_association_returns() {
+    public static function report_successful_association_returns()
+    {
         return new external_value(PARAM_BOOL);
     }
 
-    public static function report_failed_association_parameters() {
+    public static function report_failed_association_parameters()
+    {
         return new external_function_parameters([
             'term1id' => new external_value(PARAM_INT),
             'term2id' => new external_value(PARAM_INT),
@@ -152,7 +166,8 @@ class mod_wordcards_external extends external_api {
         ]);
     }
 
-    public static function report_failed_association($term1id, $term2id, $isfreemode = false) {
+    public static function report_failed_association($term1id, $term2id, $isfreemode = false)
+    {
         global $DB;
 
         $params = self::validate_parameters(self::report_failed_association_parameters(), compact('term1id', 'term2id'));
@@ -175,26 +190,31 @@ class mod_wordcards_external extends external_api {
         return true;
     }
 
-    public static function report_failed_association_returns() {
+    public static function report_failed_association_returns()
+    {
         return new external_value(PARAM_BOOL);
     }
 
-    public static function report_step_grade_parameters() {
+    public static function report_step_grade_parameters()
+    {
         return new external_function_parameters([
-                'modid' => new external_value(PARAM_INT),
-                'correct' => new external_value(PARAM_INT),
+            'modid' => new external_value(PARAM_INT),
+            'correct' => new external_value(PARAM_INT),
         ]);
     }
 
-    public static function report_step_grade($modid, $correct) {
+    public static function report_step_grade($modid, $correct)
+    {
         $ret = utils::update_stepgrade($modid, $correct);
         return $ret;
     }
-    public static function report_step_grade_returns() {
+    public static function report_step_grade_returns()
+    {
         return new external_value(PARAM_BOOL);
     }
 
-    public static function submit_newterm_parameters() {
+    public static function submit_newterm_parameters()
+    {
         return new external_function_parameters([
             'modid' => new external_value(PARAM_INT),
             'term' => new external_value(PARAM_RAW),
@@ -205,34 +225,40 @@ class mod_wordcards_external extends external_api {
         ]);
     }
 
-    public static function submit_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence) {
+    public static function submit_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence)
+    {
         $ret = utils::save_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence);
-        if($ret){
+        if ($ret) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    public static function submit_newterm_returns() {
+    public static function submit_newterm_returns()
+    {
         return new external_value(PARAM_BOOL);
     }
 
 
-    public static function submit_mform_parameters() {
+    public static function submit_mform_parameters()
+    {
         return new external_function_parameters(
-                [
-                        'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
-                        'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
-                ]
+            [
+                'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
+            ]
         );
     }
 
-    public static function submit_mform($contextid, $jsonformdata) {
+    public static function submit_mform($contextid, $jsonformdata)
+    {
         global $CFG, $DB, $USER;
 
         // We always must pass webservice params through validate_parameters.
-        $params = self::validate_parameters(self::submit_mform_parameters(),
-                ['contextid' => $contextid, 'jsonformdata' => $jsonformdata]);
+        $params = self::validate_parameters(
+            self::submit_mform_parameters(),
+            ['contextid' => $contextid, 'jsonformdata' => $jsonformdata]
+        );
 
         $context = context::instance_by_id($params['contextid'], MUST_EXIST);
 
@@ -253,7 +279,8 @@ class mod_wordcards_external extends external_api {
 
         // get filechooser and html editor options
         $audiooptions = utils::fetch_filemanager_opts('audio');
-        $imageoptions = utils::fetch_filemanager_opts('image');;
+        $imageoptions = utils::fetch_filemanager_opts('image');
+        ;
 
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
@@ -267,12 +294,18 @@ class mod_wordcards_external extends external_api {
         $editable = true;
 
         //get the mform for imagegen
-        $imagegenform = new mod_wordcards_form_imagegen(null,
-        ['termid' => $data['termid'] ? $data['termid'] : 0, 'imagemaker' => ''],
-        $method, $target, $attributes, $editable, $data);
+        $imagegenform = new mod_wordcards_form_imagegen(
+            null,
+            ['termid' => $data['termid'] ? $data['termid'] : 0, 'imagemaker' => ''],
+            $method,
+            $target,
+            $attributes,
+            $editable,
+            $data
+        );
 
         if ($imagegendata = $imagegenform->get_data() && !empty($data['draftfileurl'])) {
-            $options = (array)$imageoptions;
+            $options = (array) $imageoptions;
             if (!isset($options['subdirs'])) {
                 $options['subdirs'] = false;
             }
@@ -291,9 +324,9 @@ class mod_wordcards_external extends external_api {
             $filename = basename($path);
             $draftitemid = basename(dirname($path));
 
-            file_save_draft_area_files( $draftitemid, $context->id, constants::M_COMPONENT, 'image', $data['termid'], $options);
-            $response = $DB->update_record('wordcards_terms', ['id' => $data['termid'], 'image' => 1]);;
-            if(!$response){
+            file_save_draft_area_files($draftitemid, $context->id, constants::M_COMPONENT, 'image', $data['termid'], $options);
+            $response = $DB->update_record('wordcards_terms', ['id' => $data['termid'], 'image' => 1]);
+            if (!$response) {
                 $ret->error = true;
                 // $ret->message = $ret->message;
             } else {
@@ -303,44 +336,56 @@ class mod_wordcards_external extends external_api {
         }
 
         // get the mform for our term
-        $mform = new \mod_wordcards_form_term(null,
-                ['termid' => $data['termid'] ? $data['termid'] : 0, 'ttslanguage' => $moduleinstance->ttslanguage],
-                        $method, $target, $attributes, $editable, $data
-                );
+        $mform = new \mod_wordcards_form_term(
+            null,
+            ['termid' => $data['termid'] ? $data['termid'] : 0, 'ttslanguage' => $moduleinstance->ttslanguage],
+            $method,
+            $target,
+            $attributes,
+            $editable,
+            $data
+        );
 
         $validateddata = $mform->get_data();
         if ($validateddata) {
 
             // currently data is an array, but it should be an object
-            $data = (object)$data;
+            $data = (object) $data;
 
             // if this new add and collect data->id
             $needsupdating = false;
             if (empty($data->termid)) {
                 $data->modid = $moduleinstance->id;
-                $data->id  = $DB->insert_record('wordcards_terms', $data);
+                $data->id = $DB->insert_record('wordcards_terms', $data);
 
                 // else set id to termid
-            }else{
+            } else {
                 $data->id = $data->termid;
                 $needsupdating = true;
             }
-            if($data->id){
+            if ($data->id) {
                 $ret->error = false;
             }
 
             // audio data
-            if(!empty( $data->audio_filemanager)){
-                $data = file_postupdate_standard_filemanager($data, 'audio', $audiooptions, $context, constants::M_COMPONENT, 'audio',
-                        $data->id);
+            if (!empty($data->audio_filemanager)) {
+                $data = file_postupdate_standard_filemanager(
+                    $data,
+                    'audio',
+                    $audiooptions,
+                    $context,
+                    constants::M_COMPONENT,
+                    'audio',
+                    $data->id
+                );
                 $needsupdating = true;
 
                 // in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
                 $fs = get_file_storage();
                 $areafiles = $fs->get_area_files($context->id, 'mod_wordcards', 'audio', $data->id);
-                if(!$areafiles || count($areafiles) == 0){
+                if (!$areafiles || count($areafiles) == 0) {
                     $data->audio = '';
-                }else if(count($areafiles) == 1) {
+                } else if (count($areafiles) == 1) {
                     $file = array_pop($areafiles);
                     if ($file->is_directory()) {
                         $data->audio = '';
@@ -350,18 +395,25 @@ class mod_wordcards_external extends external_api {
             }
 
             // model sentence audio data
-            if(!empty($data->model_sentence_audio_filemanager)){
+            if (!empty($data->model_sentence_audio_filemanager)) {
                 // $data->audio_filemanager = $audioitemid;
-                $data = file_postupdate_standard_filemanager($data, 'model_sentence_audio', $audiooptions, $context, constants::M_COMPONENT, 'model_sentence_audio',
-                        $data->id);
+                $data = file_postupdate_standard_filemanager(
+                    $data,
+                    'model_sentence_audio',
+                    $audiooptions,
+                    $context,
+                    constants::M_COMPONENT,
+                    'model_sentence_audio',
+                    $data->id
+                );
                 $needsupdating = true;
                 // in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
                 $fs = get_file_storage();
                 $areafiles = $fs->get_area_files($context->id, 'mod_wordcards', 'model_sentence_audio', $data->id);
 
-                if(!$areafiles || count($areafiles) == 0){
+                if (!$areafiles || count($areafiles) == 0) {
                     $data->model_sentence_audio = '';
-                }else if(count($areafiles) == 1) {
+                } else if (count($areafiles) == 1) {
                     $file = array_pop($areafiles);
                     if ($file->is_directory()) {
                         $data->model_sentence_audio = '';
@@ -370,17 +422,24 @@ class mod_wordcards_external extends external_api {
 
             }
 
-            if(!empty($data->image_filemanager)){
-                $data = file_postupdate_standard_filemanager($data, 'image', $imageoptions, $context, constants::M_COMPONENT, 'image',
-                        $data->id);
+            if (!empty($data->image_filemanager)) {
+                $data = file_postupdate_standard_filemanager(
+                    $data,
+                    'image',
+                    $imageoptions,
+                    $context,
+                    constants::M_COMPONENT,
+                    'image',
+                    $data->id
+                );
                 $needsupdating = true;
 
                 // in the case a user has deleted all files, we will still have the draftid in the image column, we want to set it to ''
                 $fs = get_file_storage();
                 $areafiles = $fs->get_area_files($context->id, 'mod_wordcards', 'image', $data->id);
-                if(!$areafiles || count($areafiles) == 0){
+                if (!$areafiles || count($areafiles) == 0) {
                     $data->image = '';
-                }else if(count($areafiles) == 1) {
+                } else if (count($areafiles) == 1) {
                     $file = array_pop($areafiles);
                     if ($file->is_directory()) {
                         $data->image = '';
@@ -390,7 +449,7 @@ class mod_wordcards_external extends external_api {
 
             // lets update the passage hash here before we save the item in db
             if ($needsupdating) {
-                if($DB->update_record('wordcards_terms', $data)) {
+                if ($DB->update_record('wordcards_terms', $data)) {
                     // also update our passagehash update flag
                     $DB->update_record('wordcards', ['id' => $moduleinstance->id, 'hashisold' => 1]);
                     $ret->error = false;
@@ -408,14 +467,17 @@ class mod_wordcards_external extends external_api {
         return json_encode($ret);
     }
 
-    public static function submit_mform_returns() {
+    public static function submit_mform_returns()
+    {
         return new external_value(PARAM_RAW);
         // return new external_value(PARAM_INT, 'group id');
     }
 
-    public static function search_dictionary_parameters() {
+    public static function search_dictionary_parameters()
+    {
         return new external_function_parameters(
-            ['terms' => new external_value(PARAM_RAW, 'The csv word list'),
+            [
+                'terms' => new external_value(PARAM_RAW, 'The csv word list'),
                 'cmid' => new external_value(PARAM_INT, 'The cmid'),
                 'sourcelang' => new external_value(PARAM_TEXT, 'The language searched'),
                 'targetlangs' => new external_value(PARAM_TEXT, 'The csv translation langs'),
@@ -423,7 +485,8 @@ class mod_wordcards_external extends external_api {
         );
 
     }
-    public static function search_dictionary($terms, $cmid, $sourcelang, $targetlangs) {
+    public static function search_dictionary($terms, $cmid, $sourcelang, $targetlangs)
+    {
         $ret = new \stdClass();
 
         // We need to do this so that search_dictionary requests can run in parallel.
@@ -440,7 +503,8 @@ class mod_wordcards_external extends external_api {
         return $ret;
     }
 
-    public static function search_dictionary_returns() {
+    public static function search_dictionary_returns()
+    {
         return new external_single_structure(
             [
                 'success' => new external_value(PARAM_INT, 'Indicates success or failure of the call'),
@@ -450,7 +514,8 @@ class mod_wordcards_external extends external_api {
     }
 
 
-    public static function set_my_words_parameters() {
+    public static function set_my_words_parameters()
+    {
         return new external_function_parameters(
             [
                 'termid' => new external_value(PARAM_INT, 'The term id for the word'),
@@ -467,7 +532,8 @@ class mod_wordcards_external extends external_api {
      * @return array
      * @throws invalid_parameter_exception
      */
-    public static function set_my_words(int $termid, bool $newstatus) {
+    public static function set_my_words(int $termid, bool $newstatus)
+    {
         global $DB;
         $params = self::validate_parameters(
             self::set_my_words_parameters(),
@@ -494,7 +560,8 @@ class mod_wordcards_external extends external_api {
         ];
     }
 
-    public static function set_my_words_returns() {
+    public static function set_my_words_returns()
+    {
         return new external_single_structure(
             [
                 'success' => new external_value(PARAM_INT, 'Indicates success or failure of the call'),
@@ -503,13 +570,15 @@ class mod_wordcards_external extends external_api {
         );
     }
 
-    public static function report_successful_learnclaim_parameters() {
+    public static function report_successful_learnclaim_parameters()
+    {
         return new external_function_parameters([
             'termid' => new external_value(PARAM_INT),
         ]);
     }
 
-    public static function report_successful_learnclaim($termid) {
+    public static function report_successful_learnclaim($termid)
+    {
         global $DB;
 
         $params = self::validate_parameters(self::report_successful_association_parameters(), compact('termid'));
@@ -532,21 +601,24 @@ class mod_wordcards_external extends external_api {
         return true;
     }
 
-    public static function report_successful_learnclaim_returns() {
+    public static function report_successful_learnclaim_returns()
+    {
         return new external_value(PARAM_BOOL);
     }
 
-    public static function set_user_preference_parameters() {
+    public static function set_user_preference_parameters()
+    {
         return new external_function_parameters([
             'name' => new external_value(PARAM_TEXT, 'The user preference name'),
             'value' => new external_value(PARAM_TEXT, 'The user preference value'),
         ]);
     }
 
-    public static function set_user_preference($name, $value) {
+    public static function set_user_preference($name, $value)
+    {
 
         //set the user preference
-        switch($name){
+        switch ($name) {
             case 'wordcards_deflang':
                 if (empty($value)) {
                     unset_user_preference($name);
@@ -559,8 +631,123 @@ class mod_wordcards_external extends external_api {
         }
     }
 
-    public static function set_user_preference_returns() {
+    public static function set_user_preference_returns()
+    {
         return new external_value(PARAM_BOOL);
+    }
+
+    // Image Generation Parameters
+    public static function generate_bulk_images_parameters()
+    {
+        return new external_function_parameters(
+            [
+                'cmid' => new external_value(PARAM_INT, 'The context module ID'),
+            ]
+        );
+    }
+
+    // Image Generation Function
+    public static function generate_bulk_images($cmid)
+    {
+        global $CFG, $DB, $USER;
+        $params = self::validate_parameters(
+            self::generate_bulk_images_parameters(),
+            ['cmid' => $cmid]
+        );
+        $mod = mod_wordcards_module::get_by_cmid($cmid);
+
+        // Make image generator.
+        $imagegen = new imagegen($mod);
+
+        // Get terms and a prompt for each term.
+        $terms = $mod->get_term_records();
+        $termids = array_map(function ($term) {
+            if ($term->image !== "1") {
+                return $term->id;
+            }
+        }, $terms);
+
+
+        $imageprompts = [];
+        foreach ($terms as $term) {
+            if (in_array($term->id, $termids)) {
+                // Make image prompt for each term.
+                $imageprompts[$term->id] = $imagegen->make_image_prompt($term);
+            }
+        }
+
+        // Do the bulk image generation.
+        $overallimagecontext = "";
+         $imageurls = false;
+        if (count($termids) > 0) {
+            $imageurls = $imagegen->generate_images($termids, $imageprompts, $overallimagecontext);
+        }
+
+        if (!$imageurls) {
+            $imageurls = [];
+        }
+
+        return ['images' => $imageurls];
+    }
+    public static function generate_bulk_images_returns()
+    {
+        // return array  of image urls with termids
+        return new external_single_structure(
+            [
+                'images' => new external_multiple_structure(
+                    new external_single_structure(
+                        [
+                            'url' => new external_value(PARAM_URL, 'The URL of the draft file'),
+                            'termid' => new external_value(PARAM_INT, 'The term ID'),
+                        ]
+                    )
+                )
+            ]
+        );
+    }
+
+    // Image Generation Parameters
+    public static function generate_image_parameters()
+    {
+        return new external_function_parameters(
+            [
+                'termid' => new external_value(PARAM_INT, 'The term ID'),
+                'prompt' => new external_value(PARAM_TEXT, 'The prompt for image generation'),
+            ]
+        );
+    }
+
+    // Image Generation Function
+    public static function generate_image($termid, $prompt)
+    {
+        global $CFG, $DB, $USER;
+        $params = self::validate_parameters(
+            self::generate_image_parameters(),
+            ['termid' => $termid, 'prompt' => $prompt]
+        );
+
+        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $mod = mod_wordcards_module::get_by_modid($term->modid);
+
+        // Make image generator
+        $imagegen = new imagegen($mod);
+        $imagedata = $imagegen->generate_image($termid, $prompt);
+        if (!$imagedata) {
+            throw new invalid_parameter_exception('Invalid generation failed');
+        }
+
+        return $imagedata;
+    }
+    public static function generate_image_returns()
+    {
+        return new external_single_structure(
+            [
+                'drafturl' => new external_value(PARAM_URL, 'The URL of the draft file'),
+                'draftitemid' => new external_value(PARAM_INT, 'The draft item ID'),
+                'termid' => new external_value(PARAM_INT, 'The term ID'),
+                'error' => new external_value(PARAM_BOOL, 'Indicates if there was an error in generation'),
+            ]
+        );
     }
 
 }

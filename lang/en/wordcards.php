@@ -593,4 +593,9 @@ $string['selfclaim'] = 'Self Claim';
 $string['selfclaimed'] = 'Self Claimed';
 $string['termstolearn'] = 'Terms to Learn';
 $string['totalterms'] = 'Total Terms';
-
+$string['ww_images_fetch'] = 'Fetch Images';
+$string['bulkimagewizard'] = 'Image Wizard';
+$string['imagesgenerated'] = 'images were generated.';
+$string['generatingimages'] = 'Generating images for terms .. please wait';
+$string['noimagesgenerated'] = 'No images were generated for the terms. They all have images already, or the AI could not generate images for them.';
+$string['ww_bulk_images_instructions'] = 'Generate an image for each term that does not already have an image';

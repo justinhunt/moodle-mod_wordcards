@@ -10,10 +10,21 @@
     <a class="btn btn-primary ww_words_fetch_btn" id="{{uniqid}}_fetchbtn">{{#str}}ww_words_fetch, mod_wordcards{{/str}}</a>
     <div id="{{uniqid}}_resultscont" class="mod_wordcards_ww_results"></div>
 </div>
+<hr>
+<div class="mod_wordcards_ww_image_cont">
+  <h4>{{#str}}bulkimagewizard, mod_wordcards {{/str}}</h4>
+  <div>{{#str}}ww_bulk_images_instructions, mod_wordcards {{/str}}</div><br />
+  <a class="btn btn-primary ww_words_fetch_image_btn" id="{{uniqid}}_fetchimagebtn">{{#str}}ww_images_fetch, mod_wordcards{{/str}}</a>
+  <div id="{{uniqid}}_image_resultscont" class="mod_wordcards_ww_image_results" style="display: none">
+  </div>
+</div>
 
 {{^element.frozen}}
     {{#js}}
-        require(['jquery','core/log','core/templates','mod_wordcards/dictlookup'],function($,log,templates,  dictlookup) {
+        require(['jquery','core/log','core/templates','mod_wordcards/dictlookup', 'mod_wordcards/bulkimagegen'],function($,log,templates,  dictlookup, bulkimagegen) {
+
+            //Init bulk image generation
+            bulkimagegen.init({{cmid}});
 
             //get words from text area and fetch definitions
             var resultscont = $("#{{uniqid}}_resultscont");

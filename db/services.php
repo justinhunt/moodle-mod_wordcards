@@ -103,4 +103,22 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+
+     'mod_wordcards_generate_image' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'generate_image',
+        'description' => 'Generates an image based on the provided prompt',
+        'capabilities' => 'mod/wordcards:manage',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
+
+    'mod_wordcards_generate_bulk_images' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'generate_bulk_images',
+        'description' => 'Generates images based on the provided prompts',
+        'capabilities' => 'mod/wordcards:manage',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
 );

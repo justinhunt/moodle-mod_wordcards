@@ -34,7 +34,8 @@ use mod_wordcards\constants;
  * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_wordcards_table_terms extends table_sql {
+class mod_wordcards_table_terms extends table_sql
+{
 
     /**
      * The module instance.
@@ -61,7 +62,8 @@ class mod_wordcards_table_terms extends table_sql {
      * @param string $uniqueid Unique ID.
      * @param object $mod The module.
      */
-    public function __construct($uniqueid, $mod) {
+    public function __construct($uniqueid, $mod)
+    {
         global $PAGE;
         parent::__construct($uniqueid);
         $this->mod = $mod;
@@ -93,10 +95,10 @@ class mod_wordcards_table_terms extends table_sql {
             $this->renderer->render($mastercheckbox),
             get_string('term', constants::M_COMPONENT),
             get_string('definition', constants::M_COMPONENT),
-                get_string('audiofile', constants::M_COMPONENT),
-                get_string('imagefile', constants::M_COMPONENT),
-                get_string('ttsvoice', constants::M_COMPONENT),
-                get_string('model_sentence', constants::M_COMPONENT),
+            get_string('audiofile', constants::M_COMPONENT),
+            get_string('imagefile', constants::M_COMPONENT),
+            get_string('ttsvoice', constants::M_COMPONENT),
+            get_string('model_sentence', constants::M_COMPONENT),
             get_string('actions'),
         ]);
 
@@ -128,11 +130,12 @@ class mod_wordcards_table_terms extends table_sql {
      * @param stdClass $row Table row.
      * @return string Output produced.
      */
-    protected function col_ttsvoice($row) {
+    protected function col_ttsvoice($row)
+    {
         global $OUTPUT;
-        if(array_key_exists($row->ttsvoice, $this->voices)){
+        if (array_key_exists($row->ttsvoice, $this->voices)) {
             return $this->voices[$row->ttsvoice];
-        }else{
+        } else {
             return get_string('invalidvoice', constants::M_COMPONENT);
         }
 
@@ -144,7 +147,8 @@ class mod_wordcards_table_terms extends table_sql {
      * @param stdClass $row Table row.
      * @return string Output produced.
      */
-    protected function col_actions($row) {
+    protected function col_actions($row)
+    {
         global $OUTPUT;
 
         $actions = [];
@@ -159,15 +163,24 @@ class mod_wordcards_table_terms extends table_sql {
         */
 
         // ajax action - edit
-        $ajaxeditlink = $OUTPUT->action_link('#', '', null, ['data-id' => $row->id, 'data-type' => "edit", 'class' => "mod_wordcards_item_row_editlink"], new pix_icon('t/edit',
-                get_string('editterm', 'mod_wordcards', $row->term)));
+        $ajaxeditlink = $OUTPUT->action_link('#', '', null, ['data-id' => $row->id, 'data-type' => "edit", 'class' => "mod_wordcards_item_row_editlink"], new pix_icon(
+            't/edit',
+            get_string('editterm', 'mod_wordcards', $row->term)
+        ));
         $actions[] = $ajaxeditlink;
 
         // ajax action - imagegen
-        if (utils::is_ai_placement_action_available($this->mod->get_context(), 'generate_wordcards_image', \core_ai\aiactions\generate_image::class)) {
-            $ajaximagegenlink = $OUTPUT->action_link('#', '', null, ['data-id' => $row->id, 'data-type' => "imagegen",
-            'class' => "mod_wordcards_item_row_imagegenlink"], new pix_icon('t/life-ring',
-                    get_string('imagegen', 'mod_wordcards', $row->term)));
+        // We used to need the poodll ai placement plugin, but we have removed that requirement
+        // if (utils::is_ai_placement_action_available($this->mod->get_context(), 'generate_wordcards_image', \core_ai\aiactions\generate_image::class)) {
+        if (true) {
+            $ajaximagegenlink = $OUTPUT->action_link('#', '', null, [
+                'data-id' => $row->id,
+                'data-type' => "imagegen",
+                'class' => "mod_wordcards_item_row_imagegenlink"
+            ], new pix_icon(
+                't/life-ring',
+                get_string('imagegen', 'mod_wordcards', $row->term)
+            ));
             $actions[] = $ajaximagegenlink;
         }
 
@@ -175,16 +188,21 @@ class mod_wordcards_table_terms extends table_sql {
         $action = new confirm_action(get_string('reallydeleteterm', 'mod_wordcards', $row->term));
         $url = new moodle_url($this->baseurl);
         $url->params(['action' => 'delete', 'termid' => $row->id, 'sesskey' => sesskey()]);
-        $actionlink = $OUTPUT->action_link($url, '', $action, null, new pix_icon('t/delete',
-            get_string('deleteterm', 'mod_wordcards', $row->term)));
+        $actionlink = $OUTPUT->action_link($url, '', $action, null, new pix_icon(
+            't/delete',
+            get_string('deleteterm', 'mod_wordcards', $row->term)
+        ));
         $actions[] = $actionlink;
 
         return implode(' ', $actions);
     }
 
-    protected function col_bulkselect($row) {
+    protected function col_bulkselect($row)
+    {
         $checkbox = new checkbox_toggleall('delete-term', false, [
-            'value' => $row->id, 'class' => 'bulkselectcol', 'name' => 'termdeleteid[]',
+            'value' => $row->id,
+            'class' => 'bulkselectcol',
+            'name' => 'termdeleteid[]',
         ]);
         return $this->renderer->render($checkbox);
     }
@@ -192,7 +210,8 @@ class mod_wordcards_table_terms extends table_sql {
     /**
      * Override the default implementation to set a decent heading level.
      */
-    public function print_nothing_to_display() {
+    public function print_nothing_to_display()
+    {
         global $OUTPUT;
 
         echo $this->render_reset_button();

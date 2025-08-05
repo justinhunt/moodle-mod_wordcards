@@ -1576,7 +1576,7 @@ ul.definition_flashcards_ul {
 .flash_img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 6px;
 }
 
@@ -2341,4 +2341,13 @@ button.definitions-next.btn .fa-arrow-right:before {
     display: flex;
     align-items: center;
     margin-top: 20px;
+}
+
+.ww_bulk_image_thumb {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
 }

@@ -32,7 +32,8 @@ use mod_wordcards\utils;
  * @package mod_wordcards
  * @author  Frédéric Massart - FMCorz.net
  */
-class mod_wordcards_module {
+class mod_wordcards_module
+{
 
     const STATE_TERMS = 'terms';
     const STATE_STEP1 = 'step1practicetype';
@@ -79,7 +80,8 @@ class mod_wordcards_module {
     protected $context;
     protected $mod;
 
-    protected function __construct($course, $cm, $mod = null) {
+    protected function __construct($course, $cm, $mod = null)
+    {
         global $DB;
         $this->course = $course;
         $this->cm = $cm;
@@ -87,7 +89,8 @@ class mod_wordcards_module {
         $this->context = context_module::instance($cm->id);
     }
 
-    protected function course_has_term($termid) {
+    protected function course_has_term($termid)
+    {
         global $DB;
         $sql = "SELECT 'x'
                   FROM {wordcards_terms} t
@@ -99,11 +102,12 @@ class mod_wordcards_module {
         return $DB->record_exists_sql($sql, [$termid, $this->get_course()->id]);
     }
 
-    public function register_module_viewed() {
+    public function register_module_viewed()
+    {
         // Trigger module viewed event.
         $event = \mod_wordcards\event\course_module_viewed::create([
-                'objectid' => $this->mod->id,
-                'context' => $this->context,
+            'objectid' => $this->mod->id,
+            'context' => $this->context,
         ]);
         $event->add_record_snapshot('course_modules', $this->cm);
         $event->add_record_snapshot('course', $this->course);
@@ -111,13 +115,15 @@ class mod_wordcards_module {
         $event->trigger();
     }
 
-    public function completion_module_viewed() {
+    public function completion_module_viewed()
+    {
         // Register completion based on view
         $completion = new completion_info($this->course);
         $completion->set_module_viewed($this->cm);
     }
 
-    public function delete() {
+    public function delete()
+    {
         global $DB;
         $modid = $this->get_id();
         $DB->execute('DELETE FROM {wordcards_seen}
@@ -137,15 +143,17 @@ class mod_wordcards_module {
         $DB->delete_records('wordcards', ['id' => $modid]);
     }
 
-    public function delete_term($termid) {
+    public function delete_term($termid)
+    {
         global $DB;
         $DB->set_field(constants::M_TERMSTABLE, 'deleted', 1, ['modid' => $this->get_id(), 'id' => $termid]);
     }
 
-    public function fetch_step_termcount($step) {
+    public function fetch_step_termcount($step)
+    {
         global $DB, $USER;
         $termcount = 0;
-        switch($step){
+        switch ($step) {
             case self::STATE_STEP1:
                 $termcount = $this->mod->step1termcount;
                 break;
@@ -170,11 +178,13 @@ class mod_wordcards_module {
         return $termcount;
     }
 
-    public static function get_all_states() {
+    public static function get_all_states()
+    {
         return self::$states;
     }
 
-    public static function get_wordpools() {
+    public static function get_wordpools()
+    {
         $refclass = new ReflectionClass(__CLASS__);
         $constants = $refclass->getConstants();
         $pools = [];
@@ -186,7 +196,8 @@ class mod_wordcards_module {
         return $pools;
     }
 
-    public function get_allowed_states() {
+    public function get_allowed_states()
+    {
         // if we are an admin/teacher kind of person we can see all the steps
         if ($this->can_manage() || $this->can_viewreports()) {
             return self::$states;
@@ -203,33 +214,40 @@ class mod_wordcards_module {
         return [$state];
     }
 
-    public function get_cm() {
+    public function get_cm()
+    {
         return $this->cm;
     }
 
-    public function get_mod() {
+    public function get_mod()
+    {
         return $this->mod;
     }
 
-    public function get_cmid() {
+    public function get_cmid()
+    {
         return $this->cm->id;
     }
 
-    public function get_context() {
+    public function get_context()
+    {
         return $this->context;
     }
 
-    public function get_course() {
+    public function get_course()
+    {
         return $this->course;
     }
 
-    public function get_id() {
+    public function get_id()
+    {
         return $this->mod->id;
     }
 
 
-    public function get_practicetype($state) {
-        switch($state){
+    public function get_practicetype($state)
+    {
+        switch ($state) {
             case self::STATE_STEP1:
                 return $this->mod->step1practicetype;
             case self::STATE_STEP2:
@@ -243,9 +261,10 @@ class mod_wordcards_module {
         }
     }
 
-    public function get_wordpool($state) {
+    public function get_wordpool($state)
+    {
         $practicetype = $this->get_practicetype($state);
-        switch($practicetype ){
+        switch ($practicetype) {
             case self::PRACTICETYPE_SCATTER:
             case self::PRACTICETYPE_MATCHSELECT:
             case self::PRACTICETYPE_MATCHTYPE:
@@ -268,11 +287,12 @@ class mod_wordcards_module {
         }
     }
 
-    public function insert_learned_state($terms, $userid=null) {
+    public function insert_learned_state($terms, $userid = null)
+    {
         global $DB, $USER;
 
         $learnpoint = $this->mod->learnpoint;
-        if($userid == null){
+        if ($userid == null) {
             $userid = $USER->id;
         }
 
@@ -285,16 +305,16 @@ class mod_wordcards_module {
                    AND t.deleted = 0";
 
         $result = $DB->get_records_sql($sql, [$userid, $this->get_id()]);
-        if($result) {
+        if ($result) {
             foreach ($terms as $term) {
                 $term->selfclaim = 0;
                 $term->learned = 0;
                 $term->learned_progress = 0;
-                if (isset($result[$term->id])){
-                    if($result[$term->id]->successcount >= $learnpoint) {
+                if (isset($result[$term->id])) {
+                    if ($result[$term->id]->successcount >= $learnpoint) {
                         $term->learned = true; //$result[$term->id];
                         $term->learned_progress = 100;
-                    }else{
+                    } else {
                         $term->learned = false;
                         $term->learned_progress = round($result[$term->id]->successcount / $learnpoint * 100);
                     }
@@ -305,28 +325,29 @@ class mod_wordcards_module {
         return $terms;
     }
 
-    public static function insert_media_urls($terms) {
+    public static function insert_media_urls($terms)
+    {
         global $CFG;
-        foreach($terms as $term){
+        foreach ($terms as $term) {
             $contextid = false;
             $cachebuster = '?cb=' . \html_writer::random_id();
-            if($term->image){
-                if(!$contextid){
+            if ($term->image) {
+                if (!$contextid) {
                     $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
                     $contextid = context_module::instance($thecm->id)->id;
                 }
                 $term->image = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/image/$term->id" . $cachebuster;
             }
-            if($term->audio){
-                if(!$contextid){
+            if ($term->audio) {
+                if (!$contextid) {
                     $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
                     $contextid = context_module::instance($thecm->id)->id;
                 }
                 $term->audio = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id  . $cachebuster";
             }
 
-            if($term->model_sentence_audio){
-                if(!$contextid){
+            if ($term->model_sentence_audio) {
+                if (!$contextid) {
                     $thecm = get_coursemodule_from_instance('wordcards', $term->modid, 0, false, MUST_EXIST);
                     $contextid = context_module::instance($thecm->id)->id;
                 }
@@ -341,75 +362,83 @@ class mod_wordcards_module {
      * If there is a need we can run format_string over the definition
      */
 
-    public static function format_defs($terms) {
+    public static function format_defs($terms)
+    {
         global $CFG;
-        foreach($terms as $def){
+        foreach ($terms as $def) {
             // lets not double up
-            if(strpos($def->definition, '<div class="text_to_html">') !== 0) {
+            if (strpos($def->definition, '<div class="text_to_html">') !== 0) {
                 $def->definition = format_text($def->definition);
             }
         }
         return $terms;
     }
 
-    public function update_userpref_defs($terms){
+    public function update_userpref_defs($terms)
+    {
         // Get selected definitions language.
         $activitydefinitionslanguage = $this->get_mod()->deflanguage;
         $userprefdeflanguage = get_user_preferences('wordcards_deflang');
- 
+
         // If there is no userpref or its the same as the activity def, nothing to update.
         if (empty($userprefdeflanguage) || $userprefdeflanguage == $activitydefinitionslanguage) {
             return $terms;
         }
         //otherwise get the translation that suits
         foreach ($terms as $term) {
-            if (empty($term->translations)) {continue;}
-            if (!self::is_json($term->translations)) {continue;}
+            if (empty($term->translations)) {
+                continue;
+            }
+            if (!self::is_json($term->translations)) {
+                continue;
+            }
             $translations = json_decode($term->translations);
             // English is a special case.
             if ($userprefdeflanguage == 'en') {
                 $translations->en = $term->sourcedef;
             }
-            if (!empty($translations) &&
-                isset($translations->{$userprefdeflanguage})) {
-                    $term->definition = $translations->{$userprefdeflanguage};
+            if (
+                !empty($translations) &&
+                isset($translations->{$userprefdeflanguage})
+            ) {
+                $term->definition = $translations->{$userprefdeflanguage};
             }
         }
         return $terms;
     }
 
-
-    public function get_learn_terms(int $maxterms, $removealreadylearned = false) {
-        if($removealreadylearned){
+    public function get_learn_terms(int $maxterms, $removealreadylearned = false)
+    {
+        if ($removealreadylearned) {
             // We fetch all the terms and their learned status
             $allrecords = $this->get_terms_with_learn_status();
-            if(!$allrecords){       
+            if (!$allrecords) {
                 return [];
             }
 
             // We find which are learned and which are unlearned
-            $unlearnedrecords = array_filter($allrecords, function($record) {
+            $unlearnedrecords = array_filter($allrecords, function ($record) {
                 return !$record->learned;
             });
-            $learnedrecords = array_filter($allrecords, function($record) {
+            $learnedrecords = array_filter($allrecords, function ($record) {
                 return $record->learned;
             });
 
             // If there are enough unlearned records, we return them
             // If ther are not we return all the unlearned records and some learned records
             // If there are not enough learned records, we return all the records
-            if(count($unlearnedrecords)>=$maxterms){
+            if (count($unlearnedrecords) >= $maxterms) {
                 $records = $unlearnedrecords;
-            }else{
+            } else {
                 $records = $unlearnedrecords;
                 $extrarecordsneeded = $maxterms - count($records);
-                if(count($learnedrecords)>=$extrarecordsneeded){
+                if (count($learnedrecords) >= $extrarecordsneeded) {
                     $records = array_merge($records, array_slice($learnedrecords, 0, $extrarecordsneeded));
-                }else{
+                } else {
                     $records = $allrecords;
                 }
             }
-        }else{
+        } else {
             $records = $this->get_terms();
         }
         if (!$records) {
@@ -419,23 +448,20 @@ class mod_wordcards_module {
         shuffle($records);
         if ($maxterms > 0) {
             $selectedrecords = array_slice($records, 0, $maxterms);
-            $selectedrecords = self::insert_media_urls($selectedrecords);
-            $selectedrecords = self::format_defs($selectedrecords);
             return $selectedrecords;
         } else {
-            $records = self::insert_media_urls($records);
-            $records = self::format_defs($records);
             return $records;
         }
     }
 
-    public function get_allreview_terms($countonly = false) {
+    public function get_allreview_terms($countonly = false)
+    {
         global $DB, $USER;
         $params = ['userid' => $USER->id, 'modid' => $this->cm->instance, 'courseid' => $this->cm->course];
         $reviewsql = $countonly ? "SELECT COUNT(t.id)" : "SELECT t.*";
-                $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
-                $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
-                $reviewsql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL AND w.course = :courseid";
+        $reviewsql .= " FROM {wordcards_terms} t INNER JOIN {wordcards} w ON w.id = t.modid ";
+        $reviewsql .= " LEFT OUTER JOIN {wordcards_seen} s ON s.termid = t.id AND t.deleted = 0 AND s.userid = :userid";
+        $reviewsql .= " WHERE t.deleted = 0 AND NOT t.modid = :modid AND s.id IS NOT NULL AND w.course = :courseid";
         if ($countonly) {
             return $DB->get_field_sql($reviewsql, $params);
         } else {
@@ -450,7 +476,8 @@ class mod_wordcards_module {
         }
     }
 
-    public function get_review_terms(int $maxterms) {
+    public function get_review_terms(int $maxterms)
+    {
         global $DB, $USER;
         // Old code had a min of 4 so keeping this - not sure why.
         $maxterms = max(4, $maxterms);
@@ -486,7 +513,8 @@ class mod_wordcards_module {
                    ";
             // This is the way to make it simili random, we extract a random subset.
             $from = rand(0, $DB->count_records_sql($countsql . $sql, $params) - $maxterms - 1);
-            if($from < 0){$from = 0;
+            if ($from < 0) {
+                $from = 0;
             }
 
             $sql = $selectsql . $sql;
@@ -530,12 +558,12 @@ class mod_wordcards_module {
             return [];
         }
         shuffle($records);
-        if($maxterms > 0) {
+        if ($maxterms > 0) {
             $selectedrecords = array_slice($records, 0, $maxterms);
             $selectedrecords = self::insert_media_urls($selectedrecords);
             $selectedrecords = self::format_defs($selectedrecords);
             return $selectedrecords;
-        }else{
+        } else {
             $records = self::insert_media_urls($records);
             $records = self::format_defs($records);
             return $records;
@@ -543,7 +571,8 @@ class mod_wordcards_module {
 
     }
 
-    public function get_attempts() {
+    public function get_attempts()
+    {
         global $DB, $USER;
 
         // Teachers are always considered done.
@@ -555,20 +584,22 @@ class mod_wordcards_module {
         return $records;
     }
 
-    public function get_latest_attempt() {
+    public function get_latest_attempt()
+    {
         global $USER, $DB;
         $records = $DB->get_records('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id], 'timecreated DESC', '*', 0, 1);
-        if(!$records){
+        if (!$records) {
             return false;
-        }else{
+        } else {
             return array_shift($records);
         }
     }
 
     // can they use free mode
-    public function can_free_mode() {
+    public function can_free_mode()
+    {
 
-        switch($this->mod->journeymode){
+        switch ($this->mod->journeymode) {
             // steps mode, no
             case constants::MODE_STEPS:
                 return false;
@@ -577,22 +608,23 @@ class mod_wordcards_module {
             case constants::MODE_STEPSTHENFREE:
                 // if no attempts, we can attempt
                 $attempts = $this->get_attempts();
-                if($attempts){
+                if ($attempts) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
 
-                // free mode, or otherwise (there is no otherwise..) they can
+            // free mode, or otherwise (there is no otherwise..) they can
             case constants::MODE_FREE:
             default:
                 return true;
         }
     }
 
-     // can they use sesson mode
-    public function can_session_mode() {
-        switch($this->mod->journeymode){
+    // can they use sesson mode
+    public function can_session_mode()
+    {
+        switch ($this->mod->journeymode) {
             // Free mode, or otherwise (there is no otherwise..) they can.
             case constants::MODE_SESSION:
                 return true;
@@ -601,37 +633,45 @@ class mod_wordcards_module {
         }
     }
 
-    public function can_attempt() {
+    public function can_attempt()
+    {
         // unlimited attempts can attempt
-        if($this->mod->maxattempts == 0){return true;
+        if ($this->mod->maxattempts == 0) {
+            return true;
         }
 
         // Teachers can attempt.
-        if($this->can_manage()){return true;
+        if ($this->can_manage()) {
+            return true;
         }
 
         // If teachers, we can attempt
-        if ($this->can_manage()) {return true;
+        if ($this->can_manage()) {
+            return true;
         }
 
         // if no attempts, we can attempt
         $attempts = $this->get_attempts();
-        if(!$attempts){return true;
+        if (!$attempts) {
+            return true;
         }
 
         // if we have fewer attempts than the max, we can attemopt
-        if(count($attempts) < $this->mod->maxattempts){return true;
+        if (count($attempts) < $this->mod->maxattempts) {
+            return true;
         }
 
         // if we have not completed the last attempt, we can attempt
-        if(!$this->has_user_finished_latest_attempt()){return true;
+        if (!$this->has_user_finished_latest_attempt()) {
+            return true;
         }
 
         // otherwise, no we can not attempt
         return false;
     }
 
-    public function get_state() {
+    public function get_state()
+    {
         global $DB, $USER;
 
         // Teachers are always considered done.
@@ -640,21 +680,32 @@ class mod_wordcards_module {
         }
 
         $record = $this->get_latest_attempt();
-        if(!$record){
+        if (!$record) {
             return [self::STATE_TERMS, null];
-        }else{
+        } else {
             return [$record->state, json_decode($record->statedata)];
         }
     }
 
-    public function get_terms($includedeleted = false) {
+    public function get_term_records($includedeleted = false)
+    {
         global $DB;
         $params = ['modid' => $this->mod->id];
         if (!$includedeleted) {
             $params['deleted'] = 0;
         }
         $terms = $DB->get_records('wordcards_terms', $params, 'id ASC');
-        if($terms){
+        return $terms;
+    }
+    public function get_terms($includedeleted = false)
+    {
+        global $DB;
+        $params = ['modid' => $this->mod->id];
+        if (!$includedeleted) {
+            $params['deleted'] = 0;
+        }
+        $terms = $DB->get_records('wordcards_terms', $params, 'id ASC');
+        if ($terms) {
             $terms = self::insert_media_urls($terms);
             $terms = $this->update_userpref_defs($terms);
             $terms = self::format_defs($terms);
@@ -662,36 +713,38 @@ class mod_wordcards_module {
         return $terms;
     }
 
-    public function get_terms_with_learn_status($includedeleted = false) {
+    public function get_terms_with_learn_status($includedeleted = false)
+    {
         global $DB, $USER;
-        
+
         $params = [$this->mod->learnpoint, $USER->id, $this->get_id()];
-        
-        $deletedCondition = '';
+
+        $deletedcondition = '';
         if (!$includedeleted) {
-            $deletedCondition = 'AND t.deleted = ?';
+            $deletedcondition = 'AND t.deleted = ?';
             $params[] = 0;
         }
-    
+
         $sql = "SELECT t.*, CASE WHEN a.successcount >= ? THEN 1 ELSE 0 END AS learned
                       FROM {wordcards_terms} t
                       LEFT JOIN {wordcards_associations} a
                         ON a.termid = t.id AND a.userid = ?
                      WHERE t.modid = ?
-                       $deletedCondition";
-        
+                       $deletedcondition";
+
         $terms = $DB->get_records_sql($sql, $params);
-        
-        if($terms){
+
+        if ($terms) {
             $terms = self::insert_media_urls($terms);
             $terms = $this->update_userpref_defs($terms);
             $terms = self::format_defs($terms);
         }
-        
+
         return $terms;
     }
 
-    public function get_terms_count($includedeleted = false) {
+    public function get_terms_count($includedeleted = false)
+    {
         global $DB;
         $params = ['modid' => $this->mod->id];
         if (!$includedeleted) {
@@ -701,7 +754,8 @@ class mod_wordcards_module {
         return $termcount;
     }
 
-    protected function has_completed_state($state) {
+    protected function has_completed_state($state)
+    {
         global $DB, $USER;
 
         $sql = "SELECT COUNT('x')
@@ -713,7 +767,7 @@ class mod_wordcards_module {
                    AND t.deleted = 0
                    AND a.successcount > 0";
 
-        switch($state){
+        switch ($state) {
             case self::STATE_STEP1:
                 $termcount = $this->mod->step1termcount;
                 break;
@@ -740,30 +794,33 @@ class mod_wordcards_module {
         return $DB->count_records_sql($sql, [$USER->id, $this->get_id()]) >= $passmark;
     }
 
-    public function mark_terms_as_seen() {
+    public function mark_terms_as_seen()
+    {
         global $DB, $USER;
         $terms = self::get_terms();
-        foreach($terms as $term){
+        foreach ($terms as $term) {
             $params = ['userid' => $USER->id, 'termid' => $term->id];
             if (!$DB->record_exists('wordcards_seen', $params)) {
-                $record = (object)$params;
+                $record = (object) $params;
                 $record->timecreated = time();
                 $DB->insert_record('wordcards_seen', $record);
             }
         }
     }
 
-    public function mark_terms_as_unseen() {
+    public function mark_terms_as_unseen()
+    {
         global $DB, $USER;
         $terms = self::get_terms();
-        foreach($terms as $term){
+        foreach ($terms as $term) {
             $params = ['userid' => $USER->id, 'termid' => $term->id];
             $DB->delete_records('wordcards_seen', $params);
         }
     }
 
 
-    public function has_seen_all_terms() {
+    public function has_seen_all_terms()
+    {
         global $DB, $USER;
 
         // TO DO remove this code, terms are always seen
@@ -784,17 +841,20 @@ class mod_wordcards_module {
         return !$DB->record_exists_sql($sql, [$USER->id, $this->get_id()]);
     }
 
-    public function has_terms() {
+    public function has_terms()
+    {
         global $DB;
         return $DB->record_exists('wordcards_terms', ['modid' => $this->get_id()]);
     }
 
-    public function has_user_finished_latest_attempt() {
+    public function has_user_finished_latest_attempt()
+    {
         $record = $this->get_latest_attempt();
         return $record && $record->state == self::STATE_END;
     }
 
-    public function has_user_finished_an_attempt() {
+    public function has_user_finished_an_attempt()
+    {
         $records = $this->get_attempts();
         if ($records) {
             foreach ($records as $record) {
@@ -806,7 +866,8 @@ class mod_wordcards_module {
         return false;
     }
 
-    public function has_user_learned_all_terms() {
+    public function has_user_learned_all_terms()
+    {
         global $DB, $USER;
 
         $learnedcount = $this->get_user_learned_count();
@@ -814,7 +875,8 @@ class mod_wordcards_module {
         return $learnedcount >= $termcount;
     }
 
-    public function get_user_learned_count() {
+    public function get_user_learned_count()
+    {
         global $DB, $USER;
 
         $sql = "SELECT t.id, a.successcount
@@ -828,15 +890,19 @@ class mod_wordcards_module {
 
         $learned = $DB->get_records_sql($sql, [$USER->id, $this->get_id(), $this->mod->learnpoint]);
         $learnedcount = 0;
-        if($learned){$learnedcount = count($learned);}
+        if ($learned) {
+            $learnedcount = count($learned);
+        }
         return $learnedcount;
     }
 
-    public function is_completion_enabled() {
+    public function is_completion_enabled()
+    {
         return !empty($this->mod->completionwhenfinish) || !empty($this->mod->completionwhenlearned);
     }
 
-    public function record_failed_association($term, $term2id=0) {
+    public function record_failed_association($term, $term2id = 0)
+    {
         global $DB, $USER;
 
         if ($term->modid != $this->get_id()) {
@@ -859,10 +925,10 @@ class mod_wordcards_module {
             $DB->update_record(constants::M_ASSOCTABLE, $record1);
         }
 
-        if($term2id > 0) {
+        if ($term2id > 0) {
             $params = ['userid' => $USER->id, 'termid' => $term2id];
             if (!($record2 = $DB->get_record(constants::M_ASSOCTABLE, $params))) {
-                $record2 = (object)$params;
+                $record2 = (object) $params;
                 $record2->failcount = 0;
             }
             $record2->failcount += 1;
@@ -875,7 +941,8 @@ class mod_wordcards_module {
         }
     }
 
-    public function record_successful_association($term) {
+    public function record_successful_association($term)
+    {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
@@ -893,15 +960,16 @@ class mod_wordcards_module {
             $DB->update_record(constants::M_ASSOCTABLE, $record);
         }
 
-         // Raise word learned event.
-        if ($record->successcount === (int)$this->mod->learnpoint) {
+        // Raise word learned event.
+        if ($record->successcount === (int) $this->mod->learnpoint) {
             $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
             $theevent->trigger();
 
         }
     }
 
-    public function record_successful_learn($term, $selfclaim = false) {
+    public function record_successful_learn($term, $selfclaim = false)
+    {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'termid' => $term->id];
@@ -909,7 +977,7 @@ class mod_wordcards_module {
             $record = (object) $params;
         }
 
-        $record->successcount = (int)$this->mod->learnpoint;
+        $record->successcount = (int) $this->mod->learnpoint;
         $record->lastsuccess = time();
 
         // If it has been self claimed as already learned we flag that so we can give better reports on in session learns.
@@ -923,14 +991,15 @@ class mod_wordcards_module {
             $DB->update_record(constants::M_ASSOCTABLE, $record);
         }
 
-         // Raise word learned event if it was not a self claim
+        // Raise word learned event if it was not a self claim
         if (!$selfclaim) {
             $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
             $theevent->trigger();
         }
     }
 
-    public function resume_progress($currentstate) {
+    public function resume_progress($currentstate)
+    {
         $this->update_state($currentstate);
         list($state, $statedata) = $this->get_state();
 
@@ -960,15 +1029,16 @@ class mod_wordcards_module {
     }
 
     // remove a partial attempt if the user selects "cancel_attempt"
-    public function remove_attempt() {
+    public function remove_attempt()
+    {
         global $DB;
 
         // only cancel if we have a current attempt going
         $latestattempt = $this->get_latest_attempt();
-        if(!$latestattempt){
+        if (!$latestattempt) {
             return false;
         }
-        if($latestattempt->state == self::STATE_END){
+        if ($latestattempt->state == self::STATE_END) {
             return false;
         }
         $ret = $DB->delete_records(constants::M_ATTEMPTSTABLE, ['id' => $latestattempt->id]);
@@ -976,14 +1046,17 @@ class mod_wordcards_module {
     }
 
     // force a reattempt that will then start them off on step1 (it will bump them up from terms step)
-    public function create_reattempt() {
+    public function create_reattempt()
+    {
         global $DB, $USER;
 
         // only reattempt if we dont have a current attempt going
         $latestattempt = $record = $this->get_latest_attempt();
-        if(!$latestattempt){return false;
+        if (!$latestattempt) {
+            return false;
         }
-        if($latestattempt->state != self::STATE_END){return false;
+        if ($latestattempt->state != self::STATE_END) {
+            return false;
         }
 
         $params = ['userid' => $USER->id, 'modid' => $this->get_id()];
@@ -997,7 +1070,8 @@ class mod_wordcards_module {
 
     }
 
-    protected function set_state($state, $statedata = null) {
+    protected function set_state($state, $statedata = null)
+    {
         global $DB, $USER;
 
         $params = ['userid' => $USER->id, 'modid' => $this->get_id()];
@@ -1020,10 +1094,10 @@ class mod_wordcards_module {
         \mod_wordcards\event\step_submitted::create_from_attempt($record, $this->context, $state)->trigger();
 
         // The user finished the activity, notify the completion API.
-        if ($state == self::STATE_END){
+        if ($state == self::STATE_END) {
             // raise attempt submitted event
             \mod_wordcards\event\attempt_submitted::create_from_attempt($record, $this->context)->trigger();
-            if($this->is_completion_enabled()){
+            if ($this->is_completion_enabled()) {
                 $completion = new completion_info($this->get_course());
                 if ($completion->is_enabled($this->get_cm())) {
                     $completion->update_state($this->get_cm(), COMPLETION_COMPLETE);
@@ -1041,7 +1115,8 @@ class mod_wordcards_module {
      * @param string $requestedstate The state which the user is trying to move to.
      * @return void
      */
-    protected function update_state($requestedstate) {
+    protected function update_state($requestedstate)
+    {
         list($state) = $this->get_state();
 
         if ($state == self::STATE_END) {
@@ -1049,87 +1124,100 @@ class mod_wordcards_module {
             return;
 
         } else if ($state == self::STATE_TERMS) {
-            if ( $this->has_seen_all_terms()) {
-                    $nextstep = $this->get_next_step(self::STATE_TERMS);
-                    $this->set_state($nextstep);
+            if ($this->has_seen_all_terms()) {
+                $nextstep = $this->get_next_step(self::STATE_TERMS);
+                $this->set_state($nextstep);
             }
 
         } else if ($this->has_completed_state($state)) {
-                $nextstep = $this->get_next_step($state);
-                $this->set_state($nextstep);
+            $nextstep = $this->get_next_step($state);
+            $this->set_state($nextstep);
         }
     }
 
     // Factories.
-    public static function get_by_cmid($cmid) {
+    public static function get_by_cmid($cmid)
+    {
         list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'wordcards');
         return new static($course, $cm);
     }
 
-    public static function get_by_modid($modid) {
+    public static function get_by_modid($modid)
+    {
         list($course, $cm) = get_course_and_cm_from_instance($modid, 'wordcards');
         return new static($course, $cm);
     }
 
     // Capabilities.
-    public function can_manage() {
-        return  has_capability('mod/wordcards:manage', $this->context);
+    public function can_manage()
+    {
+        return has_capability('mod/wordcards:manage', $this->context);
     }
-    public function can_push() {
-        return  has_capability('mod/wordcards:push', $this->context) &&
-        $this->get_mod()->masterinstance;
+    public function can_push()
+    {
+        return has_capability('mod/wordcards:push', $this->context) &&
+            $this->get_mod()->masterinstance;
     }
-    public function require_manage() {
+    public function require_manage()
+    {
         require_capability('mod/wordcards:addinstance', $this->context);
     }
-    public function can_viewreports() {
-        return  has_capability('mod/wordcards:viewreports', $this->context);
+    public function can_viewreports()
+    {
+        return has_capability('mod/wordcards:viewreports', $this->context);
     }
-    public function require_viewreports() {
+    public function require_viewreports()
+    {
         require_capability('mod/wordcards:viewreports', $this->context);
     }
-    public function can_view() {
-        return  has_capability('mod/wordcards:view', $this->context);
+    public function can_view()
+    {
+        return has_capability('mod/wordcards:view', $this->context);
     }
 
-    public function require_view() {
+    public function require_view()
+    {
         self::require_view_in_context($this->context);
     }
 
-    public static function require_view_in_context(context $context) {
+    public static function require_view_in_context(context $context)
+    {
         require_capability('mod/wordcards:view', $context);
     }
 
-    public function get_next_step($currentstep) {
+    public function get_next_step($currentstep)
+    {
         global $USER, $DB;
 
         // if we already ended, lets return that
-        if($currentstep == self::STATE_END){
+        if ($currentstep == self::STATE_END) {
             return $currentstep;
         }
 
         // TODO: add any newly created steps to this array to add them to the search
-        $steps = [self::STATE_TERMS,
-                self::STATE_STEP1,
-                self::STATE_STEP2,
-                self::STATE_STEP3,
-                self::STATE_STEP4,
-                self::STATE_STEP5,
-                self::STATE_END];
+        $steps = [
+            self::STATE_TERMS,
+            self::STATE_STEP1,
+            self::STATE_STEP2,
+            self::STATE_STEP3,
+            self::STATE_STEP4,
+            self::STATE_STEP5,
+            self::STATE_END
+        ];
         // init our search start flag and return value
         $searching = false;
         $nextstep = false;
 
         // loop through the steps
-        foreach($steps as $thisstep){
-            if($currentstep == $thisstep){
+        foreach ($steps as $thisstep) {
+            if ($currentstep == $thisstep) {
                 $searching = true;
                 continue;
             }
             // we loop through till we are beyond the current step, and then we are "searching" for the next step
-            if($searching){
+            if ($searching) {
                 // if the next step is the end step, then so be it.
-                if($thisstep == self::STATE_END){
+                if ($thisstep == self::STATE_END) {
                     $nextstep = $thisstep;
                     break;
                 }
@@ -1139,7 +1227,7 @@ class mod_wordcards_module {
                 $nextpracticetype = $this->mod->{$thisstep};//'step1practice' or 'step2practice' db field
 
                 // if not practice type was specified move on
-                if ($nextpracticetype == self::PRACTICETYPE_NONE){
+                if ($nextpracticetype == self::PRACTICETYPE_NONE) {
                     continue;
                 }
 
@@ -1147,32 +1235,34 @@ class mod_wordcards_module {
                 $nextwordpool = self::get_wordpool($thisstep);
 
                 // if we have words in the review pool, then this step should be fine
-                if($arewordstoreview){
+                if ($arewordstoreview) {
                     $nextstep = $thisstep;
                     break;
 
                     // if we have no words in the review pool, we need a learn step, lets see if we have one
-                }else if($nextwordpool == self::WORDPOOL_LEARN){
+                } else if ($nextwordpool == self::WORDPOOL_LEARN) {
                     $nextstep = $thisstep;
                     break;
-                }else{
+                } else {
                     // we would continue if we need a learn activity, but $thisstep was a review activity
                     continue;
                 }
             }
         }
         // if we got no next step, then lets just jump to end
-        if(!$nextstep){$nextstep = self::STATE_END;
+        if (!$nextstep) {
+            $nextstep = self::STATE_END;
         }
         // return next step
         return $nextstep;
     }
 
-    public function are_there_words_to_review($userid = null) {
+    public function are_there_words_to_review($userid = null)
+    {
         global $USER, $DB;
 
         // if we are an admin, just say yes
-        if($this->can_manage()){
+        if ($this->can_manage()) {
             return true;
         }
 
@@ -1180,36 +1270,40 @@ class mod_wordcards_module {
             $userid = $USER->id;
         }
 
-            // Retrieve the list of wordcard modids of the course.
-            $modids = [];
+        // Retrieve the list of wordcard modids of the course.
+        $modids = [];
 
-        foreach(get_fast_modinfo($this->course)->get_instances_of('wordcards') as $wordcard) {
+        foreach (get_fast_modinfo($this->course)->get_instances_of('wordcards') as $wordcard) {
             $modids[] = $wordcard->instance;
         }
 
-            $params = ['state' => self::STATE_END, 'userid' => $userid];
-            list($sqlmodidtest, $modidparams) = $DB->get_in_or_equal($modids, SQL_PARAMS_NAMED);
-            $params = array_merge($params, $modidparams);
-            $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
+        $params = ['state' => self::STATE_END, 'userid' => $userid];
+        list($sqlmodidtest, $modidparams) = $DB->get_in_or_equal($modids, SQL_PARAMS_NAMED);
+        $params = array_merge($params, $modidparams);
+        $sqlmodidtest = 'AND modid ' . $sqlmodidtest;
 
-        $completedwordcardtotal = $DB->count_records_select('wordcards_progress',
-                'state = :state AND userid = :userid ' . $sqlmodidtest, $params);
+        $completedwordcardtotal = $DB->count_records_select(
+            'wordcards_progress',
+            'state = :state AND userid = :userid ' . $sqlmodidtest,
+            $params
+        );
 
         return (!empty($completedwordcardtotal));
 
     }
 
-    public function set_region_passagehash() {
+    public function set_region_passagehash()
+    {
         global $DB;
-        if(utils::needs_lang_model($this)){
+        if (utils::needs_lang_model($this)) {
             $region = get_config(constants::M_COMPONENT, 'awsregion');
             $newpassagehash = utils::fetch_passagehash($this);
-            if($newpassagehash){
+            if ($newpassagehash) {
                 // check if it has changed, if not do not waste time processing it
-                if($this->get_mod()->passagehash != ($region . '|' . $newpassagehash)) {
+                if ($this->get_mod()->passagehash != ($region . '|' . $newpassagehash)) {
                     // build a lang model
                     $ret = utils::fetch_lang_model($this);
-                    if ($ret && isset($ret->success) && $ret->success)  {
+                    if ($ret && isset($ret->success) && $ret->success) {
                         $regionpassagehash = $region . '|' . $newpassagehash;
                         $DB->update_record('wordcards', ['id' => $this->get_mod()->id, 'passagehash' => $regionpassagehash, 'hashisold' => 0]);
                         return $regionpassagehash;
@@ -1222,19 +1316,23 @@ class mod_wordcards_module {
         return $this->get_mod()->passagehash;
     }
 
-    public function export_simple_terms_to_csv($delim = "\t") {
+    public function export_simple_terms_to_csv($delim = "\t")
+    {
         global $DB;
         // fetch terms to return as csv
-        $terms = $DB->get_records('wordcards_terms', ['modid' => $this->mod->id, 'deleted' => 0 ], 'id ASC');
-        if(!$terms){return '';
+        $terms = $DB->get_records('wordcards_terms', ['modid' => $this->mod->id, 'deleted' => 0], 'id ASC');
+        if (!$terms) {
+            return '';
         }
 
         $ret = [];
-        foreach($terms as $term){
-            $termsarray = [$term->term,
+        foreach ($terms as $term) {
+            $termsarray = [
+                $term->term,
                 $term->definition,
                 empty($term->ttsvoice) ? '' : $term->ttsvoice,
-                empty($term->modelsentence) ? '' : $term->modelsentence];
+                empty($term->modelsentence) ? '' : $term->modelsentence
+            ];
             $ret[] = implode($delim, $termsarray);
         }
         $filecontent = implode("\r\n", $ret);
@@ -1242,7 +1340,8 @@ class mod_wordcards_module {
     }
 
     // See if this is truly json or some error.
-    public static function is_json($string) {
+    public static function is_json($string)
+    {
         if (!$string) {
             return false;
         }

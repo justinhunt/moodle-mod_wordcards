@@ -19,7 +19,7 @@
             </div>
         </div>
 </div>
-<button type="button" data-contextid="{{contextid}}" id="{{uniqid}}_generatebutton" class="btn btn-secondary mod_wordcards_imagegen_btn" >{{#str}} imagegen, mod_wordcards {{/str}}</button>
+<button type="button" data-termid="{{termid}}" data-contextid="{{contextid}}" id="{{uniqid}}_generatebutton" class="btn btn-secondary mod_wordcards_imagegen_btn" >{{#str}} imagegen, mod_wordcards {{/str}}</button>
 {{^element.frozen}}
     {{#js}}
         require(['jquery','core/log','core/templates','core/ajax'],function($,log,templates, ajax) {
@@ -29,16 +29,57 @@
         var spinneri = $('#{{uniqid}}_wc-imagemaker-fa-image i');
         var imagecont = $('#{{uniqid}}_image_display_container');
         var promptbox = $('#{{uniqid}}_mod_wordcards_imageprompt');
-        var qualityradio = $("input[name='quality']");
-        var aspectradio = $("input[name='aspect-ratio']");
         var draftfileurlfield = $("input[name='draftfileurl']");
-
+        
         btn.on('click',async function(e){
             log.debug('clicked');
             var prompttext= promptbox.val();
+            var termid = $(this).data('termid');
             if(prompttext.trim()==''){return;}
-            var aspectratio = $("input[name='aspect-ratio']:checked").val();
-            var quality = $("input[name='quality']:checked").val();
+            if(!termid || termid === 0){return;}
+
+            var imageargs = {
+                'termid': termid,
+                'prompt': prompttext
+            };
+            var request = {
+                methodname: 'mod_wordcards_generate_image',
+                args: imageargs
+            };
+
+            try {
+                spinneri.addClass('fa-pulse');
+                spinner.show();
+                imagecont.empty(); 
+                var responseObj = await ajax.call([request])[0];
+                spinner.hide();
+                 log.debug(responseObj);
+                if (responseObj.error) {
+                    log.debug(responseObj.error);
+                    imagecont[0].innerHTML =responseObj.error;
+                } else {
+                    draftfileurlfield.val(responseObj.drafturl);
+                    // Render the image template and insert it into the modal.
+                    imagecont[0].innerHTML = await templates.render('mod_wordcards/aiimage', {
+                        url: responseObj.drafturl,
+                        elementid: 'worcards12345',
+                        alt: prompttext,
+                    });
+
+                }
+            } catch (error) {
+                spinner.hide();
+                log.debug(error);
+                imagecont[0].innerHTML = error.message;
+            }
+        });
+
+        btn.on('oldclick',async function(e){
+            log.debug('clicked');
+            var prompttext= promptbox.val();
+            if(prompttext.trim()==''){return;}
+            var aspectratio = 'square';//'portrait' 'landscape'
+            var quality = 'hd';//'standard'
             var numimages=1;
             var style= 'vivid';//natural,vivid
             
