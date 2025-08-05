@@ -1949,6 +1949,7 @@ button.definitions-next.btn .fa-arrow-right:before {
         margin-top: 0;
         max-width: none;
         text-align: left;
+        width: 80%;
     }
 }
 
