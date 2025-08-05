@@ -90,42 +90,45 @@ class courselearned extends basereport {
         $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
         $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
 
-        //get all wordcards in course
-        $wordcardsids = $DB->get_fieldset_select(constants::M_TABLE, 'id', 'course = ?', array($course->id));
-        list($wordcardswhere, $allwordcardsparams) = $DB->get_in_or_equal($wordcardsids);
-
+        //get total terms
         $countsql = "SELECT COUNT(t.id) FROM {wordcards_terms} t
-                    WHERE t.modid $wordcardswhere 
-                    AND t.deleted = 0";
-        $totalterms = $DB->count_records_sql($countsql, $allwordcardsparams);
+                     INNER JOIN {wordcards} m
+                     ON t.modid = m.id
+                     WHERE m.course = ? 
+                     AND t.deleted = 0";
+        $totalterms = $DB->count_records_sql($countsql, [$course->id]);
 
         //if need to partition to groups, SQL for groups
         if($formdata->groupid > 0){
 
              list($groupswhere, $allparams) = $DB->get_in_or_equal($formdata->groupid);
 
-            $allsql= "SELECT a.userid,t.modid,COUNT((CASE WHEN a.successcount >= $moduleinstance->learnpoint THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+            $allsql= "SELECT a.userid,t.modid,COUNT( CASE WHEN a.successcount >= m.learnpoint THEN 1 END) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
+                  INNER JOIN {wordcards} m
                     ON a.termid = t.id
-                   AND t.deleted = 0
-                   INNER JOIN {groups_members} gm ON a.userid=gm.userid
-                    WHERE gm.groupid $groupswhere AND t.modid $wordcardswhere
+                    AND m.id = t.modid
+                    AND t.deleted = 0
+                  INNER JOIN {groups_members} gm ON a.userid=gm.userid
+                    WHERE gm.groupid $groupswhere AND m.course = ? 
                     GROUP BY a.userid";
 
-            $allparams = array_merge($allparams, $allwordcardsparams);
+            $allparams = array_merge($allparams, [$course->id]);
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }else{
 
-            $allsql= "SELECT a.userid,t.modid,COUNT((CASE WHEN a.successcount >=  $moduleinstance->learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+            $allsql= "SELECT a.userid,t.modid,COUNT( CASE WHEN a.successcount >=  m.learnpoint  THEN 1 END) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
+                  INNER JOIN {wordcards} m
                     ON a.termid = t.id
-                   AND t.deleted = 0
-                    WHERE t.modid $wordcardswhere
-                    GROUP BY a.userid";
+                    AND m.id = t.modid
+                  WHERE m.course = ? 
+                  AND t.deleted = 0
+                  GROUP BY a.userid";
 
-            $alldata = $DB->get_records_sql($allsql,  $allwordcardsparams);
+            $alldata = $DB->get_records_sql($allsql,  [$course->id]);
 
         }
 

@@ -721,19 +721,20 @@ class renderer extends \plugin_renderer_base
 
         //get total terms
         $countsql = "SELECT COUNT(t.id) FROM {wordcards_terms} t
-            WHERE t.modid $wordcardswhere 
-                    AND t.deleted = 0";
-        $totalterms = $DB->count_records_sql($countsql, $allparams);
+                     INNER JOIN {wordcards} m
+                     ON t.modid = m.id
+                     WHERE m.course = ? 
+                     AND t.deleted = 0";
+        $totalterms = $DB->count_records_sql($countsql, [$courseid]);
 
-        //Get default learned point
-        $learnpoint = get_config(constants::M_COMPONENT, 'learnpoint');
-
-        $allsql = "SELECT COUNT((CASE WHEN a.successcount >=  $learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+        $allsql = "SELECT COUNT((CASE WHEN a.successcount >=  m.learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
                   FROM {wordcards_associations} a
                   INNER JOIN {wordcards_terms} t
+                  INNER JOIN {wordcards} m
                     ON a.termid = t.id
-                   AND t.deleted = 0
+                    AND t.modid = m.id     
                     WHERE t.modid $wordcardswhere
+                    AND t.deleted = 0
                     AND a.userid = ?";
 
         $allparams = array_merge($allparams, [$USER->id]);
