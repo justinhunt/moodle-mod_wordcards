@@ -26,8 +26,8 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-use \mod_wordcards\constants;
-use \mod_wordcards\utils;
+use mod_wordcards\constants;
+use mod_wordcards\utils;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // wordcards instance ID
@@ -94,9 +94,9 @@ switch ($action) {
 }
 
 
-/// Set up the page header
-$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
-$pagetitle .= ': ' . get_string('reports', constants::M_COMPONENT);
+// Set up the page header
+// $pagetitle = format_string($mod->get_mod()->name, true, $course->id);
+$pagetitle = get_string('reports', constants::M_COMPONENT);
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);

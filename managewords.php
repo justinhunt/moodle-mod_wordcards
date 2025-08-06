@@ -25,8 +25,8 @@ require_login($course, true, $cm);
 $mod->require_manage();
 
 $modid = $mod->get_id();
-$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
-$pagetitle .= ': ' . get_string('managewords', 'mod_wordcards');
+//$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
+$pagetitle = get_string('managewords', 'mod_wordcards');
 $baseurl = new moodle_url('/mod/wordcards/managewords.php', ['id' => $cmid]);
 $termformurl = new moodle_url($baseurl);
 $imagegenformurl = new moodle_url($baseurl);

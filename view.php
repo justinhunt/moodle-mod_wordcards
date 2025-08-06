@@ -124,7 +124,8 @@ if ($mod->get_mod()->showlangchooser) {
 // begin HTML output
 echo $renderer->header();
 if(!$embed) {
-    echo $renderer->heading($pagetitle, 3, 'main');
+    // Do we still need this?
+   // echo $renderer->heading($pagetitle, 3, 'main');
 }
 // show open close dates and module intro
 $hasopenclosedates = $moduleinstance->viewend > 0 || $moduleinstance->viewstart > 0;

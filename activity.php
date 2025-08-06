@@ -122,11 +122,11 @@ if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
 }
 
 // depending on wordpool set page title
-$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
-if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
-    $pagetitle .= ': ' . get_string('reviewactivity', 'mod_wordcards');
-}else{
-    $pagetitle .= ': ' .  get_string('learnactivity', 'mod_wordcards');
+//$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
+if ($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
+    $pagetitle = get_string('reviewactivity', 'mod_wordcards');
+} else {
+    $pagetitle = get_string('learnactivity', 'mod_wordcards');
 }
 
 
@@ -173,6 +173,7 @@ if($config->animations == constants::M_ANIM_FANCY) {
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
 echo $renderer->header();
+//Do we still need this?
 $heading = $renderer->heading($pagetitle, 3, 'main');
 $displaytext = \html_writer::div($heading, constants::M_CLASS . '_center');
 echo $displaytext;

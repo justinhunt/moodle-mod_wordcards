@@ -36,8 +36,8 @@ require_login($course, true, $cm);
 $mod->require_manage();
 
 $modid = $mod->get_id();
-$pagetitle = format_string($mod->get_mod()->name, true, $course->id);
-$pagetitle .= ': ' . get_string('word_wizard', 'mod_wordcards');
+// $pagetitle = format_string($mod->get_mod()->name, true, $course->id);
+$pagetitle = get_string('word_wizard', 'mod_wordcards');
 $baseurl = new moodle_url('/mod/wordcards/wordwizard.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
 $term = null;
@@ -59,7 +59,7 @@ $renderer = $PAGE->get_renderer('mod_wordcards');
 
 echo $renderer->header();
 echo $renderer->heading($pagetitle);
-echo $renderer->navigation($mod, 'word_wizard');
+echo $renderer->navigation($mod, 'wordwizard');
 echo $renderer->box(get_string('wizardinstructions', constants::M_COMPONENT, utils::get_lang_name($mod->get_mod()->ttslanguage)), 
 'generalbox wordcards_wizardintro', 'intro');
 echo $renderer->word_wizard($mod, $cm);

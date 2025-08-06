@@ -51,6 +51,7 @@ if ($id) {
 $PAGE->set_url(constants::M_URL . '/push.php', ['id' => $cm->id]);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
+$mod = mod_wordcards_module::get_by_cmid($cm->id);
 
 require_capability('mod/wordcards:manage', $modulecontext);
 require_capability('mod/wordcards:push', $modulecontext);
@@ -155,6 +156,7 @@ $mode = "push";
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 echo $renderer->header();
 echo $renderer->heading($pagetitle);
+echo $renderer->navigation($mod, 'push');
 
 echo html_writer::div(get_string('pushpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_pushpageexplanation');
 echo html_writer::div($scopedescription, constants::M_COMPONENT . '_pushpageexplanation');
