@@ -99,12 +99,16 @@ class imagegen {
         }
 
         $curl = new curl();
+        $curlopts = [];
+        $curlopts['CURLOPT_TIMEOUT'] = 120;
  
         // Update the progress bar.
         if ($this->progressbar) {
           //  $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
         }
-        $responses = $curl->multirequest($requests);
+        $responses = $curl->multirequest($requests, $curlopts);
+        $secondattempt_requests = [];
+        $secondattempt_termids = [];
         $cachebuster = '?cb=' . \html_writer::random_id();
         foreach ($responses as $i => $resp) {
             $termid = $requestterms[$i];
@@ -114,9 +118,31 @@ class imagegen {
                 $filerecord = $this->base64ToFile($base64data, $termid, false);
                 if ($filerecord) {
                     $fileurl = "$CFG->wwwroot/pluginfile.php/" . $this->context->id . "/mod_wordcards/image/" . $termid . $cachebuster;
-                    $imageurls[] = ['termid' => $requestterms[$i], 'url' => $fileurl];
+                    $imageurls[] = ['termid' => $termid, 'url' => $fileurl];
                    // Update the database to indicate that this term has an image.
-                    $DB->update_record('wordcards_terms', ['id' => $requestterms[$i], 'image' => 1]);
+                    $DB->update_record('wordcards_terms', ['id' => $termid, 'image' => 1]);
+                }
+            } else {
+                $secondattempt_requests[] =  $requests[$i];
+                $secondattempt_termids[] = $i;
+            }
+        }
+
+        // Second attempt responses
+        if(count($secondattempt_requests) > 0) {
+            $responses = $curl->multirequest($secondattempt_requests);
+            foreach ($responses as $i => $resp) {
+                $termid = $secondattempt_termids[$i];
+                $base64data = $this->process_generate_image_response($resp);
+                if ($base64data) {
+                    // Make file from base64 data.
+                    $filerecord = $this->base64ToFile($base64data, $termid, false);
+                    if ($filerecord) {
+                        $fileurl = "$CFG->wwwroot/pluginfile.php/" . $this->context->id . "/mod_wordcards/image/" . $termid . $cachebuster;
+                        $imageurls[] = ['termid' => $termid, 'url' => $fileurl];
+                        // Update the database to indicate that this term has an image.
+                        $DB->update_record('wordcards_terms', ['id' => $termid, 'image' => 1]);
+                    }
                 }
             }
         }

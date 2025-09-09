@@ -571,7 +571,7 @@ class mod_wordcards_module
 
     }
 
-    public function get_attempts()
+    public function get_attempts($userid = false)
     {
         global $DB, $USER;
 
@@ -580,7 +580,11 @@ class mod_wordcards_module
             return [self::STATE_END, null];
         }
 
-        $records = $DB->get_records('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $USER->id]);
+        if ($userid === false) {
+            $userid = $USER->id;
+        }
+
+        $records = $DB->get_records('wordcards_progress', ['modid' => $this->get_id(), 'userid' => $userid]);
         return $records;
     }
 
@@ -853,9 +857,9 @@ class mod_wordcards_module
         return $record && $record->state == self::STATE_END;
     }
 
-    public function has_user_finished_an_attempt()
+    public function has_user_finished_an_attempt($userid = false)
     {
-        $records = $this->get_attempts();
+        $records = $this->get_attempts($userid);
         if ($records) {
             foreach ($records as $record) {
                 if ($record && isset($record->state) && $record->state == self::STATE_END) {
@@ -866,18 +870,20 @@ class mod_wordcards_module
         return false;
     }
 
-    public function has_user_learned_all_terms()
+    public function has_user_learned_all_terms($userid = false)
     {
-        global $DB, $USER;
-
-        $learnedcount = $this->get_user_learned_count();
+        $learnedcount = $this->get_user_learned_count($userid);
         $termcount = $this->get_terms_count();
         return $learnedcount >= $termcount;
     }
 
-    public function get_user_learned_count()
+    public function get_user_learned_count($userid = false)
     {
         global $DB, $USER;
+
+        if ($userid === false) {
+            $userid = $USER->id;
+        }
 
         $sql = "SELECT t.id, a.successcount
                   FROM {wordcards_terms} t
@@ -888,7 +894,7 @@ class mod_wordcards_module
                    AND t.deleted = 0
                    AND a.successcount >= ?";
 
-        $learned = $DB->get_records_sql($sql, [$USER->id, $this->get_id(), $this->mod->learnpoint]);
+        $learned = $DB->get_records_sql($sql, [$userid, $this->get_id(), $this->mod->learnpoint]);
         $learnedcount = 0;
         if ($learned) {
             $learnedcount = count($learned);

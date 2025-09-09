@@ -152,16 +152,16 @@ function wordcards_get_completion_state($course, $cm, $userid, $type) {
         switch($type){
             case COMPLETION_AND:
                 if ($onfinish && $onlearned) {
-                    return $mod->has_user_finished_an_attempt() && $mod->has_user_learned_all_terms();
+                    return $mod->has_user_finished_an_attempt($userid) && $mod->has_user_learned_all_terms($userid);
                 } else if ($onfinish) {
-                    return $mod->has_user_finished_an_attempt();
+                    return $mod->has_user_finished_an_attempt($userid);
                 } else if ($onlearned) {
-                    return $mod->has_user_learned_all_terms();
+                    return $mod->has_user_learned_all_terms($userid);
                 }
                 break;
             case COMPLETION_OR:
                 if ($onfinish || $onlearned ) {
-                    return $mod->has_user_finished_an_attempt() || $mod->has_user_learned_all_terms();
+                    return $mod->has_user_finished_an_attempt($userid) || $mod->has_user_learned_all_terms($userid);
                 }
         }
     }
