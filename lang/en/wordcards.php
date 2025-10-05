@@ -100,7 +100,17 @@ $string['loading'] = 'Loading';
 $string['learnactivity'] = 'New Words';
 $string['markasseen'] = 'Mark as seen';
 $string['modulename'] = 'Poodll Wordcards';
-$string['modulename_help'] = 'The wordcards activity module enables a teacher to create custom wordcards games for encouraging students learning new words.';
+$string['modulename_help'] = 'Poodll Wordcards allows teachers to assigns lists of words for students to learn. Using the "steps" or "free" modes students practice with the words until Poodll thinks the words have been learned. Some of the features of the activity include:
+    
+* AI powered dictionary (image and definitions)
+    
+* Tracking of words learnt per student
+    
+* Audio by AI or manual upload
+    
+* 6 Word practice activities
+    
+* Integrated word review';
 $string['modulenameplural'] = 'Poodll Wordcards';
 $string['name'] = 'Name';
 $string['nodefinitions'] = 'No words were added yet.';

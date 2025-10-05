@@ -18,7 +18,8 @@ use \mod_wordcards\utils;
  * @param string $feature FEATURE_xx constant for requested feature.
  * @return mixed True if module supports feature, null if doesn't know.
  */
-function wordcards_supports($feature) {
+function wordcards_supports($feature)
+{
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -38,18 +39,28 @@ function wordcards_supports($feature) {
             return false;
         case FEATURE_GROUPS:
             return true;
-        default:
-            //cute hack to work on M4.0 and above
-            if(defined('FEATURE_MOD_PURPOSE') && defined('MOD_PURPOSE_ASSESSMENT') && $feature=='mod_purpose'){
+        // FEATURE_MOD_PURPOSE  - wont be defined for < 4.0. so we hard code it.
+        case "mod_purpose":
+            if (defined('MOD_PURPOSE_INTERACTIVECONTENT')) {
+                return "interactivecontent";
+            } else if (defined('MOD_PURPOSE_ASSESSMENT')) {
                 return "assessment";
-            }else{
+            } else {
                 return null;
             }
+        // FEATURE_MOD_OTHERPURPOSE  - wont be defined for < 5.1. so we hard code it. 
+        // If it is defined then interactivecontent  and assessment will also be  defined.   
+        case "mod_otherpurpose":
+            return "assessment";
+
+        default:
+            return null;
 
     }
 }
 
-function wordcards_add_instance(stdClass $module,?mod_wordcards_mod_form $mform = null) {
+function wordcards_add_instance(stdClass $module, ?mod_wordcards_mod_form $mform = null)
+{
     global $DB;
 
     $module->timecreated = time();
@@ -63,29 +74,34 @@ function wordcards_add_instance(stdClass $module,?mod_wordcards_mod_form $mform 
     $module->id = $DB->insert_record('wordcards', $module);
 
 
-    if(!isset($module->cmidnumber)){
-        $module->cmidnumber=null;
+    if (!isset($module->cmidnumber)) {
+        $module->cmidnumber = null;
     }
     wordcards_grade_item_update($module);
 
     //add expected completion date
     if (class_exists('\core_completion\api')) {
         $completionexpected = (empty($module->completionexpected) ? null : $module->completionexpected);
-        \core_completion\api::update_completion_date_event($module->coursemodule, 'wordcards', $module->id,
-            $completionexpected);
+        \core_completion\api::update_completion_date_event(
+            $module->coursemodule,
+            'wordcards',
+            $module->id,
+            $completionexpected
+        );
     }
 
     return $module->id;
 }
 
-function wordcards_update_instance(stdClass $module,?mod_wordcards_mod_form $mform = null) {
+function wordcards_update_instance(stdClass $module, ?mod_wordcards_mod_form $mform = null)
+{
     global $DB;
 
     $module->timemodified = time();
     $module->id = $module->instance;
     $module->freemodeoptions = utils::pack_freemode_options($module);
     $params = array('id' => $module->instance);
-    $oldmod = $DB->get_record(constants::M_TABLE,  $params);
+    $oldmod = $DB->get_record(constants::M_TABLE, $params);
     $oldgradefield = $oldmod->grade;
     $oldgradeoptionsfield = $oldmod->gradeoptions;
     $olddeflanguage = $oldmod->deflanguage;
@@ -105,7 +121,9 @@ function wordcards_update_instance(stdClass $module,?mod_wordcards_mod_form $mfo
     }
     wordcards_grade_item_update($module);
     $updategrades = ($module->grade === $oldgradefield ? false : true);
-    if(!$updategrades){ $updategrades = ($module->gradeoptions === $oldgradeoptionsfield ? false : true);}
+    if (!$updategrades) {
+        $updategrades = ($module->gradeoptions === $oldgradeoptionsfield ? false : true);
+    }
     if ($updategrades) {
         wordcards_update_grades($module, 0, false);
     }
@@ -113,8 +131,12 @@ function wordcards_update_instance(stdClass $module,?mod_wordcards_mod_form $mfo
     // Update expected completion date.
     if (class_exists('\core_completion\api')) {
         $completionexpected = (empty($module->completionexpected) ? null : $module->completionexpected);
-        \core_completion\api::update_completion_date_event($module->coursemodule, 'wordcards', $module->id,
-            $completionexpected);
+        \core_completion\api::update_completion_date_event(
+            $module->coursemodule,
+            'wordcards',
+            $module->id,
+            $completionexpected
+        );
     }
 
     // If definitions language has changed update it
@@ -124,7 +146,8 @@ function wordcards_update_instance(stdClass $module,?mod_wordcards_mod_form $mfo
     return $success;
 }
 
-function wordcards_delete_instance($modid) {
+function wordcards_delete_instance($modid)
+{
     global $DB;
 
     $mod = mod_wordcards_module::get_by_modid($modid);
@@ -142,14 +165,15 @@ function wordcards_delete_instance($modid) {
  * @param bool $type Type of comparison (or/and).
  * @return bool True if completed, false if not, else $type.
  */
-function wordcards_get_completion_state($course, $cm, $userid, $type) {
+function wordcards_get_completion_state($course, $cm, $userid, $type)
+{
     global $CFG;
 
     $mod = mod_wordcards_module::get_by_cmid($cm->id);
     $onfinish = $mod->get_mod()->completionwhenfinish;
     $onlearned = $mod->get_mod()->completionwhenlearned;
     if ($mod->is_completion_enabled()) {
-        switch($type){
+        switch ($type) {
             case COMPLETION_AND:
                 if ($onfinish && $onlearned) {
                     return $mod->has_user_finished_an_attempt($userid) && $mod->has_user_learned_all_terms($userid);
@@ -160,7 +184,7 @@ function wordcards_get_completion_state($course, $cm, $userid, $type) {
                 }
                 break;
             case COMPLETION_OR:
-                if ($onfinish || $onlearned ) {
+                if ($onfinish || $onlearned) {
                     return $mod->has_user_finished_an_attempt($userid) || $mod->has_user_learned_all_terms($userid);
                 }
         }
@@ -176,7 +200,8 @@ function wordcards_get_completion_state($course, $cm, $userid, $type) {
  *
  * @param $mform form passed by reference
  */
-function wordcards_reset_course_form_definition(&$mform) {
+function wordcards_reset_course_form_definition(&$mform)
+{
     $mform->addElement('header', 'wordcardsheader', get_string('modulenameplural', 'wordcards'));
     $mform->addElement('checkbox', 'reset_wordcard', get_string('deleteallentries', 'wordcards'));
 }
@@ -185,7 +210,8 @@ function wordcards_reset_course_form_definition(&$mform) {
  * Course reset form defaults.
  * @return array
  */
-function wordcards_reset_course_form_defaults($course) {
+function wordcards_reset_course_form_defaults($course)
+{
     return array('reset_wordcard' => 0);
 }
 
@@ -198,7 +224,8 @@ function wordcards_reset_course_form_defaults($course) {
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function wordcards_reset_userdata($data) {
+function wordcards_reset_userdata($data)
+{
     global $CFG, $DB;
 
     $componentstr = get_string('modulenameplural', 'wordcards');
@@ -242,7 +269,8 @@ function wordcards_reset_userdata($data) {
  * @param int $courseid
  * @param string optional type
  */
-function wordcards_reset_gradebook($courseid, $type = '') {
+function wordcards_reset_gradebook($courseid, $type = '')
+{
     global $CFG, $DB;
 
     $sql = "SELECT l.*, cm.idnumber as cmidnumber, l.course as courseid
@@ -270,7 +298,8 @@ function wordcards_reset_gradebook($courseid, $type = '') {
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=array()) {
+function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array())
+{
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -279,7 +308,7 @@ function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $f
 
     require_login($course, true, $cm);
 
-    if ($filearea === 'audio' or $filearea === 'image'  or $filearea === 'model_sentence_audio') {
+    if ($filearea === 'audio' or $filearea === 'image' or $filearea === 'model_sentence_audio') {
 
         $itemid = (int) array_shift($args);
 
@@ -313,10 +342,10 @@ function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $f
         }
         $name = $wordcards->get_mod()->name;
         // Make a nice filename,
-        $filename = clean_filename(strip_tags(format_string($name)).'.csv');
+        $filename = clean_filename(strip_tags(format_string($name)) . '.csv');
         $filename = preg_replace('/\s+/', '_', $filename);
         // Fetch the export content.
-        switch($filearea){
+        switch ($filearea) {
             case "exportcomma":
                 $filecontent = $wordcards->export_simple_terms_to_csv(',');
                 break;
@@ -350,7 +379,8 @@ function wordcards_pluginfile($course, $cm, $context, $filearea, array $args, $f
  * @param stdClass $module
  * @param cm_info $cm
  */
-function wordcards_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+function wordcards_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm)
+{
 }
 
 /**
@@ -362,7 +392,8 @@ function wordcards_extend_navigation(navigation_node $navref, stdclass $course, 
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $wordcardsnode {@link navigation_node}
  */
-function wordcards_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $wordcardsnode = null) {
+function wordcards_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $wordcardsnode = null)
+{
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -379,12 +410,13 @@ function wordcards_extend_settings_navigation(settings_navigation $settingsnav, 
  * @param array|object $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise
  */
-function wordcards_grade_item_update($moduleinstance, $grades=null) {
+function wordcards_grade_item_update($moduleinstance, $grades = null)
+{
     global $CFG;
-    require_once($CFG->dirroot.'/lib/gradelib.php');
+    require_once($CFG->dirroot . '/lib/gradelib.php');
 
     $params = array('itemname' => $moduleinstance->name);
-    if (array_key_exists('cmidnumber', (array)$moduleinstance)) {
+    if (array_key_exists('cmidnumber', (array) $moduleinstance)) {
         $params['idnumber'] = $moduleinstance->cmidnumber;
     }
 
@@ -398,7 +430,7 @@ function wordcards_grade_item_update($moduleinstance, $grades=null) {
 
         // Make sure current grade fetched correctly from $grades
         $currentgrade = null;
-        if (! empty($grades)) {
+        if (!empty($grades)) {
             if (is_array($grades)) {
                 $currentgrade = reset($grades);
             } else {
@@ -407,7 +439,7 @@ function wordcards_grade_item_update($moduleinstance, $grades=null) {
         }
 
         // When converting a score to a scale, use scale's grade maximum to calculate it.
-        if (! empty($currentgrade) && $currentgrade->rawgrade !== null) {
+        if (!empty($currentgrade) && $currentgrade->rawgrade !== null) {
             $grade = grade_get_grades($moduleinstance->course, 'mod', 'wordcards', $moduleinstance->id, $currentgrade->userid);
             $params['grademax'] = reset($grade->items)->grademax;
         }
@@ -415,7 +447,7 @@ function wordcards_grade_item_update($moduleinstance, $grades=null) {
         $params['gradetype'] = GRADE_TYPE_NONE;
     }
 
-    if ($grades  === 'reset') {
+    if ($grades === 'reset') {
         $params['reset'] = true;
         $grades = null;
     } else if (!empty($grades)) {
@@ -456,16 +488,17 @@ function wordcards_grade_item_update($moduleinstance, $grades=null) {
  * @param int $userid specific user only, 0 means all
  * @param bool $nullifnone
  */
-function wordcards_update_grades($moduleinstance, $userid=0, $nullifnone=true) {
+function wordcards_update_grades($moduleinstance, $userid = 0, $nullifnone = true)
+{
     global $CFG, $DB;
-    require_once($CFG->dirroot.'/lib/gradelib.php');
+    require_once($CFG->dirroot . '/lib/gradelib.php');
 
     if (empty($moduleinstance->grade)) {
         $grades = null;
     } else if ($grades = wordcards_get_user_grades($moduleinstance, $userid)) {
         // do nothing
     } else if ($userid && $nullifnone) {
-        $grades = (object)array('userid' => $userid, 'rawgrade' => null);
+        $grades = (object) array('userid' => $userid, 'rawgrade' => null);
     } else {
         $grades = null;
     }
@@ -482,7 +515,8 @@ function wordcards_update_grades($moduleinstance, $userid=0, $nullifnone=true) {
  * @param int $userid optional user id, 0 means all users
  * @return array array of grades, false if none
  */
-function wordcards_get_user_grades($moduleinstance, $userid=0) {
+function wordcards_get_user_grades($moduleinstance, $userid = 0)
+{
 
     global $CFG, $DB;
 
@@ -503,7 +537,7 @@ function wordcards_get_user_grades($moduleinstance, $userid=0) {
                        $user
               GROUP BY a.userid";
 
-    // Latest grade.
+        // Latest grade.
     } else {
         // Grade_sql.
         $gradesql = "SELECT a.userid as id, a.userid AS userid, a.totalgrade AS rawgrade
@@ -524,7 +558,8 @@ function wordcards_get_user_grades($moduleinstance, $userid=0) {
  *
  * @return bool True if the activity is branded, false otherwise.
  */
-function wordcards_is_branded(){
+function wordcards_is_branded()
+{
     return true;
 }
 
@@ -539,7 +574,8 @@ function wordcards_is_branded(){
  * @param int $moduleid ID of an instance of this module
  * @return bool true if the scale is used by the given instance
  */
-function wordcards_scale_used($moduleid, $scaleid) {
+function wordcards_scale_used($moduleid, $scaleid)
+{
     global $DB;
 
     /** @example */
@@ -558,7 +594,8 @@ function wordcards_scale_used($moduleid, $scaleid) {
  * @param $scaleid int
  * @return boolean true if the scale is used by any module instance
  */
-function wordcards_scale_used_anywhere($scaleid) {
+function wordcards_scale_used_anywhere($scaleid)
+{
     global $DB;
 
     /** @example */
@@ -569,7 +606,8 @@ function wordcards_scale_used_anywhere($scaleid) {
     }
 }
 
-function wordcards_output_fragment_mform($args) {
+function wordcards_output_fragment_mform($args)
+{
     global $CFG, $PAGE, $DB;
 
     $args = (object) $args;
@@ -580,7 +618,7 @@ function wordcards_output_fragment_mform($args) {
 
     // get the objects we need
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
     $mod = mod_wordcards_module::get_by_modid($moduleinstance->id);
 
@@ -603,17 +641,17 @@ function wordcards_output_fragment_mform($args) {
     file_prepare_standard_filemanager($term, 'image', $imageoptions, $context, constants::M_COMPONENT, 'image', $term->id);
     file_prepare_standard_filemanager($term, 'model_sentence_audio', $audiooptions, $context, constants::M_COMPONENT, 'model_sentence_audio', $term->id);
 
-    switch($type){
+    switch ($type) {
         case 'add':
         case 'edit':
-            $theform = new mod_wordcards_form_term(null, ['termid' => $term ? $term->id : 0,'ttslanguage' => $moduleinstance->ttslanguage], null, null, array('class'=>'mod_wordcards_form_term'));
+            $theform = new mod_wordcards_form_term(null, ['termid' => $term ? $term->id : 0, 'ttslanguage' => $moduleinstance->ttslanguage], null, null, array('class' => 'mod_wordcards_form_term'));
             $theform->set_data($term);
             break;
         case 'imagegen':
             $renderer = $renderer = $PAGE->get_renderer('mod_wordcards');
             $params = ['contextid' => $context->id, 'termid' => 0, 'image' => 0, 'model_sentence' => '', 'term' => '', 'definition' => ''];
             if ($term) {
-                $options = (array)$imageoptions;
+                $options = (array) $imageoptions;
                 if (!isset($options['subdirs'])) {
                     $options['subdirs'] = false;
                 }
@@ -640,9 +678,13 @@ function wordcards_output_fragment_mform($args) {
                 $params['defaultprompt'] = $imagegen->make_image_prompt($term);
             }
             $imagemaker = $renderer->render_from_template('mod_wordcards/imagemaker', $params);
-            $theform = new mod_wordcards_form_imagegen(null,
-            ['termid' => $params['termid'], 'imagemaker' => $imagemaker], 
-            null, null, array('class' => 'mod_wordcards_form_imagegen'));
+            $theform = new mod_wordcards_form_imagegen(
+                null,
+                ['termid' => $params['termid'], 'imagemaker' => $imagemaker],
+                null,
+                null,
+                array('class' => 'mod_wordcards_form_imagegen')
+            );
             $theform->set_data($term);
             break;
     }
@@ -657,20 +699,22 @@ function wordcards_output_fragment_mform($args) {
     return $o;
 }
 
-function mod_wordcards_cm_info_dynamic(cm_info $cm) {
+function mod_wordcards_cm_info_dynamic(cm_info $cm)
+{
     global $USER, $DB;
 
-        $moduleinstance = $DB->get_record('wordcards', array('id' => $cm->instance,), '*', MUST_EXIST);
-        if(method_exists($cm, 'override_customdata')) {
-            $cm->override_customdata('duedate', $moduleinstance->viewend);
-            $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
-        }
-    
+    $moduleinstance = $DB->get_record('wordcards', array('id' => $cm->instance, ), '*', MUST_EXIST);
+    if (method_exists($cm, 'override_customdata')) {
+        $cm->override_customdata('duedate', $moduleinstance->viewend);
+        $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
+    }
+
 }
-function wordcards_get_coursemodule_info($coursemodule) {
+function wordcards_get_coursemodule_info($coursemodule)
+{
     global $DB;
 
-    if (!$moduleinstance = $DB->get_record('wordcards', array('id' => $coursemodule->instance ), '*')) {
+    if (!$moduleinstance = $DB->get_record('wordcards', array('id' => $coursemodule->instance), '*')) {
         return false;
     }
     $result = new cached_cm_info();
@@ -699,7 +743,8 @@ function wordcards_get_coursemodule_info($coursemodule) {
  * @param cm_info|stdClass $cm object with fields ->completion and ->customdata['customcompletionrules']
  * @return array $descriptions the array of descriptions for the custom rules.
  */
-function mod_wordcards_get_completion_active_rule_descriptions($cm) {
+function mod_wordcards_get_completion_active_rule_descriptions($cm)
+{
 
     // Values will be present in cm_info, and we assume these are up to date.
     if (empty($cm->customdata['customcompletionrules']) || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
@@ -726,13 +771,14 @@ function mod_wordcards_get_completion_active_rule_descriptions($cm) {
     return $descriptions;
 }
 
-function mod_wordcards_user_preferences(): array {
+function mod_wordcards_user_preferences(): array
+{
     $prefs = [];
     $prefs['wordcards_deflang'] = [
-            'type' => PARAM_ALPHA,
-            'null' => NULL_NOT_ALLOWED,
-            'default' => false,
-            'permissioncallback' => [core_user::class, 'is_current_user'],
+        'type' => PARAM_ALPHA,
+        'null' => NULL_NOT_ALLOWED,
+        'default' => false,
+        'permissioncallback' => [core_user::class, 'is_current_user'],
     ];
     return $prefs;
 }
