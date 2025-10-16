@@ -1593,6 +1593,12 @@ class utils
         $mform->setDefault('showlangchooser', $config->showlangchooser);
         $mform->addHelpButton('showlangchooser', 'showlangchooser', constants::M_COMPONENT);
 
+        // Show images for cards on front or back of card in learn mode.
+        $img_options = [0=>get_string('cardback', constants::M_COMPONENT),1=>get_string('cardfront', constants::M_COMPONENT)];
+        $mform->addElement('select', 'imageonfront', get_string('imageonfront', constants::M_COMPONENT),$img_options);
+        $mform->setDefault('imageonfront', $config->imageonfront);
+        $mform->addHelpButton('imageonfront', 'imageonfront', constants::M_COMPONENT);
+
         $videooptions = [0 => get_string('no'), 1 => get_string('yes')];
         $mform->addElement(
             'select',
@@ -2204,6 +2210,138 @@ class utils
         } else {
             return false;
         }
+    }
+
+    public static function prepare_usercourseprogress_data($courseid)
+    {
+        global $DB, $USER;
+
+        // Data defaults to zeros
+        $data = [
+            'termslearned' => 0,
+            'termstolearn' => 0,
+            'totalterms' => 0,
+            'activitiescomplete' => 0,
+            'totalactivities' => 0,
+            'recentwordslearned' => [],
+            'recentwordsunlearned' => [],
+            'continueactivity' => null,
+            'continueactivityname' => null,
+        ];
+
+        //get all wordcards in course
+        $wordcardsids = $DB->get_fieldset_select(constants::M_TABLE, 'id', 'course = ?', array($courseid));
+        if ($wordcardsids === false || count($wordcardsids) == 0) {
+            // No wordcards in course
+            return $data;
+        }
+        list($wordcardswhere, $allparams) = $DB->get_in_or_equal($wordcardsids);
+
+        //get total terms and learned totals
+        $countsql = "SELECT COUNT(t.id) FROM {wordcards_terms} t
+                     INNER JOIN {wordcards} m
+                     ON t.modid = m.id
+                     WHERE m.course = ? 
+                     AND t.deleted = 0";
+        $totalterms = $DB->count_records_sql($countsql, [$courseid]);
+
+        $allsql = "SELECT COUNT((CASE WHEN a.successcount >=  m.learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
+                  FROM {wordcards_associations} a
+                  INNER JOIN {wordcards_terms} t
+                  INNER JOIN {wordcards} m
+                    ON a.termid = t.id
+                    AND t.modid = m.id     
+                    WHERE t.modid $wordcardswhere
+                    AND t.deleted = 0
+                    AND a.userid = ?";
+
+        $allparams = array_merge($allparams, [$USER->id]);
+        $alldata = $DB->get_record_sql($allsql, $allparams);
+        if ($alldata) {
+            $data['termslearned'] = $alldata->termslearned - $alldata->selfclaimed;
+            $data['termstolearn'] = $alldata->totalterms - $alldata->termslearned;
+            $data['totalterms'] = $alldata->totalterms - $alldata->selfclaimed;
+        }
+
+        //Get count of wordcards modules completed by user
+        $modinfo = get_fast_modinfo($courseid, $USER->id);
+        $completioninfo = new \completion_info($modinfo->get_course());
+        $nextactivity = null;
+        foreach($modinfo->cms as $cm) {
+
+            //If it is not wordcards we are not interested
+            if($cm->modname != constants::M_MODNAME) {
+                continue;
+            }
+
+            // Always ignore activities that have been deleted.
+            if (!empty($cm->deletioninprogress)) {
+                continue;
+            }
+
+            // Check whether completion is enabled.
+            $isenabled = $completioninfo->is_enabled($cm) != COMPLETION_TRACKING_NONE;
+            if (!$isenabled) {
+                continue;
+            }
+            $data['totalactivities']++;
+
+            // Check whether activity is complete.
+            $loadwholecourse = true;
+            $modcompletiondata = $completioninfo->get_data($cm, $loadwholecourse, $modinfo->get_user_id());
+            $iscompleted = $modcompletiondata->completionstate == COMPLETION_COMPLETE || $modcompletiondata->completionstate == COMPLETION_COMPLETE_PASS;
+            if ($iscompleted) {
+                $data['activitiescomplete']++;
+            }elseif($nextactivity === null) {
+                $nextactivity = $cm;
+                $data['continueactivity'] = $cm->get_url()->out(false);
+                $data['continueactivityname'] = $cm->get_formatted_name();
+            }
+        }
+
+        //get recently learned words
+        $recentlearnedsql = "SELECT t.term 
+                  FROM {wordcards_associations} a
+                  INNER JOIN {wordcards_terms} t
+                  INNER JOIN {wordcards} m
+                    ON a.termid = t.id
+                    AND t.modid = m.id     
+                    WHERE t.modid $wordcardswhere
+                    AND a.successcount >=  m.learnpoint
+                    AND a.selfclaim = 0    
+                    AND t.deleted = 0
+                    AND a.userid = ?
+                    ORDER BY a.lastsuccess DESC";
+        $data['recentwordslearned']  = $DB->get_fieldset_sql($recentlearnedsql, $allparams,0, 5);
+        // If the response was false, return an empty array.
+        if(!$data['recentwordslearned']){
+            $data['recentwordslearned'] = [];
+        }
+
+        //get recent unlearned words
+        $recentunlearnedsql = "SELECT t.term 
+                  FROM {wordcards_associations} a
+                  INNER JOIN {wordcards_terms} t
+                  INNER JOIN {wordcards} m
+                    ON a.termid = t.id
+                    AND t.modid = m.id     
+                    WHERE t.modid $wordcardswhere
+                    AND a.successcount <  m.learnpoint
+                    AND a.selfclaim = 0 
+                    AND t.deleted = 0
+                    AND a.userid = ?
+                    ORDER BY CASE 
+                        WHEN a.lastsuccess > a.lastfail 
+                        THEN a.lastsuccess
+                        ELSE a.lastfail
+                    END DESC";
+        $data['recentwordsunlearned']  = $DB->get_fieldset_sql($recentunlearnedsql, $allparams,0, 5);
+        // If the response was false, return an empty array.
+        if(!$data['recentwordsunlearned']){
+            $data['recentwordsunlearned'] = [];
+        }
+
+        return $data;
     }
 
     // Prepare the data for import

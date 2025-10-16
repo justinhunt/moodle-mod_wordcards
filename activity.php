@@ -97,23 +97,23 @@ if ($currentstate == mod_wordcards_module::STATE_END) {
     }
 }
 
-// redirect to finished if this state end
+// Redirect to finished if this state end.
 if ($currentstep == mod_wordcards_module::STATE_END) {
     redirect(new moodle_url('/mod/wordcards/finish.php', ['id' => $cm->id, 'embed' => $embed, 'sesskey' => sesskey()]));
 }
 
 
-// do we need this anymore?
+// Do we need this anymore?
 if ($currentstep == mod_wordcards_module::STATE_TERMS) {
     redirect(new moodle_url('/mod/wordcards/view.php', ['id' => $cm->id, 'embed' => $embed]));
 }
 
-// get our practicetype an wordpool
+// Get our practicetype and wordpool.
 $practicetype = $mod->get_practicetype($currentstep);
 $wordpool = $mod->get_wordpool($currentstep);
 
-// if its  review type and we have no review words, we just use a learn pool,
-// we used to skip such tabs, but grading would get messed up
+// If its  review type and we have no review words, we just use a learn pool.
+// We used to skip such tabs, but grading would get messed up.
 if($wordpool == mod_wordcards_module::WORDPOOL_REVIEW) {
     $reviewpoolempty = !$mod->are_there_words_to_review();// $mod->get_review_terms(mod_wordcards_module::STATE_STEP2) ? false : true;
     if($reviewpoolempty){

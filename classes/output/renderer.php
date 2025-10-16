@@ -115,6 +115,7 @@ class renderer extends \plugin_renderer_base
             'isreattempt' => $isreattempt,
             'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
+            'imageonfront' => $mod->get_mod()->imageonfront,
             'youglish' => $youglish,
             'gotit' => get_string('gotit', 'mod_wordcards'),
             'loading' => get_string('loading', 'mod_wordcards'),
@@ -671,7 +672,7 @@ class renderer extends \plugin_renderer_base
         return $this->render_from_template('mod_wordcards/student_navigation', $data);
     }
 
-    public function language_chooser($activitydefinitionslanguage)
+    public function language_chooser($activitydefinitionslanguage, $cssprefix = 'wordcards')
     {
         global $CFG;
 
@@ -694,62 +695,38 @@ class renderer extends \plugin_renderer_base
         $data = [];
         $data['dropdownlist'] = \html_writer::select($options, 'mydefs_lang', $selected);
         $data['activitydefault'] = $activitydefinitionslanguage;
+        $data['cssprefix'] = $cssprefix;
         return $this->render_from_template('mod_wordcards/deflang_chooser', $data);
     }
 
+    public function embed_progressdashboard($courseid)
+    {
+        global $DB, $USER;
+
+        $dd = [];
+        // Get the embedded language chooser
+        $currentlang = get_user_preferences('wordcards_deflang');
+        $dd['langchooser'] = $this->language_chooser($currentlang, 'wordcardsdashboard');
+        // Get the word totals and other data
+        $dd  = $dd + utils::prepare_usercourseprogress_data($courseid);
+        return $this->render_from_template('mod_wordcards/user_courseprogress_dashboard', $dd);
+
+    }
+
     /**
-     * Return HTML to embed a minilesson
+     * Return HTML to embed a minilesson native language chooser
      */
     public function embed_nativelangchooser($cmid, $token)
     {
         global $DB;
         $currentlang = get_user_preferences('wordcards_deflang');
-        return $this->language_chooser($currentlang);
+        return $this->language_chooser($currentlang, 'wordcardsembed');
     }
 
     public function embed_usercourseprogress($courseid)
     {
-        global $DB, $USER;
-
-        //get all wordcards in course
-        $wordcardsids = $DB->get_fieldset_select(constants::M_TABLE, 'id', 'course = ?', array($courseid));
-        if ($wordcardsids === false || count($wordcardsids) == 0) {
-            // No wordcards in course, return empty string or a message.
-            return 'No wordcards activities found in this course.';
-        }
-        list($wordcardswhere, $allparams) = $DB->get_in_or_equal($wordcardsids);
-
-        //get total terms
-        $countsql = "SELECT COUNT(t.id) FROM {wordcards_terms} t
-                     INNER JOIN {wordcards} m
-                     ON t.modid = m.id
-                     WHERE m.course = ? 
-                     AND t.deleted = 0";
-        $totalterms = $DB->count_records_sql($countsql, [$courseid]);
-
-        $allsql = "SELECT COUNT((CASE WHEN a.successcount >=  m.learnpoint  THEN 1 END)) as termslearned, SUM(a.selfclaim) as selfclaimed, $totalterms as totalterms 
-                  FROM {wordcards_associations} a
-                  INNER JOIN {wordcards_terms} t
-                  INNER JOIN {wordcards} m
-                    ON a.termid = t.id
-                    AND t.modid = m.id     
-                    WHERE t.modid $wordcardswhere
-                    AND t.deleted = 0
-                    AND a.userid = ?";
-
-        $allparams = array_merge($allparams, [$USER->id]);
-        $alldata = $DB->get_record_sql($allsql, $allparams);
-        if ($alldata) {
-            $data = [
-                'termslearned' => $alldata->termslearned - $alldata->selfclaimed,
-                'termstolearn' => $alldata->totalterms - $alldata->termslearned,
-                'totalterms' => $alldata->totalterms - $alldata->selfclaimed,
-            ];
-            return $this->render_from_template('mod_wordcards/user_course_progress', $data);
-        } else {
-            // No data found, return empty string or a message.
-            return '';
-        }
+        $data = utils::prepare_usercourseprogress_data($courseid);
+        return $this->render_from_template('mod_wordcards/user_course_progress', $data);
     }
 
     /**

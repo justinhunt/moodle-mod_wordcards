@@ -124,7 +124,7 @@ class freemode implements \renderable, \templatable {
 
         // Lang chooser
         if ($this->mod->get_mod()->showlangchooser) {
-            $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage);
+            $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage, "wordcards");
         } else {
             $langchooser = "";
         }

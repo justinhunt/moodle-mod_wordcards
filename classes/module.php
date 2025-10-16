@@ -471,6 +471,7 @@ class mod_wordcards_module
             }
             shuffle($records);
             $records = self::insert_media_urls($records);
+            $records = $this->update_userpref_defs($records);
             $records = self::format_defs($records);
             return $records;
         }
@@ -561,10 +562,12 @@ class mod_wordcards_module
         if ($maxterms > 0) {
             $selectedrecords = array_slice($records, 0, $maxterms);
             $selectedrecords = self::insert_media_urls($selectedrecords);
+            $selectedrecords = $this->update_userpref_defs($selectedrecords);
             $selectedrecords = self::format_defs($selectedrecords);
             return $selectedrecords;
         } else {
             $records = self::insert_media_urls($records);
+            $records = $this->update_userpref_defs($records);
             $records = self::format_defs($records);
             return $records;
         }
@@ -891,7 +894,7 @@ class mod_wordcards_module
                     ON a.termid = t.id
                  WHERE a.userid = ?
                    AND t.modid = ?
-                   AND t.deleted = 0
+                   AND t.deleted = 0  
                    AND a.successcount >= ?";
 
         $learned = $DB->get_records_sql($sql, [$userid, $this->get_id(), $this->mod->learnpoint]);
@@ -1002,6 +1005,15 @@ class mod_wordcards_module
             $theevent = \mod_wordcards\event\word_learned::create_from_term($term, $this->context, $record);
             $theevent->trigger();
         }
+
+        // Notify the completion API. if completion on words learned is enabled
+        if ($this->is_completion_enabled()) {
+            $completion = new completion_info($this->get_course());
+            if ($completion->is_enabled($this->get_cm()) && !empty($this->mod->completionwhenlearned) && $this->has_user_learned_all_terms()) {
+                $completion->update_state($this->get_cm(), COMPLETION_COMPLETE);
+            }
+        }
+
     }
 
     public function resume_progress($currentstate)

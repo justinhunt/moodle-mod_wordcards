@@ -47,6 +47,9 @@ class custom_completion extends activity_custom_completion {
         switch ($rule) {
             case 'completionwhenfinish':
                 $status =  $mod->has_user_finished_an_attempt($this->userid);
+                if($status == false){
+                    $x=0;
+                }
                 break;
             case 'completionwhenlearned':
                 $status = $mod->has_user_learned_all_terms($this->userid);

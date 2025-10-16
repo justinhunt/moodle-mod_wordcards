@@ -164,7 +164,7 @@ class sessionmode implements \renderable, \templatable {
 
                      // Lang chooser: - add lang chooser so templates can choose to show it.
                     if ($this->mod->get_mod()->showlangchooser) {
-                        $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage);
+                        $langchooser = $renderer->language_chooser($this->mod->get_mod()->deflanguage, "wordcards");
                     } else {
                         $langchooser = "";
                     }

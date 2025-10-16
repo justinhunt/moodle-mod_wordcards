@@ -1,0 +1,28 @@
+<div class="container my-4 wc-progressdash-grid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="wc-progressdash-grid-label">{{#str}} termslearned , mod_wordcards {{/str}}</div>
+            <div class="wc-progressdash-grid-item"><span class="wc-pg-upperno">{{termslearned}}</span> / <span class="wc-pg-lowerno">{{totalterms}}</span></div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="wc-progressdash-grid-label">{{#str}} activitiescomplete , mod_wordcards {{/str}}</div>
+            <div class="wc-progressdash-grid-item"><span class="wc-pg-upperno">{{activitiescomplete}}</span> / <span class="wc-pg-lowerno">{{totalactivities}}</span></div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="wc-progressdash-grid-label">{{#str}} langchooser , mod_wordcards {{/str}}</div>
+            <div class="wc-progressdash-grid-item">{{{langchooser}}}</div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="wc-progressdash-grid-label">{{#str}} recentlylearned , mod_wordcards {{/str}}</div>
+            <div class="wc-progressdash-grid-item"><ul>{{#recentwordslearned}}<li>{{.}}</li>{{/recentwordslearned}}</ul></div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="wc-progressdash-grid-label">{{#str}} recentlypracticed , mod_wordcards {{/str}}</div>
+            <div class="wc-progressdash-grid-item"><ul>{{#recentwordsunlearned}}<li>{{.}}</li>{{/recentwordsunlearned}}</ul></div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="wc-progressdash-grid-label">{{#str}} nextactivity , mod_wordcards {{/str}}</div>
+            <div class="wc-progressdash-grid-item"><a href="{{{continueactivity}}}">{{#str}} next , mod_wordcards {{/str}} ({{continueactivityname}})</a></div>
+        </div>
+    </div>
+</div>

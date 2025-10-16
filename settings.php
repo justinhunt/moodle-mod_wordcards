@@ -197,6 +197,20 @@ if ($ADMIN->fulltree) {
         0
     ));
 
+    // Show images on front or back in learn mode
+
+    $name = 'imageonfront';
+    $label = get_string($name, constants::M_COMPONENT);
+    get_string($name . '_details', constants::M_COMPONENT);
+    $options = [0=>get_string('cardback', constants::M_COMPONENT),1=>get_string('cardfront', constants::M_COMPONENT)];
+    $default = 0;
+    $settings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
     // Show images on flip screen.
     $name = 'showimageflip';

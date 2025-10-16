@@ -2352,3 +2352,22 @@ button.definitions-next.btn .fa-arrow-right:before {
     margin-right: 10px;
     margin-top: 10px;
 }
+
+/* overrides to allow image to show on front along with other elements */
+.path-mod-wordcards .definition_flashcards .flip-card .flip-card-front .term-image {
+    height: 200px;
+}
+.definition_flashcards .term-modelsentence.compact-modelsentence {
+    margin-top: 3px;
+    margin-left: 8px;
+    margin-right: 8px;
+    padding: 20px;
+}
+@media screen and (min-width: 600px) {
+    .definition_flashcards .term-modelsentence.compact-modelsentence {
+        padding: 20px;
+    }
+}
+#card-audio.compact-audio {
+    margin-bottom: 8px;
+}
