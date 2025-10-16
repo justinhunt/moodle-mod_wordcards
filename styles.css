@@ -283,6 +283,10 @@ h3.list-of-words {
     }
 }
 
+.term-title.term-title-definition {
+    font-style: italic;
+}
+
 #audio-small {
     height: 28px;
     width: 28px;
