@@ -2312,10 +2312,13 @@ class utils
                     AND t.deleted = 0
                     AND a.userid = ?
                     ORDER BY a.lastsuccess DESC";
-        $data['recentwordslearned']  = $DB->get_fieldset_sql($recentlearnedsql, $allparams,0, 5);
-        // If the response was false, return an empty array.
-        if(!$data['recentwordslearned']){
-            $data['recentwordslearned'] = [];
+        $records = $DB->get_records_sql($recentlearnedsql, $allparams, 0, 5);
+        // Extract terms from the records
+        $data['recentwordslearned'] = [];
+        if ($records) {
+            foreach ($records as $record) {
+                $data['recentwordslearned'][] = $record->term;
+            }
         }
 
         //get recent unlearned words
@@ -2335,10 +2338,13 @@ class utils
                         THEN a.lastsuccess
                         ELSE a.lastfail
                     END DESC";
-        $data['recentwordsunlearned']  = $DB->get_fieldset_sql($recentunlearnedsql, $allparams,0, 5);
-        // If the response was false, return an empty array.
-        if(!$data['recentwordsunlearned']){
-            $data['recentwordsunlearned'] = [];
+        $records = $DB->get_records_sql($recentunlearnedsql, $allparams, 0, 5);
+        // Extract terms from the records
+        $data['recentwordsunlearned'] = [];
+        if ($records) {
+            foreach ($records as $record) {
+                $data['recentwordsunlearned'][] = $record->term;
+            }
         }
 
         return $data;
