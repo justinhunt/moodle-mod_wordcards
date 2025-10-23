@@ -1,3 +1,6 @@
+1.3.84 (Build 2025102300)
+- Improvements to conditional completion for learned words
+
 1.3.82 (Build 2025100500)
 - Improvements for new activity chooser (Moodle 5.1)
 
