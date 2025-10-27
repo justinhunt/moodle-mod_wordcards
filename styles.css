@@ -2317,7 +2317,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 }
 
 .mod-wordcards-imagemaker-image-display-container {
-    position: absolute;
+   /* position: absolute; */
     top: 0;
     left: 0;
     width: 100%;
