@@ -361,15 +361,18 @@ class mod_wordcards_module
     /*
      * If there is a need we can run format_string over the definition
      */
-
     public static function format_defs($terms)
     {
         global $CFG;
         foreach ($terms as $def) {
-            // lets not double up
+            // If it is not already formatted, format it.
             if (strpos($def->definition, '<div class="text_to_html">') !== 0) {
                 $def->definition = format_text($def->definition);
             }
+            // And then add a class for styling.
+            $def->definition = str_replace( '<div class="text_to_html">',
+                '<div class="term-definition text_to_html">',
+                $def->definition);
         }
         return $terms;
     }
