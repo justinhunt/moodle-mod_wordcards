@@ -120,7 +120,7 @@ class imagegen {
                     $fileurl = "$CFG->wwwroot/pluginfile.php/" . $this->context->id . "/mod_wordcards/image/" . $termid . $cachebuster;
                     $imageurls[] = ['termid' => $termid, 'url' => $fileurl];
                    // Update the database to indicate that this term has an image.
-                    $DB->update_record('wordcards_terms', ['id' => $termid, 'image' => 1]);
+                    $DB->update_record(constants::M_TERMSTABLE, ['id' => $termid, 'image' => 1, 'imageversion' => time()]);
                 }
             } else {
                 $secondattempt_requests[] =  $requests[$i];
@@ -141,7 +141,7 @@ class imagegen {
                         $fileurl = "$CFG->wwwroot/pluginfile.php/" . $this->context->id . "/mod_wordcards/image/" . $termid . $cachebuster;
                         $imageurls[] = ['termid' => $termid, 'url' => $fileurl];
                         // Update the database to indicate that this term has an image.
-                        $DB->update_record('wordcards_terms', ['id' => $termid, 'image' => 1]);
+                        $DB->update_record(constants::M_TERMSTABLE, ['id' => $termid, 'image' => 1, 'imageversion' => time()]);
                     }
                 }
             }

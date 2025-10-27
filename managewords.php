@@ -101,8 +101,7 @@ if ($imagegendata = $imagegenform->get_data() && !empty($data['draftfileurl'])) 
     $draftitemid = basename(dirname($path));
 
     file_save_draft_area_files($draftitemid, $context->id, constants::M_COMPONENT, 'image', $data['termid'], $options);
-    $DB->update_record('wordcards_terms', ['id' => $data->termid, 'image' => 1]);
-    ;
+    $DB->update_record(constants::M_TERMSTABLE, ['id' => $data->termid, 'image' => 1, 'imageversion' => time()]);
     redirect($PAGE->url);
 }
 
@@ -132,7 +131,7 @@ if ($data = $termform->get_data()) {
     if (empty($data->termid)) {
         $data->modid = $modid;
 
-        $data->id = $DB->insert_record('wordcards_terms', $data);
+        $data->id = $DB->insert_record(constants::M_TERMSTABLE, $data);
         // Else set id to termid.
     } else {
         $data->id = $data->termid;
@@ -153,6 +152,7 @@ if ($data = $termform->get_data()) {
             'audio',
             $data->id
         );
+        $data->audioversion = time();
         $needsupdating = true;
 
         // In the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
@@ -182,6 +182,7 @@ if ($data = $termform->get_data()) {
             'model_sentence_audio',
             $data->id
         );
+        $data->modelsentenceaudioversion = time();
         $needsupdating = true;
         //in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
         $fs = get_file_storage();
@@ -209,6 +210,7 @@ if ($data = $termform->get_data()) {
             'image',
             $data->id
         );
+        $data->imageversion = time();
         $needsupdating = true;
 
         //in the case a user has deleted all files, we will still have the draftid in the image column, we want to set it to ''
@@ -225,7 +227,7 @@ if ($data = $termform->get_data()) {
     }
 
     if ($needsupdating) {
-        $DB->update_record('wordcards_terms', $data);
+        $DB->update_record(constants::M_TERMSTABLE, $data);
         //also update our passagehash update flag
         $DB->update_record('wordcards', array('id' => $modid, 'hashisold' => 1));
     }

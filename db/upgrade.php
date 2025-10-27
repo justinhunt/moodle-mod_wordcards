@@ -47,7 +47,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if ($oldversion < 2016080200) {
 
         // Define field skipglobal to be added to wordcards.
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('skipglobal', XMLDB_TYPE_INTEGER, '1', null, null, null, '1', 'timemodified');
 
         // Conditionally launch add field skipglobal.
@@ -62,7 +62,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if ($oldversion < 2016080500) {
 
         // Define field finishedscattermsg to be added to wordcards.
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('finishedscattermsg', XMLDB_TYPE_TEXT, null, null, null, null, null, 'skipglobal');
 
         // Conditionally launch add field finishedscattermsg.
@@ -71,7 +71,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         }
 
          // Define field completedmsg to be added to wordcards.
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('completedmsg', XMLDB_TYPE_TEXT, null, null, null, null, null, 'finishedscattermsg');
 
         // Conditionally launch add field completedmsg.
@@ -86,7 +86,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if ($oldversion < 2019041200) {
 
         // Define field skipglobal to be added to wordcards.
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('localpracticetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'timemodified');
 
         // Conditionally launch add field skipglobal.
@@ -108,7 +108,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if ($oldversion < 2019091401) {
 
         // Define field image to be added to wordcard terms.
-        $table = new xmldb_table('wordcards_terms');
+        $table = new xmldb_table(constants::M_TERMSTABLE);
         $field = new xmldb_field('image', XMLDB_TYPE_TEXT, null, null, null, null, null);
 
         // Conditionally launch add field skipglobal.
@@ -129,7 +129,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     if($oldversion<2019091402) {
 
         // Define field ttslanguage to be added to wordcard terms.
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('ttslanguage', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'en-US');
         // Conditionally launch add field skipglobal.
         if (!$dbman->field_exists($table, $field)) {
@@ -137,7 +137,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         }
 
         // Define field ttslanguage to be added to wordcard terms.
-        $table = new xmldb_table('wordcards_terms');
+        $table = new xmldb_table(constants::M_TERMSTABLE);
         $field = new xmldb_field('ttsvoice', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'Kendra');
         // Conditionally launch add field skipglobal.
         if (!$dbman->field_exists($table, $field)) {
@@ -151,7 +151,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
 
         // Define field alternates to be added to wordcard terms.
-        $table = new xmldb_table('wordcards_terms');
+        $table = new xmldb_table(constants::M_TERMSTABLE);
         $field = new xmldb_field('alternates', XMLDB_TYPE_TEXT, null, null, null, null, null);
         // Conditionally launch add field skipglobal.
         if (!$dbman->field_exists($table, $field)) {
@@ -164,7 +164,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     if($oldversion<2019120501) {
 
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('skipglobal', XMLDB_TYPE_INTEGER, '1', null, null, null, '1');
         if ($dbman->field_exists($table, $field)) {
             $dbman->rename_field($table, $field, 'skipreview');
@@ -201,7 +201,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     if($oldversion<2019120601) {
 
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $fields= array();
         $fields[] = new xmldb_field('step3practicetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
         $fields[] = new xmldb_field('step4practicetype', XMLDB_TYPE_INTEGER, '2', null, null, null, '0');
@@ -223,7 +223,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     if($oldversion<2020050204) {
 
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $fields= array();
         $fields[] = new xmldb_field('maxattempts', XMLDB_TYPE_INTEGER, '10', null, true, null, '0');
 
@@ -239,7 +239,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if($oldversion<2020050205) {
-        $table = new xmldb_table('wordcards_progress');
+        $table = new xmldb_table(constants::M_ATTEMPTSTABLE);
         $index = new xmldb_index('moduser', XMLDB_INDEX_UNIQUE, array('modid', 'userid'));
         if ($dbman->index_exists($table, $index)) {
             $dbman->drop_index($table, $index);
@@ -254,7 +254,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         //we added these fields in install.xml but not in upgrade.php in may
 
         //progress
-        $ptable = new xmldb_table('wordcards_progress');
+        $ptable = new xmldb_table(constants::M_ATTEMPTSTABLE);
         $pfields = array();
         $pfields[] = new xmldb_field('grade1', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
         $pfields[] = new xmldb_field('grade2', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
@@ -271,7 +271,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         }
 
         //wordcards
-        $wtable = new xmldb_table('wordcards');
+        $wtable = new xmldb_table(constants::M_TABLE);
         $wfields = array();
         $wfields[] = new xmldb_field('grade', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0');
         $wfields[] = new xmldb_field('gradeoptions', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
@@ -290,7 +290,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if($oldversion<2020110900){
-        $table = new xmldb_table('wordcards_terms');
+        $table = new xmldb_table(constants::M_TERMSTABLE);
         $fields = array();
         $fields[] = new xmldb_field('model_sentence', XMLDB_TYPE_TEXT, null, null, null, null, null);
         $fields[] = new xmldb_field('model_sentence_audio', XMLDB_TYPE_TEXT, null, null, null, null, null);
@@ -305,7 +305,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     // Add passage hashcode to wordcards table
     if ($oldversion < 2020111000) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         $fields = array();
 
         // Define field expiredays to be added to readaloud
@@ -322,7 +322,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     // Add foriframe option to wordcards table
     if ($oldversion < 2021053100) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
 
 
         // Define field foriframe to be added to wordcards
@@ -337,7 +337,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     // Add showimagesonflip option to wordcards table, and phonetics to terms table
     if ($oldversion < 2021083100) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
 
         // Define field showimagesonflip to be added to wordcards
         $fields=[];
@@ -352,7 +352,7 @@ function xmldb_wordcards_upgrade($oldversion) {
             }
         }
 
-        $table = new xmldb_table('wordcards_terms');
+        $table = new xmldb_table(constants::M_TERMSTABLE);
 
         //  Define fields phonetic and phoneticms to be added to wordcards
         $fields=[];
@@ -372,7 +372,7 @@ function xmldb_wordcards_upgrade($oldversion) {
 
     if ($oldversion < 2021110500) {
 
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
 
         //  Define field trancriber to be added to wordcards
         $fields=[];
@@ -389,12 +389,12 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022012000) {
-        $DB->set_field('wordcards_terms','ttsvoice','Seoyeon',array('ttsvoice'=>'Seoyan'));
+        $DB->set_field(constants::M_TERMSTABLE,'ttsvoice','Seoyeon',array('ttsvoice'=>'Seoyan'));
         upgrade_mod_savepoint(true, 2022012000, 'wordcards');
     }
 
     if ($oldversion < 2022020500) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         // Define field foriframe to be added to wordcards
         $field= new xmldb_field('deflanguage', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, null, null,'en');
 
@@ -404,7 +404,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         }
 
         //Add translation fields to wordcards
-        $table = new xmldb_table('wordcards_terms');
+        $table = new xmldb_table(constants::M_TERMSTABLE);
         $fields=[];
         $fields[] = new xmldb_field('translations', XMLDB_TYPE_TEXT, null, null, null, null);
         $fields[]= new xmldb_field('sourcedef', XMLDB_TYPE_TEXT, null, null, null, null);
@@ -465,7 +465,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Adding keys to table wordcards_my_words.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
         $table->add_key('userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
-        $table->add_key('termid', XMLDB_KEY_FOREIGN, ['termid'], 'wordcards_terms', ['id']);
+        $table->add_key('termid', XMLDB_KEY_FOREIGN, ['termid'], constants::M_TERMSTABLE, ['id']);
         $table->add_key('courseid', XMLDB_KEY_FOREIGN, ['courseid'], 'course', ['id']);
 
         // Conditionally launch create table for wordcards_my_words.
@@ -507,7 +507,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if ($oldversion < 2023051201) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         // Define field foriframe to be added to wordcards
         $fields=[];
         $fields[] = new xmldb_field('deflanguage', XMLDB_TYPE_CHAR, 255, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'en');
@@ -527,7 +527,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if ($oldversion < 2023090301) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         // Define field foriframe to be added to wordcards
         $fields=[];
         $fields[] = new xmldb_field('videoexamples', XMLDB_TYPE_INTEGER, 2,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
@@ -565,7 +565,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if ($oldversion < 2024101500) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         // Define field freemodeoptions to be added to wordcards
         $field = new xmldb_field('freemodeoptions', XMLDB_TYPE_TEXT, null, null, null, null);
 
@@ -591,7 +591,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     }
 
     if ($oldversion < 2024111203) {
-        $table = new xmldb_table('wordcards');
+        $table = new xmldb_table(constants::M_TABLE);
         // Define field foriframe to be added to wordcards
         $fields = [];
         $fields[] = new xmldb_field('completionwhenfinish', XMLDB_TYPE_INTEGER, 2,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
@@ -611,7 +611,7 @@ function xmldb_wordcards_upgrade($oldversion) {
     $newversion = 2024120700;
     if ($oldversion < $newversion) {
         // Add auth table.
-        $table = new xmldb_table('wordcards_auth');
+        $table = new xmldb_table(constants::M_AUTHTABLE);
 
         // Add fields.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -656,6 +656,22 @@ function xmldb_wordcards_upgrade($oldversion) {
             }
         }
         upgrade_mod_savepoint(true, 2025101600, 'wordcards');
+    }
+
+    if ($oldversion < 2025102700) {
+        $table = new xmldb_table(constants::M_TERMSTABLE);
+        $fields = [];
+        $fields[] = new xmldb_field('imageversion', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('audioversion', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('model_sentence_audioversion', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2025102700, 'wordcards');
     }
 
     return true;

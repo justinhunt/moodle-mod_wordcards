@@ -88,7 +88,7 @@ class mod_wordcards_external extends external_api
         $params = self::validate_parameters(self::mark_as_seen_parameters(), compact('termid'));
         extract($params);
 
-        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $termid], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
@@ -134,7 +134,7 @@ class mod_wordcards_external extends external_api
         $params = self::validate_parameters(self::report_successful_association_parameters(), compact('termid'));
         extract($params);
 
-        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $termid], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
@@ -173,7 +173,7 @@ class mod_wordcards_external extends external_api
         $params = self::validate_parameters(self::report_failed_association_parameters(), compact('term1id', 'term2id'));
         extract($params);
 
-        $term = $DB->get_record('wordcards_terms', ['id' => $term1id], '*', MUST_EXIST);
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $term1id], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
         self::mark_as_seen_db($term->id);
@@ -325,7 +325,7 @@ class mod_wordcards_external extends external_api
             $draftitemid = basename(dirname($path));
 
             file_save_draft_area_files($draftitemid, $context->id, constants::M_COMPONENT, 'image', $data['termid'], $options);
-            $response = $DB->update_record('wordcards_terms', ['id' => $data['termid'], 'image' => 1]);
+            $response = $DB->update_record(constants::M_TERMSTABLE, ['id' => $data['termid'], 'image' => 1, 'imageversion' => time()]);
             if (!$response) {
                 $ret->error = true;
                 // $ret->message = $ret->message;
@@ -356,7 +356,7 @@ class mod_wordcards_external extends external_api
             $needsupdating = false;
             if (empty($data->termid)) {
                 $data->modid = $moduleinstance->id;
-                $data->id = $DB->insert_record('wordcards_terms', $data);
+                $data->id = $DB->insert_record(constants::M_TERMSTABLE, $data);
 
                 // else set id to termid
             } else {
@@ -378,6 +378,7 @@ class mod_wordcards_external extends external_api
                     'audio',
                     $data->id
                 );
+                $data->audioversion = time();
                 $needsupdating = true;
 
                 // in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
@@ -406,6 +407,7 @@ class mod_wordcards_external extends external_api
                     'model_sentence_audio',
                     $data->id
                 );
+                $data->modelaudioversion = time();
                 $needsupdating = true;
                 // in the case a user has deleted all files, we will still have the draftid in the audio column, we want to set it to 0
                 $fs = get_file_storage();
@@ -432,6 +434,7 @@ class mod_wordcards_external extends external_api
                     'image',
                     $data->id
                 );
+                $data->imageversion = time();
                 $needsupdating = true;
 
                 // in the case a user has deleted all files, we will still have the draftid in the image column, we want to set it to ''
@@ -449,7 +452,7 @@ class mod_wordcards_external extends external_api
 
             // lets update the passage hash here before we save the item in db
             if ($needsupdating) {
-                if ($DB->update_record('wordcards_terms', $data)) {
+                if ($DB->update_record(constants::M_TERMSTABLE, $data)) {
                     // also update our passagehash update flag
                     $DB->update_record('wordcards', ['id' => $moduleinstance->id, 'hashisold' => 1]);
                     $ret->error = false;
@@ -584,7 +587,7 @@ class mod_wordcards_external extends external_api
         $params = self::validate_parameters(self::report_successful_association_parameters(), compact('termid'));
         extract($params);
 
-        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $termid], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
         self::validate_context($mod->get_context());
 
@@ -726,7 +729,7 @@ class mod_wordcards_external extends external_api
             ['termid' => $termid, 'prompt' => $prompt]
         );
 
-        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $termid], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
 
         // Make image generator

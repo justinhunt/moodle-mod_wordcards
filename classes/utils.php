@@ -724,7 +724,7 @@ class utils
         $terms = $DB->get_records(constants::M_TERMSTABLE, ['modid' => $modid]);
 
         // echo header row
-        $name = 'wordcards_terms';
+        $name = constants::M_TERMSTABLE;
         $quote = '"';
         $delim = ",";// "\t";
         $newline = "\r\n";

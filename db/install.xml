@@ -45,7 +45,7 @@
         <FIELD NAME="msoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" COMMENT="term or def in match select options"/>
         <FIELD NAME="sgoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="term or def as alien in space game"/>
         <FIELD NAME="scoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="term or modelsentence on wordcards"/>
-		<FIELD NAME="viewstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"/>
+		    <FIELD NAME="viewstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"/>
         <FIELD NAME="viewend" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="videoexamples" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="show video example on def page"/>
         <FIELD NAME="learnpoint" TYPE="int" LENGTH="10" NOTNULL="true"  DEFAULT="1" SEQUENCE="false"/>
@@ -78,6 +78,9 @@
         <FIELD NAME="deleted" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="phonetic" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Phonetic"/>
         <FIELD NAME="phoneticms" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Phonetic"/>
+        <FIELD NAME="imageversion" TYPE="int" LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="audioversion" TYPE="int" LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="modelaudioversion" TYPE="int" LENGTH="10" NOTNULL="true"  DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

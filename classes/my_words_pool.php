@@ -73,7 +73,7 @@ class my_words_pool {
            return true;
         }
         // Validate term exists.
-        if (!$DB->record_exists('wordcards_terms', ['id' => $termid])) {
+        if (!$DB->record_exists(constants::M_TERMSTABLE, ['id' => $termid])) {
             throw new \invalid_parameter_exception('Invalid term id ' . $termid);
         }
         return (bool) $DB->insert_record(

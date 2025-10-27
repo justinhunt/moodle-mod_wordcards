@@ -87,7 +87,7 @@ class restore_wordcards_activity_structure_step extends restore_activity_structu
 
         $data->modid = $this->get_new_parentid('wordcards');
 
-        $newitemid = $DB->insert_record('wordcards_terms', $data);
+        $newitemid = $DB->insert_record(constants::M_TERMSTABLE, $data);
         $this->set_mapping('wordcards_term', $oldid, $newitemid,true);
     }
 

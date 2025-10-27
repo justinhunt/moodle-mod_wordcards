@@ -238,7 +238,7 @@ function wordcards_reset_userdata($data)
         list($termssql, $termsparams) = $DB->get_in_or_equal($wordcards, SQL_PARAMS_NAMED);
 
         // Retrieve the terms.
-        $terms = $DB->get_fieldset_select('wordcards_terms', 'id', 'modid ' . $termssql, $termsparams);
+        $terms = $DB->get_fieldset_select(constants::M_TERMSTABLE, 'id', 'modid ' . $termssql, $termsparams);
         list($sql, $params) = $DB->get_in_or_equal($terms, SQL_PARAMS_NAMED);
 
 
@@ -623,7 +623,7 @@ function wordcards_output_fragment_mform($args)
     $mod = mod_wordcards_module::get_by_modid($moduleinstance->id);
 
     if ($args->itemid) {
-        $term = $DB->get_record('wordcards_terms', ['modid' => $moduleinstance->id, 'id' => $args->itemid], '*');
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['modid' => $moduleinstance->id, 'id' => $args->itemid], '*');
     } else {
         $term = false;
     }
