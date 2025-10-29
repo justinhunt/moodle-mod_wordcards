@@ -324,6 +324,6 @@ class constants {
     const M_PUSH_LCOPTIONS = 11;
     const M_PUSH_MSOPTIONS = 12;
     const M_PUSH_SGOPTIONS = 13;
-
+    const M_PUSH_IMAGEONFRONT = 14;
 
 }

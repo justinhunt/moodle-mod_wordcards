@@ -131,6 +131,9 @@ switch($action){
     case constants::M_PUSH_SGOPTIONS:
         $updatefields = ['sgoptions'];
         break;
+    case constants::M_PUSH_IMAGEONFRONT:
+        $updatefields = ['imageonfront'];
+        break;
     case constants::M_PUSH_NONE:
     default:
         $updatefields = [];

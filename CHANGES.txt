@@ -1,9 +1,11 @@
 1.3.85 (Build 2025102700)
 - Added image and audio version tracking for terms
 - Added better disambiguation for bulk image generation
+- Added image-on-front option to push page
 
 1.3.84 (Build 2025102300)
 - Improvements to conditional completion for learned words
+- Added setting to display images on the front of cards
 
 1.3.82 (Build 2025100500)
 - Improvements for new activity chooser (Moodle 5.1)

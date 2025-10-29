@@ -778,6 +778,7 @@ class renderer extends \plugin_renderer_base
             'lcoptions',
             'msoptions',
             'sgoptions',
+            'imageonfront'
         ];
 
         foreach ($pushthings as $pushthing) {
@@ -820,6 +821,9 @@ class renderer extends \plugin_renderer_base
                     break;
                 case 'msoptions':
                     $action = constants::M_PUSH_MSOPTIONS;
+                    break;
+                case 'imageonfront':
+                    $action = constants::M_PUSH_IMAGEONFRONT;
                     break;
 
             }
