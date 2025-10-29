@@ -675,7 +675,8 @@ class mod_wordcards_external extends external_api
         foreach ($terms as $term) {
             if (in_array($term->id, $termids)) {
                 // Make image prompt for each term.
-                $imageprompts[$term->id] = $imagegen->make_image_prompt($term);
+                // NB The DESCRIPTION: prefix, tells Poodll to first generate a detailed prompt (description) and then generate the image 
+                $imageprompts[$term->id] = 'DESCRIPTION: ' . $imagegen->make_image_prompt($term);
             }
         }
 

@@ -1,5 +1,6 @@
 1.3.85 (Build 2025102700)
 - Added image and audio version tracking for terms
+- Added better disambiguation for bulk image generation
 
 1.3.84 (Build 2025102300)
 - Improvements to conditional completion for learned words
