@@ -30,7 +30,7 @@ use mod_wordcards\utils;
  */
 class imagegen {
 
-    protected const DEFAULT_IMAGE_PROMPT = "An image suitable for a word/phrase learning flashcard, with no text that illustrates the following [[ttslanguage]] word/phrase: [[term]] ([[[deflanguage]]] translation: [[definition]])";
+    protected const DEFAULT_IMAGE_PROMPT = "An image suitable for a word/phrase learning flashcard, with no text that illustrates the following [[ttslanguage]] word/phrase: [[term]] (with the same meaning as the [[[deflanguage]]] translation: [[definition]])";
     protected $progressbar = false;
     protected $mod = false;
     protected $moduleinstance = false;
