@@ -1,3 +1,6 @@
+1.3.86 (Build 2026040200)
+- Fixed issue where already learned words were not shuffled into the pool in some cases
+
 1.3.85 (Build 2025102700)
 - Added image and audio version tracking for terms
 - Added better disambiguation for bulk image generation
