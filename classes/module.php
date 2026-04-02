@@ -437,6 +437,7 @@ class mod_wordcards_module
                 $records = $unlearnedrecords;
                 $extrarecordsneeded = $maxterms - count($records);
                 if (count($learnedrecords) >= $extrarecordsneeded) {
+                    shuffle($learnedrecords);
                     $records = array_merge($records, array_slice($learnedrecords, 0, $extrarecordsneeded));
                 } else {
                     $records = $allrecords;
