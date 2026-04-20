@@ -344,7 +344,7 @@ class mod_wordcards_module
                     $contextid = context_module::instance($thecm->id)->id;
                 }
                 $cachebuster = '?cb=' . $term->audioversion;
-                $term->audio = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id"  . $cachebuster;
+                $term->audio = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/audio/$term->id" . $cachebuster;
             }
 
             if ($term->model_sentence_audio) {
@@ -353,7 +353,7 @@ class mod_wordcards_module
                     $contextid = context_module::instance($thecm->id)->id;
                 }
                 $cachebuster = '?cb=' . $term->modelaudioversion;
-                $term->model_sentence_audio = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/model_sentence_audio/$term->id"  . $cachebuster;
+                $term->model_sentence_audio = "$CFG->wwwroot/pluginfile.php/$contextid/mod_wordcards/model_sentence_audio/$term->id" . $cachebuster;
             }
         }
         return $terms;
@@ -371,9 +371,11 @@ class mod_wordcards_module
                 $def->definition = format_text($def->definition);
             }
             // And then add a class for styling.
-            $def->definition = str_replace( '<div class="text_to_html">',
+            $def->definition = str_replace(
+                '<div class="text_to_html">',
                 '<div class="term-definition text_to_html">',
-                $def->definition);
+                $def->definition
+            );
         }
         return $terms;
     }

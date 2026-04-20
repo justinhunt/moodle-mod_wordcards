@@ -1,5 +1,5 @@
-define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/str','core/modal_events', 'mod_wordcards/a4e', 'mod_wordcards/cardactions'],
-    function($, Ajax, Notification,ModalFactory, str, ModalEvents, a4e, cardactions) {
+define(['jquery', 'core/ajax', 'core/notification','core/modal_save_cancel','core/str','core/modal_events', 'mod_wordcards/a4e', 'mod_wordcards/cardactions'],
+    function($, Ajax, Notification,ModalSaveCancel, str, ModalEvents, a4e, cardactions) {
   "use strict"; // jshint ;_;
 
   return {
@@ -165,8 +165,7 @@ define(['jquery', 'core/ajax', 'core/notification','core/modal_factory','core/st
         }
 
         //if its a reattempt, confirm and proceed
-          ModalFactory.create({
-              type: ModalFactory.types.SAVE_CANCEL,
+          ModalSaveCancel.create({
               title: that.strings.reattempttitle,
               body: that.strings.reattemptbody
           })

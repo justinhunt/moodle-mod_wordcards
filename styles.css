@@ -20,106 +20,112 @@
     }
 }
 
-  .show-back-side {
+.show-back-side {
     transform: rotateY(180deg);
-  }
+}
 
-  /* This container is needed to position the front and back side */
-  .flip-card-inner {
+/* This container is needed to position the front and back side */
+.flip-card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     text-align: center;
     transition: transform 0.8s;
     transform-style: preserve-3d;
-  }
-  
+}
+
 /* CSS flashcards animations */
 
-    .next-button-slide-is-leaving {
-        animation-name: nextButtonSlideIsLeavingAnimation;
-        animation-duration: .5s;
-        animation-timing-function: ease-in-out;
+.next-button-slide-is-leaving {
+    animation-name: nextButtonSlideIsLeavingAnimation;
+    animation-duration: .5s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes nextButtonSlideIsLeavingAnimation {
+    from {
+        transform: translate(100px);
+        opacity: 1;
     }
 
-    @keyframes nextButtonSlideIsLeavingAnimation {
-        from {
-            transform: translate(100px);
-            opacity: 1;
-        }
-        to {
-            transform: translate(-200px);
-            opacity: 0;
-        }
+    to {
+        transform: translate(-200px);
+        opacity: 0;
+    }
+}
+
+.next-button-slide-is-coming {
+    animation-name: nextButtonSlideIsComingAnimation;
+    animation-duration: .5s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes nextButtonSlideIsComingAnimation {
+    0% {
+        transform: translate(200px);
+        opacity: 0;
     }
 
-    .next-button-slide-is-coming {
-        animation-name: nextButtonSlideIsComingAnimation;
-        animation-duration: .5s;
-        animation-timing-function: ease-in-out;
+    50% {
+        transform: translate(200px);
+        opacity: 0;
     }
 
-    @keyframes nextButtonSlideIsComingAnimation {
-        0% {
-            transform: translate(200px);
-            opacity: 0;
-        }
-        50% {
-            transform: translate(200px);
-            opacity: 0;
-        }
-        100% {
-            transform: translate(-100px);
-            opacity: 1;
-        }
+    100% {
+        transform: translate(-100px);
+        opacity: 1;
     }
+}
 
 
-    .prev-button-slide-is-leaving {
-        animation-name: prevButtonSlideIsLeavingAnimation;
-        animation-duration: .5s;
-        animation-timing-function: ease-in-out;
+.prev-button-slide-is-leaving {
+    animation-name: prevButtonSlideIsLeavingAnimation;
+    animation-duration: .5s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes prevButtonSlideIsLeavingAnimation {
+    from {
+        transform: translate(0px);
+        opacity: 1;
     }
 
-    @keyframes prevButtonSlideIsLeavingAnimation {
-        from {
-            transform: translate(0px);
-            opacity: 1;
-        }
-        to {
-            transform: translate(200px);
-            opacity: 0;
-        }
+    to {
+        transform: translate(200px);
+        opacity: 0;
+    }
+}
+
+.prev-button-slide-is-coming {
+    animation-name: prevButtonSlideIsComingAnimation;
+    animation-duration: .5s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes prevButtonSlideIsComingAnimation {
+    0% {
+        transform: translate(-200px);
+        opacity: 0;
     }
 
-    .prev-button-slide-is-coming {
-        animation-name: prevButtonSlideIsComingAnimation;
-        animation-duration: .5s;
-        animation-timing-function: ease-in-out;
+    50% {
+        transform: translate(-200px);
+        opacity: 0;
     }
 
-    @keyframes prevButtonSlideIsComingAnimation {
-        0% {
-            transform: translate(-200px);
-            opacity: 0;
-        }
-        50% {
-            transform: translate(-200px);
-            opacity: 0;
-        }
-        100% {
-            transform: translate(100px);
-            opacity: 1;
-        }
+    100% {
+        transform: translate(100px);
+        opacity: 1;
     }
+}
 
-    .slide-is-hidden {
-        display: none;
-    }
+.slide-is-hidden {
+    display: none;
+}
 
-    .slide-is-visible {
-        display: block;
-    }
+.slide-is-visible {
+    display: block;
+}
 
 /* /End CSS flashcards animations */
 
@@ -162,17 +168,19 @@
 }
 
 
-  /* Position the front and back side */
-  .flip-card-front, .flip-card-back {
+/* Position the front and back side */
+.flip-card-front,
+.flip-card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
+    -webkit-backface-visibility: hidden;
+    /* Safari */
     backface-visibility: hidden;
-  }
-  
-  /* Style the front side (fallback if image is missing) */
-  .flip-card-front {
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
     border-radius: 4px;
     background: #FFF;
     box-shadow: 0px 1.3px 9px 0px rgba(14, 18, 61, 0.22);
@@ -182,16 +190,16 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: space-around;
-  }
+}
 
-  @media screen and (min-width:480px) {
+@media screen and (min-width:480px) {
     .flip-card-front {
         font-size: 26px;
     }
-  }
-  
-  /* Style the back side */
-  .flip-card-back {
+}
+
+/* Style the back side */
+.flip-card-back {
     transform: rotateY(180deg);
     border-radius: 4px;
     background: #FFF;
@@ -202,13 +210,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
+}
 
-  @media screen and (min-width:480px) {
+@media screen and (min-width:480px) {
     .flip-card-back {
         font-size: 26px;
     }
-  }
+}
 
 
 /* Definitions container subsection */
@@ -252,7 +260,7 @@ h3.list-of-words {
 }
 
 .path-mod-wordcards .definitions-container a.wordcards-my-words-action {
-    position: absolute;  
+    position: absolute;
     top: -8px;
     left: 11px;
     align-self: flex-end;
@@ -278,7 +286,7 @@ h3.list-of-words {
 
 @media screen and (min-width:600px) {
     .path-mod-wordcards .definitions-container .term-title {
-        margin-top: 0; 
+        margin-top: 0;
         margin-left: 36px;
     }
 }
@@ -486,7 +494,7 @@ h3.list-of-words {
 
 /* Term title. Where a right padding is kept to leave room for the tick. */
 
-.path-mod-wordcards .term-header  {
+.path-mod-wordcards .term-header {
     font-weight: bold;
     border-bottom: 1px solid #ccc;
     /* Separator between title and body. */
@@ -568,8 +576,7 @@ h3.list-of-words {
 
 /* The term body, where the definition will be displayed. */
 
-.path-mod-wordcards .term-body {
-}
+.path-mod-wordcards .term-body {}
 
 /* Various classes for the appearance of the tick. */
 
@@ -593,7 +600,7 @@ h3.list-of-words {
     display: none;
 }
 
-.path-mod-wordcards .term-loading .term-tick > * {
+.path-mod-wordcards .term-loading .term-tick>* {
     /* Hide all the children. */
     display: none;
 }
@@ -690,8 +697,7 @@ h3.list-of-words {
     display: none;
 }
 
-.path-mod-wordcards .wordcards_timer_time {
-}
+.path-mod-wordcards .wordcards_timer_time {}
 
 /**
  * Students navigate through tabs which look like arrows.
@@ -729,7 +735,7 @@ h3.list-of-words {
     border-left: 12px solid #ccc;
     /* Color for disabled tab. */
     position: absolute;
-    right: -12px;
+    right: -11px;
     top: 0;
     z-index: 1;
 }
@@ -872,11 +878,13 @@ h3.list-of-words {
     margin-left: auto;
     margin-right: auto;
 }
+
 .mod_wordcards_cancelattempt_cont {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }
+
 .mod_wordcards_cancelattempt_cont .cancel_attempt_button {
     max-width: 250px;
     /* float: right; */
@@ -922,6 +930,7 @@ h3.list-of-words {
     justify-content: center;
     box-sizing: content-box;
 }
+
 #wordcards-vocab-list {
     max-width: 1200px;
     margin-left: auto;
@@ -935,7 +944,7 @@ h3.list-of-words {
 }
 
 .a4e-prompt-img {
-   /* position: absolute; */
+    /* position: absolute; */
     left: 10px;
     top: 10px;
     bottom: 0;
@@ -1185,8 +1194,7 @@ h3.list-of-words {
     background-color: green;
 }
 
-.wordcards-speechcards_button {
-}
+.wordcards-speechcards_button {}
 
 .wordcards_loading {
     text-align: center;
@@ -1241,6 +1249,7 @@ h3.list-of-words {
     text-align: center;
     font-size: 30px;
 }
+
 /*
 #container {
     margin-top: 10px;
@@ -1324,49 +1333,57 @@ h3.list-of-words {
     margin-top: 10px;
     margin-bottom: 10px;
 }
- /* flashcards_mode style start */
- 
+
+/* flashcards_mode style start */
+
 .ProgressBar {
-  margin: 0 auto;
-  padding: 2em 0 3em;
-  list-style: none;
-  position: relative;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: justify;
-          justify-content: space-between;
-	width: 37%;	  
+    margin: 0 auto;
+    padding: 2em 0 3em;
+    list-style: none;
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    width: 37%;
 }
 
 .ProgressBar-step {
-  text-align: center;
-  position: relative;
-  width: 100%;
-  margin-left:3%;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    margin-left: 3%;
 }
-.ProgressBar-step:before, .ProgressBar-step:after {
-  content: "";
-  height: 0.5em;
-  /*background-color: #9F9FA3;*/
-  position: absolute;
-  z-index: 1;
-  width: 100%;
-  left: -50%;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
-  -webkit-transition: all .25s ease-out;
-  transition: all .25s ease-out;
-}
-.ProgressBar-step:first-child:before, .ProgressBar-step:first-child:after {
-  display: none;
-}
+
+.ProgressBar-step:before,
 .ProgressBar-step:after {
- /* background-color: #00637C;*/
-  width: 0%;
+    content: "";
+    height: 0.5em;
+    /*background-color: #9F9FA3;*/
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    left: -50%;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    -webkit-transition: all .25s ease-out;
+    transition: all .25s ease-out;
 }
-.ProgressBar-step.is-complete + .ProgressBar-step.is-current:after, .ProgressBar-step.is-complete + .ProgressBar-step.is-complete:after {
-  width: 100%;
+
+.ProgressBar-step:first-child:before,
+.ProgressBar-step:first-child:after {
+    display: none;
+}
+
+.ProgressBar-step:after {
+    /* background-color: #00637C;*/
+    width: 0%;
+}
+
+.ProgressBar-step.is-complete+.ProgressBar-step.is-current:after,
+.ProgressBar-step.is-complete+.ProgressBar-step.is-complete:after {
+    width: 100%;
 }
 
 .ProgressBar-icon {
@@ -1374,7 +1391,7 @@ h3.list-of-words {
     height: 1.5em;
     /* background-color: #9F9FA3; */
     /* fill: #9F9FA3; */
-	cursor: pointer;
+    cursor: pointer;
     border-radius: 50%;
     border: 1px solid;
     padding: 0.5em;
@@ -1384,39 +1401,43 @@ h3.list-of-words {
     -webkit-transition: all .25s ease-out;
     transition: all .25s ease-out;
 }
+
 .is-current .ProgressBar-icon {
     fill: #4f544f;
     background-color: #4f544f;
 }
+
 .is-complete .ProgressBar-icon {
- fill: #008000;
-  background-color: #008000;
+    fill: #008000;
+    background-color: #008000;
 }
 
 .ProgressBar-stepLabel {
-  display: block;
-  text-transform: uppercase;
-  color: #9F9FA3;
-  position: absolute;
-  padding-top: 0.5em;
-  width: 100%;
-  -webkit-transition: all .25s ease-out;
-  transition: all .25s ease-out;
+    display: block;
+    text-transform: uppercase;
+    color: #9F9FA3;
+    position: absolute;
+    padding-top: 0.5em;
+    width: 100%;
+    -webkit-transition: all .25s ease-out;
+    transition: all .25s ease-out;
 }
-.is-current > .ProgressBar-stepLabel, .is-complete > .ProgressBar-stepLabel {
-  color: #00637C;
+
+.is-current>.ProgressBar-stepLabel,
+.is-complete>.ProgressBar-stepLabel {
+    color: #00637C;
 }
 
 .wrapper_pr {
-  max-width: 100%;
-  /* margin: 4em auto; */
-  font-size: 16px;
+    max-width: 100%;
+    /* margin: 4em auto; */
+    font-size: 16px;
 }
- 
+
 .definition_flashcards_ul li {
-   list-style: none;
+    list-style: none;
 }
-   
+
 .df_fl_control {
     display: flex;
     width: 100%;
@@ -1427,11 +1448,11 @@ h3.list-of-words {
 }
 
 @media screen and (min-width:480px) {
-    .df_fl_control{
+    .df_fl_control {
         top: 50%;
     }
 }
-   
+
 .df_fl_control a {
     font-size: 35px;
     color: #e2510c;
@@ -1540,22 +1561,26 @@ ul.definition_flashcards_ul {
     margin-top: -48px;
     padding: 0;
 }
+
 .df_fl_control button:focus {
     outline: unset !important;
 }
+
 .mb_nav {
     text-align: center;
 }
-.add_opacity_level{
-	opacity: 0.6;
+
+.add_opacity_level {
+    opacity: 0.6;
 }
 
-.add_wraper_handle_im{
-	margin-top: 5%;
-	width: 100% !important;
+.add_wraper_handle_im {
+    margin-top: 5%;
+    width: 100% !important;
 }
-.add_wraper_handle{
-	width: 100% !important;
+
+.add_wraper_handle {
+    width: 100% !important;
 }
 
 
@@ -1590,14 +1615,17 @@ ul.definition_flashcards_ul {
     margin: 10px;
 
 }
+
 .mod_wordcards_center {
     text-align: center;
 }
+
 .mod_wordcards_ww_label {
     display: inline-block;
     /* width: 50px;*/
     /* text-align: right; */
 }
+
 .mod_wordcards_ww_onesense {
     border: 1px solid grey;
     border-radius: 3px;
@@ -1613,18 +1641,20 @@ ul.definition_flashcards_ul {
     width: 100%;
     max-width: 400px;
 }
+
 .mod_wordcards_ww_modelsentence {
     width: 100%;
     max-width: 600px;
 }
+
 .mod_wordcards_ww_fieldset {
     margin: 20px;
     padding: 10px;
 }
 
 .definition_flashcards a.wordcards-my-words-action {
-    position: absolute;  
-    top: -2px;  
+    position: absolute;
+    top: -2px;
 }
 
 .flip-card-front a.wordcards-my-words-action {
@@ -1640,6 +1670,7 @@ a.wordcards-my-words-action.disabled i.fa-check {
     /*If the btn-outline-primary class is applied so the button is in the "Add" state (show plus icon only). */
     display: none;
 }
+
 a.wordcards-my-words-action.btn-primary i.fa-plus,
 a.wordcards-my-words-action.disabled i.fa-plus {
     /*In this case the btn-outline-primary class is applied so the button is in the "Remove" state (show check icon only). */
@@ -1719,16 +1750,16 @@ a.wordcards-my-words-action.disabled i.fa-plus {
     background-color: transparent;
 }
 
-#my-words.btn-outline-primary:focus, 
+#my-words.btn-outline-primary:focus,
 #my-words.btn-outline-primary.focus,
-#my-words.btn-primary:focus, 
+#my-words.btn-primary:focus,
 #my-words.btn-primary.focus {
     outline: 0.2rem solid transparent;
     box-shadow: inset 0 0 0 2px transparent;
 }
 
-#my-words.btn-outline-primary:not(:disabled):not(.disabled):active, 
-#my-words.btn-outline-primary:not(:disabled):not(.disabled).active, 
+#my-words.btn-outline-primary:not(:disabled):not(.disabled):active,
+#my-words.btn-outline-primary:not(:disabled):not(.disabled).active,
 .show>#my-words.btn-outline-primary.dropdown-toggle {
     background-color: transparent;
 }
@@ -1737,9 +1768,11 @@ a.wordcards-my-words-action.disabled i.fa-plus {
 a.wordcards-my-words-action i.fa-spinner {
     display: none;
 }
-a.wordcards-my-words-action.disabled i.fa-spinner{
+
+a.wordcards-my-words-action.disabled i.fa-spinner {
     display: inline-block;
 }
+
 .btn.wordcards-my-words-action {
     font-weight: normal;
     font-size: 0.7em;
@@ -1747,18 +1780,20 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
     border-radius: 3px;
     margin-left: 5px;
 }
+
 .mod_wordcards_freemode #results-inner .wordcards-my-words-action.btn.btn-primary,
 .mod_wordcards_freemode #results-inner .wordcards-my-words-action.btn.btn-outline-primary {
     margin-top: 3px;
 }
+
 .mod_wordcards_item_rating {
 
-    margin-top:12px;
+    margin-top: 12px;
 }
 
 .wordcards_actionbutton a.btn {
     min-width: 150px;
-    margin-top:8px;
+    margin-top: 8px;
 }
 
 @media screen and (max-width:480px) {
@@ -1766,7 +1801,8 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
         max-width: 100%;
     }
 }
-@media screen and (max-width:922px){
+
+@media screen and (max-width:922px) {
     .mod_wordcards_step_rating img {
         max-width: 16px;
     }
@@ -1775,27 +1811,31 @@ a.wordcards-my-words-action.disabled i.fa-spinner{
 .mod_wordcards_skeleton_box {
     background-color: #DDDBDD;
     color: grey;
-    -webkit-mask: linear-gradient(-60deg,#000 30%,#0005,#000 70%) right/300% 100%;
+    -webkit-mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
     background-repeat: no-repeat;
     animation: wordcardsshimmer 2.5s infinite;
     width: 100%;
     height: 100px;
 
 }
+
 @keyframes wordcardsshimmer {
-    100% {-webkit-mask-position:left}
+    100% {
+        -webkit-mask-position: left
+    }
 }
 
-.mod_wordcards_activity_header .pull-right, .term-wrapper .pull-right {
+.mod_wordcards_activity_header .pull-right,
+.term-wrapper .pull-right {
     float: right;
 }
 
 /* Limit page width following Moodle4 default heading sizes */
 
-#page-mod-wordcards-view #region-main-box{
-     max-width: 1000px; 
-     margin-left: auto; 
-     margin-right: auto; 
+#page-mod-wordcards-view #region-main-box {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 button.definitions-next.btn {
@@ -1803,7 +1843,7 @@ button.definitions-next.btn {
     font-size: 16px;
     color: #FFF;
     background: #6F58DE;
-    box-shadow: 0 4px 14px rgba(0,0,0,.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .15);
     border-radius: 6px;
     padding: 14px 36px;
 }
@@ -1839,7 +1879,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 
 @media screen and (min-width:600px) {
     .retrieval-buttons {
-        width: 356px;   
+        width: 356px;
     }
 }
 
@@ -1857,6 +1897,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 .retrieve-video.isselected {
     background-color: #CCCCCC;
 }
+
 .retrieve-video.isselected.video-selected {
     background-color: unset;
     background-image: url([[pix:mod_wordcards|retrieve-image-icon]]);
@@ -2005,36 +2046,44 @@ button.definitions-next.btn .fa-arrow-right:before {
 .definitions-container .term-modelsentence-small:active {
     background-color: #c7cbf0;
 }
+
 /*space game */
 .path-mod-wordcards div.fontloader {
     visibility: hidden;
     font-family: 'Audiowide', Sans;
 }
+
 .path-mod-wordcards #mod_wordcards_spacegame {
     background-color: #000;
     width: 100%;
     height: 100%;
 }
+
 .quizgame-scores {
     text-align: center;
 }
+
 .floating-button-container {
     background: #fff;
     border: 0.5rem solid #fff;
 }
+
 .floating-game-canvas {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 999999;
 }
+
 #page-mod-wordcards-view div[role="main"] {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
+
 @media (min-width: 768px) {
+
     /* on ipad air 75% would cause main area to wrap .. 74% seems to work */
     .col-md-9.wordcards-freemode-mainstage {
         max-width: 74%;
@@ -2052,8 +2101,10 @@ button.definitions-next.btn .fa-arrow-right:before {
 .learned-progress-fill {
     width: 0;
     height: 100%;
-    background-color: #5560F3; /* Set the color of the progress */
-    transition: width 0.3s ease; /* Add a smooth transition effect */
+    background-color: #5560F3;
+    /* Set the color of the progress */
+    transition: width 0.3s ease;
+    /* Add a smooth transition effect */
 }
 
 .definition_as_header {
@@ -2071,7 +2122,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     margin: 10px;
 }
 
-.wordcards_reportsmenu_itembutton button{
+.wordcards_reportsmenu_itembutton button {
     height: 80px;
     width: 150px;
 }
@@ -2079,13 +2130,16 @@ button.definitions-next.btn .fa-arrow-right:before {
 .wordcards-speechcards-speaker-icon {
     text-align: center;
 }
+
 .definition-as-header {
     flex: 1;
 }
+
 #wordcards-export-delim {
     margin-top: 10px;
     max-width: 150px;
 }
+
 .wordcards_selectedpoolnowords {
     max-width: 500px;
     margin-top: 50px;
@@ -2094,13 +2148,16 @@ button.definitions-next.btn .fa-arrow-right:before {
     padding: 20px;
     border: 1px, grey, solid;
 }
+
 .wordcards_deflang_chooser {
     float: right;
     padding: 5px;
 }
+
 .mod_wordcards_manybuttonsmenu_item {
     max-width: 800px;
 }
+
 /* Words Preview Self Selector Switch */
 .wc_selfselector {
     position: relative;
@@ -2139,19 +2196,19 @@ button.definitions-next.btn .fa-arrow-right:before {
     border-radius: 50%;
 }
 
-.wc_selfselector input[data-learned="true"]:checked + .slider {
+.wc_selfselector input[data-learned="true"]:checked+.slider {
     background-color: #2196F3;
 }
 
-.wc_selfselector input:checked + .slider {
+.wc_selfselector input:checked+.slider {
     background-color: #0b9f5f;
 }
 
-.wc_selfselector input:checked + .slider:before {
+.wc_selfselector input:checked+.slider:before {
     transform: translateX(14px);
 }
 
-.wc_selfselector  {
+.wc_selfselector {
     display: flex;
     flex-direction: column;
     align-self: auto;
@@ -2165,6 +2222,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     line-height: 1.2;
     padding-left: 5px;
 }
+
 /* WordCards Image Maker */
 .mod-wordcards-imagemaker-overlay {
     position: absolute;
@@ -2196,8 +2254,10 @@ button.definitions-next.btn .fa-arrow-right:before {
 }
 
 .mod-wordcards-imagemaker-spinner-style {
-    width: 3rem !important; /* stylelint-disable-line declaration-no-important */
-    height: 3rem !important; /* stylelint-disable-line declaration-no-important */
+    width: 3rem !important;
+    /* stylelint-disable-line declaration-no-important */
+    height: 3rem !important;
+    /* stylelint-disable-line declaration-no-important */
     color: #0f6cbf;
     z-index: 1000;
 }
@@ -2226,13 +2286,13 @@ button.definitions-next.btn .fa-arrow-right:before {
 .mod-wordcards-imagemaker-fa-image {
     height: 100%;
     width: 100%;
-   /* background-image: url('[[pix:mod_wordcards|sparkles-image]]'); */
+    /* background-image: url('[[pix:mod_wordcards|sparkles-image]]'); */
     background-repeat: no-repeat;
     background-position: center;
     background-color: rgba(255, 255, 255, 0.5);
     background-blend-mode: lighten;
     background-size: 100px 100px;
-    
+
 }
 
 .mod-wordcards-imagemaker-toggle-container {
@@ -2242,9 +2302,11 @@ button.definitions-next.btn .fa-arrow-right:before {
     justify-content: center;
     align-items: center;
 }
+
 .mod-wordcards-imagemaker-toggle-switch {
     display: none;
 }
+
 .mod-wordcards-imagemaker-toggle-slider {
     width: 100%;
     display: flex;
@@ -2255,6 +2317,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     padding: 2px;
     border: 1px solid #aaa;
 }
+
 .mod-wordcards-imagemaker-toggle-slider span {
     width: 50%;
     text-align: center;
@@ -2263,11 +2326,13 @@ button.definitions-next.btn .fa-arrow-right:before {
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
 }
-.mod-wordcards-imagemaker-toggle-switch:checked + .mod-wordcards-imagemaker-toggle-slider .mod-wordcards-imagemaker-slider-right {
+
+.mod-wordcards-imagemaker-toggle-switch:checked+.mod-wordcards-imagemaker-toggle-slider .mod-wordcards-imagemaker-slider-right {
     background-color: #007bff;
     color: white;
 }
-.mod-wordcards-imagemaker-toggle-switch:not(:checked) + .mod-wordcards-imagemaker-toggle-slider .mod-wordcards-imagemaker-slider-left {
+
+.mod-wordcards-imagemaker-toggle-switch:not(:checked)+.mod-wordcards-imagemaker-toggle-slider .mod-wordcards-imagemaker-slider-left {
     background-color: #007bff;
     color: white;
 }
@@ -2275,6 +2340,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 .mod-wordcards-imagemaker-aspect-ratio-container {
     display: flex;
 }
+
 .mod-wordcards-imagemaker-aspect-ratio-btn {
     position: relative;
     width: 100px;
@@ -2289,21 +2355,26 @@ button.definitions-next.btn .fa-arrow-right:before {
     align-items: center;
     transition: background-color 0.3s, border-color 0.3s;
 }
+
 .mod-wordcards-imagemaker-aspect-ratio-btn i {
     font-size: 30px;
     margin-bottom: 5px;
 }
+
 .mod-wordcards-imagemaker-aspect-ratio-btn span {
     font-size: 14px;
 }
+
 .mod-wordcards-imagemaker-aspect-ratio-btn input[type="radio"] {
     display: none;
 }
-.mod-wordcards-imagemaker-aspect-ratio-btn input[type="radio"]:checked + .mod-wordcards-imagemaker-aspect-ratio-label {
+
+.mod-wordcards-imagemaker-aspect-ratio-btn input[type="radio"]:checked+.mod-wordcards-imagemaker-aspect-ratio-label {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
 }
+
 .mod-wordcards-imagemaker-aspect-ratio-label {
     width: 100%;
     height: 100%;
@@ -2317,7 +2388,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 }
 
 .mod-wordcards-imagemaker-image-display-container {
-   /* position: absolute; */
+    /* position: absolute; */
     top: 0;
     left: 0;
     width: 100%;
@@ -2330,6 +2401,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     max-height: 100%;
     object-fit: contain;
 }
+
 .mod_wordcards_form_imagegen .col-form-label {
     max-width: 10px;
 }
@@ -2362,17 +2434,20 @@ button.definitions-next.btn .fa-arrow-right:before {
 .path-mod-wordcards .definition_flashcards .flip-card .flip-card-front .term-image {
     height: 200px;
 }
+
 .definition_flashcards .term-modelsentence.compact-modelsentence {
     margin-top: 3px;
     margin-left: 8px;
     margin-right: 8px;
     padding: 20px;
 }
+
 @media screen and (min-width: 600px) {
     .definition_flashcards .term-modelsentence.compact-modelsentence {
         padding: 20px;
     }
 }
+
 #card-audio.compact-audio {
     margin-bottom: 8px;
 }
@@ -2389,10 +2464,12 @@ button.definitions-next.btn .fa-arrow-right:before {
 .wordfish-grid-item {
     position: relative;
     width: 100%;
-    padding-top: 100%;          /* makes it square (height = width) */
-    background-color: #f8f9fa;  /* light Bootstrap gray */
+    padding-top: 100%;
+    /* makes it square (height = width) */
+    background-color: #f8f9fa;
+    /* light Bootstrap gray */
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     text-align: center;
     color: #333;
@@ -2405,7 +2482,7 @@ button.definitions-next.btn .fa-arrow-right:before {
 }
 
 /* Using flex centering inside the square */
-.wordfish-grid-item > * {
+.wordfish-grid-item>* {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -2423,6 +2500,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
+
 .wc-progressdash-grid .row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(301px, 1fr));
@@ -2431,6 +2509,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     margin-left: 0;
     margin-right: 0;
 }
+
 .wc-progressdash-grid .row .col-12 {
     background: white;
     border-radius: 12px;
@@ -2439,10 +2518,12 @@ button.definitions-next.btn .fa-arrow-right:before {
     transition: transform 0.2s, box-shadow 0.2s;
     width: auto;
 }
+
 .wc-progressdash-grid .row .col-12:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
 }
+
 .wc-progressdash-grid .wc-progressdash-grid-label {
     font-size: 0.875rem;
     font-weight: 600;
@@ -2451,16 +2532,19 @@ button.definitions-next.btn .fa-arrow-right:before {
     letter-spacing: 0.5px;
     margin-bottom: 1rem;
 }
+
 .wc-progressdash-grid .wc-progressdash-grid-item {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
 .wc-progressdash-grid .wc-progressdash-grid-item .wordcardsdashboard_deflang_chooser {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
 .wc-progressdash-grid .wc-progressdash-grid-item .wordcardsdashboard_deflang_chooser .menumydefs_lang {
     padding: 0.75rem;
     border: 2px solid #e2e8f0;
@@ -2471,7 +2555,8 @@ button.definitions-next.btn .fa-arrow-right:before {
     cursor: pointer;
     transition: border-color 0.2s;
 }
-.wc-progressdash-grid .wc-progressdash-grid-item .wordcardsdashboard_deflang_chooser .menumydefs_lang + button {
+
+.wc-progressdash-grid .wc-progressdash-grid-item .wordcardsdashboard_deflang_chooser .menumydefs_lang+button {
     padding: 0.75rem 1.5rem;
     background-color: #e2e8f0;
     border: none;
@@ -2483,28 +2568,33 @@ button.definitions-next.btn .fa-arrow-right:before {
     transition: background-color 0.2s;
     text-transform: capitalize;
 }
+
 .wc-progressdash-grid .wc-progressdash-grid-item ul {
     list-style: none;
     padding-left: 0;
 }
-.wc-progressdash-grid .wc-progressdash-grid-item ul > li {
+
+.wc-progressdash-grid .wc-progressdash-grid-item ul>li {
     padding: 0.3rem 0;
     color: #475569;
     font-size: 0.95rem;
     border-bottom: 1px solid #f1f5f9;
 }
-.wc-progressdash-grid .wc-progressdash-grid-item ul > li::before {
+
+.wc-progressdash-grid .wc-progressdash-grid-item ul>li::before {
     content: "•";
     color: #3b82f6;
     font-weight: bold;
     margin-right: 0.75rem;
 }
+
 .wc-progressdash-grid .wc-progressdash-grid-item a {
     color: #3b82f6;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s;
 }
+
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item {
     width: 140px;
     height: 140px;
@@ -2519,6 +2609,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     font-weight: 500;
     --progress: 0%;
 }
+
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item::before {
     content: '';
     position: absolute;
@@ -2528,6 +2619,7 @@ button.definitions-next.btn .fa-arrow-right:before {
     background: conic-gradient(#3b82f6 var(--progress), #e2e8f0 var(--progress));
     transition: background 0.3s ease;
 }
+
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item::after {
     content: '';
     position: absolute;
@@ -2537,12 +2629,14 @@ button.definitions-next.btn .fa-arrow-right:before {
     background: white;
     z-index: 1;
 }
+
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item .wc-pg-upperno {
     font-size: 2rem;
     font-weight: 700;
     color: #3b82f6;
     border-bottom: 1px solid #9483b8;
 }
+
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item .wc-pg-upperno,
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item .wc-pg-lowerno {
     z-index: 2;
