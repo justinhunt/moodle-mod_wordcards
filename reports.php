@@ -199,6 +199,22 @@ switch ($showreport) {
         $formdata->modulecontextid = $modulecontext->id;
         break;
 
+    case 'sitelearned':
+        $report = new \mod_wordcards\local\report\sitelearned();
+        $formdata = new stdClass();
+        $formdata->modid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
+
+    case 'siteuserlearned':
+        $report = new \mod_wordcards\local\report\siteuserlearned();
+        $formdata = new stdClass();
+        $formdata->modid = $moduleinstance->id;
+        $formdata->userid = $userid;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->cmid = $cm->id;
+        break;
+
 
     case 'grades':
         $report = new \mod_wordcards\local\report\grades();
