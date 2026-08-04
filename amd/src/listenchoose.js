@@ -85,6 +85,40 @@ define([
         app.check($(this).data('correct'), this);
       });
 
+      $("body").on('keydown', '.a4e-distractor', function(e) {
+        if (e.key !== "Enter" && e.key !== " ") {
+          return;
+        }
+        e.preventDefault();
+        //pointer-events:none does not block the keyboard, so check the lock class
+        if ($(this).closest('.a4e-distractors').hasClass('a4e-click-disabled')) {
+          return;
+        }
+        app.check($(this).data('correct'), this);
+      });
+
+      //pressing 1-9 selects the matching numbered option
+      $("body").on('keydown', function(e) {
+        if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
+          return;
+        }
+        if ($(e.target).is('input, textarea, select')) {
+          return;
+        }
+        if (e.key < '1' || e.key > '9' || e.key.length !== 1) {
+          return;
+        }
+        var distractors = $('.a4e-distractors');
+        if (distractors.length === 0 || !distractors.is(':visible') || distractors.hasClass('a4e-click-disabled')) {
+          return;
+        }
+        var option = distractors.find(".a4e-distractor[data-optionindex='" + (parseInt(e.key, 10) - 1) + "']");
+        if (option.length > 0) {
+          e.preventDefault();
+          option.trigger('click');
+        }
+      });
+
       $('body').on('click', '#wordcards-start-button', function() {
         app.start();
       });
@@ -262,7 +296,7 @@ define([
          var label= o['definition'];
         }
         //
-        options.push('<li data-id="' + term_id + '" data-correct="' + is_correct.toString() + '" class="list-group-item a4e-distractor a4e-noselect">' + label + '</li>');
+        options.push('<li data-id="' + term_id + '" data-correct="' + is_correct.toString() + '" data-optionindex="' + i + '" tabindex="0" role="button" class="list-group-item a4e-distractor a4e-noselect"><span class="a4e-option-number" aria-hidden="true">' + (i + 1) + '</span><div class="a4e-option-label" dir="auto">' + label + '</div></li>');
       });
       var code = '<ul class="list-group a4e-distractors">' + options.join('') + '</ul>';
       return code;
