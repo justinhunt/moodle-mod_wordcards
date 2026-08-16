@@ -33,6 +33,7 @@ namespace mod_wordcards\output;
 use mod_wordcards\my_words_pool;
 use mod_wordcards\utils;
 use mod_wordcards\constants;
+use mod_wordcards\cbcredentials;
 
 class renderer extends \plugin_renderer_base
 {
@@ -487,23 +488,13 @@ class renderer extends \plugin_renderer_base
         $apisecret = get_config(constants::M_COMPONENT, 'apisecret');
         $region = get_config(constants::M_COMPONENT, 'awsregion');
 
-        // check user has entered api credentials
-        if (empty($apiuser) || empty($apisecret)) {
-            $errormessage = get_string(
-                'nocredentials',
-                constants::M_COMPONENT,
-                $CFG->wwwroot . constants::M_PLUGINSETTINGS
-            );
-            return ($this->show_problembox($errormessage));
-        } else {
-            $token = utils::fetch_token($apiuser, $apisecret);
-
-            // check token authenticated and no errors in it
-            $errormessage = utils::fetch_token_error($token);
-            if (!empty($errormessage)) {
-                return ($this->show_problembox($errormessage));
-            }
+        // Check the user has entered api credentials, and that Cloud Poodll accepts them.
+        // Administrators get an in page setup panel, everybody else is told who to ask.
+        $errormessage = cbcredentials::credentials_error();
+        if (!empty($errormessage)) {
+            return $this->show_cbcredentials_setup($this->page->url, $errormessage);
         }
+        $token = utils::fetch_token($apiuser, $apisecret);
 
         // ok we now have a token and can continue to set up the cards
         $widgetid = \html_writer::random_id();
@@ -739,6 +730,25 @@ class renderer extends \plugin_renderer_base
         $output .= $this->notification($msg, 'warning');
         $output .= $this->output->box_end();
         return $output;
+    }
+
+    /**
+     * Return HTML to let an administrator sort out the Poodll API credentials without leaving the page.
+     *
+     * @param \moodle_url|string $returnurl where to send the administrator after saving
+     * @param string $errormessage what is currently wrong with the credentials, if anything
+     * @return string HTML
+     */
+    public function show_cbcredentials_setup($returnurl, $errormessage = '')
+    {
+        if (cbcredentials::can_manage()) {
+            return $this->render_from_template(
+                constants::M_COMPONENT . '/cbcredentialspanel',
+                cbcredentials::export_panel_data($returnurl, $errormessage)
+            );
+        }
+        // Users who cannot fix it get no technical detail, just who to ask.
+        return $this->show_problembox(get_string('cbaskadmin', constants::M_COMPONENT));
     }
 
     /*

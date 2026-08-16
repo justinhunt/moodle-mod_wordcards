@@ -172,6 +172,16 @@ if($config->animations == constants::M_ANIM_FANCY) {
 
 $renderer = $PAGE->get_renderer('mod_wordcards');
 
+// Without working Poodll API credentials this activity cannot run. Administrators get an in page
+// setup panel, everybody else gets an explanation.
+$credentialserror = $embed == 0 ? \mod_wordcards\cbcredentials::credentials_error() : '';
+if (!empty($credentialserror)) {
+    echo $renderer->header();
+    echo $renderer->show_cbcredentials_setup($PAGE->url, $credentialserror);
+    echo $renderer->footer();
+    die;
+}
+
 echo $renderer->header();
 //Do we still need this?
 $heading = $renderer->heading($pagetitle, 3, 'main');

@@ -48,46 +48,11 @@ if ($ADMIN->fulltree) {
         $show_below_apisecret = $tokeninfo;
         // If we have no API user and secret we show a "fetch from elsewhere on site" or "take a free trial" link.
     } else {
-        $amddata = ['apppath' => $CFG->wwwroot . '/' . constants::M_URL];
-        $cp_components = [
-            'filter_poodll',
-            'qtype_cloudpoodll',
-            'mod_readaloud',
-            'mod_solo',
-            'mod_minilesson',
-            'mod_englishcentral',
-            'mod_pchat',
-            'atto_cloudpoodll',
-            'tinymce_cloudpoodll',
-            'assignsubmission_cloudpoodll',
-            'assignfeedback_cloudpoodll',
-            'tiny_poodll'
-        ];
-        foreach ($cp_components as $cp_component) {
-            switch ($cp_component) {
-                case 'filter_poodll':
-                    $apiusersetting = 'cpapiuser';
-                    $apisecretsetting = 'cpapisecret';
-                    break;
-                case 'mod_englishcentral':
-                    $apiusersetting = 'poodllapiuser';
-                    $apisecretsetting = 'poodllapisecret';
-                    break;
-                default:
-                    $apiusersetting = 'apiuser';
-                    $apisecretsetting = 'apisecret';
-            }
-            $cloudpoodll_apiuser = get_config($cp_component, $apiusersetting);
-            if (!empty($cloudpoodll_apiuser)) {
-                $cloudpoodll_apisecret = get_config($cp_component, $apisecretsetting);
-                if (!empty($cloudpoodll_apisecret)) {
-                    $amddata['apiuser'] = $cloudpoodll_apiuser;
-                    $amddata['apisecret'] = $cloudpoodll_apisecret;
-                    break;
-                }
-            }
-        }
-        $show_below_apisecret = $OUTPUT->render_from_template(constants::M_COMPONENT . '/managecreds', $amddata);
+        $amddata = \mod_wordcards\cbcredentials::export_buttons_data(
+            '#id_s_mod_wordcards_apiuser',
+            '#id_s_mod_wordcards_apisecret'
+        );
+        $show_below_apisecret = $OUTPUT->render_from_template(constants::M_COMPONENT . '/cbmanagecreds', $amddata);
     }
 
     $settings->add(new admin_setting_configtext(

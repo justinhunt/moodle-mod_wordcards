@@ -44,6 +44,11 @@ class constants {
     const M_MYWORDSTABLE = 'wordcards_my_words';
 
     const M_PLUGINSETTINGS = '/admin/settings.php?section=modsettingwordcards';
+
+    // Chargebee details for the in-app free trial (see fetchcbpage.php).
+    const M_CB_SITE = 'poodllcom';
+    const M_CB_TRIAL_PRICEID = 'Poodll-Free-Trial-USD-Daily';
+
     const M_DEFLANG_OTHER = 'zz';
     const M_FRONTFACEFLIP_DEF = 0;
     const M_FRONTFACEFLIP_TERM = 1;

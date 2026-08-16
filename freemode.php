@@ -74,6 +74,19 @@ if ($mod->get_mod()->foriframe == 1 || $embed == 1) {
     $PAGE->set_pagelayout('incourse');
 }
 
+// Without working Poodll API credentials this activity cannot run. Administrators get an in page
+// setup panel, everybody else gets an explanation. This is checked before the activity data is
+// prepared, because preparing it needs a Cloud Poodll token.
+$credentialserror = $embed == 0 ? \mod_wordcards\cbcredentials::credentials_error() : '';
+if (!empty($credentialserror)) {
+    $PAGE->set_heading(format_string($course->fullname, true));
+    $PAGE->set_title(format_string($mod->get_mod()->name, true));
+    echo $renderer->header();
+    echo $renderer->show_cbcredentials_setup($PAGE->url, $credentialserror);
+    echo $renderer->footer();
+    die;
+}
+
 $templateable = new \mod_wordcards\output\freemode($cm, $course, $practicetype, $wordpool);
 $templatedata = $templateable->export_for_template($renderer);
 $PAGE->navbar->add($templatedata->pagetitle, $PAGE->url);
