@@ -14,13 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Mobile app support.
+ *
+ * @package    mod_wordcards
+ * @copyright  2024 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_wordcards\output;
 
 defined('MOODLE_INTERNAL') || die();
 
 use context_module;
-use mod_minilesson\mobile_auth;
-use mod_minilesson\constants;
+use mod_wordcards\mobile_auth;
+use mod_wordcards\constants;
 
 class mobile {
 
@@ -35,14 +43,14 @@ class mobile {
             } else {
                 $template = 'mod_wordcards/mobile_contact_siteadmin';
             }
-            return array(
-                'templates' => array(
-                    array(
+            return [
+                'templates' => [
+                    [
                         'id' => 'noiframeembedding',
-                        'html' => $OUTPUT->render_from_template($template, [])
-                    )
-                )
-            );
+                        'html' => $OUTPUT->render_from_template($template, []),
+                    ],
+                ],
+            ];
         }
 
         // Verify course context.
@@ -50,7 +58,7 @@ class mobile {
         if (!$cm) {
             print_error('invalidcoursemodule');
         }
-        $course = $DB->get_record('course', array('id' => $cm->course));
+        $course = $DB->get_record('course', ['id' => $cm->course]);
         if (!$course) {
             print_error('coursemisconf');
         }
@@ -61,40 +69,39 @@ class mobile {
         list($token, $secret) = mobile_auth::create_embed_auth_token();
 
         // Store secret in database.
-        $auth             = $DB->get_record(constants::M_AUTHTABLE, array(
+        $auth             = $DB->get_record(constants::M_AUTHTABLE, [
             'user_id' => $USER->id,
-        ));
+        ]);
         $currenttimestamp = time();
         if ($auth) {
-            $DB->update_record(constants::M_AUTHTABLE, array(
+            $DB->update_record(constants::M_AUTHTABLE, [
                 'id'         => $auth->id,
                 'secret'     => $token,
                 'created_at' => $currenttimestamp,
-            ));
+            ]);
         } else {
-            $DB->insert_record(constants::M_AUTHTABLE, array(
+            $DB->insert_record(constants::M_AUTHTABLE, [
                 'user_id'    => $USER->id,
                 'secret'     => $token,
-                'created_at' => $currenttimestamp
-            ));
+                'created_at' => $currenttimestamp,
+            ]);
         }
-
 
         $data = [
             'cmid'    => $cmid,
             'wwwroot' => $CFG->wwwroot,
             'user_id' => $USER->id,
-            'secret'  => urlencode($secret)
+            'secret'  => urlencode($secret),
         ];
 
-        return array(
-            'templates'  => array(
-                array(
+        return [
+            'templates'  => [
+                [
                     'id'   => 'main',
                     'html' => $OUTPUT->render_from_template('mod_wordcards/mobile_view_page', $data),
-                ),
-            ),
-            //'javascript' => file_get_contents($CFG->dirroot . '/mod/wordcards/library/js/h5p-resizer.js'),
-        );
+                ],
+            ],
+            // 'javascript' => file_get_contents($CFG->dirroot . '/mod/wordcards/library/js/h5p-resizer.js'),
+        ];
     }
 }

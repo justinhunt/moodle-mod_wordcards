@@ -1,7 +1,4 @@
 <?php
-
-namespace mod_wordcards\local\report;
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,9 +18,11 @@ namespace mod_wordcards\local\report;
  *  Report Classes.
  *
  * @package    mod_wordcards
- * @copyright  wordcards
+ * @copyright  2018 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_wordcards\local\report;
 
 defined('MOODLE_INTERNAL') || die();
 

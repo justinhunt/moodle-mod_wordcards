@@ -17,8 +17,9 @@
 /**
  * Session mode class to produce data for session mode mustache.
  *
- * @package mod_wordcards
- * @author  Justin Hunt - poodll.com
+ * @package    mod_wordcards
+ * @copyright  2022 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**

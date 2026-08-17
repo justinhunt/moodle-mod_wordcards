@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Page to display free mode activity.
+ * Page to display session mode activity.
  *
- * @package mod_wordcards
- * @author  David Watson - evolutioncode.uk
+ * @package    mod_wordcards
+ * @copyright  2022 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . '/../../config.php');

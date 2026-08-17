@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Created by PhpStorm.
- * User: ishineguy
- * Date: 2018/06/16
- * Time: 19:31
+ * Constants.
+ *
+ * @package    mod_wordcards
+ * @copyright  2019 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_wordcards;

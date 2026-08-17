@@ -17,8 +17,9 @@
 /**
  * Displays the set-up phase.
  *
- * @package mod_wordcards
- * @author  Justin Hunt - ishinekk.co.jp
+ * @package    mod_wordcards
+ * @copyright  2016 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use mod_wordcards\constants;
