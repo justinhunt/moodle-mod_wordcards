@@ -37,8 +37,7 @@ class imagegen {
     protected $conf = false;
     protected $context = false;
 
-    function __construct($mod)
-    {
+    function __construct($mod) {
         global $DB;
         $this->mod = $mod;
         $this->moduleinstance = $mod->get_mod();
@@ -56,8 +55,7 @@ class imagegen {
         return $baseprompt;
     }
 
-    public function generate_images($termids, $imageprompts, $overallimagecontext)
-    {
+    public function generate_images($termids, $imageprompts, $overallimagecontext) {
         global $CFG, $DB;
         $requests = [];
         $requestterms = [];
@@ -101,14 +99,14 @@ class imagegen {
         $curl = new curl();
         $curlopts = [];
         $curlopts['CURLOPT_TIMEOUT'] = 120;
- 
+
         // Update the progress bar.
         if ($this->progressbar) {
-          //  $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
+            // $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
         }
         $responses = $curl->multirequest($requests, $curlopts);
-        $secondattempt_requests = [];
-        $secondattempt_termids = [];
+        $secondattemptrequests = [];
+        $secondattempttermids = [];
         $cachebuster = '?cb=' . \html_writer::random_id();
         foreach ($responses as $i => $resp) {
             $termid = $requestterms[$i];
@@ -119,20 +117,22 @@ class imagegen {
                 if ($filerecord) {
                     $fileurl = "$CFG->wwwroot/pluginfile.php/" . $this->context->id . "/mod_wordcards/image/" . $termid . $cachebuster;
                     $imageurls[] = ['termid' => $termid, 'url' => $fileurl];
-                   // Update the database to indicate that this term has an image.
+                    // Update the database to indicate that this term has an image.
                     $DB->update_record(constants::M_TERMSTABLE, ['id' => $termid, 'image' => 1, 'imageversion' => time()]);
                 }
             } else {
-                $secondattempt_requests[] =  $requests[$i];
-                $secondattempt_termids[] = $i;
+                $secondattemptrequests[] = $requests[$i];
+                // Track the term this request belongs to (NB not its position in $requests).
+                // the retry loop below uses this value directly as a term id.
+                $secondattempttermids[] = $termid;
             }
         }
 
         // Second attempt responses
-        if(count($secondattempt_requests) > 0) {
-            $responses = $curl->multirequest($secondattempt_requests);
+        if(count($secondattemptrequests) > 0) {
+            $responses = $curl->multirequest($secondattemptrequests, $curlopts);
             foreach ($responses as $i => $resp) {
-                $termid = $secondattempt_termids[$i];
+                $termid = $secondattempttermids[$i];
                 $base64data = $this->process_generate_image_response($resp);
                 if ($base64data) {
                     // Make file from base64 data.
@@ -149,12 +149,12 @@ class imagegen {
 
         // Update the progress bar.
         if ($this->progressbar) {
-           // $this->progressbar->end_progress();
+            // $this->progressbar->end_progress();
         }
         return $imageurls;
     }
 
-  public function make_image_smaller($imagedata) {
+    public function make_image_smaller($imagedata) {
         global $CFG;
         require_once($CFG->libdir . '/gdlib.php');
 
@@ -189,8 +189,7 @@ class imagegen {
      * @param string $prompt The prompt to generate data for.
      * @return array|false Returns an array with draft file URL, draft item ID, term ID, and base64 data, or false on failure.
      */
-    public function generate_image($termid, $prompt)
-    {
+    public function generate_image($termid, $prompt) {
         global $USER, $DB;
         $params = $this->prepare_generate_image_payload(($prompt));
         if ($params) {
@@ -224,7 +223,7 @@ class imagegen {
         }
     }
 
-    public function base64ToFile($base64data, $termid, $draft = false) {
+    public function base64tofile($base64data, $termid, $draft = false) {
         global $USER;
 
         if (empty($base64data)) {
@@ -250,7 +249,7 @@ class imagegen {
                         'filearea' => 'image',
                         'itemid' => $termid,
                         'filepath' => '/',
-                        'filename' => $filename
+                        'filename' => $filename,
             ];
         }
         // Create file content
@@ -303,6 +302,8 @@ class imagegen {
     }
 
     public function process_generate_image_response($resp) {
+        global $CFG;
+
         $respobj = json_decode($resp);
         $ret = new \stdClass();
         if (isset($respobj->returnCode)) {
@@ -315,7 +316,8 @@ class imagegen {
         if ($ret && $ret->success) {
             if (isset($ret->payload[0]->url)) {
                 $url = $ret->payload[0]->url;
-                $rawdata = file_get_contents($url);
+                require_once($CFG->libdir . '/filelib.php');
+                $rawdata = download_file_content($url, null, null, false, 60, 10);
                 if ($rawdata !== false) {
                     $smallerdata = $this->make_image_smaller($rawdata);
                     $base64data = base64_encode($smallerdata);
