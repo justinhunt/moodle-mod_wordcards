@@ -48,8 +48,6 @@ class mod_wordcards_module
     const WORDPOOL_LEARN = 0;
     const WORDPOOL_REVIEW = 1;
     const WORDPOOL_MY_WORDS = 2;
-    const PRACTICETYPE_SCATTER = -1;// not used
-    const PRACTICETYPE_SCATTER_REV = -2;// not used
     const PRACTICETYPE_NONE = 0;
     const PRACTICETYPE_MATCHSELECT = 1;
     const PRACTICETYPE_MATCHTYPE = 2;
@@ -58,6 +56,7 @@ class mod_wordcards_module
     const PRACTICETYPE_LISTENCHOOSE = 9;
     const PRACTICETYPE_SPACEGAME = 11;
     const PRACTICETYPE_WORDPREVIEW = 13;
+    const PRACTICETYPE_SCATTER = 15;
 
     const PRACTICETYPE_MATCHSELECT_REV = 5;
     const PRACTICETYPE_MATCHTYPE_REV = 6;
@@ -66,6 +65,7 @@ class mod_wordcards_module
     const PRACTICETYPE_LISTENCHOOSE_REV = 10;
     const PRACTICETYPE_SPACEGAME_REV = 12;
     const PRACTICETYPE_WORDPREVIEW_REV = 14;
+    const PRACTICETYPE_SCATTER_REV = 16;
 
     protected static $states = [
         self::STATE_TERMS,
@@ -284,6 +284,7 @@ class mod_wordcards_module
             case self::PRACTICETYPE_LISTENCHOOSE_REV:
             case self::PRACTICETYPE_SPACEGAME_REV:
             case self::PRACTICETYPE_WORDPREVIEW_REV:
+            case self::PRACTICETYPE_SCATTER_REV:
             default:
                 return self::WORDPOOL_REVIEW;
         }

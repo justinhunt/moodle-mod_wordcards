@@ -64,6 +64,9 @@ class constants {
     const M_MS_DEF_AT_TOP = 1;
     const M_SG_TERM_AS_ALIEN = 0;
     const M_SG_DEF_AS_ALIEN = 1;
+    const M_SCATTER_DEF_ONLY = 0;
+    const M_SCATTER_IMAGE_ONLY = 1;
+    const M_SCATTER_DEF_AND_IMAGE = 2;
     const M_WC_TERM_AS_READABLE = 0;
     const M_WC_MODELSENTENCE_AS_READABLE = 1;
     const MODE_STEPS = 0;
@@ -75,7 +78,8 @@ class constants {
     const CURRENTMODE_FREE = 1;
     const CURRENTMODE_SESSION = 2;
 
-    const FREEMODE_ACTIVITIES = ["wordpreview", "matchselect", "matchtype", "dictation", "speechcards", "listenchoose", "spacegame"];
+    const FREEMODE_ACTIVITIES = ["wordpreview", "matchselect", "matchtype", "dictation", "speechcards", "listenchoose",
+        "spacegame", "scatter"];
 
     // grading options
     const M_GRADEHIGHEST = 0;
@@ -331,5 +335,6 @@ class constants {
     const M_PUSH_MSOPTIONS = 12;
     const M_PUSH_SGOPTIONS = 13;
     const M_PUSH_IMAGEONFRONT = 14;
+    const M_PUSH_SCATTEROPTIONS = 15;
 
 }

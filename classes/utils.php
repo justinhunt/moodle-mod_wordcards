@@ -1061,6 +1061,10 @@ class utils
             case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
                 return 'fa-comment-o';
 
+            case \mod_wordcards_module::PRACTICETYPE_SCATTER:
+            case \mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
+                return 'fa-th';
+
             default:
                 return 'fa-dot-circle-o';
         }
@@ -1117,6 +1121,10 @@ class utils
                 return get_string('title_listenchoose_rev', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV:
                 return get_string('title_spacegame_rev', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_SCATTER:
+                return get_string('title_scatter', constants::M_COMPONENT);
+            case \mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
+                return get_string('title_scatter_rev', constants::M_COMPONENT);
             case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
             case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
                 return get_string('title_wordpreview', constants::M_COMPONENT);
@@ -1170,6 +1178,9 @@ class utils
                 case 'freemode_wordpreview':
                     $available[\mod_wordcards_module::PRACTICETYPE_WORDPREVIEW] = get_string('title_wordpreview', constants::M_COMPONENT);
                     break;
+                case 'freemode_scatter':
+                    $available[\mod_wordcards_module::PRACTICETYPE_SCATTER] = get_string('title_scatter', constants::M_COMPONENT);
+                    break;
             }
         }
         return $available;
@@ -1186,6 +1197,7 @@ class utils
             \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS => get_string('title_speechcards', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE => get_string('title_listenchoose', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_SPACEGAME => get_string('title_spacegame', constants::M_COMPONENT),
+            \mod_wordcards_module::PRACTICETYPE_SCATTER => get_string('title_scatter', constants::M_COMPONENT),
         ];
 
         $reviewoptions = [
@@ -1196,6 +1208,7 @@ class utils
             \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV => get_string('title_speechcards_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV => get_string('title_listenchoose_rev', constants::M_COMPONENT),
             \mod_wordcards_module::PRACTICETYPE_SPACEGAME_REV => get_string('title_spacegame_rev', constants::M_COMPONENT),
+            \mod_wordcards_module::PRACTICETYPE_SCATTER_REV => get_string('title_scatter_rev', constants::M_COMPONENT),
         ];
 
         if ($wordpool === \mod_wordcards_module::WORDPOOL_LEARN) {
@@ -1228,6 +1241,20 @@ class utils
         return [
             constants::M_SG_TERM_AS_ALIEN => get_string('sg_termasalien', constants::M_COMPONENT),
             constants::M_SG_DEF_AS_ALIEN => get_string('sg_defasalien', constants::M_COMPONENT)
+        ];
+    }
+
+    /**
+     * The display options for the matching card in the scatter activity.
+     *
+     * @return array of constants::M_SCATTER_* => display name
+     */
+    public static function fetch_options_scatter()
+    {
+        return [
+            constants::M_SCATTER_DEF_ONLY => get_string('scatter_defonly', constants::M_COMPONENT),
+            constants::M_SCATTER_IMAGE_ONLY => get_string('scatter_imageonly', constants::M_COMPONENT),
+            constants::M_SCATTER_DEF_AND_IMAGE => get_string('scatter_defandimage', constants::M_COMPONENT),
         ];
     }
 
@@ -1789,6 +1816,15 @@ class utils
             get_string('scoptions', constants::M_COMPONENT),
             $scoptions,
             $config->scoptions
+        );
+
+        $scatteroptions = self::fetch_options_scatter();
+        $mform->addElement(
+            'select',
+            'scatteroptions',
+            get_string('scatteroptions', constants::M_COMPONENT),
+            $scatteroptions,
+            $config->scatteroptions
         );
 
         // show activity open closes

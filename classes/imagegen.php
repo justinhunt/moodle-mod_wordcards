@@ -100,6 +100,10 @@ class imagegen {
         $curlopts = [];
         $curlopts['CURLOPT_TIMEOUT'] = 120;
 
+        // Image generation is slow, and the default PHP execution limit will kill the request
+        // long before the curl timeout above is reached. Let curl decide when to give up.
+        \core_php_time_limit::raise(300);
+
         // Update the progress bar.
         if ($this->progressbar) {
             // $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
@@ -130,6 +134,8 @@ class imagegen {
 
         // Second attempt responses
         if(count($secondattemptrequests) > 0) {
+            // The retry gets its own execution time budget, the first pass may have used up most of the last one.
+            \core_php_time_limit::raise(300);
             $responses = $curl->multirequest($secondattemptrequests, $curlopts);
             foreach ($responses as $i => $resp) {
                 $termid = $secondattempttermids[$i];
@@ -191,6 +197,10 @@ class imagegen {
      */
     public function generate_image($termid, $prompt) {
         global $USER, $DB;
+
+        // Image generation is slow, so make sure PHP does not time out while we wait on it.
+        \core_php_time_limit::raise(300);
+
         $params = $this->prepare_generate_image_payload(($prompt));
         if ($params) {
             $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";

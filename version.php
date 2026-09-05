@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_wordcards';
-$plugin->version = 2026081600;
+$plugin->version = 2026082300;
 $plugin->requires = 2023100900; // Requires Moodle 4.3
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = "1.3.89 (Build 2026081600)";
+$plugin->release = "1.3.90 (Build 2026082300)";

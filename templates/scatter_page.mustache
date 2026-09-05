@@ -1,77 +1,56 @@
-<div id="cards-page-{{uniqid}}">
-    <div class="wordcards_timer">00:00:00</div>
-    <div id="wordcards" class="wordcards">
-        <div class="congrats">
-          <div class="wordcards_congrats">Congratulations</div>
-          {{#hascontinue}}
-              <button data-href="{{{nexturl}}}" class="btn btn-primary wordcards-continue-button">{{continue}}</button>
-          {{/hascontinue}}
-        </div>
-    </div>
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_wordcards/scatter_page
+
+    The Scatter practice activity page. A grid of term and definition cards that the
+    student clears by tapping matching pairs.
+
+    Context variables required for this template:
+    * none - the word data is read from a hidden input by mod_wordcards/scatter
+
+    Example context (json):
+    {
+    }
+}}
+<div id='wordcards-vocab-list'>
+  {{> mod_wordcards/vocablist_header}}
+  <div id="vocab-list-inner">{{> mod_wordcards/loading}}</div>
+</div>
+
+<div id='wordcards-gameboard'>
+
+  <div class="mod_wordcards_activity_header">
+    <h3>{{#str}}title_scatter, mod_wordcards{{/str}}</h3>
+    <div class="mod_wordcards_instructions">{{#str}}instructions_scatter, mod_wordcards{{/str}}</div>
+  </div>
+
+  <div id='wordcards-counter'>
+    <div id='wordcards-time-counter'></div>
+  </div>
+
+  {{> mod_wordcards/progress_dots}}
+
+  <div id='wordcards-scatter-stage' class='wordcards-scatter-stage'>{{> mod_wordcards/loading}}</div>
 
 </div>
 
-{{#js}}
-    require(['jquery', 'mod_wordcards/cards'], function($, Cards) {
-        var container = $('#cards-page-{{uniqid}}');
-        var    modid = {{modid}};
-        var    canmanage = {{canmanage}};
-        var    cards = container.find('.wordcards');
-        var    btn = container.find('.wordcards-continue-button');
-
-
-        var inst = new Cards(cards, {{{definitionsjson}}});
-
-        function displayfinishmessage() {
-
-            $('.wordcards_timer').css('display', 'none');
-            container.find('.congrats').css('display', 'block');
-        }
-
-        if (canmanage) {
-            inst.setDryRun(true);
-        }
-        inst.init();
-
-        {{#hascontinue}}
-            btn.on('click', function() {
-                location.href = $(this).data('href');
-            });
-            if (!canmanage) {
-                btn.prop('disabled', true);
-            }
-            inst.on('complete', function() {
-
-                {{#completeafterlocal}}
-                    var redirecturl = "{{{nexturl}}}";
-                    window.location.replace(redirecturl.replace(/&amp;/g,'&') + "&localscattertime=1");
-                    return;
-                {{/completeafterlocal}}
-
-                {{#isglobalscatter}}
-                    var redirecturl = "{{{nexturl}}}";
-                    window.location.replace(redirecturl.replace(/&amp;/g,'&') + "&globalscattertime=" + 1);
-                    return;
-                {{/isglobalscatter}}
-
-                btn.prop('disabled', false);
-
-                displayfinishmessage();
-
-
-            });
-        {{/hascontinue}}
-
-        {{#isglobalcompleted}}
-            inst.on('complete', function() {
-                displayfinishmessage();
-
-            });
-        {{/isglobalcompleted}}
-
-        // Move the wordcards on top of screen.
-        $(window).scrollTop($('#wordcards').offset().top - 45);
-
-    });
-
-{{/js}}
+<div id='wordcards-results'>
+  <div id='results-inner'>
+    {{> mod_wordcards/loading}}
+  </div>
+</div>

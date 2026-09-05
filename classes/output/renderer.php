@@ -341,6 +341,13 @@ class renderer extends \plugin_renderer_base
                 $activityhtml = $this->render_from_template('mod_wordcards/wordpreview_page', $data);
                 break;
 
+            case \mod_wordcards_module::PRACTICETYPE_SCATTER:
+            case \mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
+                $opts['scatteroptions'] = $mod->get_mod()->scatteroptions;
+                $this->page->requires->js_call_amd("mod_wordcards/scatter", 'init', [$opts]);
+                $activityhtml = $this->render_from_template('mod_wordcards/scatter_page', $data);
+                break;
+
             case \mod_wordcards_module::PRACTICETYPE_DICTATION:
             case \mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
             default:
@@ -590,44 +597,6 @@ class renderer extends \plugin_renderer_base
 
     }
 
-    public function scatter_page(\mod_wordcards_module $mod, $wordpool, $currentstep)
-    {
-        list($state) = $mod->get_state();
-
-        $nextstep = $mod->get_next_step($currentstep);
-        $nexturl = (new \moodle_url('/mod/wordcards/activity.php', ['id' => $mod->get_cmid(), 'oldstep' => $currentstep, 'nextstep' => $nextstep]))->out(true);
-
-        // if we are in review state, we use different words and the next page is a finish page
-        if ($wordpool == \mod_wordcards_module::WORDPOOL_REVIEW) {
-            $definitions = $mod->get_review_terms($mod->fetch_step_termcount($currentstep));
-        } else {
-            $definitions = $mod->get_learn_terms($mod->fetch_step_termcount($currentstep));
-        }
-
-        // make sure each definition has a voice
-        foreach ($definitions as $def) {
-            if ($def->ttsvoice == 'Auto' || $def->ttsvoice == '') {
-                $def->ttsvoice = utils::fetch_auto_voice($mod->get_mod()->ttslanguage);
-            }
-        }
-
-        $data = [
-            'canmanage' => $mod->can_manage(),
-            'continue' => get_string('continue'),
-            'congrats' => get_string('congrats', 'mod_wordcards'),
-            'definitionsjson' => json_encode(array_values($definitions)),
-            'finishscatterin' => get_string('finishscatterin', 'mod_wordcards'),
-            'modid' => $mod->get_id(),
-            'isglobalcompleted' => $state == \mod_wordcards_module::STATE_END,
-            'hascontinue' => $state != \mod_wordcards_module::STATE_END,
-            'nexturl' => $nexturl,
-            'isglobalscatter' => true,
-        ];
-
-        return $this->render_from_template('mod_wordcards/scatter_page', $data);
-    }
-
-
     public function navigation(\mod_wordcards_module $mod, $currentstate, $navdisabled = false)
     {
         $embed = $this->get_embed_flag();
@@ -790,6 +759,7 @@ class renderer extends \plugin_renderer_base
             'lcoptions',
             'msoptions',
             'sgoptions',
+            'scatteroptions',
             'imageonfront'
         ];
 
@@ -836,6 +806,9 @@ class renderer extends \plugin_renderer_base
                     break;
                 case 'imageonfront':
                     $action = constants::M_PUSH_IMAGEONFRONT;
+                    break;
+                case 'scatteroptions':
+                    $action = constants::M_PUSH_SCATTEROPTIONS;
                     break;
 
             }

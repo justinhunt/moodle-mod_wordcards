@@ -51,7 +51,8 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
                 'step1practicetype','step2practicetype','step3practicetype','step4practicetype','step5practicetype',
                 'completionwhenfinish','completionwhenlearned','maxattempts', 'timecreated', 'timemodified','skipreview', 'finishedstepmsg',
                 'completedmsg', 'ttslanguage','deflanguage','transcriber','passagehash','hashisold','foriframe',
-                'showimageflip', 'frontfaceflip','lcoptions','msoptions','sgoptions','scoptions','viewstart','viewend',
+                'showimageflip', 'frontfaceflip', 'lcoptions', 'msoptions', 'sgoptions', 'scoptions', 'scatteroptions',
+                'viewstart', 'viewend',
                 'videoexamples','learnpoint','freemodeoptions','showlangchooser','imageonfront','masterinstance'));
 
         $terms = new backup_nested_element('terms');

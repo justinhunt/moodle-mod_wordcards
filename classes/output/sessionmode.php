@@ -149,6 +149,7 @@ class sessionmode implements \renderable, \templatable {
                 case \mod_wordcards_module::PRACTICETYPE_DICTATION:
                 case \mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE:
                 case \mod_wordcards_module::PRACTICETYPE_WORDPREVIEW:
+                case \mod_wordcards_module::PRACTICETYPE_SCATTER:
                     $data->mainhtml = $renderer->a4e_page($this->mod, $this->practicetype, $definitions, constants::CURRENTMODE_SESSION);
                     break;
                 case \mod_wordcards_module::PRACTICETYPE_SPEECHCARDS:

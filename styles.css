@@ -2804,3 +2804,150 @@ button.definitions-next.btn .fa-arrow-right:before {
 .wc-progressdash-grid .col-12:is(:nth-child(1), :nth-child(2)) .wc-progressdash-grid-item .wc-pg-lowerno {
     z-index: 2;
 }
+
+/* SCATTER ACTIVITY */
+
+.wordcards-scatter-stage {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 8px;
+    background: radial-gradient(96.87% 96.87% at 50% 50%, #E6E9FD 0%, #F5F5FE 100%);
+}
+
+.wordcards-scatter-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 140px;
+    padding: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    background: #FFF;
+    border: 5px solid #DEE2FC;
+    border-radius: 8px;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.1);
+    color: #1F2334;
+    font-size: 18px;
+    font-weight: 500;
+    transition: border-color 200ms, opacity 200ms;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.wordcards-scatter-card:focus {
+    outline: 2px solid #414C81;
+    outline-offset: 2px;
+}
+
+.wordcards-scatter-term {
+    background: #FFF;
+}
+
+.wordcards-scatter-def {
+    background: #FCFCFF;
+}
+
+/* textFit absolutely positions the text it fits, so this needs a definite height
+   or the card collapses and the text is clipped away. */
+.wordcards-scatter-cardtext {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.wordcards-scatter-cardtext .term-definition,
+.wordcards-scatter-cardtext .text_to_html {
+    margin: 0;
+}
+
+.wordcards-scatter-cardimage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.wordcards-scatter-cardimage img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Cards showing a picture and the definition together split the card between them. */
+.wordcards-scatter-hasboth .wordcards-scatter-cardimage {
+    height: 58%;
+}
+
+.wordcards-scatter-hasboth .wordcards-scatter-cardtext {
+    height: 42%;
+}
+
+.wordcards-scatter-card.wordcards-scatter-selected {
+    border-color: #F5B914;
+}
+
+.wordcards-scatter-card.wordcards-scatter-matched {
+    pointer-events: none;
+    animation: wordcardsscattermatch 400ms ease-out forwards;
+}
+
+.wordcards-scatter-card.wordcards-scatter-shake {
+    border-color: #FB6363;
+    animation: wordcardsscattershake 400ms ease-out;
+}
+
+@keyframes wordcardsscattermatch {
+    to {
+        opacity: 0;
+        transform: scale(0.85);
+        visibility: hidden;
+    }
+}
+
+@keyframes wordcardsscattershake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20%,
+    60% {
+        transform: translateX(-6px);
+    }
+    40%,
+    80% {
+        transform: translateX(6px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wordcards-scatter-card.wordcards-scatter-matched,
+    .wordcards-scatter-card.wordcards-scatter-shake {
+        animation: none;
+    }
+
+    .wordcards-scatter-card.wordcards-scatter-matched {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@media (max-width: 480px) {
+    .wordcards-scatter-stage {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .wordcards-scatter-card {
+        height: 110px;
+        border-width: 4px;
+        font-size: 15px;
+    }
+}

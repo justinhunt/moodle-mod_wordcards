@@ -245,6 +245,9 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_DICTATION_REV:
     case mod_wordcards_module::PRACTICETYPE_LISTENCHOOSE_REV:
     case mod_wordcards_module::PRACTICETYPE_WORDPREVIEW_REV:
+    case mod_wordcards_module::PRACTICETYPE_SCATTER:
+    case mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
+    default:
         echo $renderer->a4e_page($mod, $practicetype, $definitions, constants::CURRENTMODE_STEPS, $currentstep);
         break;
     case mod_wordcards_module::PRACTICETYPE_SPACEGAME:
@@ -256,11 +259,6 @@ switch ($practicetype){
     case mod_wordcards_module::PRACTICETYPE_SPEECHCARDS_REV:
         echo $renderer->speechcards_page($mod, $definitions, constants::CURRENTMODE_STEPS, $currentstep);
         break;
-    // no longer using this
-    case mod_wordcards_module::PRACTICETYPE_SCATTER:
-    case mod_wordcards_module::PRACTICETYPE_SCATTER_REV:
-    default:
-        echo $renderer->scatter_page($mod, $wordpool, $currentstep);
 }
 echo $renderer->cancel_attempt_button($mod);
 

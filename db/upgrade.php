@@ -682,5 +682,25 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025102700, 'wordcards');
     }
 
+    if ($oldversion < 2026082300) {
+        $table = new xmldb_table(constants::M_TABLE);
+        $field = new xmldb_field(
+            'scatteroptions',
+            XMLDB_TYPE_INTEGER,
+            10,
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            constants::M_SCATTER_DEF_ONLY,
+            'scoptions'
+        );
+
+        // Conditionally launch add field scatteroptions.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2026082300, 'wordcards');
+    }
+
     return true;
 }
