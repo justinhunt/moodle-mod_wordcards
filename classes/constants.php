@@ -142,6 +142,7 @@ class constants {
     const M_LANG_BGBG = 'bg-BG';
     const M_LANG_CSCZ = 'cs-CZ';
     const M_LANG_ELGR = 'el-GR';
+    const M_LANG_ETEE = 'et-EE';
     const M_LANG_HRHR = 'hr-HR';
     const M_LANG_LTLT = 'lt-LT';
     const M_LANG_LVLV = 'lv-LV';
@@ -169,7 +170,9 @@ class constants {
         constants::M_LANG_ARAE => ['Hala'=>'Hala','Zayd'=>'Zayd'],
         constants::M_LANG_ARSA => ['Zeina'=>'Zeina'],
         constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
-        constants::M_LANG_DADK => ['Naja'=>'Naja','Mads'=>'Mads'],
+        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads',
+            'da-DK-Azure-ChristelNeural' => 'Christel_a', 'da-DK-Azure-JeppeNeural' => 'Jeppe_a'],
+        self::M_LANG_ETEE => ['et-EE-Azure-AnuNeural' => 'Anu_a', 'et-EE-Azure-KertNeural' => 'Kert_a'],
         constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte","Laura"=>"Laura"],
         constants::M_LANG_NLBE => ["Lisa"=>"Lisa"],
         constants::M_LANG_ENUS => ['Joey'=>'Joey','Justin'=>'Justin','Matthew'=>'Matthew','Ivy'=>'Ivy',
@@ -207,7 +210,8 @@ class constants {
         self::M_LANG_HRHR => ['hr-HR-Whisper-alloy' => 'Marko', 'hr-HR-Whisper-shimmer' => 'Ivana'],
         self::M_LANG_ZHCN => ['Zhiyu' => 'Zhiyu'],
         self::M_LANG_CSCZ => ['cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g'],
-        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads'],
+        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads',
+            'da-DK-Azure-ChristelNeural' => 'Christel_a', 'da-DK-Azure-JeppeNeural' => 'Jeppe_a'],
         self::M_LANG_NLNL => ["Ruben" => "Ruben", "Lotte" => "Lotte", "Laura" => "Laura"],
         self::M_LANG_NLBE => ["nl-BE-Wavenet-B" => "Marc_g", "nl-BE-Wavenet-A" => "Marie_g", "Lisa" => "Lisa"],
         // constants::M_LANG_DECH => [],
@@ -231,6 +235,7 @@ class constants {
         self::M_LANG_DEDE => ['Hans' => 'Hans', 'Marlene' => 'Marlene', 'Vicki' => 'Vicki', 'Daniel' => 'Daniel'],
         self::M_LANG_DEAT => ['Hannah' => 'Hannah'],
         self::M_LANG_ELGR => ['el-GR-Wavenet-A' => 'Sophia_g', 'el-GR-Standard-A' => 'Isabella_g'],
+        self::M_LANG_ETEE => ['et-EE-Azure-AnuNeural' => 'Anu_a', 'et-EE-Azure-KertNeural' => 'Kert_a'],
         self::M_LANG_HIIN => ["Aditi" => "Aditi"],
         self::M_LANG_HEIL => ['he-IL-Wavenet-A' => 'Sarah_g', 'he-IL-Wavenet-B' => 'Noah_g'],
         self::M_LANG_HUHU => ['hu-HU-Wavenet-A' => 'Eszter_g'],

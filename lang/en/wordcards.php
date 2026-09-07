@@ -209,6 +209,7 @@ $string['mi-nz'] = 'Maori';
 $string['bg-bg'] = 'Bulgarian'; // Bulgarian
 $string['cs-cz'] = 'Czech'; // Czech
 $string['el-gr'] = 'Greek'; // Greek
+$string['et-ee'] = 'Estonian';
 $string['hr-hr'] = 'Croatian'; // Croatian
 $string['hu-hu'] = 'Hungarian'; // Hungarian
 $string['lt-lt'] = 'Lithuanian'; // Lithuanian

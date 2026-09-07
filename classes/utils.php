@@ -1331,7 +1331,9 @@ class utils
 
             constants::M_LANG_BGBG => get_string('bg-bg', constants::M_COMPONENT),
             constants::M_LANG_CSCZ => get_string('cs-cz', constants::M_COMPONENT),
+            constants::M_LANG_DADK => get_string('da-dk', constants::M_COMPONENT),
             constants::M_LANG_ELGR => get_string('el-gr', constants::M_COMPONENT),
+            constants::M_LANG_ETEE => get_string('et-ee', constants::M_COMPONENT),
             constants::M_LANG_HRHR => get_string('hr-hr', constants::M_COMPONENT),
             constants::M_LANG_LTLT => get_string('lt-lt', constants::M_COMPONENT),
             constants::M_LANG_LVLV => get_string('lv-lv', constants::M_COMPONENT),
