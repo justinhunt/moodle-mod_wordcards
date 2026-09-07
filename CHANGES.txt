@@ -3,6 +3,8 @@
 - Added Somali and Tigrinya as definitions languages
 - The Word Wizard now only offers definitions languages that its dictionary lookup
   can actually return for the language being taught
+- Removed Serbian from the definitions language lists - no dictionary or AI
+  translation could produce it
 
 1.3.90 (Build 2026082300)
 - Added the Scatter matching game as a practice and review activity

@@ -2053,7 +2053,11 @@ class utils
         $langdefs[] = ['code' => 'fa', 'name' => 'Persian'];
         $langdefs[] = ['code' => 'pl', 'name' => 'Polish'];
         $langdefs[] = ['code' => 'ro', 'name' => 'Romanian'];
-        $langdefs[] = ['code' => 'sr', 'name' => 'Serbian (Latin)'];
+        // No Serbian here on purpose. It is not one of the languages the AI translates into
+        // (local_cpapi's M_EXTRALANGS), and the MS dictionary is only reached when the source
+        // language is one the ESL Apps dictionary does not cover - at which point the pairing
+        // is not with English and the lookup fails. So it could only ever have resolved to
+        // "No translation available".
         $langdefs[] = ['code' => 'sk', 'name' => 'Slovak'];
         $langdefs[] = ['code' => 'sl', 'name' => 'Slovenian'];
         $langdefs[] = ['code' => 'sw', 'name' => 'Swahili (Latin)'];
