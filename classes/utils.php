@@ -1923,7 +1923,36 @@ class utils
         return $ret;
     }
 
-    public static function get_rcdic_langs($selected = 'en', $other = true)
+    /**
+     * Which definitions languages can a dictionary lookup actually return, for a given source
+     * language? If the source language is one the ESL Apps dictionary covers, the lookup resolves
+     * against it and the AI adds the extras on top, so nearly everything is reachable. If it is
+     * not, the lookup falls back to the MS dictionary, whose lookup endpoint only supports pairs
+     * with English - so English is all we can honestly offer.
+     *
+     * @param string $sourcelang short code of the language being taught
+     * @return array of allowed short language codes
+     */
+    public static function get_lookup_deflangs($sourcelang)
+    {
+        if (!in_array($sourcelang, constants::M_RSDIC_LANGS)) {
+            return ['en'];
+        }
+        return array_merge(constants::M_RSDIC_LANGS, constants::M_AIDEF_LANGS);
+    }
+
+    /**
+     * Build the definitions language list.
+     *
+     * @param string $selected the language to mark as selected
+     * @param bool $other whether to offer the "Other" option
+     * @param string|bool $sourcelang when set, restrict the list to languages a lookup can
+     *        actually return for that source language. Pass it for the Word Wizard, where the
+     *        choice drives a dictionary lookup; leave it off for the student language chooser,
+     *        which only reads translations already stored on the term.
+     * @return array
+     */
+    public static function get_rcdic_langs($selected = 'en', $other = true, $sourcelang = false)
     {
 
         $langdefs = [];
@@ -1945,6 +1974,19 @@ class utils
         // add ms dictionary languages
         $langdefs = self::get_msdic_langs($langdefs);
 
+        // These have no dictionary coverage at all - the AI translates them - so they are not
+        // part of the msdic list above, but a student can still read definitions in them.
+        $langdefs[] = ['code' => 'so', 'name' => 'Somali'];
+        $langdefs[] = ['code' => 'ti', 'name' => 'Tigrinya'];
+
+        // Drop anything a lookup could not actually resolve for this source language.
+        if ($sourcelang !== false) {
+            $allowed = self::get_lookup_deflangs($sourcelang);
+            $langdefs = array_values(array_filter($langdefs, function ($langdef) use ($allowed) {
+                return in_array($langdef['code'], $allowed);
+            }));
+        }
+
         if ($other) {
             $langdefs[] = ['code' => constants::M_DEFLANG_OTHER, 'name' => self::get_lang_name(constants::M_DEFLANG_OTHER)];
         }
@@ -1957,7 +1999,16 @@ class utils
             }
         }
         if (!$defaultset) {
-            $langdefs[1]['selected'] = true;
+            // Fall back to English, not to whatever happens to sit at a fixed index - the list is
+            // shorter when it has been filtered, and "Other" must never become the default.
+            $fallback = 0;
+            for ($i = 0; $i < count($langdefs); $i++) {
+                if ($langdefs[$i]['code'] == 'en') {
+                    $fallback = $i;
+                    break;
+                }
+            }
+            $langdefs[$fallback]['selected'] = true;
         }
         return $langdefs;
     }

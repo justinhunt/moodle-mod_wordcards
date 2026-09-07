@@ -836,7 +836,9 @@ class renderer extends \plugin_renderer_base
     {
         $langterm = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
         $includeother = false;
-        $langdefs = utils::get_rcdic_langs($mod->get_mod()->deflanguage, $includeother);
+        // Restrict the list to languages a lookup can actually return for this source language,
+        // so the wizard cannot be pointed at a pairing that comes back empty.
+        $langdefs = utils::get_rcdic_langs($mod->get_mod()->deflanguage, $includeother, $langterm);
 
         $data = [
             'modid' => $mod->get_mod()->id,

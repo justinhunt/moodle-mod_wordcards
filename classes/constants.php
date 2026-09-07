@@ -51,6 +51,17 @@ class constants {
     const M_CB_TRIAL_PRICEID = 'Poodll-Free-Trial-USD-Daily';
 
     const M_DEFLANG_OTHER = 'zz';
+
+    // Definitions languages the remote dictionary can actually return.
+    // M_RSDIC_LANGS are the languages the ESL Apps dictionary holds columns for; a lookup whose
+    // source language is one of these resolves against it directly. M_AIDEF_LANGS mirrors
+    // local_cpapi's M_EXTRALANGS - the languages the AI translation step adds on top. Keep this
+    // list in step with that one; if they drift, we offer definitions languages that resolve to
+    // "No translation available".
+    const M_RSDIC_LANGS = ['ar', 'en', 'es', 'fr', 'id', 'ja', 'ko', 'pt', 'rus', 'th', 'vi', 'zh', 'zh_tw'];
+    const M_AIDEF_LANGS = ['af', 'bn', 'bs', 'bg', 'ca', 'cs', 'cy', 'da', 'de', 'el', 'et', 'fa', 'fi', 'ht', 'he',
+        'hi', 'hr', 'hu', 'is', 'lt', 'lv', 'ms', 'mt', 'nl', 'nb', 'pl', 'ro', 'sk', 'sl', 'so', 'sv', 'sw', 'ta',
+        'te', 'ti', 'tr', 'it', 'uk', 'ur'];
     const M_FRONTFACEFLIP_DEF = 0;
     const M_FRONTFACEFLIP_TERM = 1;
 
