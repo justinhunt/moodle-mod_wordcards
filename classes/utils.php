@@ -2036,7 +2036,7 @@ class utils
         // $langdefs = [];
         $langdefs[] = ['code' => 'af', 'name' => 'Afrikaans'];
         $langdefs[] = ['code' => 'bn', 'name' => 'Bangla'];
-        $langdefs[] = ['code' => 'bs', 'name' => 'Bosnian (Latin)'];
+        $langdefs[] = ['code' => 'bs', 'name' => 'Bosnian'];
         $langdefs[] = ['code' => 'bg', 'name' => 'Bulgarian'];
         $langdefs[] = ['code' => 'ca', 'name' => 'Catalan'];
         $langdefs[] = ['code' => 'hr', 'name' => 'Croatian'];
@@ -2054,7 +2054,7 @@ class utils
         $langdefs[] = ['code' => 'it', 'name' => 'Italian'];
         $langdefs[] = ['code' => 'lv', 'name' => 'Latvian'];
         $langdefs[] = ['code' => 'lt', 'name' => 'Lithuanian'];
-        $langdefs[] = ['code' => 'ms', 'name' => 'Malay (Latin)'];
+        $langdefs[] = ['code' => 'ms', 'name' => 'Malay'];
         $langdefs[] = ['code' => 'mt', 'name' => 'Maltese'];
         $langdefs[] = ['code' => 'nb', 'name' => 'Norwegian'];
         $langdefs[] = ['code' => 'fa', 'name' => 'Persian'];
@@ -2067,7 +2067,7 @@ class utils
         // "No translation available".
         $langdefs[] = ['code' => 'sk', 'name' => 'Slovak'];
         $langdefs[] = ['code' => 'sl', 'name' => 'Slovenian'];
-        $langdefs[] = ['code' => 'sw', 'name' => 'Swahili (Latin)'];
+        $langdefs[] = ['code' => 'sw', 'name' => 'Swahili'];
         $langdefs[] = ['code' => 'sv', 'name' => 'Swedish'];
         $langdefs[] = ['code' => 'ta', 'name' => 'Tamil'];
         $langdefs[] = ['code' => 'tr', 'name' => 'Turkish'];
@@ -2153,7 +2153,7 @@ class utils
             case 'fr':
                 return 'French';
             case 'id':
-                return 'Bahasa Indonesia';
+                return 'Indonesian';
             case 'ja':
                 return 'Japanese';
             case 'ko':
@@ -2171,7 +2171,7 @@ class utils
             case 'vi':
                 return 'Vietnamese';
             case 'zh':
-                return $fulllangcode == "zh_tw" ? 'Chinese (trad.)' : 'Chinese (simpl.)';
+                return $fulllangcode == "zh_tw" ? 'Chinese (Traditional)' : 'Chinese (Simplified)';
             case constants::M_DEFLANG_OTHER:
                 return get_string('deflang_other', constants::M_COMPONENT);
         }
