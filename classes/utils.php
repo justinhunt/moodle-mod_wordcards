@@ -1987,6 +1987,13 @@ class utils
             }));
         }
 
+        // Sort by display name. The list is assembled in several blocks - the ESL Apps dictionary
+        // languages, then the MS dictionary ones, then the AI only ones - so without this the
+        // alphabet restarts partway down the dropdown. Sort before "Other" is added, so that stays
+        // at the bottom where it belongs, and reindex because the selection loop below counts from 0.
+        \core_collator::asort_array_of_arrays_by_key($langdefs, 'name');
+        $langdefs = array_values($langdefs);
+
         if ($other) {
             $langdefs[] = ['code' => constants::M_DEFLANG_OTHER, 'name' => self::get_lang_name(constants::M_DEFLANG_OTHER)];
         }
