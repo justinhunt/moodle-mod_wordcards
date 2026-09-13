@@ -383,11 +383,54 @@ class mod_wordcards_module
         return $terms;
     }
 
+    /**
+     * Pick the example sentence in the language the learner is reading, and hang it on each term.
+     *
+     * This cannot ride along with the definition swap below, which returns early when the learner
+     * has expressed no preference. A definition is already stored in the activity's language, so
+     * there is nothing to do in that case; a sentence is not. model_sentence holds the sentence in
+     * the language being taught, and the only copy in any other language is inside the
+     * model_sentence_translations json - so it has to be resolved every time, preference or no
+     * preference.
+     *
+     * Nothing is set when the activity teaches and defines in the same language, where the
+     * "translation" would be the sentence again, or when the dictionary has not supplied one -
+     * which for now is most of the time. The card treats an absent sentence as normal.
+     *
+     * @param array $terms
+     * @param string $language the language code the learner is reading in
+     * @return array the same terms, some carrying model_sentence_translation
+     */
+    public function insert_sentence_translations($terms, $language) {
+        // ttslanguage is a full code such as en-US, where the definitions language and the json
+        // keys are short ones such as en, so it has to be shortened before the two can be compared.
+        $taughtlanguage = utils::fetch_rcdic_lang($this->get_mod()->ttslanguage);
+        if (empty($language) || $language == $taughtlanguage) {
+            return $terms;
+        }
+
+        foreach ($terms as $term) {
+            if (empty($term->model_sentence_translations) || !self::is_json($term->model_sentence_translations)) {
+                continue;
+            }
+            $sentences = json_decode($term->model_sentence_translations);
+            if (!empty($sentences) && isset($sentences->{$language})) {
+                $term->model_sentence_translation = $sentences->{$language};
+            }
+        }
+        return $terms;
+    }
+
     public function update_userpref_defs($terms)
     {
         // Get selected definitions language.
         $activitydefinitionslanguage = $this->get_mod()->deflanguage;
         $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+
+        // The language the learner is actually reading in. Without a preference of their own that
+        // is whatever the activity was set up with.
+        $effectivelanguage = !empty($userprefdeflanguage) ? $userprefdeflanguage : $activitydefinitionslanguage;
+        $terms = $this->insert_sentence_translations($terms, $effectivelanguage);
 
         // If there is no userpref or its the same as the activity def, nothing to update.
         if (empty($userprefdeflanguage) || $userprefdeflanguage == $activitydefinitionslanguage) {
