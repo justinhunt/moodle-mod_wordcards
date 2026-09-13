@@ -85,6 +85,14 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+    'mod_wordcards_sync_sentence_translations' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'sync_sentence_translations',
+        'description' => 'fetches translated example sentences for terms that do not have them',
+        'capabilities'=> 'mod/wordcards:manage',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
     'mod_wordcards_search_dictionary' => array(
         'classname'   => 'mod_wordcards_external',
         'methodname'  => 'search_dictionary',

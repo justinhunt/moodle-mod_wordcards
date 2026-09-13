@@ -38,6 +38,7 @@ use core_external\external_value;
 use mod_wordcards\utils;
 use mod_wordcards\constants;
 use mod_wordcards\imagegen;
+use mod_wordcards\sentence_sync;
 
 
 /**
@@ -497,6 +498,70 @@ class mod_wordcards_external extends external_api
     {
         return new external_value(PARAM_RAW);
         // return new external_value(PARAM_INT, 'group id');
+    }
+
+    /**
+     * Parameters for sync_sentence_translations.
+     *
+     * @return external_function_parameters
+     */
+    public static function sync_sentence_translations_parameters() {
+        return new external_function_parameters(
+            [
+                'cmid' => new external_value(PARAM_INT, 'The course module id'),
+            ]
+        );
+    }
+
+    /**
+     * Fetch the translated example sentences for terms that do not have them.
+     *
+     * The work is in \mod_wordcards\sentence_sync, which an adhoc task and a cli script also call.
+     * This is the path for somebody pressing a button and waiting for an answer.
+     *
+     * @param int $cmid
+     * @return array counts, and a sentence saying what happened
+     */
+    public static function sync_sentence_translations($cmid) {
+        $params = self::validate_parameters(self::sync_sentence_translations_parameters(), compact('cmid'));
+        $cmid = $params['cmid'];
+
+        $mod = mod_wordcards_module::get_by_cmid($cmid);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
+
+        // One dictionary lookup per term that needs one, so a large word list takes a while.
+        \core_php_time_limit::raise(300);
+        session_write_close();
+
+        $counts = sentence_sync::sync_module($mod->get_id());
+
+        return [
+            'updated' => $counts['updated'],
+            'alreadyhave' => $counts['alreadyhave'],
+            'nodata' => $counts['nodata'],
+            'unmatched' => $counts['unmatched'],
+            'failed' => $counts['failed'],
+            'message' => get_string('ww_syncsentences_result', constants::M_COMPONENT, (object)$counts),
+        ];
+    }
+
+    /**
+     * What sync_sentence_translations returns.
+     *
+     * @return external_single_structure
+     */
+    public static function sync_sentence_translations_returns() {
+        return new external_single_structure(
+            [
+                'updated' => new external_value(PARAM_INT, 'Terms that now have translated sentences'),
+                'alreadyhave' => new external_value(PARAM_INT, 'Terms that already had them'),
+                'nodata' => new external_value(PARAM_INT, 'Terms whose sense the dictionary has not translated yet'),
+                'unmatched' => new external_value(PARAM_INT, 'Terms whose example sentence matched no sense'),
+                'failed' => new external_value(PARAM_INT, 'Terms whose lookup failed'),
+                'message' => new external_value(PARAM_TEXT, 'A sentence describing the result'),
+            ]
+        );
     }
 
     public static function search_dictionary_parameters()

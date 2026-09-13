@@ -1940,6 +1940,14 @@ class utils
         $ret = $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
         if ($ret && !empty($insertdata->model_sentence)) {
             $DB->update_record('wordcards', ['id' => $modid, 'hashisold' => 1]);
+
+            // The dictionary makes these in a task of its own, so a word looked up today usually
+            // arrives without them. Ask to come back for them tomorrow rather than leaving the
+            // card short for good. Queueing is deduplicated, so adding twenty words in a row
+            // leaves one task.
+            if (empty($insertdata->model_sentence_translations)) {
+                \mod_wordcards\task\sync_sentence_translations::queue_for_module($modid);
+            }
         }
         return $ret;
     }

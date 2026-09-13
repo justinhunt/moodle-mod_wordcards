@@ -40,10 +40,11 @@
     * audio - url of recorded audio for the term, if any
     * ttsvoice - the voice to speak with when there is no recording
     * seen - whether the learner has marked this term as seen
+    * image - url of an image for the term, optional. It sits with the term rather than after the
+      example sentence, where a reader takes it to be a picture of the sentence
     * model_sentence - the example sentence, optional
     * model_sentence_audio - url of recorded audio for the example sentence, if any
     * model_sentence_translation - the example sentence in the learner's language, optional
-    * image - url of an image for the term, optional
 
     Example context (json):
     {
@@ -76,6 +77,12 @@
 
         <div class="wc-onesided-definition">{{{definition}}}</div>
 
+        {{#image}}
+        <div class="term-image term-image-{{id}}">
+            <img src="{{image}}" class="flash_img wc-onesided-image" alt=""/>
+        </div>
+        {{/image}}
+
         {{#model_sentence}}
         <div class="wc-onesided-sentence">
             <span class="wc-onesided-sentence-text">{{model_sentence}}</span>
@@ -92,12 +99,6 @@
         {{#model_sentence_translation}}
         <div class="wc-onesided-sentence-translation">{{model_sentence_translation}}</div>
         {{/model_sentence_translation}}
-
-        {{#image}}
-        <div class="term-image term-image-{{id}}">
-            <img src="{{image}}" class="flash_img wc-onesided-image" alt=""/>
-        </div>
-        {{/image}}
 
     </div>
 </div>

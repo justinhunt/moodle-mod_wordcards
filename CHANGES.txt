@@ -9,6 +9,11 @@
   the dictionary has it
 - New cli/sync_sentence_translations.php fetches those translated sentences for terms
   that were added before they existed
+- A "Fetch translated sentences" button on the Word Wizard page does the same on demand
+- Adding a word whose sentences the dictionary has not translated yet queues a task to
+  come back for them a day later, once
+- On one sided cards the picture now sits with the word rather than after the example
+  sentence, where it read as a picture of the sentence
 
 1.3.92 (Build 2026091200)
 - The Word Wizard now keeps the translated model sentences the dictionary returns,

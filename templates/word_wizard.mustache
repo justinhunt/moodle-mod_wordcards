@@ -19,12 +19,42 @@
   </div>
 </div>
 
+<hr>
+<div class="mod_wordcards_ww_sync_cont">
+  <h4>{{#str}}ww_syncsentences, mod_wordcards {{/str}}</h4>
+  <div>{{#str}}ww_syncsentences_instructions, mod_wordcards {{/str}}</div><br />
+  <a class="btn btn-primary ww_sync_sentences_btn" id="{{uniqid}}_syncbtn">{{#str}}ww_syncsentences_btn, mod_wordcards{{/str}}</a>
+  <div id="{{uniqid}}_sync_results" class="mod_wordcards_ww_sync_results"></div>
+</div>
+
 {{^element.frozen}}
     {{#js}}
-        require(['jquery','core/log','core/templates','mod_wordcards/dictlookup', 'mod_wordcards/bulkimagegen'],function($,log,templates,  dictlookup, bulkimagegen) {
+        require(['jquery','core/log','core/templates','core/ajax','mod_wordcards/dictlookup', 'mod_wordcards/bulkimagegen'],function($,log,templates,ajax,  dictlookup, bulkimagegen) {
 
             //Init bulk image generation
             bulkimagegen.init({{cmid}});
+
+            //fetch the translated example sentences for words that have none yet
+            var syncresults = $("#{{uniqid}}_sync_results");
+            $("#{{uniqid}}_syncbtn").on("click", function() {
+                var btn = $(this);
+                if (btn.hasClass("disabled")) {
+                    return;
+                }
+                btn.addClass("disabled");
+                syncresults.text("{{#str}}ww_syncsentences_working, mod_wordcards{{/str}}");
+                ajax.call([{
+                    methodname: "mod_wordcards_sync_sentence_translations",
+                    args: {cmid: {{cmid}}}
+                }])[0].done(function(response) {
+                    syncresults.text(response.message);
+                    btn.removeClass("disabled");
+                }).fail(function(err) {
+                    log.debug(err);
+                    syncresults.text("{{#str}}ww_syncsentences_failed, mod_wordcards{{/str}}");
+                    btn.removeClass("disabled");
+                });
+            });
 
             //get words from text area and fetch definitions
             var resultscont = $("#{{uniqid}}_resultscont");
