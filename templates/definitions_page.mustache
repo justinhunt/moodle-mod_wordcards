@@ -45,6 +45,12 @@
          </div>
          <ul class="definition_flashcards_ul">
             {{#definitions}}
+            {{#onesided}}
+            <li class="wc-onesided-card {{#isfirstcard}}is-current slide-is-visible{{/isfirstcard}} {{^isfirstcard}}slide-is-hidden{{/isfirstcard}}">
+               {{>mod_wordcards/onesided_card}}
+            </li>
+            {{/onesided}}
+            {{^onesided}}
             <li class="flip-card {{#isfirstcard}}is-current slide-is-visible{{/isfirstcard}} {{^isfirstcard}}slide-is-hidden{{/isfirstcard}}">
                <div class="wc-faces flip-card-inner">
                   <!-- front face -->
@@ -96,6 +102,7 @@
                   </div>
                </div>
             </li>
+            {{/onesided}}
             {{/definitions}}
          </ul>
          <div class="wc_cardsprogress"> -- / -- </div>

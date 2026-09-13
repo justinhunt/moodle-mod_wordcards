@@ -658,3 +658,5 @@ $string['learnmodecards_details'] = 'Should learn mode show two sided cards that
 $string['learnmodecards_help'] = 'Two sided cards show the term on the front and its definition on the back, and the learner flips the card. One sided cards show the term, its definition, the example sentence and its translation together on a single face.';
 $string['cards_twosided'] = 'Two sided';
 $string['cards_onesided'] = 'One sided';
+$string['playtermaudio'] = 'Play the word';
+$string['playsentenceaudio'] = 'Play the example sentence';

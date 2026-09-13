@@ -1,0 +1,103 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_wordcards/onesided_card
+
+    One card, showing everything at once, for learn mode when learnmodecards is set to one sided.
+
+    Based on the cards item type in mod_minilesson. It deliberately does not carry the flip-card
+    class: cardactions.js binds its click to flip handler to that class, and this card has no back
+    to turn to.
+
+    Only the term and its definition are always present. The example sentence, its translation and
+    the image are each optional, and a card carrying only the first two is a normal outcome rather
+    than a broken one - the model sentence translations in particular are filled in by a task on
+    the dictionary server and arrive later, if at all.
+
+    Audio needs no javascript of its own. a4e.js delegates clicks on document.body for
+    ".definitions-container .definition-play-tts" and ".model-sentence-play-tts", plays
+    data-modelaudio when it is a real url and falls back to speaking data-tts in data-ttsvoice, and
+    stops the event propagating.
+
+    Context variables required for this template:
+    * id - the term id
+    * term - the word or phrase
+    * definition - its definition, in the learner's definitions language
+    * audio - url of recorded audio for the term, if any
+    * ttsvoice - the voice to speak with when there is no recording
+    * seen - whether the learner has marked this term as seen
+    * model_sentence - the example sentence, optional
+    * model_sentence_audio - url of recorded audio for the example sentence, if any
+    * model_sentence_translation - the example sentence in the learner's language, optional
+    * image - url of an image for the term, optional
+
+    Example context (json):
+    {
+        "id": 42,
+        "term": "lantern",
+        "definition": "a lamp in a case, that can be carried",
+        "audio": "",
+        "ttsvoice": "Amy",
+        "seen": false,
+        "model_sentence": "A lantern hung by the door.",
+        "model_sentence_audio": "",
+        "model_sentence_translation": "Un farol colgaba junto a la puerta.",
+        "image": ""
+    }
+}}
+<div class="wc-onesided-card-inner">
+    {{>mod_wordcards/my_words_button}}
+    <div class="term {{#seen}}term-seen{{/seen}}" data-termid="{{id}}">
+
+        <div class="wc-onesided-term">
+            <span class="wc-onesided-term-text">{{term}}</span>
+            <i data-modelaudio="{{audio}}"
+               data-tts="{{term}}"
+               data-ttsvoice="{{ttsvoice}}"
+               tabindex="0"
+               role="button"
+               aria-label="{{#str}}playtermaudio, mod_wordcards{{/str}}"
+               class="fa fa-volume-up definition-play-tts wc-onesided-audio"></i>
+        </div>
+
+        <div class="wc-onesided-definition">{{{definition}}}</div>
+
+        {{#model_sentence}}
+        <div class="wc-onesided-sentence">
+            <span class="wc-onesided-sentence-text">{{model_sentence}}</span>
+            <span data-modelaudio="{{model_sentence_audio}}"
+                  data-tts="{{model_sentence}}"
+                  data-ttsvoice="{{ttsvoice}}"
+                  tabindex="0"
+                  role="button"
+                  aria-label="{{#str}}playsentenceaudio, mod_wordcards{{/str}}"
+                  class="fa fa-volume-up model-sentence-play-tts wc-onesided-audio"></span>
+        </div>
+        {{/model_sentence}}
+
+        {{#model_sentence_translation}}
+        <div class="wc-onesided-sentence-translation">{{model_sentence_translation}}</div>
+        {{/model_sentence_translation}}
+
+        {{#image}}
+        <div class="term-image term-image-{{id}}">
+            <img src="{{image}}" class="flash_img wc-onesided-image" alt=""/>
+        </div>
+        {{/image}}
+
+    </div>
+</div>

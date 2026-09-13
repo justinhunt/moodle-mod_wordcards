@@ -3,7 +3,8 @@
   between the two sided flip cards and one sided cards that show everything at once
 - Existing activities stay on two sided cards, and the setting can be pushed to other
   activities like the other card settings
-- The one sided card itself is not built yet, so this setting has no visible effect
+- One sided cards show the word, its definition, the example sentence and a picture
+  together on a single face, with audio for the word and the sentence
 
 1.3.92 (Build 2026091200)
 - The Word Wizard now keeps the translated model sentences the dictionary returns,
