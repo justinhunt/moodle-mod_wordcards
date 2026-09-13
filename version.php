@@ -29,4 +29,4 @@ $plugin->component = 'mod_wordcards';
 $plugin->version = 2026091303;
 $plugin->requires = 2023100900; // Requires Moodle 4.3
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = "1.3.93 (Build 2026091303)";
+$plugin->release = "1.3.92 (Build 2026091303)";
