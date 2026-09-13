@@ -56,8 +56,22 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
                 'videoexamples','learnpoint','freemodeoptions','showlangchooser','imageonfront','masterinstance'));
 
         $terms = new backup_nested_element('terms');
-        $term = new backup_nested_element('term', array('id'), array(
-            'term', 'definition','model_sentence','sourcedef','translations','image','audio','model_sentence_audio', 'ttsvoice','alternates','deleted','phonetic','phoneticms'));
+        $term = new backup_nested_element('term', ['id'], [
+            'term',
+            'definition',
+            'model_sentence',
+            'sourcedef',
+            'translations',
+            'model_sentence_translations',
+            'image',
+            'audio',
+            'model_sentence_audio',
+            'ttsvoice',
+            'alternates',
+            'deleted',
+            'phonetic',
+            'phoneticms',
+        ]);
 
         $seens = new backup_nested_element('seens');
         $seen = new backup_nested_element('seen', array('id'), array(

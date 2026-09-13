@@ -70,6 +70,7 @@
         <FIELD NAME="definition" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="model_sentence" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="translations" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="model_sentence_translations" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The model sentence translated into each definitions language, as json keyed by language code"/>
         <FIELD NAME="sourcedef" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="image" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="audio" TYPE="text" NOTNULL="false" SEQUENCE="false"/>

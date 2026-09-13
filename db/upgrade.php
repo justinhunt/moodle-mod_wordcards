@@ -702,5 +702,25 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026082300, 'wordcards');
     }
 
+    if ($oldversion < 2026091200) {
+        $table = new xmldb_table(constants::M_TERMSTABLE);
+        $field = new xmldb_field(
+            'model_sentence_translations',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'translations'
+        );
+
+        // Conditionally launch add field model_sentence_translations.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2026091200, 'wordcards');
+    }
+
     return true;
 }

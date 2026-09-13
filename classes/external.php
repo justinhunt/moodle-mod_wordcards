@@ -224,12 +224,33 @@ class mod_wordcards_external extends external_api
             'translations' => new external_value(PARAM_RAW),
             'sourcedef' => new external_value(PARAM_RAW),
             'modelsentence' => new external_value(PARAM_RAW),
+            'modelsentencetranslations' => new external_value(
+                PARAM_RAW,
+                'The model sentence in each definitions language, as json',
+                VALUE_DEFAULT,
+                ''
+            ),
         ]);
     }
 
-    public static function submit_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence)
-    {
-        $ret = utils::save_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence);
+    public static function submit_newterm(
+        $modid,
+        $term,
+        $definition,
+        $translations,
+        $sourcedef,
+        $modelsentence,
+        $modelsentencetranslations = ''
+    ) {
+        $ret = utils::save_newterm(
+            $modid,
+            $term,
+            $definition,
+            $translations,
+            $sourcedef,
+            $modelsentence,
+            $modelsentencetranslations
+        );
         if ($ret) {
             return true;
         } else {

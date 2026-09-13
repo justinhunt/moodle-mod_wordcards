@@ -110,7 +110,8 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                             var senses = [];
                             senses.push({
                                 definition: 'No definition', sourcedefinition: 'No definition',
-                                modelsentence: '', senseindex: 0, translations: '{}'
+                                modelsentence: '', senseindex: 0, translations: '{}',
+                                modelsentencetranslations: '{}'
                             })
                             var tdata = {term: theterm.term, senses: senses, modid: that.modid};
                             that.replace_placeholder_with_result(placeholder,tdata);
@@ -122,13 +123,23 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
                                 //by default its term:English def:English
                                 var sourcedefinition = sense.definition;
                                 var alltrans = {};
+                                var allsenttrans = {};
                                 for (var langkey in sense) {
-                                    if (sense.hasOwnProperty(langkey) && langkey.startsWith('lang_')) {
+                                    if (!sense.hasOwnProperty(langkey)) {
+                                        continue;
+                                    }
+                                    if (langkey.startsWith('lang_')) {
                                         alltrans[langkey.substring(5)] = sense[langkey];
+                                    } else if (langkey.startsWith('sent_')) {
+                                        // The model sentence in that language. The dictionary only
+                                        // sends these once its sentence filling task has reached
+                                        // the sense, so they are often simply absent.
+                                        allsenttrans[langkey.substring(5)] = sense[langkey];
                                     }
                                 }
 
                                 var translations = JSON.stringify(alltrans);
+                                var modelsentencetranslations = JSON.stringify(allsenttrans);
                                 var definition = sourcedefinition;
                                 //if its NOT term:english and def:english, we pull the definition from the translation
                                 log.debug('definitionslang: ' + definitionslang);
@@ -153,7 +164,8 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
 
                                 tdata.senses.push({
                                     definition: definition, sourcedefinition: sourcedefinition,
-                                    modelsentence: modelsentence, senseindex: sindex, translations: translations
+                                    modelsentence: modelsentence, senseindex: sindex, translations: translations,
+                                    modelsentencetranslations: modelsentencetranslations
                                 });
                             }//end of results loop
                             that.replace_placeholder_with_result(placeholder,tdata);

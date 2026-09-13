@@ -1902,8 +1902,15 @@ class utils
         ];
     }
 
-    public static function save_newterm($modid, $term, $definition, $translations, $sourcedef, $modelsentence)
-    {
+    public static function save_newterm(
+        $modid,
+        $term,
+        $definition,
+        $translations,
+        $sourcedef,
+        $modelsentence,
+        $modelsentencetranslations = ''
+    ) {
 
         global $DB;
         $mod = \mod_wordcards_module::get_by_modid($modid);
@@ -1915,6 +1922,9 @@ class utils
         $insertdata->translations = self::super_trim($translations);
         $insertdata->sourcedef = self::super_trim($sourcedef);
         $insertdata->model_sentence = self::super_trim($modelsentence);
+        // The dictionary only carries these once the sentence filling task has reached that sense,
+        // so a word looked up today often arrives without them. Store what came, if anything.
+        $insertdata->model_sentence_translations = self::super_trim($modelsentencetranslations);
         $insertdata->ttsvoice = self::fetch_auto_voice($mod->get_mod()->ttslanguage);
         $ret = $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
         if ($ret && !empty($insertdata->model_sentence)) {
