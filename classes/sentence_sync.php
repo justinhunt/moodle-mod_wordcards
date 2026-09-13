@@ -41,13 +41,14 @@ class sentence_sync {
      * @param bool $refresh also re-fetch terms that already have translations stored
      * @param int $limit stop after this many terms are looked up, 0 for no limit
      * @param bool $dryrun work out what would happen and write nothing
-     * @return array counts, keyed: terms, nosentence, alreadyhave, updated, unmatched, nodata, failed
+     * @return array counts, keyed: terms, nosentence, alreadyhave, updated, unmatched, nodata,
+     *               failed, and unmatchedids, the terms no sense could be found for
      */
     public static function sync_module($modid, $refresh = false, $limit = 0, $dryrun = false) {
         global $DB;
 
         $counts = ['terms' => 0, 'nosentence' => 0, 'alreadyhave' => 0, 'updated' => 0,
-            'unmatched' => 0, 'nodata' => 0, 'failed' => 0];
+            'unmatched' => 0, 'nodata' => 0, 'failed' => 0, 'unmatchedids' => []];
 
         $mod = \mod_wordcards_module::get_by_modid($modid);
         $sourcelang = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
@@ -73,8 +74,14 @@ class sentence_sync {
             }
 
             $lookedup++;
+            $before = $counts['unmatched'];
             $sentences = self::fetch_sentences_for_term($term, $sourcelang, $targetlangs, $counts);
             if ($sentences === null) {
+                if ($counts['unmatched'] > $before) {
+                    // No sense carries this sentence. Looking it up again will not change that, so
+                    // record it for a caller that can translate it on its own instead.
+                    $counts['unmatchedids'][] = $term->id;
+                }
                 continue;
             }
 

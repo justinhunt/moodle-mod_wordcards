@@ -66,9 +66,17 @@ class sync_sentence_translations extends adhoc_task {
         }
 
         $counts = sentence_sync::sync_module($data->modid);
+
+        // Terms nothing matched carry a sentence of their own, which no lookup will find however
+        // often this runs. Hand those to the task that can translate one, as the button and the
+        // cli script both do.
+        foreach ($counts['unmatchedids'] as $termid) {
+            translate_custom_sentence::queue_for_term($termid);
+        }
+
         mtrace('Activity ' . $data->modid . ': ' . $counts['updated'] . ' term(s) updated, '
             . $counts['nodata'] . ' still had nothing at the dictionary, '
-            . $counts['unmatched'] . ' unmatched.');
+            . count($counts['unmatchedids']) . ' queued for translating on their own.');
     }
 
     /**

@@ -18,6 +18,8 @@
   which described something no longer on the card
 - A sentence a teacher wrote themselves is translated on its own, since no dictionary
   entry holds it. Needs Cloud Poodll 1.3.34 or later
+- The Word Wizard's fetch button now queues those sentences for translating rather than
+  reporting them as unmatched and leaving nothing to be done about it
 
 1.3.92 (Build 2026091200)
 - The Word Wizard now keeps the translated model sentences the dictionary returns,

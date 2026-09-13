@@ -95,8 +95,23 @@ foreach ($mods as $mod) {
         (int)$options['limit'],
         !empty($options['dryrun'])
     );
+
+    // Terms nothing matched have a sentence of their own, which no lookup will ever find. Queue
+    // those to be translated directly, as the Word Wizard's button does.
+    $unmatchedids = $counts['unmatchedids'];
+    unset($counts['unmatchedids']);
+    $counts['queued'] = 0;
+    if (!empty($options['dryrun'])) {
+        $counts['queued'] = count($unmatchedids);
+    } else {
+        foreach ($unmatchedids as $termid) {
+            \mod_wordcards\task\translate_custom_sentence::queue_for_term($termid);
+            $counts['queued']++;
+        }
+    }
+
     foreach ($counts as $key => $value) {
-        $totals[$key] = ($totals[$key] ?? 0) + $value;
+        $totals[$key] = (isset($totals[$key]) ? $totals[$key] : 0) + $value;
         cli_writeln('  ' . str_pad($key, 14) . $value);
     }
 }
@@ -110,4 +125,5 @@ foreach ($totals as $key => $value) {
 cli_writeln('');
 cli_writeln('  updated    = the sentence translations are now stored');
 cli_writeln('  unmatched  = no sense had this term\'s example sentence, usually because it was edited');
+cli_writeln('  queued     = those same terms, queued to have their own sentence translated instead');
 cli_writeln('  nodata     = the sense matched but the dictionary has no translated sentences for it yet');

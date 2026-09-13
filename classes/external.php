@@ -556,13 +556,28 @@ class mod_wordcards_external extends external_api
 
         $counts = sentence_sync::sync_module($mod->get_id());
 
+        // A term nothing matched has a sentence of its own, so no amount of looking it up will
+        // help. Queue those to be translated directly instead - the alternative is a teacher
+        // seeing the same unmatched count on every press with no way to act on it. Queueing is
+        // deduplicated per term, so pressing twice does not double up.
+        foreach ($counts['unmatchedids'] as $termid) {
+            \mod_wordcards\task\translate_custom_sentence::queue_for_term($termid);
+        }
+
+        $counts['queued'] = count($counts['unmatchedids']);
+        $message = get_string('ww_syncsentences_result', constants::M_COMPONENT, (object)$counts);
+        if ($counts['queued'] > 0) {
+            $message .= ' ' . get_string('ww_syncsentences_queued', constants::M_COMPONENT, $counts['queued']);
+        }
+
         return [
             'updated' => $counts['updated'],
             'alreadyhave' => $counts['alreadyhave'],
             'nodata' => $counts['nodata'],
             'unmatched' => $counts['unmatched'],
+            'queued' => $counts['queued'],
             'failed' => $counts['failed'],
-            'message' => get_string('ww_syncsentences_result', constants::M_COMPONENT, (object)$counts),
+            'message' => $message,
         ];
     }
 
@@ -578,6 +593,7 @@ class mod_wordcards_external extends external_api
                 'alreadyhave' => new external_value(PARAM_INT, 'Terms that already had them'),
                 'nodata' => new external_value(PARAM_INT, 'Terms whose sense the dictionary has not translated yet'),
                 'unmatched' => new external_value(PARAM_INT, 'Terms whose example sentence matched no sense'),
+                'queued' => new external_value(PARAM_INT, 'Terms queued to have their own sentence translated'),
                 'failed' => new external_value(PARAM_INT, 'Terms whose lookup failed'),
                 'message' => new external_value(PARAM_TEXT, 'A sentence describing the result'),
             ]
