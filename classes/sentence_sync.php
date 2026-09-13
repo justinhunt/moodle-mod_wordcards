@@ -146,6 +146,92 @@ class sentence_sync {
     }
 
     /**
+     * Translate a term's own example sentence, for one the dictionary does not hold.
+     *
+     * A teacher can rewrite the example on a card. No dictionary sense then carries that sentence,
+     * so sync_module() will never match it however often it runs, and it has to be translated on
+     * its own. The translating is done on the Poodll server through the same function the
+     * dictionary's own sentences go through, so the sentence uses the word already stored for each
+     * language rather than a synonym of it, and goes through the same wrong script check.
+     *
+     * @param \stdClass $term the term record
+     * @return bool true if something was stored
+     */
+    public static function translate_custom_sentence($term) {
+        global $DB;
+
+        if (trim((string)$term->model_sentence) === '') {
+            return false;
+        }
+
+        $mod = \mod_wordcards_module::get_by_modid($term->modid);
+        $sourcelang = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
+
+        // Only the languages this activity can actually show. The dictionary carries about fifty
+        // because a sense is shared by every activity on the platform; a sentence somebody wrote
+        // for one card is not, and asking the AI for fifty of them would be hard to justify.
+        $targetlangs = self::languages_for_module($mod);
+        if (!$targetlangs) {
+            return false;
+        }
+
+        // Pin each language to the word already on the card.
+        $knownwords = '';
+        if (!empty($term->translations) && utils::is_json($term->translations)) {
+            $words = json_decode($term->translations, true);
+            $wanted = array_intersect_key((array)$words, array_flip($targetlangs));
+            if ($wanted) {
+                $knownwords = json_encode($wanted, JSON_UNESCAPED_UNICODE);
+            }
+        }
+
+        $langlist = implode(',', $targetlangs);
+        $sentences = utils::fetch_sentence_translation(
+            $term->term,
+            $sourcelang,
+            $term->model_sentence,
+            $langlist,
+            $knownwords
+        );
+        if (!$sentences) {
+            return false;
+        }
+
+        $DB->set_field(constants::M_TERMSTABLE, 'model_sentence_translations', $sentences, ['id' => $term->id]);
+        return true;
+    }
+
+    /**
+     * Which languages is it worth translating this activity's sentences into?
+     *
+     * The language the activity defines in, plus any the learner can switch to, since the card
+     * follows whichever they have chosen.
+     *
+     * @param \mod_wordcards_module $mod
+     * @return array of language codes
+     */
+    protected static function languages_for_module($mod) {
+        $langs = [];
+        $deflanguage = $mod->get_mod()->deflanguage;
+        if (!empty($deflanguage) && $deflanguage !== constants::M_DEFLANG_OTHER) {
+            $langs[] = $deflanguage;
+        }
+        // A learner can only pick another language where the chooser is shown, and then only from
+        // the list the chooser itself offers - get_lang_options() is the tts languages, which are
+        // a different set of codes entirely.
+        if (!empty($mod->get_mod()->showlangchooser)) {
+            foreach (utils::get_rcdic_langs($deflanguage, false) as $deflang) {
+                if ($deflang['code'] !== constants::M_DEFLANG_OTHER && !in_array($deflang['code'], $langs)) {
+                    $langs[] = $deflang['code'];
+                }
+            }
+        }
+        // The sentence is already in the language being taught.
+        $taught = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
+        return array_values(array_diff($langs, [$taught]));
+    }
+
+    /**
      * Reduce a sentence to something two copies of it can be compared on.
      *
      * @param string $text

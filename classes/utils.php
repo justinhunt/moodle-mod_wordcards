@@ -932,6 +932,54 @@ class utils
         }
     }
 
+    /**
+     * Ask the Poodll server to translate a sentence that is not the dictionary's own.
+     *
+     * @param string $term the word the sentence is built around
+     * @param string $sourcelang the language the term and sentence are in
+     * @param string $sentence the sentence to translate
+     * @param string $targetlangs csv of language codes
+     * @param string $knownwords json of language code to the word already stored for it
+     * @return string|false json of language code to sentence, or false
+     */
+    public static function fetch_sentence_translation($term, $sourcelang, $sentence, $targetlangs, $knownwords = '') {
+        $conf = get_config(constants::M_COMPONENT);
+        if (empty($conf->apiuser) || empty($conf->apisecret)) {
+            return false;
+        }
+        $token = self::fetch_token($conf->apiuser, $conf->apisecret);
+        if (empty($token)) {
+            return false;
+        }
+
+        $params = [];
+        $params['wstoken'] = $token;
+        $params['wsfunction'] = 'local_cpapi_translate_sentence';
+        $params['moodlewsrestformat'] = 'json';
+        $params['term'] = $term;
+        $params['sourcelang'] = $sourcelang;
+        $params['sentence'] = $sentence;
+        $params['targetlangs'] = $targetlangs;
+        $params['knownwords'] = $knownwords;
+        $params['appid'] = constants::M_COMPONENT;
+
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode != 0) {
+            return false;
+        }
+        // An empty object means every language was rejected, which is worth nothing to a caller.
+        $empty = ['', '[]', '{}'];
+        if (in_array($payloadobject->returnMessage, $empty, true)) {
+            return false;
+        }
+        return $payloadobject->returnMessage;
+    }
+
     public static function fetch_auto_voice($langcode)
     {
         $voices = self::get_tts_voices($langcode, false);
@@ -1920,7 +1968,8 @@ class utils
         $translations,
         $sourcedef,
         $modelsentence,
-        $modelsentencetranslations = ''
+        $modelsentencetranslations = '',
+        $sentenceedited = false
     ) {
 
         global $DB;
@@ -1941,12 +1990,19 @@ class utils
         if ($ret && !empty($insertdata->model_sentence)) {
             $DB->update_record('wordcards', ['id' => $modid, 'hashisold' => 1]);
 
-            // The dictionary makes these in a task of its own, so a word looked up today usually
-            // arrives without them. Ask to come back for them tomorrow rather than leaving the
-            // card short for good. Queueing is deduplicated, so adding twenty words in a row
-            // leaves one task.
             if (empty($insertdata->model_sentence_translations)) {
-                \mod_wordcards\task\sync_sentence_translations::queue_for_module($modid);
+                if ($sentenceedited) {
+                    // This sentence is the teacher's own, so no dictionary sense holds it and
+                    // looking it up would find nothing however long we waited. It has to be
+                    // translated on its own.
+                    \mod_wordcards\task\translate_custom_sentence::queue_for_term($ret);
+                } else {
+                    // The dictionary makes these in a task of its own, so a word new to it arrives
+                    // before they exist. Ask to come back for them tomorrow rather than leaving
+                    // the card short for good. Queueing is deduplicated, so adding twenty words in
+                    // a row leaves one task.
+                    \mod_wordcards\task\sync_sentence_translations::queue_for_module($modid);
+                }
             }
         }
         return $ret;

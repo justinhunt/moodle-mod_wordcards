@@ -659,6 +659,7 @@ $string['learnmodecards_help'] = 'Two sided cards show the term on the front and
 $string['cards_twosided'] = 'Two sided';
 $string['cards_onesided'] = 'One sided';
 $string['task_sync_sentence_translations'] = 'Fetch translated example sentences for new words';
+$string['task_translate_custom_sentence'] = 'Translate an example sentence written by a teacher';
 $string['ww_syncsentences'] = 'Translated example sentences';
 $string['ww_syncsentences_instructions'] = 'One sided cards can show the example sentence in the learner\'s own language. The dictionary writes those translations in a task of its own, so a word added today usually has none for a day or so. This fetches whatever is ready now. It is done for you a day after words are added, so you only need it if you would rather not wait.';
 $string['ww_syncsentences_btn'] = 'Fetch translated sentences';

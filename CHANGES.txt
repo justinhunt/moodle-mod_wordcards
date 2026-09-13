@@ -14,6 +14,10 @@
   come back for them a day later, once
 - On one sided cards the picture now sits with the word rather than after the example
   sentence, where it read as a picture of the sentence
+- Rewriting a model sentence now discards the translations of the sentence it replaced,
+  which described something no longer on the card
+- A sentence a teacher wrote themselves is translated on its own, since no dictionary
+  entry holds it. Needs Cloud Poodll 1.3.34 or later
 
 1.3.92 (Build 2026091200)
 - The Word Wizard now keeps the translated model sentences the dictionary returns,

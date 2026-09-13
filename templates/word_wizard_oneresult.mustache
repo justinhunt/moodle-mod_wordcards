@@ -14,7 +14,7 @@
                     <span style="display: none" class="mod_wordcards_ww_trans">{{translations}}</span>
                     <span style="display: none" class="mod_wordcards_ww_senttrans">{{modelsentencetranslations}}</span>
                     <label class="mod_wordcards_ww_label">{{#str}}definition, mod_wordcards {{/str}}</label><input type="text" class="mod_wordcards_ww_def" value="{{definition}}"><br>
-                    <label class="mod_wordcards_ww_label">{{#str}}model_sentence, mod_wordcards {{/str}}</label><textarea class="mod_wordcards_ww_modelsentence" rows="3" >{{modelsentence}}</textarea><br>
+                    <label class="mod_wordcards_ww_label">{{#str}}model_sentence, mod_wordcards {{/str}}</label><textarea class="mod_wordcards_ww_modelsentence" rows="3" data-original="{{modelsentence}}">{{modelsentence}}</textarea><br>
                     <button class="mod_wordcards_ww_use {{uniqid}}_usebutton" data-senseindex="{{senseindex}}" type='button'>{{#str}}use, mod_wordcards {{/str}}</button>
                     <button class="mod_wordcards_ww_dismiss {{uniqid}}_dismissbutton" data-senseindex="{{senseindex}}" type='button'>{{#str}}dismiss, mod_wordcards {{/str}}</button>
                 </div>
@@ -43,14 +43,24 @@
                 var sourcedef = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_sourcedef").text();
                 var translations = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_trans").text();
                 var senttrans = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_senttrans").text();
-                var modelsentence = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_modelsentence").val();
+                var sentencebox = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_modelsentence");
+                var modelsentence = sentencebox.val();
+                //The translations we hold are of the sentence the dictionary gave us. If the teacher has
+                //rewritten it they no longer describe what will be on the card, so drop them and say so:
+                //the server queues a different task for a sentence of its own.
+                var sentenceedited = 0;
+                if ($.trim(modelsentence) !== $.trim(sentencebox.attr('data-original') || '')) {
+                    senttrans = '';
+                    sentenceedited = 1;
+                }
 
 
                 var promises = ajax.call([
                     { methodname: 'mod_wordcards_submit_newterm',
                         args: { modid: {{modid}}, term: "{{term}}", definition: definition,
                                 sourcedef: sourcedef, translations: translations,
-                                modelsentence: modelsentence, modelsentencetranslations: senttrans}
+                                modelsentence: modelsentence, modelsentencetranslations: senttrans,
+                                sentenceedited: sentenceedited}
                     }
                 ]);
 

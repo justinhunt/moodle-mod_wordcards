@@ -231,6 +231,12 @@ class mod_wordcards_external extends external_api
                 VALUE_DEFAULT,
                 ''
             ),
+            'sentenceedited' => new external_value(
+                PARAM_BOOL,
+                'Whether the teacher rewrote the sentence the dictionary offered',
+                VALUE_DEFAULT,
+                false
+            ),
         ]);
     }
 
@@ -241,7 +247,8 @@ class mod_wordcards_external extends external_api
         $translations,
         $sourcedef,
         $modelsentence,
-        $modelsentencetranslations = ''
+        $modelsentencetranslations = '',
+        $sentenceedited = false
     ) {
         $ret = utils::save_newterm(
             $modid,
@@ -250,7 +257,8 @@ class mod_wordcards_external extends external_api
             $translations,
             $sourcedef,
             $modelsentence,
-            $modelsentencetranslations
+            $modelsentencetranslations,
+            $sentenceedited
         );
         if ($ret) {
             return true;
@@ -386,6 +394,18 @@ class mod_wordcards_external extends external_api
             } else {
                 $data->id = $data->termid;
                 $needsupdating = true;
+
+                // The stored sentence translations are of the sentence as it was. Rewriting it
+                // leaves them describing something that is no longer on the card, so they go, and
+                // a task is asked to translate the new one.
+                $fields = 'id, modid, model_sentence, model_sentence_translations';
+                $existing = $DB->get_record(constants::M_TERMSTABLE, ['id' => $data->id], $fields);
+                if ($existing && trim((string)$existing->model_sentence) !== trim((string)$data->model_sentence)) {
+                    $data->model_sentence_translations = '';
+                    if (trim((string)$data->model_sentence) !== '') {
+                        \mod_wordcards\task\translate_custom_sentence::queue_for_term($data->id);
+                    }
+                }
             }
             if ($data->id) {
                 $ret->error = false;
