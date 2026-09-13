@@ -65,6 +65,9 @@ define([
         //self select icons
       var selectors = '.a4e-flashcards-container .play-tts';
       selectors += ', .definitions-container .definition-play-tts';
+      // The one sided learn card sits in the carousel, which is outside .definitions-container, and
+      // it carries no id of its own, so it needs naming here or its word never plays.
+      selectors += ', .wc-onesided-card-inner .definition-play-tts';
       selectors += ', #speech-container .wordcards-speechcards-speaker-icon';
       selectors += ', .mod_wordcards_matching_frontbtn';
       selectors += ', .model-sentence-play-tts';
