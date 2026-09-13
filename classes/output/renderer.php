@@ -119,6 +119,9 @@ class renderer extends \plugin_renderer_base
             'str_definition' => get_string('definition', 'mod_wordcards'),
             'definitions' => array_values($definitions),
             'imageonfront' => $mod->get_mod()->imageonfront,
+            // Step 1 plumbs this through unused: the template still renders the two sided card
+            // either way, so flipping the setting is provably inert until the card itself lands.
+            'onesided' => (int)$mod->get_mod()->learnmodecards === constants::M_CARDS_ONESIDED,
             'youglish' => $youglish,
             'gotit' => get_string('gotit', 'mod_wordcards'),
             'loading' => get_string('loading', 'mod_wordcards'),
@@ -760,7 +763,8 @@ class renderer extends \plugin_renderer_base
             'msoptions',
             'sgoptions',
             'scatteroptions',
-            'imageonfront'
+            'imageonfront',
+            'learnmodecards',
         ];
 
         foreach ($pushthings as $pushthing) {
@@ -809,6 +813,9 @@ class renderer extends \plugin_renderer_base
                     break;
                 case 'scatteroptions':
                     $action = constants::M_PUSH_SCATTEROPTIONS;
+                    break;
+                case 'learnmodecards':
+                    $action = constants::M_PUSH_LEARNMODECARDS;
                     break;
 
             }

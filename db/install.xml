@@ -53,6 +53,7 @@
         <FIELD NAME="freemodeoptions" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Free mode options"/>
         <FIELD NAME="showlangchooser" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="imageonfront" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="show images on front of card"/>
+        <FIELD NAME="learnmodecards" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="0 two sided flip cards, 1 one sided cards"/>
         <FIELD NAME="masterinstance" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>

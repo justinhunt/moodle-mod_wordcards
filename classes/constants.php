@@ -352,5 +352,16 @@ class constants {
     const M_PUSH_SGOPTIONS = 13;
     const M_PUSH_IMAGEONFRONT = 14;
     const M_PUSH_SCATTEROPTIONS = 15;
+    /** @var int push the learn mode card style to other activities */
+    const M_PUSH_LEARNMODECARDS = 16;
+
+    /**
+     * @var int two sided flip cards, the card wordcards has always had. Stays the default so that
+     * an activity built before the setting existed looks the same afterwards.
+     */
+    const M_CARDS_TWOSIDED = 0;
+
+    /** @var int one sided cards, showing the term, definition, example and translation together */
+    const M_CARDS_ONESIDED = 1;
 
 }

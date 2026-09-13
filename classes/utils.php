@@ -1622,11 +1622,22 @@ class utils
         $mform->setDefault('showlangchooser', $config->showlangchooser);
         $mform->addHelpButton('showlangchooser', 'showlangchooser', constants::M_COMPONENT);
 
+        // Two sided flip cards, or one sided cards, in learn mode.
+        $cardoptions = [
+            constants::M_CARDS_TWOSIDED => get_string('cards_twosided', constants::M_COMPONENT),
+            constants::M_CARDS_ONESIDED => get_string('cards_onesided', constants::M_COMPONENT),
+        ];
+        $mform->addElement('select', 'learnmodecards', get_string('learnmodecards', constants::M_COMPONENT), $cardoptions);
+        $mform->setDefault('learnmodecards', $config->learnmodecards);
+        $mform->addHelpButton('learnmodecards', 'learnmodecards', constants::M_COMPONENT);
+
         // Show images for cards on front or back of card in learn mode.
         $img_options = [0=>get_string('cardback', constants::M_COMPONENT),1=>get_string('cardfront', constants::M_COMPONENT)];
         $mform->addElement('select', 'imageonfront', get_string('imageonfront', constants::M_COMPONENT),$img_options);
         $mform->setDefault('imageonfront', $config->imageonfront);
         $mform->addHelpButton('imageonfront', 'imageonfront', constants::M_COMPONENT);
+        // A one sided card has no back to put the image on, so the question does not arise.
+        $mform->hideIf('imageonfront', 'learnmodecards', 'eq', constants::M_CARDS_ONESIDED);
 
         $videooptions = [0 => get_string('no'), 1 => get_string('yes')];
         $mform->addElement(

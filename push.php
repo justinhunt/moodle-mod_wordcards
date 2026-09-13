@@ -136,6 +136,9 @@ switch($action){
     case constants::M_PUSH_SCATTEROPTIONS:
         $updatefields = ['scatteroptions'];
         break;
+    case constants::M_PUSH_LEARNMODECARDS:
+        $updatefields = ['learnmodecards'];
+        break;
     case constants::M_PUSH_NONE:
     default:
         $updatefields = [];

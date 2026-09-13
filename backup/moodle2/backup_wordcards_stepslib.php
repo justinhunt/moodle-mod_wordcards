@@ -53,7 +53,7 @@ class backup_wordcards_activity_structure_step extends backup_activity_structure
                 'completedmsg', 'ttslanguage','deflanguage','transcriber','passagehash','hashisold','foriframe',
                 'showimageflip', 'frontfaceflip', 'lcoptions', 'msoptions', 'sgoptions', 'scoptions', 'scatteroptions',
                 'viewstart', 'viewend',
-                'videoexamples','learnpoint','freemodeoptions','showlangchooser','imageonfront','masterinstance'));
+                'videoexamples','learnpoint','freemodeoptions','showlangchooser','imageonfront', 'learnmodecards', 'masterinstance'));
 
         $terms = new backup_nested_element('terms');
         $term = new backup_nested_element('term', ['id'], [

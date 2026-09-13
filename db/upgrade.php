@@ -722,5 +722,26 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091200, 'wordcards');
     }
 
+    if ($oldversion < 2026091300) {
+        $table = new xmldb_table(constants::M_TABLE);
+        $field = new xmldb_field(
+            'learnmodecards',
+            XMLDB_TYPE_INTEGER,
+            2,
+            XMLDB_UNSIGNED,
+            XMLDB_NOTNULL,
+            null,
+            0,
+            'imageonfront'
+        );
+
+        // Conditionally launch add field learnmodecards. The default of 0 keeps every activity that
+        // already exists on the two sided card it was built with.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_mod_savepoint(true, 2026091300, 'wordcards');
+    }
+
     return true;
 }

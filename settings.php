@@ -176,6 +176,24 @@ if ($ADMIN->fulltree) {
         $options
     ));
 
+    // Two sided flip cards, or one sided cards, in learn mode.
+
+    $name = 'learnmodecards';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $options = [
+        constants::M_CARDS_TWOSIDED => get_string('cards_twosided', constants::M_COMPONENT),
+        constants::M_CARDS_ONESIDED => get_string('cards_onesided', constants::M_COMPONENT),
+    ];
+    $default = constants::M_CARDS_TWOSIDED;
+    $settings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
+
     // Show images on flip screen.
     $name = 'showimageflip';
     $label = get_string('showimageflip', constants::M_COMPONENT);
