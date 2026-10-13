@@ -21,6 +21,8 @@
   instead of loading forever
 - Word Wizard no longer fills in "No translation available" as the definition when the
   dictionary has none in the chosen language
+- Word Wizard no longer offers the same meaning of a word twice, when the dictionary
+  sends it twice
 - Fixed definitions going blank for learners who chose English in the language chooser,
   and when an activity's definitions language was changed to English, for words added
   with the Word Wizard

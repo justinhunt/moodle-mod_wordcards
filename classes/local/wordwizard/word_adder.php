@@ -82,9 +82,18 @@ class word_adder {
      */
     public static function read_entry($onesearch, $deflang) {
         $senses = [];
+        $seen = [];
         if (!empty($onesearch->count) && !empty($onesearch->results)) {
             foreach (array_values((array) $onesearch->results) as $senseindex => $sense) {
-                $senses[] = self::read_sense($sense, $senseindex, $deflang);
+                $read = self::read_sense($sense, $senseindex, $deflang);
+                // The dictionary sometimes sends a sense twice. Offering both would be offering
+                // the same choice twice, so keep the first.
+                $key = \core_text::strtolower($read['definition'] . '|' . $read['modelsentence']);
+                if (isset($seen[$key])) {
+                    continue;
+                }
+                $seen[$key] = true;
+                $senses[] = $read;
             }
         }
         return [

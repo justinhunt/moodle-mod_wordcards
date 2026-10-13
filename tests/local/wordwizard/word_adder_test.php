@@ -108,6 +108,21 @@ final class word_adder_test extends \advanced_testcase {
         $this->assertSame('the land along the side of a river', $senses[1]['sourcedefinition']);
     }
 
+    public function test_read_payload_drops_repeated_senses(): void {
+        $payload = json_encode([[
+            'term' => 'umbrella',
+            'count' => 3,
+            'results' => [
+                ['definition' => 'Thing you open over your head', 'example' => 'Use an umbrella when it rains'],
+                ['definition' => 'Including many smaller things', 'example' => 'This company is an umbrella'],
+                ['definition' => 'Thing you open over your head', 'example' => 'Use an umbrella when it rains'],
+            ],
+        ]]);
+        $senses = word_adder::read_payload($payload, 'en')[0]['senses'];
+        $this->assertCount(2, $senses);
+        $this->assertSame([0, 1], array_column($senses, 'senseindex'));
+    }
+
     public function test_read_payload_unreadable(): void {
         $this->assertNull(word_adder::read_payload('unable to fetch dictionary entries', 'en'));
         $this->assertNull(word_adder::read_payload('{"term":"bank"}', 'en'));
