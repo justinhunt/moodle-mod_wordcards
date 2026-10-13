@@ -852,6 +852,7 @@ class renderer extends \plugin_renderer_base
             'cmid' => $cm->id,
             'langterm' => $langterm,
             'langdefs' => $langdefs,
+            'managewordsurl' => (new \moodle_url('/mod/wordcards/managewords.php', ['id' => $cm->id]))->out(false),
         ];
         return $this->render_from_template('mod_wordcards/word_wizard', $data);
     }

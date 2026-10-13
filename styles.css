@@ -1783,36 +1783,136 @@ ul.definition_flashcards_ul {
     text-align: center;
 }
 
-.mod_wordcards_ww_label {
-    display: inline-block;
-    /* width: 50px;*/
-    /* text-align: right; */
+.mod_wordcards_ww_cont {
+    max-width: 960px;
 }
 
-.mod_wordcards_ww_onesense {
-    border: 1px solid grey;
-    border-radius: 3px;
-    margin: 20px;
-    padding: 20px;
+.mod_wordcards_ww_searchbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
 }
 
-.mod_wordcards_ww_sourcedef {
-    font-style: italic;
+.mod_wordcards_ww_langdef {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mod_wordcards_ww_langdef select {
+    width: auto;
+}
+
+.mod_wordcards_ww_addedheader,
+.mod_wordcards_ww_wordheader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+}
+
+.mod_wordcards_ww_addedheader {
+    justify-content: space-between;
+}
+
+.mod_wordcards_ww_addedlist {
+    max-height: 16rem;
+    overflow-y: auto;
+}
+
+.mod_wordcards_ww_addeditem {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.mod_wordcards_ww_addeditem strong {
+    margin-right: 0.5rem;
+}
+
+.mod_wordcards_ww_skip {
+    margin-left: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.mod_wordcards_ww_senseview {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.mod_wordcards_ww_sensetext {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.mod_wordcards_ww_senseactions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.5rem;
 }
 
 .mod_wordcards_ww_def {
-    width: 100%;
-    max-width: 400px;
+    font-weight: bold;
 }
 
-.mod_wordcards_ww_modelsentence {
-    width: 100%;
-    max-width: 600px;
+.mod_wordcards_ww_def:empty::before {
+    content: attr(data-empty);
+    font-weight: normal;
+    font-style: italic;
+    opacity: 0.7;
 }
 
-.mod_wordcards_ww_fieldset {
-    margin: 20px;
-    padding: 10px;
+.mod_wordcards_ww_sentence {
+    font-style: italic;
+    margin-top: 0.15rem;
+}
+
+.mod_wordcards_ww_sentence:empty {
+    display: none;
+}
+
+.mod_wordcards_ww_senseedit {
+    margin-top: 0.75rem;
+}
+
+.mod_wordcards_ww_senseedit label {
+    margin: 0.5rem 0 0.15rem;
+}
+
+.mod_wordcards_ww_senseerror {
+    margin-top: 0.5rem;
+}
+
+.mod_wordcards_ww_failed {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.mod_wordcards_skeleton_box.mod_wordcards_ww_skeletonline {
+    height: 1rem;
+    margin-bottom: 0.6rem;
+    border-radius: 0.25rem;
+    background-color: rgba(127, 127, 127, 0.25);
+}
+
+.mod_wordcards_skeleton_box.mod_wordcards_ww_skeletonshort {
+    width: 60%;
+    margin-bottom: 0;
+}
+
+@media (max-width: 575px) {
+    .mod_wordcards_ww_senseview {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 }
 
 .definition_flashcards a.wordcards-my-words-action {

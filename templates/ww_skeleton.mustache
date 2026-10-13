@@ -1,17 +1,36 @@
-<div class="mod_wordcards_word_wizard_oneresult" id="mod_wordcards_wwskeleton_{{termno}}" >
-    <fieldset class="mod_wordcards_ww_fieldset border p-2">
-        <legend class="w-auto">{{term}}</legend>
-        <div class="container ml-0">
-            <div class="row">
+{{!
+    This file is part of Moodle - https://moodle.org/
 
-                    <div class="col-sm mod_wordcards_ww_onesense">
-                        <div class="mod_wordcards_skeleton_box"></div>
-                    </div>
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-                    <div class="col-sm mod_wordcards_ww_onesense">
-                        <div class="mod_wordcards_skeleton_box"></div>
-                    </div>
-            </div>
-        </div>
-    </fieldset>
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_wordcards/ww_skeleton
+
+    A word in the Word Wizard's results while it is being looked up.
+
+    Example context (json):
+    {
+        "term": "bank"
+    }
+}}
+<div class="card mb-3 mod_wordcards_ww_word mod_wordcards_ww_loading" aria-busy="true">
+    <div class="card-header mod_wordcards_ww_wordheader">
+        <h4 class="h5 mb-0 mod_wordcards_ww_term">{{term}}</h4>
+        <span class="small text-muted">{{#str}}ww_lookingup, mod_wordcards{{/str}}</span>
+    </div>
+    <div class="card-body">
+        <div class="mod_wordcards_skeleton_box mod_wordcards_ww_skeletonline"></div>
+        <div class="mod_wordcards_skeleton_box mod_wordcards_ww_skeletonline mod_wordcards_ww_skeletonshort"></div>
+    </div>
 </div>

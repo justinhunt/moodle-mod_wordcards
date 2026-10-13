@@ -1,76 +1,90 @@
-<div class="mod_wordcards_word_wizard_oneresult" id="{{uniqid}}_oneresult">
-    <fieldset class="mod_wordcards_ww_fieldset border p-2">
-        <legend class="w-auto">{{term}}</legend>
-        <div class="container ml-0">
-            <div class="row">
-            {{#nosenses}}
-                <div class="col-sm mod_wordcards_ww_onesense" id="{{uniqid}}_0_onesense">
-                    <div class="mod_wordcards_ww_sourcedef">{{#failed}}{{#str}}ww_lookupfailed, mod_wordcards {{/str}}{{/failed}}{{^failed}}{{#str}}nodefinitionfound, mod_wordcards {{/str}}{{/failed}}</div>
-                </div>
-            {{/nosenses}}
-            {{#senses}}
-                <div class="col-sm-4 mod_wordcards_ww_onesense" id="{{uniqid}}_{{senseindex}}_onesense">
-                    <span style="display: none" class="mod_wordcards_ww_sourcedef">{{sourcedefinition}}</span>
-                    <span style="display: none" class="mod_wordcards_ww_trans">{{translations}}</span>
-                    <span style="display: none" class="mod_wordcards_ww_senttrans">{{modelsentencetranslations}}</span>
-                    <label class="mod_wordcards_ww_label">{{#str}}definition, mod_wordcards {{/str}}</label><input type="text" class="mod_wordcards_ww_def" value="{{definition}}"{{^hasdefinition}} placeholder="{{#str}}ww_notranslation, mod_wordcards {{/str}}"{{/hasdefinition}}><br>
-                    <label class="mod_wordcards_ww_label">{{#str}}model_sentence, mod_wordcards {{/str}}</label><textarea class="mod_wordcards_ww_modelsentence" rows="3" data-original="{{modelsentence}}">{{modelsentence}}</textarea><br>
-                    <button class="mod_wordcards_ww_use {{uniqid}}_usebutton" data-senseindex="{{senseindex}}" type='button'>{{#str}}use, mod_wordcards {{/str}}</button>
-                    <button class="mod_wordcards_ww_dismiss {{uniqid}}_dismissbutton" data-senseindex="{{senseindex}}" type='button'>{{#str}}dismiss, mod_wordcards {{/str}}</button>
-                </div>
-            {{/senses}}
-            </div>
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_wordcards/word_wizard_oneresult
+
+    One word in the Word Wizard's results: each meaning the dictionary found, to choose one from.
+    Rendered by amd/src/dictlookup.js, which handles the buttons.
+
+    Example context (json):
+    {
+        "term": "bank", "found": true,
+        "senses": [{"senseindex": 0, "definition": "a place for money", "hasdefinition": true,
+            "modelsentence": "I put my wages in the bank."}]
+    }
+}}
+<div class="card mb-3 mod_wordcards_ww_word">
+    <div class="card-header mod_wordcards_ww_wordheader">
+        <h4 class="h5 mb-0 mod_wordcards_ww_term">{{term}}</h4>
+        {{^alreadyinset}}{{#found}}
+            <span class="small text-muted mod_wordcards_ww_choose">{{#str}}ww_choosesense, mod_wordcards{{/str}}</span>
+        {{/found}}{{/alreadyinset}}
+        <button type="button" class="btn btn-link btn-sm mod_wordcards_ww_skip" data-action="skip"
+            aria-label="{{#str}}ww_skipword, mod_wordcards, {{term}}{{/str}}">{{#str}}ww_skip, mod_wordcards{{/str}}</button>
+    </div>
+    {{#alreadyinset}}
+        <div class="card-body">
+            <p class="mb-0 text-muted">{{#str}}ww_alreadyinset, mod_wordcards{{/str}}</p>
         </div>
-    </fieldset>
+    {{/alreadyinset}}
+    {{^alreadyinset}}
+        {{#failed}}
+            <div class="card-body mod_wordcards_ww_failed">
+                <p class="mb-0">{{#str}}ww_lookupfailed, mod_wordcards{{/str}}</p>
+                <button type="button" class="btn btn-secondary btn-sm" data-action="retry">{{#str}}ww_retry, mod_wordcards{{/str}}</button>
+            </div>
+        {{/failed}}
+        {{^failed}}{{^found}}
+            <div class="card-body">
+                <p class="mb-0 text-muted">{{#str}}nodefinitionfound, mod_wordcards{{/str}}</p>
+            </div>
+        {{/found}}{{/failed}}
+        {{#found}}
+            <ul class="list-group list-group-flush">
+                {{#senses}}
+                    <li class="list-group-item mod_wordcards_ww_sense" data-senseindex="{{senseindex}}">
+                        <div class="mod_wordcards_ww_senseview">
+                            <div class="mod_wordcards_ww_sensetext">
+                                <div class="mod_wordcards_ww_def"
+                                    data-empty="{{#str}}ww_notranslation, mod_wordcards{{/str}}">{{definition}}</div>
+                                <div class="mod_wordcards_ww_sentence text-muted">{{modelsentence}}</div>
+                            </div>
+                            <div class="mod_wordcards_ww_senseactions">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-action="edit"
+                                    aria-expanded="{{^hasdefinition}}true{{/hasdefinition}}{{#hasdefinition}}false{{/hasdefinition}}">
+                                    {{#str}}ww_edit, mod_wordcards{{/str}}
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm" data-action="use">
+                                    {{#str}}ww_usethis, mod_wordcards{{/str}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mod_wordcards_ww_senseedit" {{#hasdefinition}}hidden{{/hasdefinition}}>
+                            <label for="{{uniqid}}_{{senseindex}}_def">{{#str}}definition, mod_wordcards{{/str}}</label>
+                            <input type="text" id="{{uniqid}}_{{senseindex}}_def" class="form-control mod_wordcards_ww_defedit"
+                                value="{{definition}}" placeholder="{{#str}}ww_notranslation, mod_wordcards{{/str}}">
+                            <label for="{{uniqid}}_{{senseindex}}_sentence">{{#str}}model_sentence, mod_wordcards{{/str}}</label>
+                            <textarea id="{{uniqid}}_{{senseindex}}_sentence" class="form-control mod_wordcards_ww_sentenceedit"
+                                rows="2">{{modelsentence}}</textarea>
+                        </div>
+                        <div class="small text-danger mod_wordcards_ww_senseerror" role="alert" hidden></div>
+                    </li>
+                {{/senses}}
+            </ul>
+        {{/found}}
+    {{/alreadyinset}}
 </div>
-{{^element.frozen}}
-    {{#js}}
-        require(['jquery','core/ajax'],function($,ajax) {
-
-            //remove the box
-            $(".{{uniqid}}_dismissbutton").unbind(); // bad hack to prevent multiple bindings from where?
-            $(".{{uniqid}}_dismissbutton").on("click", function() {
-                var senseindex = $(this).data('senseindex');
-                $("#{{uniqid}}_" + senseindex + "_onesense").remove();
-            });
-
-            //Update the textbox
-            $(".{{uniqid}}_usebutton").unbind(); // bad hack to prevent multiple bindings from where?
-            $(".{{uniqid}}_usebutton").on("click", function() {
-                var that = this;
-                var senseindex = $(this).data('senseindex');
-                var definition = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_def").val();
-                var sourcedef = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_sourcedef").text();
-                var translations = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_trans").text();
-                var senttrans = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_senttrans").text();
-                var sentencebox = $("#{{uniqid}}_" + senseindex + "_onesense .mod_wordcards_ww_modelsentence");
-                var modelsentence = sentencebox.val();
-                //The translations we hold are of the sentence the dictionary gave us. If the teacher has
-                //rewritten it they no longer describe what will be on the card, so drop them and say so:
-                //the server queues a different task for a sentence of its own.
-                var sentenceedited = 0;
-                if ($.trim(modelsentence) !== $.trim(sentencebox.attr('data-original') || '')) {
-                    senttrans = '';
-                    sentenceedited = 1;
-                }
-
-
-                var promises = ajax.call([
-                    { methodname: 'mod_wordcards_submit_newterm',
-                        args: { modid: {{modid}}, term: "{{term}}", definition: definition,
-                                sourcedef: sourcedef, translations: translations,
-                                modelsentence: modelsentence, modelsentencetranslations: senttrans,
-                                sentenceedited: sentenceedited}
-                    }
-                ]);
-
-                //update button
-                promises[0].done(function(response) {
-                    $(that).text('submitted').unbind();
-                    $(that).attr('disabled',true);
-                });
-
-            });
-        });//end of require
-    {{/js}}
-{{/element.frozen}}

@@ -1,13 +1,63 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
 
-<div class="mod_wordcards_ww_cont" >
-    <label for="ww_langdef">{{#str}}ww_langdef, mod_wordcards {{/str}}</label>
-    <select id="{{uniqid}}_ww_langdef" name="ww_langdef">
-        {{#langdefs}}
-            <option value="{{code}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-        {{/langdefs}}
-    </select><br>
-    <textarea id="{{uniqid}}_ww_words" placeholder="{{#str}}ww_words, mod_wordcards {{/str}}" name="ww_words" rows="4" cols="50"></textarea><br>
-    <a class="btn btn-primary ww_words_fetch_btn" id="{{uniqid}}_fetchbtn">{{#str}}ww_words_fetch, mod_wordcards{{/str}}</a>
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_wordcards/word_wizard
+
+    The Word Wizard: look words up, choose a meaning of each, and see what has been added.
+
+    Example context (json):
+    {
+        "cmid": 3, "modid": 2, "langterm": "en", "managewordsurl": "#",
+        "langdefs": [{"code": "ja", "name": "Japanese", "selected": true}]
+    }
+}}
+<div class="mod_wordcards_ww_cont" id="{{uniqid}}_ww">
+    <div class="card mb-3 mod_wordcards_ww_search">
+        <div class="card-body">
+            <label for="{{uniqid}}_ww_words">{{#str}}ww_words_label, mod_wordcards{{/str}}</label>
+            <textarea id="{{uniqid}}_ww_words" class="form-control mod_wordcards_ww_words" name="ww_words" rows="4"
+                placeholder="{{#str}}ww_words, mod_wordcards{{/str}}"></textarea>
+            <div class="mod_wordcards_ww_searchbar">
+                <div class="mod_wordcards_ww_langdef">
+                    <label for="{{uniqid}}_ww_langdef" class="mb-0">{{#str}}ww_langdef, mod_wordcards{{/str}}</label>
+                    <select id="{{uniqid}}_ww_langdef" name="ww_langdef" class="custom-select">
+                        {{#langdefs}}
+                            <option value="{{code}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/langdefs}}
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary ww_words_fetch_btn" id="{{uniqid}}_fetchbtn">
+                    {{#str}}ww_words_fetch, mod_wordcards{{/str}}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3 mod_wordcards_ww_added" id="{{uniqid}}_added" hidden>
+        <div class="card-header mod_wordcards_ww_addedheader">
+            <h4 class="h6 mb-0">
+                {{#str}}ww_added_heading, mod_wordcards{{/str}}
+                (<span class="mod_wordcards_ww_addedcount">0</span>)
+            </h4>
+            <a href="{{managewordsurl}}">{{#str}}ww_managewords, mod_wordcards{{/str}}</a>
+        </div>
+        <ul class="list-group list-group-flush mod_wordcards_ww_addedlist"></ul>
+    </div>
+
     <div id="{{uniqid}}_resultscont" class="mod_wordcards_ww_results"></div>
 </div>
 <hr>
@@ -56,33 +106,13 @@
                 });
             });
 
-            //get words from text area and fetch definitions
-            var resultscont = $("#{{uniqid}}_resultscont");
-            dictlookup.init('{{cmid}}','{{modid}}',resultscont);
-
-            $("#{{uniqid}}_fetchbtn").on("click", async function() {
-
-                //clear any old results
-                resultscont.empty();
-
-
-                var langs = ['ar','id','zh','zh_tw','ja','ko','pt','es','th','vi','fr','rus'];
-                var langdef = $("#{{uniqid}}_ww_langdef").val();
-                var allwords = $("#{{uniqid}}_ww_words").val();
-                if (allwords.trim() === '') {
-                    return;
-                }
-                //if the langdef is other then we can not fetch definitions then we can not get definitions
-                if (langdef.trim() === 'zz') {
-                    return;
-                }
-
-                //replace any new lines with commas
-                var allsearchwords = allwords.replace(/[\n]/g,',');
-                dictlookup.getwords(allsearchwords,'{{langterm}}',langdef);
-
+            //look words up and add the chosen meanings
+            dictlookup.init({
+                cmid: {{cmid}},
+                modid: {{modid}},
+                langterm: '{{langterm}}',
+                root: '#{{uniqid}}_ww'
             });
-
 
         });//end of require
     {{/js}}

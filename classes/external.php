@@ -279,15 +279,20 @@ class mod_wordcards_external extends external_api
             $params['modelsentencetranslations'],
             $params['sentenceedited']
         );
-        if ($ret) {
-            return true;
-        } else {
-            return false;
-        }
+        // A word is only added once, so when nothing was added say whether that is why.
+        return [
+            'added' => !empty($ret),
+            'termid' => $ret ? (int) $ret : 0,
+            'alreadyinset' => !$ret && utils::term_exists($params['modid'], $params['term']),
+        ];
     }
     public static function submit_newterm_returns()
     {
-        return new external_value(PARAM_BOOL);
+        return new external_single_structure([
+            'added' => new external_value(PARAM_BOOL, 'Whether the word was added'),
+            'termid' => new external_value(PARAM_INT, 'The new term id, or 0 if it was not added'),
+            'alreadyinset' => new external_value(PARAM_BOOL, 'Whether it was not added because the word is already there'),
+        ]);
     }
 
 
@@ -654,6 +659,10 @@ class mod_wordcards_external extends external_api
             $ret->success = false;
             $ret->payload = "unable to fetch dictionary entries";
         } else {
+            // Say which words are already in the set, so the wizard does not offer to add them again.
+            foreach ($entries as $i => $entry) {
+                $entries[$i]['alreadyinset'] = utils::term_exists($mod->get_id(), $entry['term']);
+            }
             $ret->success = true;
             $ret->payload = json_encode($entries);
         }
