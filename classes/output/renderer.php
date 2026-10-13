@@ -853,8 +853,44 @@ class renderer extends \plugin_renderer_base
             'langterm' => $langterm,
             'langdefs' => $langdefs,
             'managewordsurl' => (new \moodle_url('/mod/wordcards/managewords.php', ['id' => $cm->id]))->out(false),
+            'bgstatus' => $this->background_status($mod),
         ];
         return $this->render_from_template('mod_wordcards/word_wizard', $data);
+    }
+
+    /**
+     * A message saying what is still being done in the background, kept up to date as it is done.
+     *
+     * Renders an empty holder when there is nothing, so the message can appear later.
+     *
+     * @param \mod_wordcards_module $mod
+     * @param \moodle_url|null $reloadurl if set, say when the work is done and link here to see it
+     * @return string
+     */
+    public function background_status($mod, $reloadurl = null)
+    {
+        $pending = \mod_wordcards\local\wordwizard\background::pending($mod->get_id());
+        $data = self::background_status_context($pending);
+        $data['cmid'] = $mod->get_cmid();
+        $data['reloadurl'] = $reloadurl ? $reloadurl->out(false) : '';
+        $this->page->requires->js_call_amd('mod_wordcards/bgstatus', 'init', []);
+        return $this->render_from_template('mod_wordcards/ww_bgstatus', $data);
+    }
+
+    /**
+     * The ww_bgstatus template's context, from background::pending(). amd/src/bgstatus.js does the same.
+     *
+     * @param array $pending
+     * @return array
+     */
+    public static function background_status_context(array $pending)
+    {
+        return $pending + [
+            'active' => $pending['words'] > 0 || $pending['images'] > 0,
+            'haswords' => $pending['words'] > 0,
+            'hasimages' => $pending['images'] > 0,
+            'hasretrying' => $pending['retrying'] > 0,
+        ];
     }
 
     /**

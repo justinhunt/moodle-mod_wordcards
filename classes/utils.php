@@ -886,8 +886,16 @@ class utils
     }
 
 
-    // fetch the dictionary entries from cloud poodll
-    public static function fetch_dictionary_entries($terms, $sourcelang, $targetlangs)
+    /**
+     * Fetch the dictionary entries from cloud poodll.
+     *
+     * @param string $terms the word, or a comma separated list of words
+     * @param string $sourcelang
+     * @param string $targetlangs comma separated
+     * @param string|null $error set to why it failed, when it does
+     * @return string|false the entries as json, or false
+     */
+    public static function fetch_dictionary_entries($terms, $sourcelang, $targetlangs, &$error = null)
     {
         global $USER;
 
@@ -897,6 +905,7 @@ class utils
             $token = self::fetch_token($conf->apiuser, $conf->apisecret);
         }
         if (!$token || empty($token)) {
+            $error = 'No Cloud Poodll token';
             return false;
         }
 
@@ -916,18 +925,22 @@ class utils
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
+            $error = 'Not json: ' . \core_text::substr(trim(strip_tags((string) $response)), 0, 300);
             return false;
         }
         $payloadobject = json_decode($response);
 
         // returnCode > 0  indicates an error
-        if ($payloadobject->returnCode > 0) {
+        if (isset($payloadobject->returnCode) && $payloadobject->returnCode > 0) {
+            $error = 'Error ' . $payloadobject->returnCode . ': ' . json_encode($payloadobject->returnMessage ?? '');
             return false;
             // if all good, then lets do the embed
-        } else if ($payloadobject->returnCode === 0) {
+        } else if (isset($payloadobject->returnCode) && $payloadobject->returnCode === 0) {
             $pollyurl = $payloadobject->returnMessage;
             return $pollyurl;
         } else {
+            // Most likely a web service exception, which has no returnCode.
+            $error = 'Unexpected reply: ' . \core_text::substr($response, 0, 300);
             return false;
         }
     }

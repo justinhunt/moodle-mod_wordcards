@@ -9,8 +9,8 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/notification'],
-    function($, log, ajax, templates, str, notification) {
+define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/notification', 'mod_wordcards/bgstatus'],
+    function($, log, ajax, templates, str, notification, bgstatus) {
 
     "use strict";
 
@@ -40,19 +40,34 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
             this.addedcont = root.find('.mod_wordcards_ww_added');
             this.wordsbox = root.find('.mod_wordcards_ww_words');
             this.langdefselect = root.find('select[name="ww_langdef"]');
+            this.backgroundbox = root.find('.mod_wordcards_ww_background');
+            this.withimagesbox = root.find('.mod_wordcards_ww_withimages');
+            this.queueresult = root.find('.mod_wordcards_ww_queueresult');
 
             var that = this;
             str.get_strings([
                 {key: 'ww_addfailed', component: 'mod_wordcards'},
-                {key: 'ww_needdefinition', component: 'mod_wordcards'}
+                {key: 'ww_needdefinition', component: 'mod_wordcards'},
+                {key: 'ww_queuefailed', component: 'mod_wordcards'}
             ]).then(function(s) {
                 that.strings.addfailed = s[0];
                 that.strings.needdefinition = s[1];
+                that.strings.queuefailed = s[2];
                 return s;
             }).catch(notification.exception);
 
             this.searchbtn.on('click', function() {
-                that.search();
+                if (that.backgroundbox.prop('checked')) {
+                    that.queueWords();
+                } else {
+                    that.search();
+                }
+            });
+            // In the background there is nobody to choose a meaning, and pictures can be made too.
+            this.backgroundbox.on('change', function() {
+                var background = $(this).prop('checked');
+                that.withimagesbox.closest('.mod_wordcards_ww_withimagesopt').prop('hidden', !background);
+                that.searchbtn.text(that.searchbtn.attr(background ? 'data-queuelabel' : 'data-fetchlabel'));
             });
             this.resultscont.on('click', '[data-action]', function(e) {
                 e.preventDefault();
@@ -101,6 +116,7 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
             this.searchno++;
             this.entries = {};
             this.resultscont.empty();
+            this.queueresult.prop('hidden', true);
             this.searchbtn.prop('disabled', true).attr('aria-busy', 'true');
 
             var lookups = words.map(function(word, cardno) {
@@ -111,6 +127,47 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
                 if (searchno === that.searchno) {
                     that.searchbtn.prop('disabled', false).removeAttr('aria-busy');
                 }
+                return null;
+            }).catch(notification.exception);
+        },
+
+        /**
+         * Queue every word in the box to be looked up and added in the background.
+         */
+        queueWords: function() {
+            var that = this;
+            var words = this.getWords();
+            var langdef = this.langdefselect.val();
+            if (words.length === 0 || !langdef || langdef === 'zz') {
+                return;
+            }
+
+            this.searchbtn.prop('disabled', true).attr('aria-busy', 'true');
+            ajax.call([{
+                methodname: 'mod_wordcards_queue_words',
+                args: {
+                    cmid: this.opts.cmid,
+                    words: words,
+                    deflang: langdef,
+                    withimages: this.withimagesbox.prop('checked')
+                }
+            }])[0].then(function(result) {
+                var strings = [{key: 'ww_queued', component: 'mod_wordcards', param: result.queued}];
+                if (result.alreadyinset.length) {
+                    strings.push({key: 'ww_queued_already', component: 'mod_wordcards',
+                        param: result.alreadyinset.join(', ')});
+                }
+                bgstatus.update(result.pending);
+                that.wordsbox.val('');
+                return str.get_strings(strings);
+            }).then(function(messages) {
+                that.queueresult.text(messages.join(' ')).prop('hidden', false);
+                return messages;
+            }).catch(function(ex) {
+                log.debug(ex);
+                that.queueresult.text(that.strings.queuefailed).prop('hidden', false);
+            }).then(function() {
+                that.searchbtn.prop('disabled', false).removeAttr('aria-busy');
                 return null;
             }).catch(notification.exception);
         },

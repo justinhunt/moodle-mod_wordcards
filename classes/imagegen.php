@@ -36,6 +36,7 @@ class imagegen {
     protected $moduleinstance = false;
     protected $conf = false;
     protected $context = false;
+    protected $cm = false;
 
     function __construct($mod) {
         global $DB;
@@ -53,6 +54,33 @@ class imagegen {
         $baseprompt = str_replace('[[definition]]', $term->definition, $baseprompt);
         $baseprompt = str_replace('[[deflanguage]]', $this->moduleinstance->deflanguage, $baseprompt);
         return $baseprompt;
+    }
+
+    /**
+     * Make a picture for each of these terms that does not have one yet.
+     *
+     * The requests go out together, so this takes about as long as the slowest picture rather
+     * than all of them added up.
+     *
+     * @param array $terms term records
+     * @return array the pictures made, each with termid and url
+     */
+    public function generate_for_terms(array $terms) {
+        $termids = [];
+        $imageprompts = [];
+        foreach ($terms as $term) {
+            if (!empty($term->image)) {
+                continue;
+            }
+            $termids[] = $term->id;
+            // The DESCRIPTION: prefix tells Poodll to first write a detailed description of the
+            // picture, and then make the picture from that.
+            $imageprompts[$term->id] = 'DESCRIPTION: ' . $this->make_image_prompt($term);
+        }
+        if (empty($termids)) {
+            return [];
+        }
+        return $this->generate_images($termids, $imageprompts, '') ?: [];
     }
 
     public function generate_images($termids, $imageprompts, $overallimagecontext) {

@@ -1,0 +1,48 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_wordcards/ww_bgstatus
+
+    What is still being done in the background for an activity: words being added, pictures
+    being made. Shown on the Word Wizard and Manage words pages, and kept up to date by
+    amd/src/bgstatus.js, which renders it again with new numbers.
+
+    Example context (json):
+    {
+        "cmid": 3, "active": true, "words": 4, "haswords": true, "hasimages": true, "hasretrying": false
+    }
+}}
+<div class="mod_wordcards_ww_bgstatus" data-region="mod_wordcards_bgstatus" data-cmid="{{cmid}}"
+    {{#reloadurl}}data-reloadurl="{{reloadurl}}"{{/reloadurl}} data-active="{{#active}}1{{/active}}{{^active}}0{{/active}}">
+    {{#active}}
+        <div class="alert alert-info mod_wordcards_ww_bgalert" role="status">
+            <i class="icon fa fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+            <div>
+                {{#haswords}}<div>{{#str}}ww_bg_words, mod_wordcards, {{words}}{{/str}}</div>{{/haswords}}
+                {{#hasimages}}<div>{{#str}}ww_bg_images, mod_wordcards{{/str}}</div>{{/hasimages}}
+                {{#hasretrying}}<div>{{#str}}ww_bg_retrying, mod_wordcards{{/str}}</div>{{/hasretrying}}
+                <div class="small">{{#str}}ww_bg_when, mod_wordcards{{/str}}</div>
+            </div>
+        </div>
+    {{/active}}
+    {{#done}}
+        <div class="alert alert-success" role="status">
+            {{#str}}ww_bg_done, mod_wordcards{{/str}}
+            <a href="{{reloadurl}}">{{#str}}ww_bg_reload, mod_wordcards{{/str}}</a>
+        </div>
+    {{/done}}
+</div>

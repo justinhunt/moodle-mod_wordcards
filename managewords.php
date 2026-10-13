@@ -260,6 +260,8 @@ echo $output->header();
 echo $output->heading($pagetitle);
 echo $output->navigation($mod, 'managewords');
 echo $output->box(get_string('managewordsinstructions', constants::M_COMPONENT), 'generalbox', 'intro');
+// Words still being added in the background, and a link to reload once they are in.
+echo $output->background_status($mod, $PAGE->url);
 
 echo html_writer::start_tag('form', array('method' => 'POST', 'id' => 'bulkdeleteform'));
 

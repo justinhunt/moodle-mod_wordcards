@@ -37,10 +37,11 @@ class word_adder {
      * @param string $terms the word, or a comma separated list of words
      * @param string $sourcelang the language of the words, as the dictionary knows it
      * @param string $deflang the language the definitions should be in
+     * @param string|null $error set to why the lookup failed, when it does
      * @return array|null one entry per word (see read_entry()), or null if the lookup failed
      */
-    public static function lookup($terms, $sourcelang, $deflang) {
-        $payload = utils::fetch_dictionary_entries($terms, $sourcelang, $deflang);
+    public static function lookup($terms, $sourcelang, $deflang, &$error = null) {
+        $payload = utils::fetch_dictionary_entries($terms, $sourcelang, $deflang, $error);
         if (!$payload) {
             return null;
         }

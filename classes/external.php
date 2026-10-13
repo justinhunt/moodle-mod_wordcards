@@ -39,6 +39,7 @@ use mod_wordcards\utils;
 use mod_wordcards\constants;
 use mod_wordcards\imagegen;
 use mod_wordcards\sentence_sync;
+use mod_wordcards\local\wordwizard\background;
 use mod_wordcards\local\wordwizard\word_adder;
 
 
@@ -654,10 +655,10 @@ class mod_wordcards_external extends external_api
 
         // The wizard asks for one definitions language, which is the one the senses are read for.
         $deflang = trim(explode(',', $params['targetlangs'])[0]);
-        $entries = word_adder::lookup($params['terms'], $params['sourcelang'], $deflang);
+        $entries = word_adder::lookup($params['terms'], $params['sourcelang'], $deflang, $error);
         if ($entries === null) {
             $ret->success = false;
-            $ret->payload = "unable to fetch dictionary entries";
+            $ret->payload = "unable to fetch dictionary entries: " . $error;
         } else {
             // Say which words are already in the set, so the wizard does not offer to add them again.
             foreach ($entries as $i => $entry) {
@@ -805,6 +806,110 @@ class mod_wordcards_external extends external_api
         return new external_value(PARAM_BOOL);
     }
 
+    /**
+     * Parameters for queue_words.
+     *
+     * @return external_function_parameters
+     */
+    public static function queue_words_parameters() {
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'The course module id'),
+            'words' => new external_multiple_structure(new external_value(PARAM_TEXT, 'A word to add')),
+            'deflang' => new external_value(PARAM_ALPHANUMEXT, 'The language the definitions should be in'),
+            'withimages' => new external_value(PARAM_BOOL, 'Also make a picture for each word', VALUE_DEFAULT, false),
+        ]);
+    }
+
+    /**
+     * Queue words to be looked up and added in the background, the first good meaning of each.
+     *
+     * @param int $cmid
+     * @param array $words
+     * @param string $deflang
+     * @param bool $withimages
+     * @return array
+     */
+    public static function queue_words($cmid, $words, $deflang, $withimages = false) {
+        $params = self::validate_parameters(self::queue_words_parameters(), compact('cmid', 'words', 'deflang', 'withimages'));
+
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
+
+        // Only a language a lookup can return, as the wizard's own list offers.
+        $sourcelang = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
+        if (!in_array($params['deflang'], utils::get_lookup_deflangs($sourcelang))) {
+            throw new invalid_parameter_exception('The dictionary cannot give definitions in ' . $params['deflang']);
+        }
+
+        $result = background::queue_words($mod, $params['words'], $params['deflang'], $params['withimages']);
+        return $result + ['pending' => background::pending($mod->get_id())];
+    }
+
+    /**
+     * What queue_words returns.
+     *
+     * @return external_single_structure
+     */
+    public static function queue_words_returns() {
+        return new external_single_structure([
+            'queued' => new external_value(PARAM_INT, 'How many words were queued'),
+            'alreadyinset' => new external_multiple_structure(
+                new external_value(PARAM_TEXT, 'A word left out because it is in the activity already')
+            ),
+            'pending' => self::pending_structure(),
+        ]);
+    }
+
+    /**
+     * Parameters for get_background_status.
+     *
+     * @return external_function_parameters
+     */
+    public static function get_background_status_parameters() {
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'The course module id'),
+        ]);
+    }
+
+    /**
+     * What is still to be done in the background for an activity.
+     *
+     * @param int $cmid
+     * @return array
+     */
+    public static function get_background_status($cmid) {
+        $params = self::validate_parameters(self::get_background_status_parameters(), compact('cmid'));
+
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
+
+        return background::pending($mod->get_id());
+    }
+
+    /**
+     * What get_background_status returns.
+     *
+     * @return external_single_structure
+     */
+    public static function get_background_status_returns() {
+        return self::pending_structure();
+    }
+
+    /**
+     * The shape of background::pending().
+     *
+     * @return external_single_structure
+     */
+    protected static function pending_structure() {
+        return new external_single_structure([
+            'words' => new external_value(PARAM_INT, 'Words still to be looked up and added'),
+            'images' => new external_value(PARAM_INT, 'Batches of pictures still to be made'),
+            'retrying' => new external_value(PARAM_INT, 'Word lookups that failed and will be tried again'),
+        ]);
+    }
+
     // Image Generation Parameters
     public static function generate_bulk_images_parameters()
     {
@@ -827,37 +932,9 @@ class mod_wordcards_external extends external_api
         self::validate_context($mod->get_context());
         $mod->require_manage();
 
-        // Make image generator.
+        // Make a picture for each term that has none.
         $imagegen = new imagegen($mod);
-
-        // Get terms and a prompt for each term.
-        $terms = $mod->get_term_records();
-        $termids = array_map(function ($term) {
-            if ($term->image !== "1") {
-                return $term->id;
-            }
-        }, $terms);
-
-
-        $imageprompts = [];
-        foreach ($terms as $term) {
-            if (in_array($term->id, $termids)) {
-                // Make image prompt for each term.
-                // NB The DESCRIPTION: prefix, tells Poodll to first generate a detailed prompt (description) and then generate the image 
-                $imageprompts[$term->id] = 'DESCRIPTION: ' . $imagegen->make_image_prompt($term);
-            }
-        }
-
-        // Do the bulk image generation.
-        $overallimagecontext = "";
-         $imageurls = false;
-        if (count($termids) > 0) {
-            $imageurls = $imagegen->generate_images($termids, $imageprompts, $overallimagecontext);
-        }
-
-        if (!$imageurls) {
-            $imageurls = [];
-        }
+        $imageurls = $imagegen->generate_for_terms($mod->get_term_records());
 
         return ['images' => $imageurls];
     }

@@ -1807,6 +1807,17 @@ ul.definition_flashcards_ul {
     width: auto;
 }
 
+.mod_wordcards_ww_bgoptions,
+.mod_wordcards_ww_queueresult {
+    margin-top: 0.75rem;
+}
+
+.mod_wordcards_ww_bgalert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
 .mod_wordcards_ww_addedheader,
 .mod_wordcards_ww_wordheader {
     display: flex;

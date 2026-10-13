@@ -138,6 +138,22 @@ $functions = array(
         'ajax'        => true,
     ),
 
+    'mod_wordcards_queue_words' => [
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'queue_words',
+        'description' => 'Queue words to be looked up and added in the background',
+        'capabilities' => 'mod/wordcards:manage',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
+    'mod_wordcards_get_background_status' => [
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'get_background_status',
+        'description' => 'What is still to be done in the background for an activity',
+        'capabilities' => 'mod/wordcards:manage',
+        'type'        => 'read',
+        'ajax'        => true,
+    ],
     'mod_wordcards_generate_bulk_images' => array(
         'classname'   => 'mod_wordcards_external',
         'methodname'  => 'generate_bulk_images',
