@@ -250,15 +250,33 @@ class mod_wordcards_external extends external_api
         $modelsentencetranslations = '',
         $sentenceedited = false
     ) {
+        $params = self::validate_parameters(
+            self::submit_newterm_parameters(),
+            compact(
+                'modid',
+                'term',
+                'definition',
+                'translations',
+                'sourcedef',
+                'modelsentence',
+                'modelsentencetranslations',
+                'sentenceedited'
+            )
+        );
+
+        $mod = mod_wordcards_module::get_by_modid($params['modid']);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
+
         $ret = utils::save_newterm(
-            $modid,
-            $term,
-            $definition,
-            $translations,
-            $sourcedef,
-            $modelsentence,
-            $modelsentencetranslations,
-            $sentenceedited
+            $params['modid'],
+            $params['term'],
+            $params['definition'],
+            $params['translations'],
+            $params['sourcedef'],
+            $params['modelsentence'],
+            $params['modelsentencetranslations'],
+            $params['sentenceedited']
         );
         if ($ret) {
             return true;
@@ -614,12 +632,21 @@ class mod_wordcards_external extends external_api
     }
     public static function search_dictionary($terms, $cmid, $sourcelang, $targetlangs)
     {
+        $params = self::validate_parameters(
+            self::search_dictionary_parameters(),
+            compact('terms', 'cmid', 'sourcelang', 'targetlangs')
+        );
+
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
+
         $ret = new \stdClass();
 
         // We need to do this so that search_dictionary requests can run in parallel.
         session_write_close();
 
-        $payload = utils::fetch_dictionary_entries($terms, $sourcelang, $targetlangs);
+        $payload = utils::fetch_dictionary_entries($params['terms'], $params['sourcelang'], $params['targetlangs']);
         if (!$payload) {
             $ret->success = false;
             $ret->payload = "unable to fetch dictionary entries";
@@ -781,7 +808,9 @@ class mod_wordcards_external extends external_api
             self::generate_bulk_images_parameters(),
             ['cmid' => $cmid]
         );
-        $mod = mod_wordcards_module::get_by_cmid($cmid);
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
 
         // Make image generator.
         $imagegen = new imagegen($mod);
@@ -854,12 +883,14 @@ class mod_wordcards_external extends external_api
             ['termid' => $termid, 'prompt' => $prompt]
         );
 
-        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $termid], '*', MUST_EXIST);
+        $term = $DB->get_record(constants::M_TERMSTABLE, ['id' => $params['termid']], '*', MUST_EXIST);
         $mod = mod_wordcards_module::get_by_modid($term->modid);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
 
         // Make image generator
         $imagegen = new imagegen($mod);
-        $imagedata = $imagegen->generate_image($termid, $prompt);
+        $imagedata = $imagegen->generate_image($params['termid'], $params['prompt']);
         if (!$imagedata) {
             throw new invalid_parameter_exception('Invalid generation failed');
         }

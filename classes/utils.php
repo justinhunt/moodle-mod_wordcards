@@ -1975,6 +1975,12 @@ class utils
         global $DB;
         $mod = \mod_wordcards_module::get_by_modid($modid);
 
+        // A word set holding two senses of the same word makes the practice activities nonsensical,
+        // e.g. two identical options of which only one counts as correct. So add a word only once.
+        if (self::term_exists($modid, $term)) {
+            return false;
+        }
+
         $insertdata = new \stdClass();
         $insertdata->modid = $modid;
         $insertdata->term = self::super_trim($term);
@@ -2006,6 +2012,24 @@ class utils
             }
         }
         return $ret;
+    }
+
+    /**
+     * Is this word already in the word set? Case is ignored, and deleted terms do not count.
+     *
+     * @param int $modid the wordcards instance id
+     * @param string $term the word
+     * @return bool
+     */
+    public static function term_exists($modid, $term)
+    {
+        global $DB;
+        $select = 'modid = :modid AND deleted = 0 AND ' . $DB->sql_equal('term', ':term', false);
+        return $DB->record_exists_select(
+            constants::M_TERMSTABLE,
+            $select,
+            ['modid' => $modid, 'term' => self::super_trim($term)]
+        );
     }
 
     /**
