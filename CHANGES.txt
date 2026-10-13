@@ -7,6 +7,8 @@
   too. A lookup that fails is retried. A message on the Word Wizard and Manage words pages
   shows while words are still being added
 - Word Wizard's Image Wizard can make the pictures in the background too
+- New cli/add_words.php adds words to an activity from the command line, now or through
+  cron, optionally with a picture for each
 - Redesigned the Word Wizard search results. Each word is a card listing its meanings,
   with the definition and example sentence to read and an Edit button to change them.
   Once a meaning is added the word's card fades away and the word is listed under
