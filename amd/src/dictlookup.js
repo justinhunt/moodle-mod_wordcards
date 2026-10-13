@@ -48,6 +48,11 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
             );
         },
 
+        show_failed: function(placeholder, word) {
+            this.replace_placeholder_with_result(placeholder,
+                {term: word, senses: [], nosenses: true, failed: true, modid: this.modid});
+        },
+
         getwords: async function (allwords,sourcelang,definitionslang) {
             var that = this;
             var searchbtn = $(".ww_words_fetch_btn");
@@ -92,85 +97,28 @@ define(['jquery','core/log','core/ajax','core/templates'], function($,log,ajax,t
         
            // Loop through the requests, send and respond to each 
            for (let reqindex=0; reqindex < requests.length; reqindex++){
-                ajax.call([requests[reqindex]],true)[0].then(response=>{
-
-                    //fethc the placeholder
-                    log.debug('placeholder - #mod_wordcards_wwskeleton_'+ reqindex);
-                    var placeholder = $('#mod_wordcards_wwskeleton_'+ reqindex);
-
-                    //if return code=0, disaster, log and continue
-                    if (response.success === 0) {
+                // The server has already read the dictionary's results into senses (word_adder).
+                const placeholder = $('#mod_wordcards_wwskeleton_' + reqindex);
+                const word = requests[reqindex].args.terms;
+                ajax.call([requests[reqindex]], true)[0].then(function(response) {
+                    if (!response.success) {
                         log.debug(response.payload);
+                        that.show_failed(placeholder, word);
+                        return;
                     }
-                    var terms = JSON.parse(response.payload);
-                    for (var i = 0; i < terms.length; i++) {
-                        var theterm = terms[i];
-                        //if a word search failed
-                        if (theterm.count === 0 || theterm.results.length===0) {
-                            var senses = [];
-                            senses.push({
-                                definition: 'No definition', sourcedefinition: 'No definition',
-                                modelsentence: '', senseindex: 0, translations: '{}',
-                                modelsentencetranslations: '{}'
-                            })
-                            var tdata = {term: theterm.term, senses: senses, modid: that.modid};
-                            that.replace_placeholder_with_result(placeholder,tdata);
-
-                        } else {
-                            var tdata = {term: theterm.term, senses: [], modid: that.modid};
-                            for (var sindex in theterm.results) {
-                                var sense = theterm.results[sindex];
-                                //by default its term:English def:English
-                                var sourcedefinition = sense.definition;
-                                var alltrans = {};
-                                var allsenttrans = {};
-                                for (var langkey in sense) {
-                                    if (!sense.hasOwnProperty(langkey)) {
-                                        continue;
-                                    }
-                                    if (langkey.startsWith('lang_')) {
-                                        alltrans[langkey.substring(5)] = sense[langkey];
-                                    } else if (langkey.startsWith('sent_')) {
-                                        // The model sentence in that language. The dictionary only
-                                        // sends these once its sentence filling task has reached
-                                        // the sense, so they are often simply absent.
-                                        allsenttrans[langkey.substring(5)] = sense[langkey];
-                                    }
-                                }
-
-                                var translations = JSON.stringify(alltrans);
-                                var modelsentencetranslations = JSON.stringify(allsenttrans);
-                                var definition = sourcedefinition;
-                                //if its NOT term:english and def:english, we pull the definition from the translation
-                                log.debug('definitionslang: ' + definitionslang);
-                                if (definitionslang !== "en") {
-                                    if (sense.hasOwnProperty('lang_' + definitionslang)) {
-                                        definition = sense['lang_' + definitionslang];
-                                    } else {
-                                        definition = 'No translation available';
-                                    }
-                                }else{
-                                    if (sense.hasOwnProperty('meaning')) {
-                                        definition = sense.meaning;
-                                    } else if (sense.hasOwnProperty('lang_en')) {
-                                        definition = sense['lang_en'];
-                                    } else if (definition == '') {
-                                        definition = 'No translation available';
-                                    }
-                                }
-
-                                //model sentence)
-                                var modelsentence = sense.example;
-
-                                tdata.senses.push({
-                                    definition: definition, sourcedefinition: sourcedefinition,
-                                    modelsentence: modelsentence, senseindex: sindex, translations: translations,
-                                    modelsentencetranslations: modelsentencetranslations
-                                });
-                            }//end of results loop
-                            that.replace_placeholder_with_result(placeholder,tdata);
-                        }
-                    }//end of terms loop
+                    var entries = JSON.parse(response.payload);
+                    entries.forEach(function(entry) {
+                        that.replace_placeholder_with_result(placeholder, {
+                            term: entry.term,
+                            senses: entry.senses,
+                            nosenses: !entry.found,
+                            modid: that.modid
+                        });
+                    });
+                    return;
+                }).catch(function(ex) {
+                    log.debug(ex);
+                    that.show_failed(placeholder, word);
                 });
            }
     

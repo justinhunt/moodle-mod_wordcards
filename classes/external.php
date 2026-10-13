@@ -39,6 +39,7 @@ use mod_wordcards\utils;
 use mod_wordcards\constants;
 use mod_wordcards\imagegen;
 use mod_wordcards\sentence_sync;
+use mod_wordcards\local\wordwizard\word_adder;
 
 
 /**
@@ -646,13 +647,15 @@ class mod_wordcards_external extends external_api
         // We need to do this so that search_dictionary requests can run in parallel.
         session_write_close();
 
-        $payload = utils::fetch_dictionary_entries($params['terms'], $params['sourcelang'], $params['targetlangs']);
-        if (!$payload) {
+        // The wizard asks for one definitions language, which is the one the senses are read for.
+        $deflang = trim(explode(',', $params['targetlangs'])[0]);
+        $entries = word_adder::lookup($params['terms'], $params['sourcelang'], $deflang);
+        if ($entries === null) {
             $ret->success = false;
             $ret->payload = "unable to fetch dictionary entries";
         } else {
             $ret->success = true;
-            $ret->payload = $payload;
+            $ret->payload = json_encode($entries);
         }
         return $ret;
     }
@@ -662,7 +665,10 @@ class mod_wordcards_external extends external_api
         return new external_single_structure(
             [
                 'success' => new external_value(PARAM_INT, 'Indicates success or failure of the call'),
-                'payload' => new external_value(PARAM_RAW, 'If call failed, contains a message about why. Else contains a json string of results'),
+                'payload' => new external_value(
+                    PARAM_RAW,
+                    'If call failed, contains a message about why. Else a json list of words, each with its senses'
+                ),
             ]
         );
     }

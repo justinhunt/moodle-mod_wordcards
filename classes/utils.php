@@ -2306,7 +2306,9 @@ class utils
             }
             $translations = json_decode($term->translations);
             // english is a special case, lets support it
-            if ($mod->get_mod()->deflanguage == 'en') {
+            // Terms the Word Wizard added before 1.3.92 have no source definition, and an empty one
+            // must not blank out the definition the term already has.
+            if ($mod->get_mod()->deflanguage == 'en' && !empty($term->sourcedef)) {
                 $translations->en = $term->sourcedef;
             }
             if (

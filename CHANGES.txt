@@ -1,4 +1,4 @@
-1.3.92 (Build 2026101300)
+1.3.92 (Build 2026101400)
 - New "Card style (learn mode)" setting, adding one sided learn cards as an alternative
   to the default 2 sided ones.
 - New model sentence translations
@@ -6,6 +6,14 @@
   second sense of the same word does not create a duplicate
 - Fixed the Word Wizard and image generation web services not checking that the user
   can manage the activity
+- Word Wizard shows a message when a word's lookup fails, instead of loading forever
+- Word Wizard no longer fills in "No translation available" as the definition when the
+  dictionary has none in the chosen language
+- Fixed definitions going blank for learners who chose English in the language chooser,
+  and when an activity's definitions language was changed to English, for words added
+  with the Word Wizard
+- Word Wizard saves the English definition of each word again, so learners who choose
+  English see one for words in activities with another definitions language
 
 
 1.3.91 (Build 2026090700)

@@ -445,8 +445,9 @@ class mod_wordcards_module
                 continue;
             }
             $translations = json_decode($term->translations);
-            // English is a special case.
-            if ($userprefdeflanguage == 'en') {
+            // English is a special case. Terms the Word Wizard added before 1.3.92 have no source
+            // definition, and an empty one must not blank out the definition the term already has.
+            if ($userprefdeflanguage == 'en' && !empty($term->sourcedef)) {
                 $translations->en = $term->sourcedef;
             }
             if (
