@@ -146,6 +146,14 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ],
+    'mod_wordcards_queue_images' => [
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'queue_images',
+        'description' => 'Queue pictures to be made in the background for the words that have none',
+        'capabilities' => 'mod/wordcards:manage',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
     'mod_wordcards_get_background_status' => [
         'classname'   => 'mod_wordcards_external',
         'methodname'  => 'get_background_status',

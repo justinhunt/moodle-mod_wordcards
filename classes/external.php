@@ -862,6 +862,45 @@ class mod_wordcards_external extends external_api
     }
 
     /**
+     * Parameters for queue_images.
+     *
+     * @return external_function_parameters
+     */
+    public static function queue_images_parameters() {
+        return new external_function_parameters([
+            'cmid' => new external_value(PARAM_INT, 'The course module id'),
+        ]);
+    }
+
+    /**
+     * Queue a picture to be made in the background for every word in the activity that has none.
+     *
+     * @param int $cmid
+     * @return array
+     */
+    public static function queue_images($cmid) {
+        $params = self::validate_parameters(self::queue_images_parameters(), compact('cmid'));
+
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        self::validate_context($mod->get_context());
+        $mod->require_manage();
+
+        \mod_wordcards\task\generate_word_images::queue_all($mod->get_id());
+        return ['pending' => background::pending($mod->get_id())];
+    }
+
+    /**
+     * What queue_images returns.
+     *
+     * @return external_single_structure
+     */
+    public static function queue_images_returns() {
+        return new external_single_structure([
+            'pending' => self::pending_structure(),
+        ]);
+    }
+
+    /**
      * Parameters for get_background_status.
      *
      * @return external_function_parameters

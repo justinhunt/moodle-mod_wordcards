@@ -1,4 +1,4 @@
-1.3.92 (Build 2026101402)
+1.3.92 (Build 2026101403)
 - New "Card style (learn mode)" setting, adding one sided learn cards as an alternative
   to the default 2 sided ones.
 - New model sentence translations
@@ -6,6 +6,7 @@
   wait. The first meaning of each word is chosen, and a picture can be made for each word
   too. A lookup that fails is retried. A message on the Word Wizard and Manage words pages
   shows while words are still being added
+- Word Wizard's Image Wizard can make the pictures in the background too
 - Redesigned the Word Wizard search results. Each word is a card listing its meanings,
   with the definition and example sentence to read and an Edit button to change them.
   Once a meaning is added the word's card fades away and the word is listed under

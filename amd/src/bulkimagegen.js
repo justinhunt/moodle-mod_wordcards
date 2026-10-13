@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'core/ajax', 'core/str'], function ($, log, ajax, str) {
+define(['jquery', 'core/log', 'core/ajax', 'core/str', 'mod_wordcards/bgstatus'], function ($, log, ajax, str, bgstatus) {
     "use strict"; // jshint ;_;
     /*
     This file does bulk image generation for wordcards
@@ -23,12 +23,16 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str'], function ($, log, ajax, 
             str.get_strings([
                     { "key": "noimagesgenerated", "component": "mod_wordcards" },
                     { "key": "generatingimages", "component": "mod_wordcards" },
-                    { "key": "imagesgenerated", "component": "mod_wordcards" }
+                    { "key": "imagesgenerated", "component": "mod_wordcards" },
+                    { "key": "ww_images_queued", "component": "mod_wordcards" },
+                    { "key": "ww_queuefailed", "component": "mod_wordcards" }
                 ]).done(function (s) {
                     var i = 0;
                     self.strings.noimagesgenerated = s[i++];
                     self.strings.generatingimages = s[i++];
                     self.strings.imagesgenerated = s[i++];
+                    self.strings.imagesqueued = s[i++];
+                    self.strings.queuefailed = s[i++];
                 });
         },
 
@@ -37,9 +41,20 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str'], function ($, log, ajax, 
             var self = this;
             var bulkbtn = $('.ww_words_fetch_image_btn');
             var resultscont = $('.mod_wordcards_ww_image_results');
+
+            // The "will be made in the background" message is out of date once they have been.
+            $(document).on(bgstatus.DONE_EVENT, function() {
+                if (resultscont.find('.ww_images_queued').length) {
+                    resultscont.empty().hide();
+                }
+            });
         
             bulkbtn.on('click', function(e){
                 log.debug('bulkbtn clicked');
+                if ($('.ww_images_background').prop('checked')) {
+                    self.queue_images(bulkbtn, resultscont);
+                    return;
+                }
                 resultscont.empty();
                 resultscont.append('<div>' + self.strings.generatingimages + '</div><i class="fa fa-spinner fa-spin fa-3x"></i>');
                 resultscont.show();
@@ -80,6 +95,26 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str'], function ($, log, ajax, 
                     // Re enable the button after the operation is complete
                     bulkbtn.prop('disabled', false);
                 });
+            });
+        },
+
+        // Make the pictures in the background instead, and say so.
+        queue_images: function(bulkbtn, resultscont) {
+            var self = this;
+            bulkbtn.prop('disabled', true);
+            ajax.call([{
+                methodname: 'mod_wordcards_queue_images',
+                args: {cmid: self.cmid}
+            }])[0].then(function(result) {
+                bgstatus.update(result.pending);
+                resultscont.empty().append($('<div class="alert alert-info ww_images_queued"></div>')
+                    .text(self.strings.imagesqueued)).show();
+                bulkbtn.prop('disabled', false);
+                return result;
+            }).catch(function(ex) {
+                log.error('Error queueing images: ', ex);
+                resultscont.empty().append($('<div class="alert alert-danger"></div>').text(self.strings.queuefailed)).show();
+                bulkbtn.prop('disabled', false);
             });
         },
     };//end of return value

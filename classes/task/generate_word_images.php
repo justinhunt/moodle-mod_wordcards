@@ -22,7 +22,8 @@ use mod_wordcards\imagegen;
 use mod_wordcards\local\wordwizard\background;
 
 /**
- * Make a picture for each of a batch of words added in the background.
+ * Make a picture for each of a batch of words added in the background, or for every word in a
+ * word set that has none (the Word Wizard's bulk image button, in the background).
  *
  * It waits for the words to be in first. While any of the module's add_word tasks are still to
  * run it queues itself again a minute later, up to MAX_WAITS times, and then makes pictures for
@@ -47,18 +48,34 @@ class generate_word_images extends adhoc_task {
      *
      * @param int $modid
      * @param array $words
-     * @param int $waits how many times it has waited already
      */
-    public static function queue($modid, array $words, $waits = 0) {
+    public static function queue($modid, array $words) {
         $task = new self();
         // The module id goes first, background::pending() finds a module's tasks by it.
         $task->set_custom_data((object) [
             'modid' => (int) $modid,
             'words' => array_values($words),
-            'waits' => (int) $waits,
+            'waits' => 0,
         ]);
         $task->set_next_run_time(time() + self::WAIT);
         \core\task\manager::queue_adhoc_task($task);
+    }
+
+    /**
+     * Queue pictures for every word in a module that has none.
+     *
+     * Queued once: pressing the button again while it waits does not queue it twice.
+     *
+     * @param int $modid
+     */
+    public static function queue_all($modid) {
+        $task = new self();
+        $task->set_custom_data((object) [
+            'modid' => (int) $modid,
+            'all' => true,
+            'waits' => 0,
+        ]);
+        \core\task\manager::queue_adhoc_task($task, true);
     }
 
     /**
@@ -86,7 +103,8 @@ class generate_word_images extends adhoc_task {
         global $DB;
 
         $data = $this->get_custom_data();
-        if (empty($data->modid) || empty($data->words)) {
+        $all = !empty($data->all);
+        if (empty($data->modid) || (!$all && empty($data->words))) {
             mtrace('No module or words in the custom data, nothing to do.');
             return;
         }
@@ -95,18 +113,26 @@ class generate_word_images extends adhoc_task {
             return;
         }
 
+        // Words still being added would miss out, so wait for them. The bulk button means them too.
         $waiting = background::pending($data->modid)['words'];
         if ($waiting > 0 && $data->waits < self::MAX_WAITS) {
             mtrace($waiting . ' word(s) still to be added to wordcards ' . $data->modid . ', checking again shortly.');
-            self::queue($data->modid, $data->words, $data->waits + 1);
+            $data->waits++;
+            $again = new self();
+            $again->set_custom_data($data);
+            $again->set_next_run_time(time() + self::WAIT);
+            \core\task\manager::queue_adhoc_task($again);
             return;
         }
 
         $mod = \mod_wordcards_module::get_by_modid($data->modid);
-        $wanted = array_map('core_text::strtolower', $data->words);
-        $terms = array_filter($mod->get_term_records(), function ($term) use ($wanted) {
-            return in_array(\core_text::strtolower(trim($term->term)), $wanted);
-        });
+        $terms = $mod->get_term_records();
+        if (!$all) {
+            $wanted = array_map('core_text::strtolower', $data->words);
+            $terms = array_filter($terms, function ($term) use ($wanted) {
+                return in_array(\core_text::strtolower(trim($term->term)), $wanted);
+            });
+        }
         if (!$terms) {
             mtrace('None of the words are in wordcards ' . $data->modid . ', no pictures to make.');
             return;

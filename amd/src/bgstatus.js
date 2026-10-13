@@ -13,8 +13,12 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates'], function($, log, a
     // How often to ask whether the background work is done.
     var INTERVAL = 15000;
 
+    // Fired on the document when the background work is all done, for messages to clear themselves.
+    var DONE_EVENT = 'mod_wordcards:backgrounddone';
+
     return {
         timer: null,
+        DONE_EVENT: DONE_EVENT,
 
         /**
          * Start watching, if there is anything to watch.
@@ -67,6 +71,8 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates'], function($, log, a
             });
             if (active) {
                 this.watch();
+            } else if (wasactive) {
+                $(document).trigger(DONE_EVENT);
             }
         },
 

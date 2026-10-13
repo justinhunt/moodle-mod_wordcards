@@ -80,7 +80,11 @@
 <div class="mod_wordcards_ww_image_cont">
   <h4>{{#str}}bulkimagewizard, mod_wordcards {{/str}}</h4>
   <div>{{#str}}ww_bulk_images_instructions, mod_wordcards {{/str}}</div><br />
-  <a class="btn btn-primary ww_words_fetch_image_btn" id="{{uniqid}}_fetchimagebtn">{{#str}}ww_images_fetch, mod_wordcards{{/str}}</a>
+  <div class="form-check mb-2">
+    <input type="checkbox" class="form-check-input ww_images_background" id="{{uniqid}}_images_background">
+    <label class="form-check-label" for="{{uniqid}}_images_background">{{#str}}ww_images_background, mod_wordcards{{/str}}</label>
+  </div>
+  <button type="button" class="btn btn-primary ww_words_fetch_image_btn" id="{{uniqid}}_fetchimagebtn">{{#str}}ww_images_fetch, mod_wordcards{{/str}}</button>
   <div id="{{uniqid}}_image_resultscont" class="mod_wordcards_ww_image_results" style="display: none">
   </div>
 </div>

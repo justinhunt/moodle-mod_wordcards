@@ -63,6 +63,10 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
                     that.search();
                 }
             });
+            // The "will be added in the background" message is out of date once they have been.
+            $(document).on(bgstatus.DONE_EVENT, function() {
+                that.queueresult.prop('hidden', true).text('');
+            });
             // In the background there is nobody to choose a meaning, and pictures can be made too.
             this.backgroundbox.on('change', function() {
                 var background = $(this).prop('checked');
