@@ -429,6 +429,7 @@ $string['wizardinstructions'] = 'Word Wizard will search the {$a} dictionary for
 $string['nodefinitionfound'] = "No definition found";
 $string['ww_lookupfailed'] = 'The dictionary lookup failed. Please try this word again.';
 $string['ww_notranslation'] = 'No translation available, please enter one';
+$string['ww_nosentence'] = 'No example sentence. Use Edit to add one.';
 $string['ww_added_heading'] = 'Added to this activity';
 $string['ww_managewords'] = 'Manage words';
 $string['ww_choosesense'] = 'Choose the meaning you want';

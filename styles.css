@@ -1871,7 +1871,8 @@ ul.definition_flashcards_ul {
     font-weight: bold;
 }
 
-.mod_wordcards_ww_def:empty::before {
+.mod_wordcards_ww_def:empty::before,
+.mod_wordcards_ww_sentence:empty::before {
     content: attr(data-empty);
     font-weight: normal;
     font-style: italic;
@@ -1881,10 +1882,6 @@ ul.definition_flashcards_ul {
 .mod_wordcards_ww_sentence {
     font-style: italic;
     margin-top: 0.15rem;
-}
-
-.mod_wordcards_ww_sentence:empty {
-    display: none;
 }
 
 .mod_wordcards_ww_senseedit {

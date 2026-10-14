@@ -1,4 +1,4 @@
-1.3.92 (Build 2026101403)
+1.3.92 (Build 2026101404)
 - New "Card style (learn mode)" setting, adding one sided learn cards as an alternative
   to the default 2 sided ones.
 - New model sentence translations
@@ -23,6 +23,7 @@
   dictionary has none in the chosen language
 - Word Wizard no longer offers the same meaning of a word twice, when the dictionary
   sends it twice
+- Word Wizard says when a meaning has no example sentence, so one can be added with Edit
 - Fixed definitions going blank for learners who chose English in the language chooser,
   and when an activity's definitions language was changed to English, for words added
   with the Word Wizard
