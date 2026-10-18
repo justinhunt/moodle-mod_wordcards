@@ -1,0 +1,29 @@
+# camp listing manifest — the descriptive content for this plugin's page on
+# camp-registry.org. Edit and commit as normal; camp ingests and hash-pins it
+# at each tagged release. Schema: https://camp-registry.org/schema/listing.schema.json
+name: Poodll WordCards
+summary: Flashcard vocabulary practice with AI-assisted card creation and per-student word pools.
+description: |
+  The teacher assigns a set of words or phrases with their definitions. Students learn and review
+  them through six practice activities, including listening, speaking and typing tasks.
+
+  **Word pools:** WordCards tracks each learner's own pool of new, review and self-claimed words
+  across every WordCards activity in the course, so earlier words come back for review.
+
+  **Building word sets:** type words in, import them, or let the Word Wizard look up definitions,
+  translations, model sentences and pictures for you. Learn mode can use one or two sided cards.
+
+  **Also supported:** steps mode and free mode, text to speech in many languages, the Moodle
+  mobile app, completion rules and per-student reports.
+
+  **Requires a Cloud Poodll account.** Recording, transcription, text to speech and AI features run through the Cloud
+  Poodll service, so the plugin needs an API user and secret from https://poodll.com to function.
+labels:
+  - paid-service
+  - external-account
+  - commercial-support-available
+category: activity
+links:
+  docs: https://support.poodll.com
+  issues: https://github.com/justinhunt/moodle-mod_wordcards/issues
+  changelog: https://github.com/justinhunt/moodle-mod_wordcards/blob/master/CHANGES.txt
