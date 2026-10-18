@@ -9,6 +9,6 @@ jobs:
   release-to-marketplace:
     uses: moodlehq/moodle-plugin-release/.github/workflows/moodle-release.yml@main
     with:
-      tag: ${{ github.event.inputs.tag }}
+      tag: ${{ github.ref_name }}
     secrets:
       MOODLE_MARKETPLACE_TOKEN: ${{ secrets.MOODLE_MARKETPLACE_TOKEN }}
