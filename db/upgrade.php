@@ -134,7 +134,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2019091401, 'wordcards');
     }
-    if($oldversion<2019091402) {
+    if ($oldversion < 2019091402) {
 
         // Define field ttslanguage to be added to wordcard terms.
         $table = new xmldb_table(constants::M_TABLE);
@@ -155,7 +155,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         // Wordcards savepoint reached.
         upgrade_mod_savepoint(true, 2019091402, 'wordcards');
     }
-    if($oldversion<2019091403) {
+    if ($oldversion < 2019091403) {
 
 
         // Define field alternates to be added to wordcard terms.
@@ -170,7 +170,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2019091403, 'wordcards');
     }
 
-    if($oldversion<2019120501) {
+    if ($oldversion < 2019120501) {
 
         $table = new xmldb_table(constants::M_TABLE);
         $field = new xmldb_field('skipglobal', XMLDB_TYPE_INTEGER, '1', null, null, null, '1');
@@ -207,7 +207,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2019120501, 'wordcards');
     }
 
-    if($oldversion<2019120601) {
+    if ($oldversion < 2019120601) {
 
         $table = new xmldb_table(constants::M_TABLE);
         $fields= array();
@@ -229,7 +229,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2019120601, 'wordcards');
      }
 
-    if($oldversion<2020050204) {
+    if ($oldversion < 2020050204) {
 
         $table = new xmldb_table(constants::M_TABLE);
         $fields= array();
@@ -246,7 +246,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020050204, 'wordcards');
     }
 
-    if($oldversion<2020050205) {
+    if ($oldversion < 2020050205) {
         $table = new xmldb_table(constants::M_ATTEMPTSTABLE);
         $index = new xmldb_index('moduser', XMLDB_INDEX_UNIQUE, array('modid', 'userid'));
         if ($dbman->index_exists($table, $index)) {
@@ -257,7 +257,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020050205, 'wordcards');
     }
 
-    if($oldversion<2020100200) {
+    if ($oldversion < 2020100200) {
 
         //we added these fields in install.xml but not in upgrade.php in may
 
@@ -297,7 +297,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020100200, 'wordcards');
     }
 
-    if($oldversion<2020110900){
+    if ($oldversion < 2020110900) {
         $table = new xmldb_table(constants::M_TERMSTABLE);
         $fields = array();
         $fields[] = new xmldb_field('model_sentence', XMLDB_TYPE_TEXT, null, null, null, null, null);
@@ -325,7 +325,7 @@ function xmldb_wordcards_upgrade($oldversion) {
             }
         }
 
-        upgrade_mod_savepoint(true, 2020111001, 'wordcards');
+        upgrade_mod_savepoint(true, 2020111000, 'wordcards');
     }
 
     // Add foriframe option to wordcards table
@@ -425,7 +425,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022020500, 'wordcards');
     }
 
-	  if ($oldversion < 2022020800) {
+    if ($oldversion < 2022020800) {
         $table = new xmldb_table(constants::M_TABLE);
 
         $fields=[];
@@ -551,7 +551,7 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023090301, 'wordcards');
     }
 
-    if($oldversion < 2023092600){
+    if ($oldversion < 2023092600) {
         //The norwegian language-locale code nb-no is not supported by all STT engines in Poodll, and no-no is. So updating
         $DB->set_field(constants::M_TABLE,'ttslanguage',constants::M_LANG_NONO,['ttslanguage'=>constants::M_LANG_NBNO]);
         upgrade_mod_savepoint(true, 2023092600, 'wordcards');
