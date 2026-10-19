@@ -18,6 +18,7 @@ namespace mod_wordcards\local\wordwizard;
 
 use mod_wordcards\constants;
 use mod_wordcards\utils;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * Tests for reading dictionary results and refusing duplicate words.
@@ -25,8 +26,8 @@ use mod_wordcards\utils;
  * @package    mod_wordcards
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers     \mod_wordcards\local\wordwizard\word_adder
  */
+#[CoversClass(word_adder::class)]
 final class word_adder_test extends \advanced_testcase {
     /**
      * A lookup of "bank" and of a word the dictionary does not know, as the dictionary sends it.
