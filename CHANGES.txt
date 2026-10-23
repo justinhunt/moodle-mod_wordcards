@@ -1,4 +1,4 @@
-1.3.93 (Build 2026102301)
+1.3.93 (Build 2026102302)
 - Words the dictionary has no translation for in a language the activity offers can be
   translated by the site's own AI provider, as each word is used in its example sentence.
   It runs in the background when words are added with the Word Wizard, and for the whole
@@ -13,6 +13,11 @@
 - Words added in the background now take a meaning that has an example sentence over one
   that does not
 - Fetching translated example sentences no longer overwrites the ones a word already has
+- The learner's chosen definitions language is now shared with Poodll MiniLesson as their
+  native language, so choosing it in either plugin sets it in both. Existing choices are
+  carried over on upgrade, except where the learner has already chosen one in MiniLesson
+- Choosing the activity's own definitions language in the language chooser now keeps that
+  choice, rather than clearing it
 
 1.3.92 (Build 2026101404)
 - New "Card style (learn mode)" setting, adding one sided learn cards as an alternative

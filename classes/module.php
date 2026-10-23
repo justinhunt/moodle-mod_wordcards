@@ -425,7 +425,7 @@ class mod_wordcards_module
     {
         // Get selected definitions language.
         $activitydefinitionslanguage = $this->get_mod()->deflanguage;
-        $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+        $userprefdeflanguage = utils::get_user_deflang();
 
         // The language the learner is actually reading in. Without a preference of their own that
         // is whatever the activity was set up with.

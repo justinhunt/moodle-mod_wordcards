@@ -643,7 +643,7 @@ class renderer extends \plugin_renderer_base
 
         // get selected definitions language
         $selected = $activitydefinitionslanguage;
-        $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+        $userprefdeflanguage = utils::get_user_deflang();
         if (!empty($userprefdeflanguage)) {
             $selected = $userprefdeflanguage;
         }
@@ -659,7 +659,6 @@ class renderer extends \plugin_renderer_base
         // prepare data for js and html in mustache template
         $data = [];
         $data['dropdownlist'] = \html_writer::select($options, 'mydefs_lang', $selected);
-        $data['activitydefault'] = $activitydefinitionslanguage;
         $data['cssprefix'] = $cssprefix;
         return $this->render_from_template('mod_wordcards/deflang_chooser', $data);
     }
@@ -670,7 +669,7 @@ class renderer extends \plugin_renderer_base
 
         $dd = [];
         // Get the embedded language chooser
-        $currentlang = get_user_preferences('wordcards_deflang');
+        $currentlang = utils::get_user_deflang();
         $dd['langchooser'] = $this->language_chooser($currentlang, 'wordcardsdashboard');
         // Get the word totals and other data
         $dd  = $dd + utils::prepare_usercourseprogress_data($courseid);
@@ -684,7 +683,7 @@ class renderer extends \plugin_renderer_base
     public function embed_nativelangchooser($cmid, $token)
     {
         global $DB;
-        $currentlang = get_user_preferences('wordcards_deflang');
+        $currentlang = utils::get_user_deflang();
         return $this->language_chooser($currentlang, 'wordcardsembed');
     }
 

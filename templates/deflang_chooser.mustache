@@ -11,15 +11,13 @@
 
             //set handler to get set pref according to selection, and reload
            defbtn.on("click", function(e){
+             // The preference is shared with MiniLesson, so keep the learner's choice even when it
+             // matches this activity's language. An empty choice clears it.
              var pref = defselect.val();
-             if(pref==='{{activitydefault}}' || pref===''){
-                //clear the preference
-                pref = '';
-             }
             ajax.call([{
                     methodname: 'mod_wordcards_set_user_preference',
                     args: {
-                        name: 'wordcards_deflang',
+                        name: 'poodll_nativelang',
                         value: pref
                     }
                 }])[0].done(function(response) {

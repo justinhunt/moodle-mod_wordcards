@@ -919,11 +919,22 @@ class mod_wordcards_external extends external_api
 
         //set the user preference
         switch ($name) {
-            case 'wordcards_deflang':
+            // The old name is still accepted from pages that were loaded before the upgrade.
+            case constants::LEGACY_DEFLANG_PREF:
+            case constants::NATIVELANG_PREF:
+                // The chooser sends a definitions language code, the preference holds a locale code.
+                $locale = utils::deflang_to_locale($value);
+                $islocale = preg_match('/^[a-z]{2,3}(-[a-z0-9]{2,4}){1,2}$/i', $value);
+                if ($locale === '' && $islocale && utils::locale_to_deflang($value) !== '') {
+                    // It is already a locale code.
+                    $locale = $value;
+                }
                 if (empty($value)) {
-                    unset_user_preference($name);
+                    unset_user_preference(constants::NATIVELANG_PREF);
+                } else if ($locale === '') {
+                    return false;
                 } else {
-                    set_user_preference($name, $value);
+                    set_user_preference(constants::NATIVELANG_PREF, $locale);
                 }
                 return true;
             default:

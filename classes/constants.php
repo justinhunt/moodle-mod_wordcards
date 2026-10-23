@@ -52,6 +52,28 @@ class constants {
 
     const M_DEFLANG_OTHER = 'zz';
 
+    /** @var string The user preference holding the learner's native language. It is shared with
+     * mod_minilesson, so it is stored as a locale code (ja-JP) rather than a definitions language code (ja). */
+    const NATIVELANG_PREF = 'poodll_nativelang';
+    /** @var string The user preference used for the same thing before it was shared. Only read by the upgrade. */
+    const LEGACY_DEFLANG_PREF = 'wordcards_deflang';
+
+    /** @var array Definitions language code => the locale code stored in the native language preference.
+     * Where a language has several locales, this is the one mod_minilesson offers in its chooser. */
+    const M_DEFLANG_LOCALES = [
+        'af' => 'af-ZA', 'ar' => 'ar-AE', 'bg' => 'bg-BG', 'bn' => 'bn-BD', 'bs' => 'bs-Latn-BA',
+        'ca' => 'ca-ES', 'cs' => 'cs-CZ', 'cy' => 'cy-GB', 'da' => 'da-DK', 'de' => 'de-DE',
+        'el' => 'el-GR', 'en' => 'en-US', 'es' => 'es-ES', 'et' => 'et-EE', 'fa' => 'fa-IR',
+        'fi' => 'fi-FI', 'fr' => 'fr-FR', 'he' => 'he-IL', 'hi' => 'hi-IN', 'hr' => 'hr-HR',
+        'ht' => 'ht-HT', 'hu' => 'hu-HU', 'id' => 'id-ID', 'is' => 'is-IS', 'it' => 'it-IT',
+        'ja' => 'ja-JP', 'ko' => 'ko-KR', 'lt' => 'lt-LT', 'lv' => 'lv-LV', 'ms' => 'ms-MY',
+        'mt' => 'mt-MT', 'nb' => 'no-NO', 'nl' => 'nl-NL', 'pl' => 'pl-PL', 'pt' => 'pt-BR',
+        'ro' => 'ro-RO', 'rus' => 'ru-RU', 'sk' => 'sk-SK', 'sl' => 'sl-SI', 'so' => 'so-SO',
+        'sv' => 'sv-SE', 'sw' => 'sw-KE', 'ta' => 'ta-IN', 'te' => 'te-IN', 'th' => 'th-TH',
+        'ti' => 'ti-ER', 'tr' => 'tr-TR', 'uk' => 'uk-UA', 'ur' => 'ur-PK', 'vi' => 'vi-VN',
+        'zh' => 'zh-CN', 'zh_tw' => 'zh-TW',
+    ];
+
     // Definitions languages the remote dictionary can actually return.
     // M_RSDIC_LANGS are the languages the ESL Apps dictionary holds columns for; a lookup whose
     // source language is one of these resolves against it directly. M_AIDEF_LANGS mirrors

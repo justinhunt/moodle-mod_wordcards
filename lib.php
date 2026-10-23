@@ -791,8 +791,8 @@ function mod_wordcards_get_completion_active_rule_descriptions($cm)
 function mod_wordcards_user_preferences(): array
 {
     $prefs = [];
-    $prefs['wordcards_deflang'] = [
-        'type' => PARAM_ALPHA,
+    $prefs[constants::NATIVELANG_PREF] = [
+        'type' => PARAM_ALPHANUMEXT,
         'null' => NULL_NOT_ALLOWED,
         'default' => false,
         'permissioncallback' => [core_user::class, 'is_current_user'],

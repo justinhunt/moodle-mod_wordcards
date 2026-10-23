@@ -743,5 +743,25 @@ function xmldb_wordcards_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091300, 'wordcards');
     }
 
+    if ($oldversion < 2026102302) {
+        // The native language preference is now shared with mod_minilesson, which stores a locale
+        // code under its own name. Move each learner's choice across, unless they already made one
+        // in MiniLesson, which is kept.
+        $oldprefs = $DB->get_recordset('user_preferences', ['name' => constants::LEGACY_DEFLANG_PREF], '', 'id, userid, value');
+        foreach ($oldprefs as $oldpref) {
+            $locale = constants::M_DEFLANG_LOCALES[$oldpref->value] ?? '';
+            $alreadyset = $DB->record_exists(
+                'user_preferences',
+                ['userid' => $oldpref->userid, 'name' => constants::NATIVELANG_PREF]
+            );
+            if ($locale !== '' && !$alreadyset) {
+                set_user_preference(constants::NATIVELANG_PREF, $locale, $oldpref->userid);
+            }
+        }
+        $oldprefs->close();
+        $DB->delete_records('user_preferences', ['name' => constants::LEGACY_DEFLANG_PREF]);
+        upgrade_mod_savepoint(true, 2026102302, 'wordcards');
+    }
+
     return true;
 }

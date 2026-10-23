@@ -107,7 +107,7 @@ class provider implements
             'timemoodified' => 'privacy:metadata:timemodified',
         ];
         $collection->add_database_table(constants::M_MYWORDSTABLE , $details, 'privacy:metadata:mywordstable');
-        $collection->add_user_preference('wordcards_deflang', 'privacy:metadata:deflangpref');
+        $collection->add_user_preference(constants::NATIVELANG_PREF, 'privacy:metadata:deflangpref');
         return $collection;
     }
 
@@ -334,7 +334,7 @@ class provider implements
     public static function export_user_preferences(int $userid) {
         $context = \context_system::instance();
         $preferences = [
-            'wordcards_deflang' => ['string' => get_string('privacy:metadata:deflangpref', constants::M_COMPONENT), 'bool' => false],
+            constants::NATIVELANG_PREF => ['string' => get_string('privacy:metadata:deflangpref', constants::M_COMPONENT), 'bool' => false],
         ];
         foreach ($preferences as $key => $preference) {
             $value = get_user_preferences($key, null, $userid);

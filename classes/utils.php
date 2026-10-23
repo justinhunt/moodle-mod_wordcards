@@ -2211,6 +2211,58 @@ class utils
         return $langdefs;
     }
 
+    /**
+     * The locale code to store in the native language preference for a definitions language.
+     *
+     * @param string $deflang a definitions language code, e.g. ja, rus or zh_tw
+     * @return string the locale code, e.g. ja-JP, or '' if the language is not one we know
+     */
+    public static function deflang_to_locale($deflang) {
+        return constants::M_DEFLANG_LOCALES[$deflang] ?? '';
+    }
+
+    /**
+     * The definitions language for a locale code from the native language preference.
+     *
+     * The preference is shared with mod_minilesson, which offers more locales than there are
+     * definitions languages, so several locales map to one language (en-GB and en-US are both en)
+     * and some map to none at all.
+     *
+     * @param string $locale a locale code, e.g. ja-JP or zh-TW
+     * @return string the definitions language code, or '' if there is no matching one
+     */
+    public static function locale_to_deflang($locale) {
+        $locale = trim((string) $locale);
+        if ($locale === '') {
+            return '';
+        }
+        $deflang = array_search($locale, constants::M_DEFLANG_LOCALES, true);
+        if ($deflang !== false) {
+            return $deflang;
+        }
+        // A definitions language code is accepted as it is.
+        if (isset(constants::M_DEFLANG_LOCALES[$locale])) {
+            return $locale;
+        }
+        $parts = explode('-', strtolower($locale));
+        if ($parts[0] === 'zh' && in_array(end($parts), ['tw', 'hk', 'mo', 'hant'])) {
+            return 'zh_tw';
+        }
+        $aliases = ['ru' => 'rus', 'no' => 'nb', 'nn' => 'nb', 'iw' => 'he'];
+        $base = $aliases[$parts[0]] ?? $parts[0];
+        return isset(constants::M_DEFLANG_LOCALES[$base]) ? $base : '';
+    }
+
+    /**
+     * The definitions language the user chose as their native language.
+     *
+     * @param int|null $userid the user, or null for the current user
+     * @return string the definitions language code, or '' if they have not chosen one we can show
+     */
+    public static function get_user_deflang($userid = null) {
+        return self::locale_to_deflang(get_user_preferences(constants::NATIVELANG_PREF, '', $userid));
+    }
+
     public static function get_youglish_config($ttslang)
     {
 
