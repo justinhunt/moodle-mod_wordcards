@@ -18,6 +18,7 @@ namespace mod_wordcards\task;
 
 use core\task\adhoc_task;
 use mod_wordcards\constants;
+use mod_wordcards\local\ai\translator;
 use mod_wordcards\local\wordwizard\word_adder;
 use mod_wordcards\utils;
 
@@ -80,6 +81,11 @@ class add_word extends adhoc_task {
         }
 
         $entry = reset($entries);
+        if ($entry && !$entry['found']) {
+            // Not in the dictionary at all, as an inflected form or a phrase often is not. The
+            // site's AI may make a card of it, on this site only; if it cannot, nothing is added.
+            $entry = $this->ai_entry($data);
+        }
         $sense = $entry ? word_adder::best_sense($entry) : null;
         if (!$sense) {
             mtrace('"' . $data->word . '": no meaning with a definition in ' . $data->deflang . ', not added.');
@@ -91,5 +97,26 @@ class add_word extends adhoc_task {
         } else {
             mtrace('"' . $data->word . '" was not added to wordcards ' . $data->modid . '.');
         }
+    }
+
+    /**
+     * Ask the site's AI for the commonest meaning of a word the dictionary does not have.
+     *
+     * @param \stdClass $data the task's custom data
+     * @return array|null an entry as word_adder::ai_entry() makes, or null if the AI cannot be used
+     */
+    protected function ai_entry($data) {
+        $mod = \mod_wordcards_module::get_by_modid($data->modid);
+        if (!translator::is_available($mod->get_context(), $this->get_userid())) {
+            mtrace('"' . $data->word . '" is not in the dictionary, and the site AI cannot be used here.');
+            return null;
+        }
+        $translator = new translator($mod->get_context(), $this->get_userid());
+        $aisenses = $translator->create_senses($data->word, $data->sourcelang, $data->deflang, 1);
+        if (!$aisenses) {
+            mtrace('"' . $data->word . '" is not in the dictionary, and the site AI made nothing of it.');
+            return null;
+        }
+        return word_adder::ai_entry($data->word, $aisenses, $data->deflang);
     }
 }

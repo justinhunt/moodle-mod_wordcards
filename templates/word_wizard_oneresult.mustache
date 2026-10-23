@@ -51,9 +51,20 @@
         {{^failed}}{{^found}}
             <div class="card-body">
                 <p class="mb-0 text-muted">{{#str}}nodefinitionfound, mod_wordcards{{/str}}</p>
+                {{#aiavailable}}
+                    <button type="button" class="btn btn-secondary btn-sm mt-2" data-action="createai">
+                        {{#str}}ww_createai, mod_wordcards{{/str}}
+                    </button>
+                    <p class="mb-0 mt-2 small text-muted mod_wordcards_ww_aistatus" role="status" hidden></p>
+                {{/aiavailable}}
             </div>
         {{/found}}{{/failed}}
         {{#found}}
+            {{#aimade}}
+                <div class="card-body py-2">
+                    <p class="mb-0 small text-muted">{{#str}}ww_aimade, mod_wordcards{{/str}}</p>
+                </div>
+            {{/aimade}}
             <ul class="list-group list-group-flush">
                 {{#senses}}
                     <li class="list-group-item mod_wordcards_ww_sense" data-senseindex="{{senseindex}}">

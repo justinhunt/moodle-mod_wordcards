@@ -2006,15 +2006,27 @@ class utils
         $insertdata->model_sentence_translations = self::super_trim($modelsentencetranslations);
         $insertdata->ttsvoice = self::fetch_auto_voice($mod->get_mod()->ttslanguage);
         $ret = $DB->insert_record(constants::M_TERMSTABLE, $insertdata);
-        if ($ret && !empty($insertdata->model_sentence)) {
+        if (!$ret) {
+            return $ret;
+        }
+
+        // Where the site's AI may be used, it fills in the languages the dictionary had no word for,
+        // and makes an example sentence when there is none. For a sentence of the teacher's own it
+        // also does the translating the Poodll server would otherwise do, below.
+        $insertdata->id = $ret;
+        $aiqueued = \mod_wordcards\local\ai\completer::queue_if_needed($insertdata, $mod, $sentenceedited);
+
+        if (!empty($insertdata->model_sentence)) {
             $DB->update_record('wordcards', ['id' => $modid, 'hashisold' => 1]);
 
             if (empty($insertdata->model_sentence_translations)) {
                 if ($sentenceedited) {
                     // This sentence is the teacher's own, so no dictionary sense holds it and
                     // looking it up would find nothing however long we waited. It has to be
-                    // translated on its own.
-                    \mod_wordcards\task\translate_custom_sentence::queue_for_term($ret);
+                    // translated on its own, unless the site's AI is doing that already.
+                    if (!$aiqueued) {
+                        \mod_wordcards\task\translate_custom_sentence::queue_for_term($ret);
+                    }
                 } else {
                     // The dictionary makes these in a task of its own, so a word new to it arrives
                     // before they exist. Ask to come back for them tomorrow rather than leaving

@@ -51,6 +51,7 @@ class background {
      * @return array queued (int) and alreadyinset (list of words left out because they are there already)
      */
     public static function queue_words(\mod_wordcards_module $mod, array $words, $deflang, $withimages) {
+        global $USER;
         $modid = $mod->get_id();
         $sourcelang = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
 
@@ -69,6 +70,10 @@ class background {
                 'sourcelang' => $sourcelang,
                 'deflang' => $deflang,
             ]);
+            // Run as the teacher, so that adding the word can use the site's AI on their behalf.
+            if (isloggedin() && !isguestuser()) {
+                $task->set_userid($USER->id);
+            }
             self::limit_attempts($task);
             \core\task\manager::queue_adhoc_task($task);
             $queued[] = $word;

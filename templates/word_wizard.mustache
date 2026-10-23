@@ -97,6 +97,16 @@
   <div id="{{uniqid}}_sync_results" class="mod_wordcards_ww_sync_results"></div>
 </div>
 
+{{#aiavailable}}
+<hr>
+<div class="mod_wordcards_ww_aicomplete_cont">
+  <h4>{{#str}}ai_completetranslations, mod_wordcards {{/str}}</h4>
+  <div>{{#str}}ai_completetranslations_instructions, mod_wordcards {{/str}}</div><br />
+  <a class="btn btn-primary ww_aicomplete_btn" id="{{uniqid}}_aicompletebtn" href="#">{{#str}}ai_completetranslations_btn, mod_wordcards{{/str}}</a>
+  <div id="{{uniqid}}_aicomplete_results" class="mod_wordcards_ww_sync_results"></div>
+</div>
+{{/aiavailable}}
+
 {{^element.frozen}}
     {{#js}}
         require(['jquery','core/log','core/templates','core/ajax','mod_wordcards/dictlookup', 'mod_wordcards/bulkimagegen'],function($,log,templates,ajax,  dictlookup, bulkimagegen) {
@@ -126,12 +136,26 @@
                 });
             });
 
+            //fill in missing translations with the site AI
+            {{#aiavailable}}
+            require(['mod_wordcards/completetranslations'], function(completetranslations) {
+                completetranslations.init({
+                    cmid: {{cmid}},
+                    buttonid: '{{uniqid}}_aicompletebtn',
+                    resultsid: '{{uniqid}}_aicomplete_results',
+                    policyaccepted: {{#aipolicyaccepted}}true{{/aipolicyaccepted}}{{^aipolicyaccepted}}false{{/aipolicyaccepted}}
+                });
+            });
+            {{/aiavailable}}
+
             //look words up and add the chosen meanings
             dictlookup.init({
                 cmid: {{cmid}},
                 modid: {{modid}},
                 langterm: '{{langterm}}',
-                root: '#{{uniqid}}_ww'
+                root: '#{{uniqid}}_ww',
+                aiavailable: {{#aiavailable}}true{{/aiavailable}}{{^aiavailable}}false{{/aiavailable}},
+                aipolicyaccepted: {{#aipolicyaccepted}}true{{/aipolicyaccepted}}{{^aipolicyaccepted}}false{{/aipolicyaccepted}}
             });
 
         });//end of require

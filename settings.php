@@ -357,6 +357,19 @@ if ($ADMIN->fulltree) {
         $default
     ));
 
+    // Let the site's AI fill in the translations the dictionary does not have. Off until an admin
+    // chooses it, since every word added then costs a call to the site's AI.
+    $name = 'localaitranslations';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = 0;
+    $settings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default
+    ));
+
     // Set the default free mode options.
     $name = 'freemodesettings';
     $label = get_string($name, constants::M_COMPONENT);

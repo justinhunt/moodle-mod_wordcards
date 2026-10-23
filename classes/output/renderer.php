@@ -841,6 +841,7 @@ class renderer extends \plugin_renderer_base
      */
     public function word_wizard($mod, $cm)
     {
+        global $USER;
         $langterm = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
         $includeother = false;
         // Restrict the list to languages a lookup can actually return for this source language,
@@ -854,6 +855,9 @@ class renderer extends \plugin_renderer_base
             'langdefs' => $langdefs,
             'managewordsurl' => (new \moodle_url('/mod/wordcards/managewords.php', ['id' => $cm->id]))->out(false),
             'bgstatus' => $this->background_status($mod),
+            // The policy is left out here because the page can ask for it.
+            'aiavailable' => \mod_wordcards\local\ai\translator::is_available($mod->get_context(), null, false),
+            'aipolicyaccepted' => \mod_wordcards\local\ai\translator::policy_accepted($USER->id),
         ];
         return $this->render_from_template('mod_wordcards/word_wizard', $data);
     }

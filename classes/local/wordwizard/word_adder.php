@@ -160,16 +160,64 @@ class word_adder {
      * definition in the definitions language. A sense without one would make a card with no
      * back, which is worse than no card.
      *
+     * A sense with an example sentence is preferred to one without. The sentence is what says
+     * which sense a word is in, so one without is only taken when every sense lacks it; the site's
+     * AI may then write it one (see \mod_wordcards\local\ai\completer).
+     *
      * @param array $entry one word, from read_entry()
      * @return array|null the sense, or null if none will do
      */
     public static function best_sense(array $entry) {
+        $fallback = null;
         foreach ($entry['senses'] as $sense) {
-            if ($sense['hasdefinition']) {
+            if (!$sense['hasdefinition']) {
+                continue;
+            }
+            if ($sense['modelsentence'] !== '') {
                 return $sense;
             }
+            if ($fallback === null) {
+                $fallback = $sense;
+            }
         }
-        return null;
+        return $fallback;
+    }
+
+    /**
+     * Make an entry, as read_entry() would, out of meanings the site's AI suggested.
+     *
+     * For a word the dictionary does not have. Each sense is marked aimade, so that when it is
+     * added its sentence is treated as the teacher's own: no dictionary entry holds it.
+     *
+     * @param string $term the word
+     * @param array $aisenses from \mod_wordcards\local\ai\translator::create_senses()
+     * @param string $deflang the language the definitions are in
+     * @return array with term, found (bool), aimade and senses, as read_entry() returns
+     */
+    public static function ai_entry($term, array $aisenses, $deflang) {
+        $senses = [];
+        foreach (array_values($aisenses) as $senseindex => $aisense) {
+            $translations = [$deflang => $aisense['definition']];
+            if ($aisense['sourcedefinition'] !== '') {
+                $translations['en'] = $aisense['sourcedefinition'];
+            }
+            $senses[] = [
+                'senseindex' => $senseindex,
+                'definition' => $aisense['definition'],
+                'hasdefinition' => true,
+                'sourcedefinition' => $aisense['sourcedefinition'],
+                'modelsentence' => $aisense['modelsentence'],
+                'translations' => self::to_json($translations),
+                'modelsentencetranslations' => self::to_json([]),
+                'aimade' => true,
+            ];
+        }
+        return [
+            'term' => (string) $term,
+            'found' => !empty($senses),
+            'aimade' => true,
+            'senses' => $senses,
+        ];
     }
 
     /**
@@ -177,7 +225,7 @@ class word_adder {
      *
      * @param int $modid the wordcards instance id
      * @param string $term the word
-     * @param array $sense the sense, from read_entry()
+     * @param array $sense the sense, from read_entry() or ai_entry()
      * @return int|false the new term id, or false if it was not added (e.g. it is already there)
      */
     public static function add_sense($modid, $term, array $sense) {
@@ -189,7 +237,7 @@ class word_adder {
             $sense['sourcedefinition'],
             $sense['modelsentence'],
             $sense['modelsentencetranslations'],
-            false
+            !empty($sense['aimade'])
         );
     }
 

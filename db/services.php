@@ -93,6 +93,22 @@ $functions = array(
         'type'        => 'write',
         'ajax'        => true,
     ),
+    'mod_wordcards_complete_translations' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'complete_translations',
+        'description' => 'queues words to have their missing translations filled in by the site AI',
+        'capabilities'=> 'mod/wordcards:manage, mod/wordcards:useai',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
+    'mod_wordcards_create_senses' => array(
+        'classname'   => 'mod_wordcards_external',
+        'methodname'  => 'create_senses',
+        'description' => 'suggests meanings, with the site AI, for a word the dictionary does not have',
+        'capabilities'=> 'mod/wordcards:manage, mod/wordcards:useai',
+        'type'        => 'write',
+        'ajax'        => true,
+    ),
     'mod_wordcards_search_dictionary' => array(
         'classname'   => 'mod_wordcards_external',
         'methodname'  => 'search_dictionary',

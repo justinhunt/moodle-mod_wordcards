@@ -9,8 +9,9 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/notification', 'mod_wordcards/bgstatus'],
-    function($, log, ajax, templates, str, notification, bgstatus) {
+define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/notification', 'mod_wordcards/bgstatus',
+    'mod_wordcards/aipolicy'],
+    function($, log, ajax, templates, str, notification, bgstatus, aipolicy) {
 
     "use strict";
 
@@ -30,7 +31,8 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
         /**
          * Set the wizard up.
          *
-         * @param {Object} opts cmid, modid, langterm (the language being taught) and root (a selector)
+         * @param {Object} opts cmid, modid, langterm (the language being taught), root (a selector),
+         *     aiavailable (the site's AI can be used here) and aipolicyaccepted
          */
         init: function(opts) {
             var root = $(opts.root);
@@ -48,11 +50,17 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
             str.get_strings([
                 {key: 'ww_addfailed', component: 'mod_wordcards'},
                 {key: 'ww_needdefinition', component: 'mod_wordcards'},
-                {key: 'ww_queuefailed', component: 'mod_wordcards'}
+                {key: 'ww_queuefailed', component: 'mod_wordcards'},
+                {key: 'ww_createai_working', component: 'mod_wordcards'},
+                {key: 'ww_createai_none', component: 'mod_wordcards'},
+                {key: 'ww_createai_failed', component: 'mod_wordcards'}
             ]).then(function(s) {
                 that.strings.addfailed = s[0];
                 that.strings.needdefinition = s[1];
                 that.strings.queuefailed = s[2];
+                that.strings.createaiworking = s[3];
+                that.strings.createainone = s[4];
+                that.strings.createaifailed = s[5];
                 return s;
             }).catch(notification.exception);
 
@@ -219,6 +227,8 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
                     return null;
                 }
                 entry.langdef = langdef;
+                // A word the dictionary does not have can still be made a card of by the site's AI.
+                entry.aiavailable = !!that.opts.aiavailable;
                 that.entries[cardno] = entry;
                 return that.showCard(cardno, entry);
             });
@@ -285,7 +295,64 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
                 case 'use':
                     this.useSense(card, button.closest('.mod_wordcards_ww_sense'), entry);
                     break;
+                case 'createai':
+                    this.createWithAI(cardno, card, entry);
+                    break;
             }
+        },
+
+        /**
+         * Have the site's AI suggest meanings for a word the dictionary does not have.
+         *
+         * @param {number} cardno
+         * @param {jQuery} card the word's card
+         * @param {Object} entry the word, as the server sent it
+         */
+        createWithAI: function(cardno, card, entry) {
+            var that = this;
+            if (!this.opts.aipolicyaccepted) {
+                aipolicy.accept().then(function(accepted) {
+                    if (accepted) {
+                        that.opts.aipolicyaccepted = true;
+                        that.createWithAI(cardno, card, entry);
+                    }
+                    return accepted;
+                }).catch(notification.exception);
+                return;
+            }
+
+            var button = card.find('[data-action="createai"]');
+            var status = card.find('.mod_wordcards_ww_aistatus');
+            button.prop('disabled', true).attr('aria-busy', 'true');
+            status.text(this.strings.createaiworking).prop('hidden', false);
+            ajax.call([{
+                methodname: 'mod_wordcards_create_senses',
+                args: {cmid: this.opts.cmid, term: entry.term, deflang: entry.langdef}
+            }])[0].then(function(response) {
+                if (response.policyneeded) {
+                    that.opts.aipolicyaccepted = false;
+                    button.prop('disabled', false).removeAttr('aria-busy');
+                    status.prop('hidden', true);
+                    return that.createWithAI(cardno, card, entry);
+                }
+                if (!response.success) {
+                    throw new Error('The AI could not be asked');
+                }
+                var made = JSON.parse(response.payload);
+                if (!made.found) {
+                    // Nothing came of it. A second try would most likely say the same.
+                    button.remove();
+                    status.text(that.strings.createainone);
+                    return null;
+                }
+                made.langdef = entry.langdef;
+                that.entries[cardno] = made;
+                return that.showCard(cardno, made);
+            }).catch(function(ex) {
+                log.debug(ex);
+                button.prop('disabled', false).removeAttr('aria-busy');
+                status.text(that.strings.createaifailed);
+            });
         },
 
         /**
@@ -317,7 +384,8 @@ define(['jquery', 'core/log', 'core/ajax', 'core/templates', 'core/str', 'core/n
             // The translations we hold are of the sentence the dictionary gave us. If the teacher has
             // rewritten it they no longer describe what will be on the card, so drop them and say so:
             // the server queues a different task for a sentence of its own.
-            var sentenceedited = modelsentence !== sense.modelsentence;
+            // A sentence the AI wrote is held by no dictionary entry either, so it counts as rewritten.
+            var sentenceedited = !!sense.aimade || modelsentence !== sense.modelsentence;
 
             var buttons = card.find('button');
             buttons.prop('disabled', true);

@@ -55,6 +55,7 @@ class sentence_sync {
         $targetlangs = $mod->get_mod()->deflanguage;
 
         $terms = $DB->get_records(constants::M_TERMSTABLE, ['modid' => $modid, 'deleted' => 0], 'id ASC');
+        $wantedlangs = self::languages_for_module($mod);
         $lookedup = 0;
 
         foreach ($terms as $term) {
@@ -65,7 +66,10 @@ class sentence_sync {
                 $counts['nosentence']++;
                 continue;
             }
-            if (!$refresh && trim((string)$term->model_sentence_translations) !== '') {
+            // A term can hold some sentences and not others: the site's AI may have filled in the
+            // languages the dictionary had no word for. So it is done only when nothing is missing.
+            $existing = self::decode($term->model_sentence_translations);
+            if (!$refresh && $existing && !array_diff($wantedlangs, array_keys($existing))) {
                 $counts['alreadyhave']++;
                 continue;
             }
@@ -85,8 +89,15 @@ class sentence_sync {
                 continue;
             }
 
+            // Merge rather than replace, so the sentences the dictionary has no word for survive. On a
+            // refresh the dictionary's own win, otherwise whatever is stored already does.
+            $merged = $refresh ? $sentences + $existing : $existing + $sentences;
+            if ($merged == $existing) {
+                $counts['alreadyhave']++;
+                continue;
+            }
             if (!$dryrun) {
-                $stored = json_encode($sentences, JSON_UNESCAPED_UNICODE);
+                $stored = json_encode($merged, JSON_UNESCAPED_UNICODE);
                 $DB->set_field(constants::M_TERMSTABLE, 'model_sentence_translations', $stored, ['id' => $term->id]);
             }
             $counts['updated']++;
@@ -204,6 +215,10 @@ class sentence_sync {
             return false;
         }
 
+        // The server leaves out any language it could not translate, so keep what is there for
+        // those. Whatever is stored is of this same sentence: rewriting it clears them.
+        $merged = self::decode($sentences) + self::decode($term->model_sentence_translations);
+        $sentences = json_encode($merged, JSON_UNESCAPED_UNICODE);
         $DB->set_field(constants::M_TERMSTABLE, 'model_sentence_translations', $sentences, ['id' => $term->id]);
         return true;
     }
@@ -217,7 +232,7 @@ class sentence_sync {
      * @param \mod_wordcards_module $mod
      * @return array of language codes
      */
-    protected static function languages_for_module($mod) {
+    public static function languages_for_module($mod) {
         $langs = [];
         $deflanguage = $mod->get_mod()->deflanguage;
         if (!empty($deflanguage) && $deflanguage !== constants::M_DEFLANG_OTHER) {
@@ -236,6 +251,20 @@ class sentence_sync {
         // The sentence is already in the language being taught.
         $taught = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
         return array_values(array_diff($langs, [$taught]));
+    }
+
+    /**
+     * Language code => sentence, from the json stored on a term.
+     *
+     * @param string|null $json
+     * @return array
+     */
+    protected static function decode($json) {
+        if (trim((string)$json) === '' || !utils::is_json($json)) {
+            return [];
+        }
+        $decoded = json_decode($json, true);
+        return is_array($decoded) ? $decoded : [];
     }
 
     /**

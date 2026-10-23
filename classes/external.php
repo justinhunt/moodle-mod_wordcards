@@ -39,6 +39,8 @@ use mod_wordcards\utils;
 use mod_wordcards\constants;
 use mod_wordcards\imagegen;
 use mod_wordcards\sentence_sync;
+use mod_wordcards\local\ai\completer;
+use mod_wordcards\local\ai\translator;
 use mod_wordcards\local\wordwizard\background;
 use mod_wordcards\local\wordwizard\word_adder;
 
@@ -621,6 +623,134 @@ class mod_wordcards_external extends external_api
                 'queued' => new external_value(PARAM_INT, 'Terms queued to have their own sentence translated'),
                 'failed' => new external_value(PARAM_INT, 'Terms whose lookup failed'),
                 'message' => new external_value(PARAM_TEXT, 'A sentence describing the result'),
+            ]
+        );
+    }
+
+    /**
+     * Parameters for complete_translations.
+     *
+     * @return external_function_parameters
+     */
+    public static function complete_translations_parameters() {
+        return new external_function_parameters(
+            [
+                'cmid' => new external_value(PARAM_INT, 'The course module id'),
+            ]
+        );
+    }
+
+    /**
+     * Queue the activity's words to have their missing translations filled in by the site's AI.
+     *
+     * @param int $cmid
+     * @return array how many words were queued, whether the AI policy must be accepted first, and
+     *               a sentence saying what happened
+     */
+    public static function complete_translations($cmid) {
+        $params = self::validate_parameters(self::complete_translations_parameters(), compact('cmid'));
+
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        $context = $mod->get_context();
+        self::validate_context($context);
+        $mod->require_manage();
+
+        $ret = ['queued' => 0, 'policyneeded' => false, 'message' => ''];
+        if (!translator::is_available($context, null, false)) {
+            $ret['message'] = get_string('ai_completetranslations_unavailable', constants::M_COMPONENT);
+        } else if (!translator::is_available($context)) {
+            $ret['policyneeded'] = true;
+            $ret['message'] = get_string('ai_completetranslations_policy', constants::M_COMPONENT);
+        } else {
+            $ret['queued'] = completer::queue_module($mod);
+            $ret['message'] = $ret['queued']
+                ? get_string('ai_completetranslations_queued', constants::M_COMPONENT, $ret['queued'])
+                : get_string('ai_completetranslations_nothing', constants::M_COMPONENT);
+        }
+        return $ret;
+    }
+
+    /**
+     * What complete_translations returns.
+     *
+     * @return external_single_structure
+     */
+    public static function complete_translations_returns() {
+        return new external_single_structure(
+            [
+                'queued' => new external_value(PARAM_INT, 'Words queued to be completed'),
+                'policyneeded' => new external_value(PARAM_BOOL, 'Whether the AI policy has to be accepted first'),
+                'message' => new external_value(PARAM_TEXT, 'A sentence describing the result'),
+            ]
+        );
+    }
+
+    /**
+     * Parameters for create_senses.
+     *
+     * @return external_function_parameters
+     */
+    public static function create_senses_parameters() {
+        return new external_function_parameters(
+            [
+                'cmid' => new external_value(PARAM_INT, 'The course module id'),
+                'term' => new external_value(PARAM_TEXT, 'The word or phrase'),
+                'deflang' => new external_value(PARAM_TEXT, 'The language the definitions should be in'),
+            ]
+        );
+    }
+
+    /**
+     * Have the site's AI suggest meanings for a word or phrase the dictionary does not have.
+     *
+     * @param int $cmid
+     * @param string $term
+     * @param string $deflang
+     * @return array success, whether the AI policy must be accepted first, and the word as json in
+     *               the shape search_dictionary returns one
+     */
+    public static function create_senses($cmid, $term, $deflang) {
+        global $USER;
+        $params = self::validate_parameters(self::create_senses_parameters(), compact('cmid', 'term', 'deflang'));
+
+        $mod = mod_wordcards_module::get_by_cmid($params['cmid']);
+        $context = $mod->get_context();
+        self::validate_context($context);
+        $mod->require_manage();
+
+        $ret = ['success' => false, 'policyneeded' => false, 'payload' => ''];
+        $term = trim($params['term']);
+        $deflang = clean_param($params['deflang'], PARAM_ALPHAEXT);
+        if ($term === '' || $deflang === '' || $deflang === constants::M_DEFLANG_OTHER) {
+            return $ret;
+        }
+        if (!translator::is_available($context, null, false)) {
+            return $ret;
+        }
+        if (!translator::is_available($context)) {
+            $ret['policyneeded'] = true;
+            return $ret;
+        }
+
+        $sourcelang = utils::fetch_rcdic_lang($mod->get_mod()->ttslanguage);
+        $translator = new translator($context, $USER->id);
+        $aisenses = $translator->create_senses($term, $sourcelang, $deflang);
+        $ret['success'] = true;
+        $ret['payload'] = json_encode(word_adder::ai_entry($term, $aisenses, $deflang), JSON_UNESCAPED_UNICODE);
+        return $ret;
+    }
+
+    /**
+     * What create_senses returns.
+     *
+     * @return external_single_structure
+     */
+    public static function create_senses_returns() {
+        return new external_single_structure(
+            [
+                'success' => new external_value(PARAM_BOOL, 'Whether the AI was asked'),
+                'policyneeded' => new external_value(PARAM_BOOL, 'Whether the AI policy has to be accepted first'),
+                'payload' => new external_value(PARAM_RAW, 'The word and its suggested meanings, as json'),
             ]
         );
     }

@@ -138,6 +138,15 @@ final class word_adder_test extends \advanced_testcase {
         $entry['senses'][0]['hasdefinition'] = false;
         $this->assertSame('orilla', word_adder::best_sense($entry)['definition']);
 
+        // A sense with no example sentence is passed over for a later one that has one.
+        $entry = $entries[0];
+        $entry['senses'][0]['modelsentence'] = '';
+        $this->assertSame('orilla', word_adder::best_sense($entry)['definition']);
+
+        // But it is taken when no sense has a sentence.
+        $entry['senses'][1]['modelsentence'] = '';
+        $this->assertSame('banco', word_adder::best_sense($entry)['definition']);
+
         $this->assertNull(word_adder::best_sense($entries[1]));
     }
 

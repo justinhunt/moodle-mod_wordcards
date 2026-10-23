@@ -106,6 +106,16 @@ $capabilities = [
                 'clonepermissionsfrom' => 'moodle/grade:viewall'
         ],
 
+        'mod/wordcards:useai' => [
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_MODULE,
+            'archetypes' => [
+                    'editingteacher' => CAP_ALLOW,
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'mod/wordcards:manage',
+        ],
+
         'mod/wordcards:push' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',

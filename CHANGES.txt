@@ -1,3 +1,19 @@
+1.3.93 (Build 2026102301)
+- Words the dictionary has no translation for in a language the activity offers can be
+  translated by the site's own AI provider, as each word is used in its example sentence.
+  It runs in the background when words are added with the Word Wizard, and for the whole
+  word set from a new "Complete missing translations with AI" button on the Word Wizard.
+  A word with no example sentence is given one first. It needs an AI provider that can
+  generate text (Moodle 4.5 and later), and is off until turned on in the plugin settings
+- A word or phrase that is not in the dictionary at all, such as an inflected form or an
+  idiom, can be made into a card with a new "Create with AI" button on the Word Wizard. The
+  site AI suggests its meanings, each with an example sentence, to choose from. Words added
+  in the background get the same treatment, and are left out if the AI makes nothing of them
+- New capability mod/wordcards:useai
+- Words added in the background now take a meaning that has an example sentence over one
+  that does not
+- Fetching translated example sentences no longer overwrites the ones a word already has
+
 1.3.92 (Build 2026101404)
 - New "Card style (learn mode)" setting, adding one sided learn cards as an alternative
   to the default 2 sided ones.
