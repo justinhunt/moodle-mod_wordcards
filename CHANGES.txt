@@ -3,21 +3,14 @@
   translated by the site's own AI provider, as each word is used in its example sentence.
   It runs in the background when words are added with the Word Wizard, and for the whole
   word set from a new "Complete missing translations with AI" button on the Word Wizard.
-  A word with no example sentence is given one first. It needs an AI provider that can
-  generate text (Moodle 4.5 and later), and is off until turned on in the plugin settings
+  It needs an AI provider that can generate text (Moodle 4.5 and later), and is off by default.
 - A word or phrase that is not in the dictionary at all, such as an inflected form or an
-  idiom, can be made into a card with a new "Create with AI" button on the Word Wizard. The
-  site AI suggests its meanings, each with an example sentence, to choose from. Words added
-  in the background get the same treatment, and are left out if the AI makes nothing of them
+  idiom, can be made into a card with a new "Create with AI" button on the Word Wizard. 
 - New capability mod/wordcards:useai
-- Words added in the background now take a meaning that has an example sentence over one
-  that does not
+- Words automatically added in a background task prefer a meaning with an example sentence.
 - Fetching translated example sentences no longer overwrites the ones a word already has
 - The learner's chosen definitions language is now shared with Poodll MiniLesson as their
-  native language, so choosing it in either plugin sets it in both. Existing choices are
-  carried over on upgrade, except where the learner has already chosen one in MiniLesson
-- Choosing the activity's own definitions language in the language chooser now keeps that
-  choice, rather than clearing it
+  native language.
 - The list of words now shows each example sentence's translation in the learner's language,
   under the sentence, as the one sided cards already did.
 
