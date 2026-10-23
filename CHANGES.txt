@@ -18,6 +18,8 @@
   carried over on upgrade, except where the learner has already chosen one in MiniLesson
 - Choosing the activity's own definitions language in the language chooser now keeps that
   choice, rather than clearing it
+- The list of words now shows each example sentence's translation in the learner's language,
+  under the sentence, as the one sided cards already did.
 
 1.3.92 (Build 2026101404)
 - New "Card style (learn mode)" setting, adding one sided learn cards as an alternative

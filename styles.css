@@ -2318,6 +2318,12 @@ button.definitions-next.btn .fa-arrow-right:before {
     background-color: #c7cbf0;
 }
 
+.definitions-container .term-modelsentence-translation {
+    font-size: 0.9em;
+    font-style: italic;
+    color: #80859d;
+}
+
 /*space game */
 .path-mod-wordcards div.fontloader {
     visibility: hidden;

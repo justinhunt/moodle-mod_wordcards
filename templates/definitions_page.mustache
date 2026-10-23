@@ -136,7 +136,12 @@
                   {{{definition}}}
                   {{#model_sentence}}
                   <div class="term-modelsentence">
-                     <span>{{model_sentence}}</span>
+                     <div class="term-modelsentence-text">
+                        <span>{{model_sentence}}</span>
+                        {{#model_sentence_translation}}
+                        <div class="term-modelsentence-translation" dir="auto">{{model_sentence_translation}}</div>
+                        {{/model_sentence_translation}}
+                     </div>
                      <span data-modelaudio="{{model_sentence_audio}}" data-tts="{{model_sentence}}" data-ttsvoice="{{ttsvoice}}"  tabindex="0" class="model-sentence-play-tts term-modelsentence-small" style="cursor:pointer;">
                      </span>
                   </div>
