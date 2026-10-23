@@ -67,6 +67,7 @@ final class nativelang_test extends \advanced_testcase {
      *
      * @param string $locale
      * @param string $expected
+     * @dataProvider locale_provider
      */
     #[DataProvider('locale_provider')]
     public function test_locale_to_deflang(string $locale, string $expected): void {
@@ -77,6 +78,8 @@ final class nativelang_test extends \advanced_testcase {
      * The chooser stores a locale under the shared name, and an empty choice clears it.
      *
      * The external class includes lib/externallib.php, which needs a process of its own.
+     *
+     * @runInSeparateProcess
      */
     #[RunInSeparateProcess]
     public function test_set_user_preference(): void {
