@@ -110,7 +110,7 @@ if ($mform->is_cancelled()) {
 $moduleinstance->n =$moduleinstance->id;
 $mod = mod_wordcards_module::get_by_cmid($cm->id);
 $data =(array)$moduleinstance;
-$data = utils::prepare_file_and_json_stuff($data,$modulecontext);
+$data = utils::unpack_freemode_options($data);
 $mform->set_data($data);
 
 echo $renderer->header($moduleinstance, $cm, "setup");
