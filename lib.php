@@ -638,6 +638,7 @@ function wordcards_output_fragment_mform($args)
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
     $mod = mod_wordcards_module::get_by_modid($moduleinstance->id);
+    $mod->require_manage();
 
     if ($args->itemid) {
         $term = $DB->get_record(constants::M_TERMSTABLE, ['modid' => $moduleinstance->id, 'id' => $args->itemid], '*');

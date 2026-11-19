@@ -335,9 +335,17 @@ class mod_wordcards_external extends external_api
         ;
 
         // get the objects we need
-        $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid, 0, false, MUST_EXIST);
         $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
+
+        // Only those who manage the words may save them, and only this activity's words.
+        mod_wordcards_module::get_by_modid($moduleinstance->id)->require_manage();
+        $termowned = empty($data['termid']) ||
+            $DB->record_exists(constants::M_TERMSTABLE, ['id' => $data['termid'], 'modid' => $moduleinstance->id]);
+        if (!$termowned) {
+            throw new \moodle_exception('invalidrecord', 'error', '', constants::M_TERMSTABLE);
+        }
 
         // we need to pretend this was posted and these help
         $method = 'post';
